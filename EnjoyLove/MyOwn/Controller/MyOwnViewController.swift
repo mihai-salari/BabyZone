@@ -90,7 +90,9 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         
         PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
             if let weakSelf = self{
+                print("code \(errorCode)")
                 weakSelf.myOwnTable.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                
             }
         }
         

@@ -1,0 +1,33 @@
+/* 
+  Localizable.strings
+  EnjoyLove
+
+  Created by HuangSam on 16/9/20.
+  Copyright © 2016年 HuangSam. All rights reserved.
+*/
+
+"Login" = "Login";
+"Switch" = "Switch";
+
+
+"remote" = "Remote";
+"hall" = "Hall";
+"window" = "Window";
+"balcony" = "Balcony";
+"bedroom" = "Bedroom";
+"kitchen" = "Kitchen";
+"courtyard" = "Courtyard";
+"door_lock" = "Door Lock";
+"other" = "Other";
+
+"extern_alarm" = "Extern Alarm";
+"motion_dect_alarm" = "Motion Detection Alarm";
+"emergency_alarm" = "Emergency Alarm";
+"ext_line_alarm" = "I/O Alarm";
+"low_vol_alarm" = "Low Voltage Alarm";
+"pir_alarm" = "PIR Detection Alarm";
+"defence_alarm" = "Defence Alarm";
+"defence_disable_alarm" = "Defence Disable Alarm";
+"battery_low_vol" = "Battery Low Voltage Alarm";
+"somebody_visit" = "Somebody Visit";
+"open" = "open";//推送消息

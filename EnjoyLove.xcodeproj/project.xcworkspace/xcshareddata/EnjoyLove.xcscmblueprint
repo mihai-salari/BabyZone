@@ -1,0 +1,25 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "d7bb0c96-d35c-4741-848c-145c36b99e47++3708",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "d7bb0c96-d35c-4741-848c-145c36b99e47++3708" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "d7bb0c96-d35c-4741-848c-145c36b99e47++3708" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E6ABC1FF-CD48-42A5-BE00-DCAAB887DF3B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "d7bb0c96-d35c-4741-848c-145c36b99e47++3708" : "EnjoyLove\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "EnjoyLove",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "EnjoyLove.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "svn:\/\/123.56.133.212",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "d7bb0c96-d35c-4741-848c-145c36b99e47++3708"
+    }
+  ]
+}

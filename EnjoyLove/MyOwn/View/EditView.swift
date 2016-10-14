@@ -210,7 +210,9 @@ class EditNameView: UIView ,UITextFieldDelegate{
     }
 }
 
-class EditSexView: UIView {
+
+private let sexStatusTableViewCellId = "sexStatusTableViewCellId"
+class EditSexView: UIView ,UITableViewDataSource,UITableViewDelegate{
     
     private var sexHandler:((sex:String, sexId:String)->())?
     private var sexStatusTable:UITableView!
@@ -223,37 +225,16 @@ class EditSexView: UIView {
         self.backgroundColor = UIColor.whiteColor()
         
         self.sexStatusData = ["男", "女"]
+        self.currentStatus = isMale
+        self.sexStatusTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: CGFloat(self.sexStatusData.count) * 44), style: .Plain)
+        self.sexStatusTable.separatorInset = UIEdgeInsetsZero
+        self.sexStatusTable.layoutMargins = UIEdgeInsetsZero
+        self.sexStatusTable.rowHeight = 44
+        self.sexStatusTable.delegate = self
+        self.sexStatusTable.dataSource = self
+        self.sexStatusTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: sexStatusTableViewCellId)
+        self.addSubview(self.sexStatusTable)
         
-        let maleButton = SexButton(type: .Custom)
-        maleButton.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: 40)
-        maleButton.tag = 200
-        maleButton.setImageSize(CGSize(width: 25, height: 20), normaImage: "", selectedImage: "myOwnSelected.png", normalTitle: "男", selectedTitle: "男", fontSize: 14)
-        maleButton.addCustomTarget(self, sel: #selector(EditSexView.selectedForSex(_:)))
-        maleButton.setCustomTitleColor(UIColor.darkGrayColor())
-        self.addSubview(maleButton)
-        
-        var line = UIView.init(frame: CGRect(x: 0, y: maleButton.frame.maxY, width: self.frame.width, height: 0.5))
-        line.backgroundColor = UIColor.hexStringToColor("#f5f0f1")
-        self.addSubview(line)
-        
-        
-        let femaleButton = SexButton(type: .Custom)
-        femaleButton.frame = CGRect(x: 0, y: line.frame.maxY, width: self.frame.width, height: 40)
-        femaleButton.tag = 201
-        femaleButton.setImageSize(CGSize(width: 25, height: 20), normaImage: "", selectedImage: "myOwnSelected.png", normalTitle: "女", selectedTitle: "女", fontSize: 14)
-        femaleButton.addCustomTarget(self, sel: #selector(EditSexView.selectedForSex(_:)))
-        femaleButton.setCustomTitleColor(UIColor.darkGrayColor())
-        self.addSubview(femaleButton)
-        
-        line = UIView.init(frame: CGRect(x: 0, y: femaleButton.frame.maxY, width: self.frame.width, height: 0.5))
-        line.backgroundColor = UIColor.hexStringToColor("#f5f0f1")
-        self.addSubview(line)
-        
-        if isMale == true {
-            maleButton.selected = true
-        }else{
-            femaleButton.selected = true
-        }
         self.sexHandler = completionHandler
     }
     
@@ -261,29 +242,57 @@ class EditSexView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func selectedForSex(btn:SexButton) -> Void {
-        btn.selected = !btn.selected
-        var sex = ""
-        var sexId = ""
-        if btn.tag == 200 {
-            sex = "男"
-            sexId = "0"
-            if let anotherView = self.viewWithTag(201) {
-                let female = anotherView as! SexButton
-                female.selected = !btn.selected
-            }
-        }else if btn.tag == 201{
-            sex = "女"
-            sexId = "1"
-            if let anotherView = self.viewWithTag(200) {
-                let male = anotherView as! SexButton
-                male.selected = !btn.selected
-            }
-        }
-        if let handle = self.sexHandler {
-            handle(sex: sex, sexId: sexId)
-        }
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.sexStatusData.count
     }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(pregStatusTableViewCellId)
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.selectionStyle = .None
+            let item = self.sexStatusData[indexPath.row]
+            resultCell.textLabel?.text = item
+            if indexPath.row == self.currentStatus {
+                self.selectedIndexPath = indexPath
+                resultCell.tintColor = UIColor.hexStringToColor("#dc7190")
+                resultCell.accessoryType = .Checkmark
+            }else{
+                resultCell.accessoryType = .None
+            }
+        }
+        return cell!
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath == self.selectedIndexPath {
+            return
+        }
+        let everSelectedCell = tableView.cellForRowAtIndexPath(self.selectedIndexPath)
+        if let resultCell = everSelectedCell {
+            resultCell.accessoryType = .None
+        }
+        let newSelectedCell = tableView.cellForRowAtIndexPath(indexPath)
+        if let resultCell = newSelectedCell {
+            resultCell.tintColor = UIColor.hexStringToColor("#dc7190")
+            resultCell.accessoryType = .Checkmark
+            if let handle = self.sexHandler {
+                var status:Int = 1
+                switch self.sexStatusData[indexPath.row] {
+                case "男":
+                    status = 1
+                case "女":
+                    status = 2
+                default:
+                    break
+                }
+                handle(sex: self.sexStatusData[indexPath.row], sexId: "\(status)")
+            }
+        }
+        self.selectedIndexPath = indexPath
+    }
+    
 }
 private let pregStatusTableViewCellId = "pregStatusTableViewCellId"
 class EditPregStatusView: UIView,UITableViewDelegate,UITableViewDataSource {

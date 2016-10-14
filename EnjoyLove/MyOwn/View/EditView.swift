@@ -213,10 +213,17 @@ class EditNameView: UIView ,UITextFieldDelegate{
 class EditSexView: UIView {
     
     private var sexHandler:((sex:String, sexId:String)->())?
+    private var sexStatusTable:UITableView!
+    private var selectedIndexPath:NSIndexPath!
+    private var sexStatusData:[String]!
+    private var currentStatus:Int = 0
     
-    init(frame: CGRect, isMale:Bool, completionHandler:((sex:String, sexId:String)->())?) {
+    init(frame: CGRect, isMale:Int, completionHandler:((sex:String, sexId:String)->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
+        
+        self.sexStatusData = ["男", "女"]
+        
         let maleButton = SexButton(type: .Custom)
         maleButton.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: 40)
         maleButton.tag = 200
@@ -278,43 +285,28 @@ class EditSexView: UIView {
         }
     }
 }
-
-class EditPregStatusView: UIView {
+private let pregStatusTableViewCellId = "pregStatusTableViewCellId"
+class EditPregStatusView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var statusHandler:((status:String, statusId:String)->())?
-    
-    init(frame: CGRect, hasBaby:Bool, completionHandler:((status:String, statusId:String)->())?) {
+    private var pregStatusTable:UITableView!
+    private var selectedIndexPath:NSIndexPath!
+    private var pregStatusData:[String]!
+    private var currentStatus:Int = 0
+    init(frame: CGRect, status:Int, completionHandler:((status:String, statusId:String)->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
-        let maleButton = PregStatusButton(type: .Custom)
-        maleButton.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: 40)
-        maleButton.tag = 200
-        maleButton.setImageSize(CGSize(width: 25, height: 20), normaImage: "", selectedImage: "myOwnSelected.png", normalTitle: "已有宝宝", selectedTitle: "已有宝宝", fontSize: 14)
-        maleButton.addCustomTarget(self, sel: #selector(EditSexView.selectedForSex(_:)))
-        maleButton.setCustomTitleColor(UIColor.darkGrayColor())
-        self.addSubview(maleButton)
+        self.pregStatusData = ["备孕","怀孕","已有宝宝"]
+        self.currentStatus = status
         
-        var line = UIView.init(frame: CGRect(x: 0, y: maleButton.frame.maxY, width: self.frame.width, height: 0.5))
-        line.backgroundColor = UIColor.hexStringToColor("#f5f0f1")
-        self.addSubview(line)
+        self.pregStatusTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: CGFloat(self.pregStatusData.count) * 44), style: .Plain)
+        self.pregStatusTable.separatorInset = UIEdgeInsetsZero
+        self.pregStatusTable.layoutMargins = UIEdgeInsetsZero
+        self.pregStatusTable.rowHeight = 44
+        self.pregStatusTable.delegate = self
+        self.pregStatusTable.dataSource = self
+        self.pregStatusTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: pregStatusTableViewCellId)
+        self.addSubview(self.pregStatusTable)
         
-        
-        let femaleButton = PregStatusButton(type: .Custom)
-        femaleButton.frame = CGRect(x: 0, y: line.frame.maxY, width: self.frame.width, height: 40)
-        femaleButton.tag = 201
-        femaleButton.setImageSize(CGSize(width: 25, height: 20), normaImage: "", selectedImage: "myOwnSelected.png", normalTitle: "备孕/怀孕", selectedTitle: "备孕/怀孕", fontSize: 14)
-        femaleButton.addCustomTarget(self, sel: #selector(EditSexView.selectedForSex(_:)))
-        femaleButton.setCustomTitleColor(UIColor.darkGrayColor())
-        self.addSubview(femaleButton)
-        
-        line = UIView.init(frame: CGRect(x: 0, y: femaleButton.frame.maxY, width: self.frame.width, height: 0.5))
-        line.backgroundColor = UIColor.hexStringToColor("#f5f0f1")
-        self.addSubview(line)
-        
-        if hasBaby == true {
-            maleButton.selected = true
-        }else{
-            femaleButton.selected = true
-        }
         self.statusHandler = completionHandler
     }
     
@@ -322,29 +314,57 @@ class EditPregStatusView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func selectedForSex(btn:SexButton) -> Void {
-        btn.selected = !btn.selected
-        var status = ""
-        var statusId = ""
-        
-        if btn.tag == 200 {
-            status = "已有宝宝"
-            statusId = "0"
-            if let anotherView = self.viewWithTag(201) {
-                let female = anotherView as! PregStatusButton
-                female.selected = !btn.selected
-            }
-        }else if btn.tag == 201{
-            status = "备孕/怀孕"
-            statusId = "1"
-            if let anotherView = self.viewWithTag(200) {
-                let female = anotherView as! PregStatusButton
-                female.selected = !btn.selected
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.pregStatusData.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(pregStatusTableViewCellId)
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.selectionStyle = .None
+            let item = self.pregStatusData[indexPath.row]
+            resultCell.textLabel?.text = item
+            if indexPath.row == self.currentStatus {
+                self.selectedIndexPath = indexPath
+                resultCell.tintColor = UIColor.hexStringToColor("#dc7190")
+                resultCell.accessoryType = .Checkmark
+            }else{
+                resultCell.accessoryType = .None
             }
         }
-        if let handle = self.statusHandler {
-            handle(status: status, statusId: statusId)
+        return cell!
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath == self.selectedIndexPath {
+            return
         }
+        let everSelectedCell = tableView.cellForRowAtIndexPath(self.selectedIndexPath)
+        if let resultCell = everSelectedCell {
+            resultCell.accessoryType = .None
+        }
+        let newSelectedCell = tableView.cellForRowAtIndexPath(indexPath)
+        if let resultCell = newSelectedCell {
+            resultCell.tintColor = UIColor.hexStringToColor("#dc7190")
+            resultCell.accessoryType = .Checkmark
+            if let handle = self.statusHandler {
+                var status:Int = 1
+                switch self.pregStatusData[indexPath.row] {
+                case "备孕":
+                    status = 2
+                case "怀孕":
+                    status = 3
+                case "已有宝宝":
+                    status = 4
+                default:
+                    break
+                }
+                handle(status: self.pregStatusData[indexPath.row], statusId: "\(status)")
+            }
+        }
+        self.selectedIndexPath = indexPath
     }
 }
 

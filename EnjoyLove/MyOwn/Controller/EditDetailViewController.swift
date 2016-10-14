@@ -110,10 +110,27 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(false, title: "性别", leftSel: nil, rightSel: nil)
             let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: false, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
-                    if let delegate = weakSelf.editDelegate{
-                        weakSelf.editModel.subItem = sex
-                        delegate.fetchPersonInfo(weakSelf.editModel)
-                        weakSelf.navigationController?.popViewControllerAnimated(true)
+                    
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                    if let error = errorCode{
+                                        if error == PASSCODE{
+                                            if let delegate = weakSelf.editDelegate{
+                                                weakSelf.editModel.subItem = sex
+                                                delegate.fetchPersonInfo(weakSelf.editModel)
+                                                weakSelf.navigationController?.popViewControllerAnimated(true)
+                                            }
+                                        }else{
+                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                        }
+                                    }else{
+                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
                 })
@@ -122,12 +139,29 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(false, title: "地区", leftSel: nil, rightSel: nil)
         case 5:
             self.navigationBarItem(false, title: "孕育状态", leftSel: nil, rightSel: nil)
-            let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), hasBaby: true, completionHandler: {[weak self] (status, statusId) in
+            let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: 2, completionHandler: {[weak self] (status, statusId) in
                 if let weakSelf = self{
-                    if let delegate = weakSelf.editDelegate{
-                        weakSelf.editModel.subItem = status
-                        delegate.fetchPersonInfo(weakSelf.editModel)
-                        weakSelf.navigationController?.popViewControllerAnimated(true)
+                    
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                    if let error = errorCode{
+                                        if error == PASSCODE{
+                                            if let delegate = weakSelf.editDelegate{
+                                                weakSelf.editModel.subItem = status
+                                                delegate.fetchPersonInfo(weakSelf.editModel)
+                                                weakSelf.navigationController?.popViewControllerAnimated(true)
+                                            }
+                                        }else{
+                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                        }
+                                    }else{
+                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
             })

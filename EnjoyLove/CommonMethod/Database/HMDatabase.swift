@@ -689,9 +689,9 @@ private class BabyListDAO:NSObject{
         return false
     }
     
-    func find(detail:BabyList?, key:String = "") -> BabyList {
+    func find(detail:BabyList?, key:String = "") -> BabyList? {
         let array = self.findAll()
-        var result = BabyList()
+        var result:BabyList?
         for note in array {
             let userId = detail == nil ? "" : note.idUserBabyInfo
             let baseKey = key == "" ? userId : key
@@ -720,8 +720,12 @@ class BabyListBL: NSObject {
         return BabyListDAO.shared.findAll()
     }
     
-    class func find(detail:BabyList?, key:String = "") ->BabyList{
+    class func find(detail:BabyList?, key:String = "") ->BabyList?{
         return BabyListDAO.shared.find(detail, key: key)
+    }
+    
+    class func findAll() ->[BabyList]{
+        return BabyListDAO.shared.findAll()
     }
 }
 

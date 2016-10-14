@@ -13,6 +13,7 @@ private let PersionInfoTableViewCellId = "PersionInfoTableViewCellId"
 class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableViewDataSource,PersonInfoEditDelegate,ChooseCityDelegate {
     
     var infoModel:MyOwnHeader!
+    var personDetailModel:PersonDetail!
     private var personInfoTable:UITableView!
     private var personInfoData:[PersonEditInfo]!
     private var personIndexPath:NSIndexPath!
@@ -47,16 +48,16 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         self.personInfoData = []
         
         var detailData:[PersonEidtDetail] = []
-        var detailModel = PersonEidtDetail(mainTitle: "头像", subItem: self.infoModel.header, isHeader: true, eidtType: 0)
+        var detailModel = PersonEidtDetail(mainTitle: "头像", subItem: self.personDetailModel.headImg == "" ? self.infoModel.header : self.personDetailModel.headImg, isHeader: true, eidtType: 0)
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "名字", subItem: self.infoModel.nickName, isHeader: false, eidtType: 1)
+        detailModel = PersonEidtDetail(mainTitle: "名字", subItem: self.personDetailModel.nickName == "" ? self.infoModel.nickName : self.personDetailModel.nickName, isHeader: false, eidtType: 1)
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "个性签名", subItem: self.infoModel.desc, isHeader: false, eidtType: 2)
+        detailModel = PersonEidtDetail(mainTitle: "个性签名", subItem: self.personDetailModel.userSign == "" ? self.infoModel.desc : self.personDetailModel.userSign, isHeader: false, eidtType: 2)
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "性别", subItem: "女", isHeader: false, eidtType: 3)
+        detailModel = PersonEidtDetail(mainTitle: "性别", subItem: Int(self.personDetailModel.sex) == 1 ? "男":"女", isHeader: false, eidtType: 3)
         detailData.append(detailModel)
         
         detailModel = PersonEidtDetail(mainTitle: "地区", subItem: "广东深圳市", isHeader: false, eidtType: 4)
@@ -68,26 +69,41 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         var model = PersonEditInfo(title: "", detail: detailData)
         self.personInfoData.append(model)
         
-        detailData = []
-        detailModel = PersonEidtDetail(mainTitle: "宝宝1", subItem: "姓名/性别/年龄", isHeader: false, eidtType: 6)
-        detailData.append(detailModel)
-        
-        detailModel = PersonEidtDetail(mainTitle: "宝宝2", subItem: "姓名/性别/年龄", isHeader: false, eidtType: 6)
-        detailData.append(detailModel)
-        
-        detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7)
-        detailData.append(detailModel)
-        
-        model = PersonEditInfo(title: "宝宝", detail: detailData)
-        self.personInfoData.append(model)
         
         BabyList.sendAsyncBabyList { [weak self](errorCode, msg) in
             if let weakSelf = self{
-                if let code = errorCode{
-                    if code == PASSCODE{
+                if let code = errorCode {
+                    if code == PASSCODE {
+                        let babys = BabyListBL.findAll()
+                        if babys.count > 0{
+                            detailData = []
+                            for baby in babys{
+                                detailModel = PersonEidtDetail(mainTitle: baby.babyName, subItem: "姓名/性别/年龄", isHeader: false, eidtType: 6)
+                                detailData.append(detailModel)
+                            }
+                            detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7)
+                            detailData.append(detailModel)
+                            
+                            model = PersonEditInfo(title: "宝宝", detail: detailData)
+                            weakSelf.personInfoData.append(model)
+                        }else{
+                            detailData = []
+                            detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7)
+                            detailData.append(detailModel)
+                            
+                            model = PersonEditInfo(title: "宝宝", detail: detailData)
+                            weakSelf.personInfoData.append(model)
+                        }
+                    }else{
+                        detailData = []
+                        detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7)
+                        detailData.append(detailModel)
                         
+                        model = PersonEditInfo(title: "宝宝", detail: detailData)
+                        weakSelf.personInfoData.append(model)
                     }
                 }
+                
             }
         }
         
@@ -167,6 +183,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             let editDetail = EditDetailViewController()
             editDetail.editDelegate = self
             editDetail.editModel = detailModel
+            editDetail.personDetail = personDetailModel
             self.navigationController?.pushViewController(editDetail, animated: true)
         }
     }

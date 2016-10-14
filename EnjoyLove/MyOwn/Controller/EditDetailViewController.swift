@@ -30,6 +30,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
 
     var editModel:PersonEidtDetail!
     var editDelegate:PersonInfoEditDelegate!
+    var personDetail:PersonDetail!
     private var headerEditView:EditHeaderView!
     private var babyEditView:EditBabyView!
     private var babyIndexPath:NSIndexPath!
@@ -108,7 +109,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.view.addSubview(editSignView)
         case 3:
             self.navigationBarItem(false, title: "性别", leftSel: nil, rightSel: nil)
-            let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: false, completionHandler: { [weak self](sex, sexId) in
+            let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: Int(self.personDetail.sex)!, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
                     
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{

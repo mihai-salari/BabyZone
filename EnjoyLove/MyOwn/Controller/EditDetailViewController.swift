@@ -20,6 +20,8 @@ import Photos
  7:添加宝宝
  */
 
+let ModifyHeadImageNotification = "ModifyHeadImageNotification"
+
 protocol PersonInfoEditDelegate{
     func fetchPersonInfo(editModel:PersonEidtDetail)
 }
@@ -52,10 +54,26 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(false, title: "名字", leftSel: nil, rightSel: nil)
             let editNameView = EditNameView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: ScreenHeight - navigationBarHeight - 10), completionHandler: { [weak self](txt) in
                 if let weakSelf = self{
-                    if let delegate = weakSelf.editDelegate{
-                        weakSelf.editModel.subItem = txt
-                        delegate.fetchPersonInfo(weakSelf.editModel)
-                        weakSelf.navigationController?.popViewControllerAnimated(true)
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                    if let error = errorCode{
+                                        if error == PASSCODE{
+                                            if let delegate = weakSelf.editDelegate{
+                                                weakSelf.editModel.subItem = txt
+                                                delegate.fetchPersonInfo(weakSelf.editModel)
+                                                weakSelf.navigationController?.popViewControllerAnimated(true)
+                                            }
+                                        }else{
+                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                        }
+                                    }else{
+                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
             })
@@ -64,10 +82,26 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(false, title: "个性签名", leftSel: nil, rightSel: nil)
             let editSignView = EditSignView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), completionHandler: {[weak self] (txt) in
                 if let weakSelf = self{
-                    if let delegate = weakSelf.editDelegate{
-                        weakSelf.editModel.subItem = txt
-                        delegate.fetchPersonInfo(weakSelf.editModel)
-                        weakSelf.navigationController?.popViewControllerAnimated(true)
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                    if let error = errorCode{
+                                        if error == PASSCODE{
+                                            if let delegate = weakSelf.editDelegate{
+                                                weakSelf.editModel.subItem = txt
+                                                delegate.fetchPersonInfo(weakSelf.editModel)
+                                                weakSelf.navigationController?.popViewControllerAnimated(true)
+                                            }
+                                        }else{
+                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                        }
+                                    }else{
+                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
             })
@@ -212,9 +246,30 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        if let image = info[UIImagePickerControllerEditedImage], let headerView = self.headerEditView {
-            
-            headerView.refreshImageView(image as! UIImage)
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage, let headerView = self.headerEditView {
+            headerView.refreshWithMask(false)
+            QiNiu.uploadImage(image, progressHandler: { (key:String!, progress:Float) in
+                if Int(progress) == 1{
+                    headerView.headImage = image
+                }
+                }, successHandler: { (url) in
+                    headerView.refreshWithMask(true)
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                person.headImg = url
+                                if let modifyResult = PersonDetailBL.modify(person) {
+                                    if modifyResult.headImg != ""{
+                                        NSNotificationCenter.defaultCenter().postNotificationName(ModifyHeadImageNotification, object: NSNumber.init(bool: true))
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }, failureHandler: { (error) in
+                    headerView.removeMask()
+            })
         }
         picker.dismissViewControllerAnimated(true, completion: nil)
     }

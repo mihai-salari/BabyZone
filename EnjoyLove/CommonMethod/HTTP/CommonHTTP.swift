@@ -8,33 +8,135 @@
 
 import UIKit
 
-let baseEnjoyLoveUrl = "http://123.56.133.212:8080/xiangai-api"
+private class QiNiuUploadHelper:NSObject{
+    var singleSuccessHandler:((url:String)->())?
+    var singleFailureBlock:((error:String)->())?
+    static var shared:QiNiuUploadHelper{
+        struct Helper{
+            static var pred:dispatch_once_t = 0
+            static var dao:QiNiuUploadHelper? = nil
+        }
+        
+        dispatch_once(&Helper.pred) {
+            Helper.dao = QiNiuUploadHelper()
+        }
+        return Helper.dao!
+    }
+    
+}
 
+let baseEnjoyLoveUrl = "http://123.56.133.212:8080/xiangai-api"
 
 /// 七牛请求接口
 private let QiNiuUrl = baseEnjoyLoveUrl + "/api/getQiniuToken"
 //MARK:________________________通用接口___________________________
 /// 七牛接口数据
+private let QiNiuDomainName = "QINIUDOMAINNAME"
 class QiNiu: NSObject {
     
-    class func sendAsyncQiNiu(completionHandler:((errorCode:String?, msg:String?)->())?){
+    private class func sendAsyncQiNiu(completionHandler:((token:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(QiNiuUrl, parameters: nil, success: { (dataTask, responseObject) in
             if let response = responseObject{
-                
-                let errorCode = format(response["errorCode"])
-                let msg = format(response["msg"])
                 if let data = response["data"] as? [String:NSObject]{
-                    NSUserDefaults.standardUserDefaults().setObject(format("\(data["token"])"), forKey: QiNiuToken)
-                    NSUserDefaults.standardUserDefaults().setObject(format("\(data["qiNiuDomainName"])"), forKey: QiNiuDomainName)
+                    NSUserDefaults.standardUserDefaults().setObject(format(data["qiNiuDomainName"]), forKey: QiNiuDomainName)
+                    if let handle = completionHandler{
+                        handle(token: format(data["token"]))
+                    }
+                }else{
+                    if let handle = completionHandler{
+                        handle(token: nil)
+                    }
                 }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
-                }
+                
             }
             }) { (dataTask, error) in
                 if let handle = completionHandler{
-                    handle(errorCode: nil, msg: error?.localizedDescription)
+                    handle(token: nil)
                 }
+        }
+    }
+    
+    class func qiNiuDomain()->String{
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey(QiNiuDomainName) as? String {
+            return obj
+        }
+        return ""
+    }
+    
+    //图片命名
+    private class func dateTimeString()->String{
+        let formatter = NSDateFormatter.init()
+        formatter.dateFormat = "yyyy-MM-dd+HH:mm:ss"
+        return formatter.stringFromDate(NSDate.init())
+    }
+    //单图片上传
+    class func uploadImage(image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String)->())?, failureHandler:((error:String)->())?){
+        QiNiu.sendAsyncQiNiu { (token) in
+            if let tk = token{
+                if let imageData = UIImageJPEGRepresentation(image, 0.01){
+                    let fileName = "\(QiNiu.dateTimeString())_pic.png"
+                    let opt = QNUploadOption.init(mime: nil, progressHandler: progressHandler, params: nil, checkCrc: false, cancellationSignal: nil)
+                    
+                    let uploadManager = QNUploadManager.init()
+                    uploadManager.putData(imageData, key: fileName, token: tk, complete: { (responseInfo:QNResponseInfo!, key:String!, resp:[NSObject : AnyObject]!) in
+                        if responseInfo.statusCode == 200 && resp != nil{
+                            if let respKey = resp["key"] as? String{
+                                let url = "\(QiNiu.qiNiuDomain())\(respKey)"
+                                if let success = successHandler{
+                                    success(url: url)
+                                }
+                            }else{
+                                if let failuer = failureHandler{
+                                    failuer(error: "获取图片失败")
+                                }
+                            }
+                        }
+                        }, option: opt)
+                }else{
+                    if let failuer = failureHandler{
+                        failuer(error: "压缩图片出错")
+                    }
+                }
+            }else{
+                if let failuer = failureHandler{
+                    failuer(error: "上传token出错")
+                }
+            }
+        }
+    }
+    
+    class func uploadImages(images:[UIImage], progress:((progress:CGFloat)->())?, successHandler:((urls:[String])->())?, failureHandler:((error:String)->())?){
+        var urlArray:[String] = []
+        var totalProgress:CGFloat = 0
+        let partProgress:CGFloat = 1.0 / CGFloat(images.count)
+        var currentIndex = 0
+        QiNiuUploadHelper.shared.singleFailureBlock = { (error) in
+            if let failure = failureHandler {
+                failure(error: "上传失败")
+            }
+            return
+        }
+        
+        QiNiuUploadHelper.shared.singleSuccessHandler = { (url) in
+            urlArray.append(url)
+            totalProgress += partProgress
+            if let pro = progress {
+                pro(progress: totalProgress)
+            }
+            currentIndex += 1
+            if urlArray.count == images.count {
+                if let success = successHandler {
+                    success(urls: urlArray)
+                }
+                return
+            }else{
+                if currentIndex < images.count {
+                    QiNiu.uploadImage(images[currentIndex], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
+                }
+            }
+        }
+        if images.count > 0 {
+            QiNiu.uploadImage(images[0], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
         }
     }
 }

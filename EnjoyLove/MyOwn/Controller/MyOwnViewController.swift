@@ -27,6 +27,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.navigationBarItem(title: "我的", leftSel: nil, rightSel: nil)
         self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyHeadNotification(_:)), name: ModifyHeadImageNotification, object: nil)
     }
     
     override func viewDidLoad() {
@@ -40,6 +41,11 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     private func initializeTableView(){
@@ -320,8 +326,12 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         }
     }
     
-    func configClick() -> Void {
-        print("设置")
+    func modifyHeadNotification(note:NSNotification) -> Void {
+        if let obj = note.object as? NSNumber {
+            if obj.boolValue == true {
+                self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+            }
+        }
     }
     
     /*

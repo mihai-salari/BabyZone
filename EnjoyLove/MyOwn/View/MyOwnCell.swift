@@ -53,48 +53,48 @@ class MyOwnCell: UITableViewCell {
     func refreshHeaderCell(model:MyOwnHeader, completionHandler:(()->())?) -> Void {
         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
             if let login = LoginBL.find(nil, key: phone){
-                let person = PersonDetailBL.find(nil, key: login.userId)
-                self.headerButton = UIButton.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
-                self.headerButton.layer.cornerRadius = self.contentView.frame.height * (1 / 2.5) / 2
-                self.headerButton.layer.masksToBounds = true
-                self.headerButton.setImage(person.headImg == "" ?UIImage.imageWithName("mamaHeader.png") :UIImage.imageWithName(person.headImg), forState: .Normal)
-                self.contentView.addSubview(self.headerButton)
-                
-                self.headerNickNameLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(self.headerButton.frame) + leftMargin, CGRectGetMidY(self.headerButton.frame) - 15, CGRectGetWidth(textRect(model.nickName, fontSize: 16, size: CGSize(width: textWidth, height: 10))), CGRectGetHeight(self.headerButton.frame) / 2))
-                self.headerNickNameLabel.text = person.nickName == "" ? model.nickName : person.nickName
-                self.headerNickNameLabel.font = UIFont.boldSystemFontOfSize(15)
-                self.contentView.addSubview(self.headerNickNameLabel)
-                
-                self.headerDescLabel = UILabel.init(frame: CGRect(x: self.headerNickNameLabel.frame.minX, y: self.headerButton.frame.midY, width: textRect(model.desc, fontSize: 13, size: CGSize(width: textWidth, height: self.headerNickNameLabel.frame.height)).size.width, height: self.headerNickNameLabel.frame.height))
-                self.headerDescLabel.font = UIFont.systemFontOfSize(12)
-                self.headerDescLabel.text = person.userSign == "" ? model.desc : person.userSign
-                self.headerDescLabel.textColor = UIColor.lightGrayColor()
-                self.contentView.addSubview(self.headerDescLabel)
-                
-                let editButton = HMButton.init(frame: CGRectMake(ScreenWidth - 2 * editButtonWidth, self.headerNickNameLabel.frame.maxY - editButtionWidth, editButtionWidth, editButtionWidth))
-                editButton.setImage(UIImage.imageWithName("myOwnEdit.png"), forState: .Normal)
-                editButton.addTarget(self, action: #selector(MyOwnCell.editDescription), forControlEvents: .TouchUpInside)
-                self.contentView.addSubview(editButton)
-                
-                
-                let postView = self.numberAndItem(CGRectMake(0, CGRectGetHeight(frame) / 2.5, CGRectGetWidth(frame) / 4, CGRectGetHeight(frame) / 2), num: model.postNum, item: "帖子")
-                self.addSubview(postView)
-                
-                let careView = self.numberAndItem(CGRectMake(CGRectGetMaxX(postView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.careNum, item: "关注")
-                self.contentView.addSubview(careView)
-                
-                let fansView = self.numberAndItem(CGRectMake(CGRectGetMaxX(careView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.fansNum, item: "粉丝")
-                self.contentView.addSubview(fansView)
-                
-                let collectionView = self.numberAndItem(CGRectMake(CGRectGetMaxX(fansView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.collectionNum, item: "收藏")
-                self.contentView.addSubview(collectionView)
-                
-                let tailSeparatorLine = UIView.init(frame: CGRectMake(0, CGRectGetHeight(self.contentView.frame) - 0.5, CGRectGetWidth(self.contentView.frame), 0.5))
-                tailSeparatorLine.backgroundColor = UIColor.lightGrayColor()
-                self.contentView.addSubview(tailSeparatorLine)
-                
-                self.editHandler = completionHandler
-                
+                if let person = PersonDetailBL.find(nil, key: login.userId) {
+                    self.headerButton = UIButton.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
+                    self.headerButton.layer.cornerRadius = self.contentView.frame.height * (1 / 2.5) / 2
+                    self.headerButton.layer.masksToBounds = true
+                    self.headerButton.setImage(person.headImg == "" ?UIImage.imageWithName("mamaHeader.png") :UIImage.imageWithName(person.headImg), forState: .Normal)
+                    self.contentView.addSubview(self.headerButton)
+                    
+                    self.headerNickNameLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(self.headerButton.frame) + leftMargin, CGRectGetMidY(self.headerButton.frame) - 15, CGRectGetWidth(textRect(model.nickName, fontSize: 16, size: CGSize(width: textWidth, height: 10))), CGRectGetHeight(self.headerButton.frame) / 2))
+                    self.headerNickNameLabel.text = person.nickName == "" ? model.nickName : person.nickName
+                    self.headerNickNameLabel.font = UIFont.boldSystemFontOfSize(15)
+                    self.contentView.addSubview(self.headerNickNameLabel)
+                    
+                    self.headerDescLabel = UILabel.init(frame: CGRect(x: self.headerNickNameLabel.frame.minX, y: self.headerButton.frame.midY, width: textRect(model.desc, fontSize: 13, size: CGSize(width: textWidth, height: self.headerNickNameLabel.frame.height)).size.width, height: self.headerNickNameLabel.frame.height))
+                    self.headerDescLabel.font = UIFont.systemFontOfSize(12)
+                    self.headerDescLabel.text = person.userSign == "" ? model.desc : person.userSign
+                    self.headerDescLabel.textColor = UIColor.lightGrayColor()
+                    self.contentView.addSubview(self.headerDescLabel)
+                    
+                    let editButton = HMButton.init(frame: CGRectMake(ScreenWidth - 2 * editButtonWidth, self.headerNickNameLabel.frame.maxY - editButtionWidth, editButtionWidth, editButtionWidth))
+                    editButton.setImage(UIImage.imageWithName("myOwnEdit.png"), forState: .Normal)
+                    editButton.addTarget(self, action: #selector(MyOwnCell.editDescription), forControlEvents: .TouchUpInside)
+                    self.contentView.addSubview(editButton)
+                    
+                    
+                    let postView = self.numberAndItem(CGRectMake(0, CGRectGetHeight(frame) / 2.5, CGRectGetWidth(frame) / 4, CGRectGetHeight(frame) / 2), num: model.postNum, item: "帖子")
+                    self.addSubview(postView)
+                    
+                    let careView = self.numberAndItem(CGRectMake(CGRectGetMaxX(postView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.careNum, item: "关注")
+                    self.contentView.addSubview(careView)
+                    
+                    let fansView = self.numberAndItem(CGRectMake(CGRectGetMaxX(careView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.fansNum, item: "粉丝")
+                    self.contentView.addSubview(fansView)
+                    
+                    let collectionView = self.numberAndItem(CGRectMake(CGRectGetMaxX(fansView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.collectionNum, item: "收藏")
+                    self.contentView.addSubview(collectionView)
+                    
+                    let tailSeparatorLine = UIView.init(frame: CGRectMake(0, CGRectGetHeight(self.contentView.frame) - 0.5, CGRectGetWidth(self.contentView.frame), 0.5))
+                    tailSeparatorLine.backgroundColor = UIColor.lightGrayColor()
+                    self.contentView.addSubview(tailSeparatorLine)
+                    
+                    self.editHandler = completionHandler
+                }
             }
         }
     }

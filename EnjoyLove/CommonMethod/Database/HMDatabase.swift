@@ -281,7 +281,7 @@ class PersonDetail : NSObject ,NSCoding{
         self.userId = ""
         self.userName = ""
         self.nickName = ""
-        self.sex = ""
+        self.sex = ""//1：男 2：女
         self.headImg = ""
         self.mobile = ""
         self.breedStatus = ""
@@ -493,9 +493,9 @@ private class PersonDetailDAO: NSObject{
         return false
     }
     
-    func find(detail:PersonDetail?, key:String = "") -> PersonDetail {
+    func find(detail:PersonDetail?, key:String = "") -> PersonDetail? {
         let array = self.findAll()
-        var result = PersonDetail()
+        var result:PersonDetail?
         for note in array {
             let userId = detail == nil ? "" : note.userId
             let baseKey = key == "" ? userId : key
@@ -519,12 +519,12 @@ class PersonDetailBL: NSObject {
         return PersonDetailDAO.shared.findAll()
     }
     
-    class func modify(detail:PersonDetail, key:String = "") ->[PersonDetail]{
+    class func modify(detail:PersonDetail, key:String = "") ->PersonDetail?{
         PersonDetailDAO.shared.modify(detail, key: key)
-        return PersonDetailDAO.shared.findAll()
+        return PersonDetailDAO.shared.find(detail)
     }
     
-    class func find(detail:PersonDetail?, key:String = "") ->PersonDetail{
+    class func find(detail:PersonDetail?, key:String = "") ->PersonDetail?{
         return PersonDetailDAO.shared.find(detail, key: key)
     }
     

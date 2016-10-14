@@ -23,6 +23,14 @@ class EditView: UIView {
 
 class EditHeaderView: UIView {
     
+    var headImage:UIImage!{
+        didSet{
+            if let imgView = self.headerImageView {
+                imgView.image = headImage
+            }
+        }
+    }
+    
     private var headerImageView:UIImageView!
     private var loadView:UIView!
     private var tipView:UIView!
@@ -35,11 +43,6 @@ class EditHeaderView: UIView {
         
     }
     
-    func refreshImageView(image:UIImage) -> Void {
-        if let imageView = self.headerImageView {
-            imageView.image = image
-        }
-    }
     
     func refreshWithMask(loaded:Bool) -> Void {
         if self.loadView != nil {

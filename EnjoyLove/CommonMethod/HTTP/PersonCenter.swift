@@ -228,8 +228,8 @@ extension PersonDetail {
      userSign		string		个性签名
 
      */
-    class func sendAsyncChangePersonInfo(nickName:String,sex:String,headImg:String,motherStatus:String,motherStatusDate:String,motherBirthDate:String,provinceCode:String,cityCode:String, userSign:String,completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ModifyPersonInfoUrl, parameters: ["nickName":nickName,"sex":sex,"headImg":headImg,"breedStatus":motherStatus,"breedStatusDate":motherStatusDate,"breedBirthDate":motherBirthDate,"provinceCode":provinceCode,"cityCode":cityCode, "userSign":userSign], success: { (dataTask, responseObject) in
+    class func sendAsyncChangePersonInfo(nickName:String,sex:String,headImg:String,breedStatus:String,breedStatusDate:String,breedBirthDate:String,provinceCode:String,cityCode:String, userSign:String,completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ModifyPersonInfoUrl, parameters: ["nickName":nickName,"sex":sex,"headImg":headImg,"breedStatus":breedStatus,"breedStatusDate":breedStatusDate,"breedBirthDate":breedBirthDate,"provinceCode":provinceCode,"cityCode":cityCode, "userSign":userSign], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])

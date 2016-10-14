@@ -81,6 +81,16 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         model = PersonEditInfo(title: "宝宝", detail: detailData)
         self.personInfoData.append(model)
         
+        BabyList.sendAsyncBabyList { [weak self](errorCode, msg) in
+            if let weakSelf = self{
+                if let code = errorCode{
+                    if code == PASSCODE{
+                        
+                    }
+                }
+            }
+        }
+        
         self.personInfoTable = UITableView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight - 10), style: .Grouped)
         self.personInfoTable.dataSource = self
         self.personInfoTable.delegate = self

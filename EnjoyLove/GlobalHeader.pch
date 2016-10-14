@@ -19,6 +19,8 @@
 #define HMTOKENKEY                          @"TOKENKEY"
 #define ALLORIENTATIONSKEY                  @"ALLORIENTATIONS"
 #define USERPHONEKEY                        @"USERPHONEKEY"
+#define QIUNIUTOKEN                         @"QIUNIUTOKEN"
+#define QINIUDOMAINNAME                     @"QINIUDOMAINNAME"
 
 #define HMLOG
 #ifdef HMLOG

@@ -61,13 +61,13 @@ class MyOwnCell: UITableViewCell {
                 self.contentView.addSubview(self.headerButton)
                 
                 self.headerNickNameLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(self.headerButton.frame) + leftMargin, CGRectGetMidY(self.headerButton.frame) - 15, CGRectGetWidth(textRect(model.nickName, fontSize: 16, size: CGSize(width: textWidth, height: 10))), CGRectGetHeight(self.headerButton.frame) / 2))
-                self.headerNickNameLabel.text = model.nickName
+                self.headerNickNameLabel.text = person.nickName == "" ? model.nickName : person.nickName
                 self.headerNickNameLabel.font = UIFont.boldSystemFontOfSize(15)
                 self.contentView.addSubview(self.headerNickNameLabel)
                 
                 self.headerDescLabel = UILabel.init(frame: CGRect(x: self.headerNickNameLabel.frame.minX, y: self.headerButton.frame.midY, width: textRect(model.desc, fontSize: 13, size: CGSize(width: textWidth, height: self.headerNickNameLabel.frame.height)).size.width, height: self.headerNickNameLabel.frame.height))
                 self.headerDescLabel.font = UIFont.systemFontOfSize(12)
-                self.headerDescLabel.text = model.desc
+                self.headerDescLabel.text = person.userSign == "" ? model.desc : person.userSign
                 self.headerDescLabel.textColor = UIColor.lightGrayColor()
                 self.contentView.addSubview(self.headerDescLabel)
                 

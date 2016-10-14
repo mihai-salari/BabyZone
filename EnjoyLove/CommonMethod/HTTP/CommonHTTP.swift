@@ -16,28 +16,24 @@ private let QiNiuUrl = baseEnjoyLoveUrl + "/api/getQiniuToken"
 //MARK:________________________通用接口___________________________
 /// 七牛接口数据
 class QiNiu: NSObject {
-    var errorCode = ""
-    var msg = ""
-    var dataToken = ""
-    var dataQiNiuDomainName = ""
     
-    class func sendAsyncQiNiu(completionHandler:((qiniu:QiNiu!)->())?){
+    class func sendAsyncQiNiu(completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(QiNiuUrl, parameters: nil, success: { (dataTask, responseObject) in
             if let response = responseObject{
-                let qiniu = QiNiu()
-                qiniu.errorCode = format(response["token"])
-                qiniu.msg = format(response["qiNiuDomainName"])
+                
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
                 if let data = response["data"] as? [String:NSObject]{
-                    qiniu.dataToken = format(data["token"])
-                    qiniu.dataQiNiuDomainName = format(data["qiNiuDomainName"])
+                    NSUserDefaults.standardUserDefaults().setObject(format("\(data["token"])"), forKey: QiNiuToken)
+                    NSUserDefaults.standardUserDefaults().setObject(format("\(data["qiNiuDomainName"])"), forKey: QiNiuDomainName)
                 }
                 if let handle = completionHandler{
-                    handle(qiniu: qiniu)
+                    handle(errorCode: errorCode, msg: msg)
                 }
             }
             }) { (dataTask, error) in
                 if let handle = completionHandler{
-                    handle(qiniu: nil)
+                    handle(errorCode: nil, msg: error?.localizedDescription)
                 }
         }
     }

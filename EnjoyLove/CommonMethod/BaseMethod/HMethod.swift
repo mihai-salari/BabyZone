@@ -28,6 +28,9 @@ let SignKey = "SIGNKEY"
 let AllowOrientationKey = "ALLORIENTATIONS"
 let UserPhoneKey = "USERPHONEKEY"
 let PASSCODE = "0000"
+let QiNiuToken = "QIUNIUTOKEN"
+let QiNiuDomainName = "QINIUDOMAINNAME"
+
 
 
 

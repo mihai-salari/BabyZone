@@ -213,6 +213,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerEditedImage], let headerView = self.headerEditView {
+            
             headerView.refreshImageView(image as! UIImage)
         }
         picker.dismissViewControllerAnimated(true, completion: nil)

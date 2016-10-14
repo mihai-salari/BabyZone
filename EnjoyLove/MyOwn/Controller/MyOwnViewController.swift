@@ -90,15 +90,12 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         
         PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
             if let weakSelf = self{
-                print("code \(errorCode)")
-                weakSelf.myOwnTable.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                if let code = errorCode{
+                    if code == PASSCODE{
+                        weakSelf.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+                    }
+                }
                 
-            }
-        }
-        
-        BabyList.sendAsyncBabyList { [weak self](errorCode, msg) in
-            if let weakSelf = self{
-                print("error code \(errorCode)")
             }
         }
     }

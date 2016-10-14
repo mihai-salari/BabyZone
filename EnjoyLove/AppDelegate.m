@@ -107,6 +107,10 @@
             }
         }];
     }
+    [QiNiu sendAsyncQiNiu:^(NSString * _Nullable errorCode, NSString * _Nullable msg) {
+        NSLog(@"qiniu token %@",[[NSUserDefaults standardUserDefaults] objectForKey:QIUNIUTOKEN]);
+        NSLog(@"qiniu domain %@",[[NSUserDefaults standardUserDefaults] objectForKey:QINIUDOMAINNAME]);
+    }];
 }
 
 #pragma mark - SETTER AND GETTER

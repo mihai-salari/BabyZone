@@ -45,6 +45,8 @@ struct PersonEidtDetail {
     var subItem = ""
     var isHeader:Bool!
     var eidtType:Int!
+    var babyId:String = ""
+    
 }
 
 struct EditPersonInfo {

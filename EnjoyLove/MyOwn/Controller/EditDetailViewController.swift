@@ -169,6 +169,11 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.view.addSubview(editStatusView)
         case 6:
             self.navigationBarItem(false, title: self.editModel.mainTitle, leftSel: nil, rightSel: nil)
+            let babyId = editModel.babyId
+            var babyModel:BabyList!
+            if let obj = BabyListBL.find(nil, key: babyId) {
+                babyModel = obj
+            }
             var babyData:[BabyInfo] = []
             var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: "宝宝1", infoType: 0)
             babyData.append(baby)
@@ -176,6 +181,9 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             babyData.append(baby)
             baby = BabyInfo(mainItem: "年龄", subItem: "1998.07.12", infoType: 2)
             babyData.append(baby)
+            
+            
+            
             self.babyEditView = EditBabyView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), baby: babyData, completionHandler: { [weak self] (baby, indexPath) in
                 if let weakSelf = self{
                     weakSelf.babyInfo = baby

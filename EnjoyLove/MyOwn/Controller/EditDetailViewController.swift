@@ -303,7 +303,9 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage, let headerView = self.headerEditView {
             headerView.refreshWithMask(false)
-            QiNiu.uploadImage(image, progressHandler: { (key:String!, progress:Float) in
+            //baby : http://oco9loo2g.bkt.clouddn.com/2016-10-15+14:56:55_pic.png
+            //xiangai : http://of0k04nl6.bkt.clouddn.com/image
+            QiNiu.uploadImage("baby",image: image, progressHandler: { (key:String!, progress:Float) in
                 if Int(progress) == 1{
                     headerView.headImage = image
                 }

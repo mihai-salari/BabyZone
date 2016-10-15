@@ -10,4 +10,7 @@
 
 @interface QiNiuExtensionToken : NSObject
 
++ (QiNiuExtensionToken *)shared;
+- (NSString *)makeTokenWithScope:(NSString *)scope;
+
 @end

@@ -29,16 +29,13 @@ let AllowOrientationKey = "ALLORIENTATIONS"
 let UserPhoneKey = "USERPHONEKEY"
 let PASSCODE = "0000"
 
-
-
-
-//let SessionIdKey  = "SESSIONIDKEY"
-
-//let HMPasswordKey = "HMPASSWORDKEY"
-//let HMMD5PasswordKey = "HMMD5PASSWORDKEY"
-//let HMUserNameKey = "USERNAME"
-//let HMUserIdKey = "userId"
-
+#if DEBUG
+let QiNiuScope = "baby"
+#else
+let QiNiuScope = "xiangai"
+#endif
+let QiNiuBabyImageUrl = "http://oco9loo2g.bkt.clouddn.com/"
+let QiNiuXiangAiImageUrl = "http://of0k04nl6.bkt.clouddn.com/"
 
 
 

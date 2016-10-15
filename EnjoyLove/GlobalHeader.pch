@@ -27,6 +27,12 @@
 #define NSLog(...) {}
 #endif
 
+#if DEBUG
+#define QINIUSCOPE @"baby"
+#else
+#define QINIUSCOPE @"xiangai"
+#endif
+
 #define SCREEN_WIDTH    [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT   [UIScreen mainScreen].bounds.size.height
 #define NAVIGATION_BAR_HEIGHT  64

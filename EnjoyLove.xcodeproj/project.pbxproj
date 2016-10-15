@@ -51,6 +51,8 @@
 		27020FB61DB1F9E600D3BDBE /* QiNiuExtensionToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FB51DB1F9E600D3BDBE /* QiNiuExtensionToken.m */; };
 		27020FBC1DB1FAF300D3BDBE /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FB91DB1FAF300D3BDBE /* GTMBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27020FC41DB1FB3000D3BDBE /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FC11DB1FB3000D3BDBE /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		27020FD21DB21C3A00D3BDBE /* BabyZoneConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */; };
+		27020FD41DB21D0E00D3BDBE /* BabyZoneConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -583,6 +585,8 @@
 		27020FBA1DB1FAF300D3BDBE /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
 		27020FC01DB1FB3000D3BDBE /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		27020FC11DB1FB3000D3BDBE /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
+		27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BabyZoneConfig.plist; sourceTree = "<group>"; };
+		27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyZoneConfig.swift; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -1424,6 +1428,15 @@
 				27020FC11DB1FB3000D3BDBE /* JSONKit.m */,
 			);
 			path = JSONKit;
+			sourceTree = "<group>";
+		};
+		27020FD01DB21C1B00D3BDBE /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */,
+				27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		271475201D74007A003CFC5F /* InfoImage */ = {
@@ -2557,6 +2570,7 @@
 		27D003351D6D99E300B62A61 /* CommonMethod */ = {
 			isa = PBXGroup;
 			children = (
+				27020FD01DB21C1B00D3BDBE /* Config */,
 				27020F1E1DB074E600D3BDBE /* QINIU */,
 				27020F181DAC68CC00D3BDBE /* Database */,
 				27830C1F1D9A1FB40036E2BC /* Video */,
@@ -3023,6 +3037,7 @@
 				271475EA1D7522F3003CFC5F /* preStatus.png in Resources */,
 				2718BE031D819F57002BE29D /* BabyDetailStatus.png in Resources */,
 				27830D331D9B685C0036E2BC /* music_stop.png in Resources */,
+				27020FD21DB21C3A00D3BDBE /* BabyZoneConfig.plist in Resources */,
 				27F28D271D6FF4A5005E382D /* myOwnEdit.png in Resources */,
 				27830D351D9B686D0036E2BC /* music_play.png in Resources */,
 				27F28D351D6FF4ED005E382D /* tool_camera.png in Resources */,
@@ -3189,6 +3204,7 @@
 				27188E111D863A3500797D41 /* UIViewController+DXPhotoPicker.swift in Sources */,
 				27830CF81D9A33610036E2BC /* FMDatabase+InMemoryOnDiskIO.m in Sources */,
 				27F28D501D73D369005E382D /* HMCirclePercentView.m in Sources */,
+				27020FD41DB21D0E00D3BDBE /* BabyZoneConfig.swift in Sources */,
 				27020FB61DB1F9E600D3BDBE /* QiNiuExtensionToken.m in Sources */,
 				27020F1D1DAC68F200D3BDBE /* HMDatabase.swift in Sources */,
 				27830C801D9A24900036E2BC /* RtspInterface.mm in Sources */,

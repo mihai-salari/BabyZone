@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>QiNiuDomain</key>
+	<string>http://oco9loo2g.bkt.clouddn.com/</string>
+	<key>xiangaiScope</key>
+	<string>xiangai</string>
+	<key>babyScope</key>
+	<string>baby</string>
+	<key>UserPhoneKey</key>
+	<string>USERPHONEKEY</string>
+	<key>AllOrientation</key>
+	<string>ALLORIENTATIONS</string>
+	<key>signKey</key>
+	<string>SIGNKEY</string>
+	<key>appTokenKey</key>
+	<string>APPTOKENKEY</string>
+	<key>pushTokenKey</key>
+	<string>TOKENKEY</string>
+	<key>sessionId</key>
+	<string>sessionId</string>
+	<key>sign</key>
+	<string>sign</string>
+	<key>appToken</key>
+	<string>appToken</string>
+	<key>passCode</key>
+	<string>0000</string>
+	<key>scope</key>
+	<string>baby</string>
+	<key>QiNiuXiangAiDomain</key>
+	<string>http://of0k04nl6.bkt.clouddn.com/</string>
+	<key>QiNiuBabyDomain</key>
+	<string>http://oco9loo2g.bkt.clouddn.com/</string>
+</dict>
+</plist>

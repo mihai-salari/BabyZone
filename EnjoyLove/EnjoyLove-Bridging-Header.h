@@ -45,3 +45,4 @@
 #import "P2PCInterface.h"
 #import "QiniuSDK.h"
 #import "QNUpToken.h"
+#import "QiNiuExtensionToken.h"

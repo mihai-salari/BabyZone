@@ -39,7 +39,6 @@ class QiNiu: NSObject {
             if let response = responseObject{
                 if let data = response["data"] as? [String:NSObject]{
                     NSUserDefaults.standardUserDefaults().setObject(format(data["qiNiuDomainName"]), forKey: QiNiuDomainName)
-                    print("qi niu domain " + format(data["qiNiuDomainName"]))
                     if let handle = completionHandler{
                         handle(token: format(data["token"]))
                     }
@@ -71,7 +70,7 @@ class QiNiu: NSObject {
         return formatter.stringFromDate(NSDate.init())
     }
     //单图片上传
-    class func uploadImage(image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String)->())?, failureHandler:((error:String)->())?){
+    class func uploadImage(scope:String = "", image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String)->())?, failureHandler:((error:String)->())?){
         QiNiu.sendAsyncQiNiu { (token) in
             if let tk = token{
                 if let imageData = UIImageJPEGRepresentation(image, 0.01){
@@ -80,7 +79,6 @@ class QiNiu: NSObject {
                     
                     let uploadManager = QNUploadManager.init()
                     uploadManager.putData(imageData, key: fileName, token: tk, complete: { (responseInfo:QNResponseInfo!, key:String!, resp:[NSObject : AnyObject]!) in
-                        print("reponse info \(responseInfo) \n resp \(resp)")
                         if responseInfo.statusCode == 200 && resp != nil{
                             if let respKey = resp["key"] as? String{
                                 let url = "\(QiNiu.qiNiuDomain())\(respKey)"
@@ -91,6 +89,24 @@ class QiNiu: NSObject {
                                 if let failuer = failureHandler{
                                     failuer(error: "获取图片失败")
                                 }
+                            }
+                        }else{
+                            if scope != ""{
+                                let uploadToken = QiNiuExtensionToken.shared().makeTokenWithScope(scope)
+                                uploadManager.putData(imageData, key: fileName, token: uploadToken, complete: { (responseInfo:QNResponseInfo!, key:String!, resp:[NSObject : AnyObject]!) in
+                                    if responseInfo.statusCode == 200 && resp != nil{
+                                        if let respKey = resp["key"] as? String{
+                                            let url = "\(QiNiu.qiNiuDomain())\(respKey)"
+                                            if let success = successHandler{
+                                                success(url: url)
+                                            }
+                                        }else{
+                                            if let failuer = failureHandler{
+                                                failuer(error: "获取图片失败")
+                                            }
+                                        }
+                                    }
+                                    }, option: opt)
                             }
                         }
                         }, option: opt)
@@ -133,12 +149,12 @@ class QiNiu: NSObject {
                 return
             }else{
                 if currentIndex < images.count {
-                    QiNiu.uploadImage(images[currentIndex], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
+                    QiNiu.uploadImage(image: images[currentIndex], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
                 }
             }
         }
         if images.count > 0 {
-            QiNiu.uploadImage(images[0], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
+            QiNiu.uploadImage(image: images[0], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
         }
     }
 }

@@ -201,6 +201,7 @@ extension PersonDetail {
                         detail.provinceCode = format(data["provinceCode"])
                         detail.city = format(data["city"])
                         detail.cityCode = format(data["cityCode"])
+                        detail.userSign = format(data["userSign"])
                         detail.lastLoginTime = format(data["lastLoginTime"])
                         PersonDetailBL.insert(detail)
                     }
@@ -233,6 +234,24 @@ extension PersonDetail {
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
+                if errorCode == "0000"{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                person.nickName = nickName
+                                person.sex = sex
+                                person.headImg = headImg
+                                person.breedStatus = breedStatus
+                                person.breedStatusDate = breedStatusDate
+                                person.breedBirthDate = breedBirthDate
+                                person.provinceCode = provinceCode
+                                person.cityCode = cityCode
+                                person.userSign = userSign
+                                PersonDetailBL.modify(person)
+                            }
+                        }
+                    }
+                }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
                 }
@@ -297,7 +316,7 @@ class ResetPassword: NSObject {
     }
 }
 
-
+//MARK___宝宝___
 private let babyListUrl = baseEnjoyLoveUrl + "/api/user/babyList"
 private let addBabyUrl = baseEnjoyLoveUrl + ""
 private let modifyBabyUrl = baseEnjoyLoveUrl + ""

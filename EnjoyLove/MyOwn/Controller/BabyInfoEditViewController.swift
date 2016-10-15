@@ -10,16 +10,18 @@ import UIKit
 
 protocol BabyEditDelegate{
     func fetchBabyInfo(baby:BabyInfo)
+    func sexStatus(status:Int)
 }
 
 class BabyInfoEditViewController: BaseViewController{
 
     var babyModel:BabyInfo!
     var editDelegate:BabyEditDelegate!
+    var sexStatus = -1
     private var birthdayButton:UIButton!
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+        self.automaticallyAdjustsScrollViewInsets = false
         self.navigationBarItem(false, title: babyModel.mainItem, leftSel: nil, rightSel: nil)
         
     }
@@ -45,10 +47,11 @@ class BabyInfoEditViewController: BaseViewController{
         case 1:
             self.navigationBarItem(false, title: "性别", leftSel: nil, rightSel: nil)
             
-            let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: Int(self.babyModel.subItem)!, completionHandler: { [weak self](sex, sexId) in
+            let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: self.sexStatus, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
                     if weakSelf.editDelegate != nil {
                         weakSelf.babyModel.subItem = sex
+                        weakSelf.editDelegate.sexStatus(Int(sexId) == nil ? -1 : Int(sexId)!)
                         weakSelf.editDelegate.fetchBabyInfo(weakSelf.babyModel)
                         weakSelf.navigationController?.popViewControllerAnimated(true)
                     }
@@ -69,8 +72,7 @@ class BabyInfoEditViewController: BaseViewController{
     
     
     func datePickerReturn(dateString: String!) {
-        let dates = dateString.componentsSeparatedByString("-")
-        self.babyModel.subItem = dates.joinWithSeparator(".")
+        self.babyModel.subItem = dateString
         self.birthdayButton.setTitle(self.babyModel.subItem, forState: .Normal)
         if self.editDelegate != nil {
             self.editDelegate.fetchBabyInfo(self.babyModel)

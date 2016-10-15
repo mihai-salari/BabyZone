@@ -10,6 +10,7 @@ import UIKit
 
 class SecurityViewController: BaseViewController,UITableViewDelegate,UITableViewDataSource {
 
+    var personDetail:PersonDetail!
     private var securityData:[SecurityAndAccount]!
     private var securityTable:UITableView!
     var finishedModifyHandler:(()->())?

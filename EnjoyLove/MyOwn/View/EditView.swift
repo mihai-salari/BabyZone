@@ -218,14 +218,18 @@ class EditSexView: UIView ,UITableViewDataSource,UITableViewDelegate{
     private var sexStatusTable:UITableView!
     private var selectedIndexPath:NSIndexPath!
     private var sexStatusData:[String]!
+    private var sexIndex:[Int]!
     private var currentStatus:Int = 0
+    
     
     init(frame: CGRect, isMale:Int, completionHandler:((sex:String, sexId:String)->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
         
         self.sexStatusData = ["男", "女"]
+        self.sexIndex = [1, 2]
         self.currentStatus = isMale
+        self.selectedIndexPath = NSIndexPath.init(forRow: -1, inSection: -1)
         self.sexStatusTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: CGFloat(self.sexStatusData.count) * 44), style: .Plain)
         self.sexStatusTable.separatorInset = UIEdgeInsetsZero
         self.sexStatusTable.layoutMargins = UIEdgeInsetsZero
@@ -254,7 +258,7 @@ class EditSexView: UIView ,UITableViewDataSource,UITableViewDelegate{
             resultCell.selectionStyle = .None
             let item = self.sexStatusData[indexPath.row]
             resultCell.textLabel?.text = item
-            if indexPath.row == self.currentStatus {
+            if self.sexIndex[indexPath.row] == self.currentStatus {
                 self.selectedIndexPath = indexPath
                 resultCell.tintColor = UIColor.hexStringToColor("#dc7190")
                 resultCell.accessoryType = .Checkmark
@@ -285,7 +289,7 @@ class EditSexView: UIView ,UITableViewDataSource,UITableViewDelegate{
                 case "女":
                     status = 2
                 default:
-                    break
+                    status = -1
                 }
                 handle(sex: self.sexStatusData[indexPath.row], sexId: "\(status)")
             }
@@ -304,7 +308,7 @@ class EditPregStatusView: UIView,UITableViewDelegate,UITableViewDataSource {
     init(frame: CGRect, status:Int, completionHandler:((status:String, statusId:String)->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
-        self.pregStatusData = ["备孕","怀孕","已有宝宝"]
+        self.pregStatusData = ["正常","备孕","怀孕","已有宝宝"]
         self.currentStatus = status
         
         self.pregStatusTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: CGFloat(self.pregStatusData.count) * 44), style: .Plain)
@@ -381,13 +385,16 @@ private let EditBabyTableViewCellId = "EditBabyTableViewCellId"
 class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
     private var babyTable:UITableView!
     private var babyData:[BabyInfo]!
+    private var addBaby:AddBaby!
     private var selectedHandler:((baby:BabyInfo, indexPath:NSIndexPath)->())?
     
     init(frame: CGRect, baby:[BabyInfo], completionHandler:((baby:BabyInfo, indexPath:NSIndexPath)->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
+        self.addBaby = AddBaby()
         self.babyData = baby
-        self.babyTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: upRateHeight(44) * CGFloat(baby.count)), style: .Plain)
+        self.babyTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 44 * CGFloat(baby.count)), style: .Plain)
+        self.babyTable.rowHeight = 44
         self.babyTable.scrollEnabled = false
         self.babyTable.delegate = self
         self.babyTable.dataSource = self
@@ -437,9 +444,6 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
         return cell!
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return upRateWidth(44)
-    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let model = self.babyData[indexPath.row]
@@ -449,10 +453,39 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
     }
     
     func reloadTableViewCell(indexPath:NSIndexPath, baby:BabyInfo) -> Void {
+        switch baby.infoType {
+        case 0:
+            self.addBaby.nickName = baby.subItem
+        case 1:
+            if baby.subItem == "男" {
+                self.addBaby.sex = "1"
+            }else if baby.subItem == "女"{
+                self.addBaby.sex = "2"
+            }
+        case 2:
+            self.addBaby.birthday = baby.subItem
+        default:
+            break
+        }
         if let tableView = self.babyTable {
             self.babyData[indexPath.row] = baby
             tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
         }
+    }
+    
+    func fetchAddBabyResult() -> AddBaby? {
+        if let baby = self.addBaby {
+            if baby.sex != "1" || baby.sex != "2" {
+                HUD.showText("请选择孩子的性别", onView: self)
+            }
+            if baby.birthday == "" {
+                HUD.showText("请填写孩子的生日", onView: self)
+            }
+            if (baby.sex == "1" || baby.sex == "2") && baby.birthday != "" {
+                return baby
+            }
+        }
+        return nil
     }
 }
 

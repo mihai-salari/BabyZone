@@ -115,6 +115,13 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                         model = PersonEditInfo(title: "宝宝", detail: detailData)
                         weakSelf.personInfoData.append(model)
                     }
+                }else{
+                    detailData = []
+                    detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7, babyId: "")
+                    detailData.append(detailModel)
+                    
+                    model = PersonEditInfo(title: "宝宝", detail: detailData)
+                    weakSelf.personInfoData.append(model)
                 }
                 if let personTable = weakSelf.personInfoTable{
                     personTable.reloadData()
@@ -127,7 +134,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         self.personInfoTable.delegate = self
         self.personInfoTable.separatorInset = UIEdgeInsetsZero
         self.personInfoTable.layoutMargins = UIEdgeInsetsZero
-        self.personInfoTable.tableHeaderView = UIView.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0.01))
         self.personInfoTable.registerClass(PersonInfoCell.self, forCellReuseIdentifier: PersionInfoTableViewCellId)
         self.view.addSubview(self.personInfoTable)
         
@@ -168,7 +174,10 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
+        if section == 1 {
+            return 30
+        }
+        return 0.001
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -213,6 +222,12 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             model.detail[self.personIndexPath.row] = editModel
             self.personInfoData[self.personIndexPath.section] = model
             tableView.reloadRowsAtIndexPaths([self.personIndexPath], withRowAnimation: .None)
+        }
+    }
+    
+    func reloadBabySection() {
+        if let personTable = self.personInfoTable {
+            personTable.reloadData()
         }
     }
     

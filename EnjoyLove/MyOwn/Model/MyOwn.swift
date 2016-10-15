@@ -76,6 +76,12 @@ struct BabyInfo {
     var infoType:Int!//0:姓名,1性别,2年龄
 }
 
+struct AddBaby {
+    var nickName = ""
+    var sex = ""
+    var birthday = ""
+}
+
 struct SecurityAndAccount {
     var title = ""
     var security:[Security]!

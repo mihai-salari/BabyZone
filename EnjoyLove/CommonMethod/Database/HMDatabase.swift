@@ -609,6 +609,7 @@ private class BabyListDAO:NSObject{
         return DAO.dao!
     }
     
+    
     func findAll() -> [BabyList] {
         var listData = [BabyList]()
         if let theData = NSData.init(contentsOfFile: BabyListArchiveFileName.filePath()) {
@@ -707,6 +708,7 @@ private class BabyListDAO:NSObject{
 }
 
 class BabyListBL: NSObject {
+    
     class func insert(detail:BabyList) -> [BabyList]{
         let result = BabyListDAO.shared.insert(detail)
         print("baby list result \(result)")

@@ -12,7 +12,7 @@ private let editButtionWidth:CGFloat = 40
 private let leftPadding:CGFloat = 20
 private let leftMargin:CGFloat = 10
 private let topPadding:CGFloat = upRateWidth(8)
-private let textWidth:CGFloat = 300
+private let textWidth:CGFloat = 200
 private let mainItemWidth:CGFloat = upRateWidth(100)
 private let subItemWidth:CGFloat = upRateWidth(200)
 private let editButtonWidth:CGFloat = upRateWidth(35)
@@ -54,6 +54,9 @@ class MyOwnCell: UITableViewCell {
         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
             if let login = LoginBL.find(nil, key: phone){
                 if let person = PersonDetailBL.find(nil, key: login.userId) {
+                    for subview in self.contentView.subviews {
+                        subview.removeFromSuperview()
+                    }
                     self.headerButton = UIButton.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
                     self.headerButton.layer.cornerRadius = self.contentView.frame.height * (1 / 2.5) / 2
                     self.headerButton.layer.masksToBounds = true
@@ -65,7 +68,7 @@ class MyOwnCell: UITableViewCell {
                     self.headerNickNameLabel.font = UIFont.boldSystemFontOfSize(15)
                     self.contentView.addSubview(self.headerNickNameLabel)
                     
-                    self.headerDescLabel = UILabel.init(frame: CGRect(x: self.headerNickNameLabel.frame.minX, y: self.headerButton.frame.midY, width: textRect(model.desc, fontSize: 13, size: CGSize(width: textWidth, height: self.headerNickNameLabel.frame.height)).size.width, height: self.headerNickNameLabel.frame.height))
+                    self.headerDescLabel = UILabel.init(frame: CGRect(x: self.headerNickNameLabel.frame.minX, y: self.headerButton.frame.midY, width: textRect(person.userSign == "" ? model.desc : person.userSign, fontSize: 13, size: CGSize(width: textWidth, height: self.headerNickNameLabel.frame.height)).size.width, height: self.headerNickNameLabel.frame.height))
                     self.headerDescLabel.font = UIFont.systemFontOfSize(12)
                     self.headerDescLabel.text = person.userSign == "" ? model.desc : person.userSign
                     self.headerDescLabel.textColor = UIColor.lightGrayColor()

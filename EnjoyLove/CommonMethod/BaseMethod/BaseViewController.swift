@@ -83,7 +83,7 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
     
 
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        if self.navigationController?.viewControllers.count == 1 {
+        if self.navigationController?.viewControllers.count == 0 {
             return false
         }
         return true

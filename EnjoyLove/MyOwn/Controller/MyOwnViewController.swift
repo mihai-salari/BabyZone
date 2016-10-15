@@ -27,9 +27,9 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.navigationBarItem(title: "我的", leftSel: nil, rightSel: nil)
         self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyHeadNotification(_:)), name: ModifyHeadImageNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyNickNameNote(_:)), name: ModifyNickNameImageNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyUserSignNote(_:)), name: ModifyUserSingNotification, object: nil)
+        if let table = self.myOwnTable {
+            table.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+        }
     }
     
     override func viewDidLoad() {
@@ -47,7 +47,6 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     private func initializeTableView(){
@@ -335,17 +334,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         }
     }
     
-    func modifyHeadNotification(note:NSNotification) -> Void {
-        self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-    }
     
-    func modifyNickNameNote(note:NSNotification) -> Void {
-        self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-    }
-    
-    func modifyUserSignNote(note:NSNotification) -> Void {
-        self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-    }
     
     /*
     // MARK: - Navigation

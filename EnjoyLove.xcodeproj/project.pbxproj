@@ -27,7 +27,7 @@
 		27020F901DB085AE00D3BDBE /* QNGetAddrInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F481DB085AE00D3BDBE /* QNGetAddrInfo.m */; };
 		27020F911DB085AE00D3BDBE /* QNHex.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F4A1DB085AE00D3BDBE /* QNHex.m */; };
 		27020F921DB085AE00D3BDBE /* QNIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F4C1DB085AE00D3BDBE /* QNIP.m */; };
-		27020F931DB085AE00D3BDBE /* QN_GTM_Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F501DB085AE00D3BDBE /* QN_GTM_Base64.m */; };
+		27020F931DB085AE00D3BDBE /* QN_GTM_Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F501DB085AE00D3BDBE /* QN_GTM_Base64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27020F941DB085AE00D3BDBE /* QNALAssetFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F521DB085AE00D3BDBE /* QNALAssetFile.m */; };
 		27020F951DB085AE00D3BDBE /* QNAsyncRun.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F541DB085AE00D3BDBE /* QNAsyncRun.m */; };
 		27020F961DB085AE00D3BDBE /* QNCrc32.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F561DB085AE00D3BDBE /* QNCrc32.m */; };
@@ -48,6 +48,9 @@
 		27020FA51DB085AE00D3BDBE /* QNUploadOption.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F7D1DB085AE00D3BDBE /* QNUploadOption.m */; };
 		27020FA61DB085AE00D3BDBE /* QNUpToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020F7F1DB085AE00D3BDBE /* QNUpToken.m */; };
 		27020FA81DB08D8A00D3BDBE /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 27020FA71DB08D8A00D3BDBE /* libresolv.tbd */; };
+		27020FB61DB1F9E600D3BDBE /* QiNiuExtensionToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FB51DB1F9E600D3BDBE /* QiNiuExtensionToken.m */; };
+		27020FBC1DB1FAF300D3BDBE /* GTMBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FB91DB1FAF300D3BDBE /* GTMBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		27020FC41DB1FB3000D3BDBE /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FC11DB1FB3000D3BDBE /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -573,6 +576,13 @@
 		27020F7F1DB085AE00D3BDBE /* QNUpToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QNUpToken.m; sourceTree = "<group>"; };
 		27020FA71DB08D8A00D3BDBE /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		27020FA91DB1B57100D3BDBE /* EnjoyLove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EnjoyLove.entitlements; sourceTree = "<group>"; };
+		27020FB41DB1F9E600D3BDBE /* QiNiuExtensionToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QiNiuExtensionToken.h; sourceTree = "<group>"; };
+		27020FB51DB1F9E600D3BDBE /* QiNiuExtensionToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QiNiuExtensionToken.m; sourceTree = "<group>"; };
+		27020FB81DB1FAF300D3BDBE /* GTMBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMBase64.h; sourceTree = "<group>"; };
+		27020FB91DB1FAF300D3BDBE /* GTMBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GTMBase64.m; sourceTree = "<group>"; };
+		27020FBA1DB1FAF300D3BDBE /* GTMDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GTMDefines.h; sourceTree = "<group>"; };
+		27020FC01DB1FB3000D3BDBE /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		27020FC11DB1FB3000D3BDBE /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -1207,6 +1217,9 @@
 		27020F1E1DB074E600D3BDBE /* QINIU */ = {
 			isa = PBXGroup;
 			children = (
+				27020FBE1DB1FB3000D3BDBE /* JSONKit */,
+				27020FB71DB1FAF300D3BDBE /* GTMBase64 */,
+				27020FB31DB1F9C700D3BDBE /* QiniuExtension */,
 				27020F1F1DB085AE00D3BDBE /* HappyDNS */,
 				27020F4D1DB085AE00D3BDBE /* QiniuSDK */,
 			);
@@ -1383,6 +1396,34 @@
 				27020F7F1DB085AE00D3BDBE /* QNUpToken.m */,
 			);
 			path = Storage;
+			sourceTree = "<group>";
+		};
+		27020FB31DB1F9C700D3BDBE /* QiniuExtension */ = {
+			isa = PBXGroup;
+			children = (
+				27020FB41DB1F9E600D3BDBE /* QiNiuExtensionToken.h */,
+				27020FB51DB1F9E600D3BDBE /* QiNiuExtensionToken.m */,
+			);
+			path = QiniuExtension;
+			sourceTree = "<group>";
+		};
+		27020FB71DB1FAF300D3BDBE /* GTMBase64 */ = {
+			isa = PBXGroup;
+			children = (
+				27020FB81DB1FAF300D3BDBE /* GTMBase64.h */,
+				27020FB91DB1FAF300D3BDBE /* GTMBase64.m */,
+				27020FBA1DB1FAF300D3BDBE /* GTMDefines.h */,
+			);
+			path = GTMBase64;
+			sourceTree = "<group>";
+		};
+		27020FBE1DB1FB3000D3BDBE /* JSONKit */ = {
+			isa = PBXGroup;
+			children = (
+				27020FC01DB1FB3000D3BDBE /* JSONKit.h */,
+				27020FC11DB1FB3000D3BDBE /* JSONKit.m */,
+			);
+			path = JSONKit;
 			sourceTree = "<group>";
 		};
 		271475201D74007A003CFC5F /* InfoImage */ = {
@@ -3134,6 +3175,7 @@
 				275C04CD1D8270EB00A52ABC /* Int+Timepiece.swift in Sources */,
 				27188E041D863A3500797D41 /* DXBrowserCell.swift in Sources */,
 				27830D1D1D9A60CE0036E2BC /* OBGradientView.m in Sources */,
+				27020FBC1DB1FAF300D3BDBE /* GTMBase64.m in Sources */,
 				27F47C111D96B2F400502AEE /* NSString+PinYin4Cocoa.m in Sources */,
 				272A04371D88334400067215 /* ProblemView.swift in Sources */,
 				278697A31D77CAFF00205ABF /* ExtensionMethod.swift in Sources */,
@@ -3147,6 +3189,7 @@
 				27188E111D863A3500797D41 /* UIViewController+DXPhotoPicker.swift in Sources */,
 				27830CF81D9A33610036E2BC /* FMDatabase+InMemoryOnDiskIO.m in Sources */,
 				27F28D501D73D369005E382D /* HMCirclePercentView.m in Sources */,
+				27020FB61DB1F9E600D3BDBE /* QiNiuExtensionToken.m in Sources */,
 				27020F1D1DAC68F200D3BDBE /* HMDatabase.swift in Sources */,
 				27830C801D9A24900036E2BC /* RtspInterface.mm in Sources */,
 				2753E6D61D7B93D300FDB8D0 /* AFHTTPSessionManager.m in Sources */,
@@ -3204,6 +3247,7 @@
 				278400FE1D913F0B00A46437 /* SecurityEditViewController.swift in Sources */,
 				27830D4F1D9BACCA0036E2BC /* ChildPermissionViewController.swift in Sources */,
 				27020F8C1DB085AE00D3BDBE /* QNResolvUtil.m in Sources */,
+				27020FC41DB1FB3000D3BDBE /* JSONKit.m in Sources */,
 				277A99D81D80437500C214E4 /* PregInfoView.swift in Sources */,
 				27F4107D1D8BE4A600722051 /* LoginBaseInfoViewController.swift in Sources */,
 				27188E061D863A3500797D41 /* DXPromptView.swift in Sources */,

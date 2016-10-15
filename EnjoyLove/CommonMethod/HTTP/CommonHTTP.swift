@@ -39,6 +39,7 @@ class QiNiu: NSObject {
             if let response = responseObject{
                 if let data = response["data"] as? [String:NSObject]{
                     NSUserDefaults.standardUserDefaults().setObject(format(data["qiNiuDomainName"]), forKey: QiNiuDomainName)
+                    print("qi niu domain " + format(data["qiNiuDomainName"]))
                     if let handle = completionHandler{
                         handle(token: format(data["token"]))
                     }
@@ -79,6 +80,7 @@ class QiNiu: NSObject {
                     
                     let uploadManager = QNUploadManager.init()
                     uploadManager.putData(imageData, key: fileName, token: tk, complete: { (responseInfo:QNResponseInfo!, key:String!, resp:[NSObject : AnyObject]!) in
+                        print("reponse info \(responseInfo) \n resp \(resp)")
                         if responseInfo.statusCode == 200 && resp != nil{
                             if let respKey = resp["key"] as? String{
                                 let url = "\(QiNiu.qiNiuDomain())\(respKey)"

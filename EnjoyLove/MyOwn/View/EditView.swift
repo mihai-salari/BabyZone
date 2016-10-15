@@ -304,11 +304,13 @@ class EditPregStatusView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var pregStatusTable:UITableView!
     private var selectedIndexPath:NSIndexPath!
     private var pregStatusData:[String]!
+    private var pregStatusIndex:[Int]!
     private var currentStatus:Int = 0
     init(frame: CGRect, status:Int, completionHandler:((status:String, statusId:String)->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
-        self.pregStatusData = ["正常","备孕","怀孕","已有宝宝"]
+        self.pregStatusData = ["正常","备孕","怀孕","有宝宝"]
+        self.pregStatusIndex = [1, 2, 3, 4]
         self.currentStatus = status
         
         self.pregStatusTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: CGFloat(self.pregStatusData.count) * 44), style: .Plain)
@@ -339,7 +341,7 @@ class EditPregStatusView: UIView,UITableViewDelegate,UITableViewDataSource {
             resultCell.selectionStyle = .None
             let item = self.pregStatusData[indexPath.row]
             resultCell.textLabel?.text = item
-            if indexPath.row == self.currentStatus {
+            if self.pregStatusIndex[indexPath.row] == self.currentStatus {
                 self.selectedIndexPath = indexPath
                 resultCell.tintColor = UIColor.hexStringToColor("#dc7190")
                 resultCell.accessoryType = .Checkmark

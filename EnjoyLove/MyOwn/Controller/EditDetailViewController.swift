@@ -147,7 +147,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(false, title: "地区", leftSel: nil, rightSel: nil)
         case 5:
             self.navigationBarItem(false, title: "孕育状态", leftSel: nil, rightSel: nil)
-            let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: 2, completionHandler: {[weak self] (status, statusId) in
+            let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: Int(self.personDetail.breedStatus) == nil ? 1 : Int(self.personDetail.breedStatus)!, completionHandler: {[weak self] (status, statusId) in
                 if let weakSelf = self{
                     
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
@@ -315,7 +315,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 person.headImg = url
                                 if let modifyResult = PersonDetailBL.modify(person) {
                                     if modifyResult.headImg != ""{
-                                        
+                                        headerView.removeMask()
                                     }
                                 }
                             }

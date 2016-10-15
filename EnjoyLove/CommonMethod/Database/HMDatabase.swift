@@ -329,6 +329,9 @@ class PersonDetail : NSObject ,NSCoding{
         if let obj = aDecoder.decodeObjectForKey("province") as? String {
             self.province = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("provinceCode") as? String {
+            self.provinceCode = obj
+        }
         if let obj = aDecoder.decodeObjectForKey("city") as? String {
             self.city = obj
         }

@@ -26,12 +26,12 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/Video/NetWork/NetManager.m"
-                  timestampString = "498132002.025625"
+                  timestampString = "498188430.357991"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "724"
                   endingLineNumber = "724"
-                  offsetFromSymbolStart = "400">
+                  offsetFromSymbolStart = "324">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -41,12 +41,12 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/Video/NetWork/NetManager.m"
-                  timestampString = "498132002.027287"
+                  timestampString = "498188430.359355"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "726"
                   endingLineNumber = "726"
-                  offsetFromSymbolStart = "50">
+                  offsetFromSymbolStart = "48">
                </Location>
             </Locations>
          </BreakpointContent>

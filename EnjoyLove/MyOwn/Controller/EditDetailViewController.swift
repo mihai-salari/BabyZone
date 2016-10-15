@@ -21,7 +21,8 @@ import Photos
  */
 
 let ModifyHeadImageNotification = "ModifyHeadImageNotification"
-
+let ModifyNickNameImageNotification = "ModifyNickNameImageNotification"
+let ModifyUserSingNotification = "ModifyUserSingNotification"
 protocol PersonInfoEditDelegate{
     func fetchPersonInfo(editModel:PersonEidtDetail)
 }
@@ -62,6 +63,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                     if let error = errorCode{
                                         if error == PASSCODE{
                                             if let delegate = weakSelf.editDelegate{
+                                                NSNotificationCenter.defaultCenter().postNotificationName(ModifyUserSingNotification, object: nil)
                                                 weakSelf.editModel.subItem = txt
                                                 delegate.fetchPersonInfo(weakSelf.editModel)
                                                 weakSelf.navigationController?.popViewControllerAnimated(true)
@@ -86,10 +88,11 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
-                                PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
                                     if let error = errorCode{
                                         if error == PASSCODE{
                                             if let delegate = weakSelf.editDelegate{
+                                                NSNotificationCenter.defaultCenter().postNotificationName(ModifyUserSingNotification, object: nil)
                                                 weakSelf.editModel.subItem = txt
                                                 delegate.fetchPersonInfo(weakSelf.editModel)
                                                 weakSelf.navigationController?.popViewControllerAnimated(true)
@@ -170,19 +173,17 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
         case 6:
             self.navigationBarItem(false, title: self.editModel.mainTitle, leftSel: nil, rightSel: nil)
             let babyId = editModel.babyId
-            var babyModel:BabyList!
+            var babyModel = BabyList()
             if let obj = BabyListBL.find(nil, key: babyId) {
                 babyModel = obj
             }
             var babyData:[BabyInfo] = []
-            var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: "宝宝1", infoType: 0)
+            var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: babyModel.babyName == "" ? "宝宝" : babyModel.babyName, infoType: 0)
             babyData.append(baby)
-            baby = BabyInfo(mainItem: "性别", subItem: "女", infoType: 1)
+            baby = BabyInfo(mainItem: "性别", subItem: babyModel.sex, infoType: 1)
             babyData.append(baby)
-            baby = BabyInfo(mainItem: "年龄", subItem: "1998.07.12", infoType: 2)
+            baby = BabyInfo(mainItem: "年龄", subItem: babyModel.birthday, infoType: 2)
             babyData.append(baby)
-            
-            
             
             self.babyEditView = EditBabyView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), baby: babyData, completionHandler: { [weak self] (baby, indexPath) in
                 if let weakSelf = self{
@@ -303,7 +304,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 person.headImg = url
                                 if let modifyResult = PersonDetailBL.modify(person) {
                                     if modifyResult.headImg != ""{
-                                        NSNotificationCenter.defaultCenter().postNotificationName(ModifyHeadImageNotification, object: NSNumber.init(bool: true))
+                                        NSNotificationCenter.defaultCenter().postNotificationName(ModifyHeadImageNotification, object: nil)
                                     }
                                 }
                             }

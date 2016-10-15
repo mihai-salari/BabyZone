@@ -180,7 +180,7 @@ class PersonInfoCell: UITableViewCell {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
-        self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: ScreenWidth - 20, height: upRateHeight(50))
+        self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: ScreenWidth - 20, height: self.contentView.frame.height)
         let mainLabel = UILabel.init(frame: CGRect(x: 20, y: 0, width: self.contentView.frame.width / 2 - 20, height: self.contentView.frame.height))
         mainLabel.text = model.mainTitle
         mainLabel.font = UIFont.boldSystemFontOfSize(14)

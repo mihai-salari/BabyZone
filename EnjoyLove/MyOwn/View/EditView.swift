@@ -247,7 +247,7 @@ class EditSexView: UIView ,UITableViewDataSource,UITableViewDelegate{
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(pregStatusTableViewCellId)
+        let cell = tableView.dequeueReusableCellWithIdentifier(sexStatusTableViewCellId)
         if let resultCell = cell {
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
@@ -423,7 +423,13 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
             let subLabel = UILabel.init(frame: CGRect(x: resultCell.contentView.frame.width / 2, y: 0, width: resultCell.contentView.frame.width / 2 - 25, height: resultCell.contentView.frame.height))
             subLabel.font = UIFont.systemFontOfSize(12)
             subLabel.textAlignment = .Right
-            subLabel.text = model.subItem
+            if model.subItem == "1" {
+                subLabel.text = "男"
+            }else if model.subItem == "2"{
+                subLabel.text = "女"
+            }else{
+                subLabel.text = model.subItem
+            }
             subLabel.textColor = UIColor.lightGrayColor()
             resultCell.contentView.addSubview(subLabel)
             

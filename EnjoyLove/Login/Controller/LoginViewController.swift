@@ -65,7 +65,7 @@ class LoginViewController: BaseViewController {
                                     })
                             }else{
                                 HUD.hideHud(weakSelf.view)
-                                HUD.showText("登录失败:\(msg)", onView: weakSelf.view)
+                                HUD.showText("登录失败:无法获取token", onView: weakSelf.view)
                             }
                         }else{
                             HUD.hideHud(weakSelf.view)
@@ -73,7 +73,7 @@ class LoginViewController: BaseViewController {
                         }
                     }else{
                         HUD.hideHud(weakSelf.view)
-                        HUD.showText("登录失败:网络异常", onView: weakSelf.view)
+                        HUD.showText("登录失败:\(errorCode)", onView: weakSelf.view)
                     }
                 })
 

@@ -28,6 +28,8 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyHeadNotification(_:)), name: ModifyHeadImageNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyNickNameNote(_:)), name: ModifyNickNameImageNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.modifyUserSignNote(_:)), name: ModifyUserSingNotification, object: nil)
     }
     
     override func viewDidLoad() {
@@ -133,9 +135,16 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             let model = section1Data[indexPath.row]
             cell.refreshHeaderCell(model, completionHandler: { [weak self] in
                 if let weakSelf = self{
-                    let personInfoEdit = MyOwnEidtViewController()
-                    personInfoEdit.infoModel = model
-                    weakSelf.navigationController?.pushViewController(personInfoEdit, animated: true)
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                let personInfoEdit = MyOwnEidtViewController()
+                                personInfoEdit.infoModel = model
+                                personInfoEdit.personDetailModel = person
+                                weakSelf.navigationController?.pushViewController(personInfoEdit, animated: true)
+                            }
+                        }
+                    }
                 }
             })
         }else{
@@ -327,11 +336,15 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     }
     
     func modifyHeadNotification(note:NSNotification) -> Void {
-        if let obj = note.object as? NSNumber {
-            if obj.boolValue == true {
-                self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-            }
-        }
+        self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+    }
+    
+    func modifyNickNameNote(note:NSNotification) -> Void {
+        self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+    }
+    
+    func modifyUserSignNote(note:NSNotification) -> Void {
+        self.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
     }
     
     /*

@@ -60,10 +60,23 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         detailModel = PersonEidtDetail(mainTitle: "性别", subItem: Int(self.personDetailModel.sex) == 1 ? "男":"女", isHeader: false, eidtType: 3, babyId: "")
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: "广东深圳市", isHeader: false, eidtType: 4, babyId: "")
+        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? "广东深圳市" : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "孕育状态", subItem: "有宝宝", isHeader: false, eidtType: 5, babyId: "")
+        var pregStatus = "有宝宝"
+        switch self.personDetailModel.breedStatus {
+        case "1":
+            pregStatus = "正常"
+        case "2":
+            pregStatus = "备孕"
+        case "3":
+            pregStatus = "怀孕"
+        case "4":
+            pregStatus = "有宝宝"
+        default:
+            break
+        }
+        detailModel = PersonEidtDetail(mainTitle: "孕育状态", subItem: pregStatus, isHeader: false, eidtType: 5, babyId: "")
         detailData.append(detailModel)
         
         var model = PersonEditInfo(title: "", detail: detailData)
@@ -103,7 +116,9 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                         weakSelf.personInfoData.append(model)
                     }
                 }
-                
+                if let personTable = weakSelf.personInfoTable{
+                    personTable.reloadData()
+                }
             }
         }
         
@@ -145,18 +160,22 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return upRateHeight(50)
+        return 50
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.001
     }
     
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
+    
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         var header:UIView?
         
         if section == 1 {
-            header = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 20))
+            header = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
             header?.backgroundColor = UIColor.hexStringToColor("#60555b")
             let model = self.personInfoData[section]
             let label = UILabel.init(frame: CGRect(x: 20, y: 0, width: header!.frame.width - 40, height: header!.frame.height))

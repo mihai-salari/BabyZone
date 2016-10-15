@@ -572,6 +572,7 @@
 		27020F7E1DB085AE00D3BDBE /* QNUpToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QNUpToken.h; sourceTree = "<group>"; };
 		27020F7F1DB085AE00D3BDBE /* QNUpToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QNUpToken.m; sourceTree = "<group>"; };
 		27020FA71DB08D8A00D3BDBE /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		27020FA91DB1B57100D3BDBE /* EnjoyLove.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EnjoyLove.entitlements; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -2261,6 +2262,7 @@
 		27D002C71D6D44D700B62A61 /* EnjoyLove */ = {
 			isa = PBXGroup;
 			children = (
+				27020FA91DB1B57100D3BDBE /* EnjoyLove.entitlements */,
 				27F28D0E1D6EEB44005E382D /* Resource */,
 				27D003351D6D99E300B62A61 /* CommonMethod */,
 				27F4105B1D8B858500722051 /* Login */,
@@ -2862,6 +2864,11 @@
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = LREATFY7GE;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					27D002DD1D6D44D800B62A61 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -3518,6 +3525,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = LREATFY7GE;
@@ -3556,6 +3564,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = LREATFY7GE;

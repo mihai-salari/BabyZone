@@ -372,6 +372,7 @@ class PersonDetail : NSObject ,NSCoding{
         aCoder.encodeObject(self.nickName, forKey: "nickName")
         aCoder.encodeObject(self.sex, forKey: "sex")
         aCoder.encodeObject(self.headImg, forKey: "headImg")
+        aCoder.encodeObject(self.headImg, forKey: "localHeadImg")
         aCoder.encodeObject(self.mobile, forKey: "mobile")
         aCoder.encodeObject(self.breedStatus, forKey: "breedStatus")
         aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")

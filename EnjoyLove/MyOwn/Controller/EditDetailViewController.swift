@@ -309,12 +309,12 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 if Int(progress) == 1{
                     headerView.headImage = image
                 }
-                }, successHandler: { (url) in
+                }, successHandler: { (url, fileName) in
                     headerView.refreshWithMask(true)
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
-                                person.headImg = url
+                                person.headImg = fileName
                                 if let modifyResult = PersonDetailBL.modify(person) {
                                     if modifyResult.headImg != ""{
                                         headerView.removeMask()

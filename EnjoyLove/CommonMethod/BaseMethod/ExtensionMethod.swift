@@ -476,6 +476,82 @@ extension UIImage{
         UIGraphicsEndImageContext()
         return newImage!
     }
+    
+    func setImageURL(url:String, imageHandler:((image:UIImage)->())?) -> Void {
+        dispatch_async(dispatch_queue_create("imageDownloadQueue", nil)) {
+            do{
+                if let imageUrl = NSURL.init(string: url){
+                    let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
+                    if let resultImage = UIImage.init(data: imageData){
+                        dispatch_async(dispatch_get_main_queue(), {
+                            if let handle = imageHandler{
+                                handle(image: resultImage)
+                            }
+                        })
+                    }
+                }
+            }catch{
+                
+            }
+        }
+    }
+    
+}
+
+//MARK:___UIIMAGEVIEW___
+extension UIImageView{
+    func setImageURL(url:String) -> Void {
+        dispatch_async(dispatch_queue_create("imageDownloadQueue", nil)) { 
+            do{
+                if let imageUrl = NSURL.init(string: url){
+                    let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
+                    if let resultImage = UIImage.init(data: imageData){
+                        dispatch_async(dispatch_get_main_queue(), { 
+                            self.image = resultImage
+                        })
+                    }
+                }
+            }catch{
+                
+            }
+        }
+    }
+}
+
+extension UIButton{
+    func setImageURL(url:String, state:UIControlState) -> Void {
+        dispatch_async(dispatch_queue_create("imageDownloadQueue", nil)) {
+            do{
+                if let imageUrl = NSURL.init(string: url){
+                    let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
+                    if let resultImage = UIImage.init(data: imageData){
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.setImage(resultImage, forState: state)
+                        })
+                    }
+                }
+            }catch{
+                
+            }
+        }
+    }
+    
+    func setBackgroundImageURL(url:String, state:UIControlState) -> Void {
+        dispatch_async(dispatch_queue_create("imageDownloadQueue", nil)) {
+            do{
+                if let imageUrl = NSURL.init(string: url){
+                    let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
+                    if let resultImage = UIImage.init(data: imageData){
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.setBackgroundImage(resultImage, forState: state)
+                        })
+                    }
+                }
+            }catch{
+                
+            }
+        }
+    }
 }
 
 

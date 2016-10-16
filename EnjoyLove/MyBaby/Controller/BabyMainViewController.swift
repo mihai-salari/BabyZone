@@ -98,7 +98,9 @@ class BabyMainViewController: BaseViewController {
 
         // Do any additional setnkznkup after loading the view.
 //        self.performSelector(#selector(self.remoteNotification), withObject: nil, afterDelay: 1)
-
+        
+        //2016-10-15+14:56:55_pic.png
+        
     }
         
     

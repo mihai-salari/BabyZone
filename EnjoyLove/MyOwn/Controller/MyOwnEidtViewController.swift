@@ -48,7 +48,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         self.personInfoData = []
         
         var detailData:[PersonEidtDetail] = []
-        var detailModel = PersonEidtDetail(mainTitle: "头像", subItem: self.personDetailModel.headImg == "" ? self.infoModel.header : self.personDetailModel.headImg, isHeader: true, eidtType: 0, babyId: "")
+        var detailModel = PersonEidtDetail(mainTitle: "头像", subItem: self.personDetailModel.headImg, isHeader: true, eidtType: 0, babyId: "")
         detailData.append(detailModel)
         
         detailModel = PersonEidtDetail(mainTitle: "名字", subItem: self.personDetailModel.nickName == "" ? self.infoModel.nickName : self.personDetailModel.nickName, isHeader: false, eidtType: 1, babyId: "")
@@ -81,7 +81,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         
         var model = PersonEditInfo(title: "", detail: detailData)
         self.personInfoData.append(model)
-        
         
         BabyList.sendAsyncBabyList { [weak self](errorCode, msg) in
             if let weakSelf = self{

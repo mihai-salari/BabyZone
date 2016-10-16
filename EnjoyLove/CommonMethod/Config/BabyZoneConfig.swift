@@ -37,7 +37,7 @@ class BabyZoneConfig: NSObject {
     var sign:String!
     var appToken:String!
     var passCode:String!
-    
+    var scopeType:String!
     
     
     static var shared:BabyZoneConfig{
@@ -75,6 +75,7 @@ class BabyZoneConfig: NSObject {
                 self.QiNiuScope = config.get(.QiNiuScope)
                 self.QiNiuXiangAiDomain = config.get(.QiNiuXiangAiDomain)
                 self.QiNiuBabyDomain = config.get(.QiNiuBabyDomain)
+                self.scopeType = config.get(.scopeType)
             }
             
         }
@@ -132,6 +133,7 @@ extension Keys{
     static let QiNiuScope                       = Key<String>("QiNiuScope")
     static let QiNiuXiangAiDomain               = Key<String>("QiNiuXiangAiDomain")
     static let QiNiuBabyDomain                  = Key<String>("QiNiuBabyDomain")
+    static let scopeType                        = Key<String>("scopeType")
 }
 
 

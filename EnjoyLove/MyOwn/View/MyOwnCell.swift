@@ -60,7 +60,14 @@ class MyOwnCell: UITableViewCell {
                     self.headerButton = UIButton.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
                     self.headerButton.layer.cornerRadius = self.contentView.frame.height * (1 / 2.5) / 2
                     self.headerButton.layer.masksToBounds = true
-                    self.headerButton.setImage(person.headImg == "" ?UIImage.imageWithName("mamaHeader.png") :UIImage.imageWithName(person.headImg), forState: .Normal)
+                    if person.headImg == "" {
+                        self.headerButton.setImage(UIImage.imageWithName("mamaHeader.png"), forState: .Normal)
+                    }else{
+                        let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: person.headImg)
+                        self.headerButton.setImageURL(imageUrl, state: .Normal)
+                        
+                    }
+                    
                     self.contentView.addSubview(self.headerButton)
                     
                     self.headerNickNameLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(self.headerButton.frame) + leftMargin, CGRectGetMidY(self.headerButton.frame) - 15, CGRectGetWidth(textRect(model.nickName, fontSize: 16, size: CGSize(width: textWidth, height: 10))), CGRectGetHeight(self.headerButton.frame) / 2))
@@ -194,7 +201,12 @@ class PersonInfoCell: UITableViewCell {
         if model.isHeader == true{
             
             let imageView = UIImageView.init(frame: CGRect(x: self.contentView.frame.width - 2 * imageViewWidth, y: (self.contentView.frame.height - imageViewWidth) / 2, width: imageViewWidth, height: imageViewWidth))
-            imageView.image = UIImage.imageWithName(model.subItem)
+            if model.subItem == "" {
+                imageView.image = UIImage.imageWithName("mamaHeader.png")
+            }else{
+                let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: model.subItem)
+                imageView.setImageURL(imageUrl)
+            }
             imageView.layer.cornerRadius = imageViewWidth / 2
             imageView.layer.masksToBounds = true
             self.contentView.addSubview(imageView)

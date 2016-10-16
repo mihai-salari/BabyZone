@@ -9,7 +9,7 @@
 import UIKit
 
 private class QiNiuUploadHelper:NSObject{
-    var singleSuccessHandler:((url:String)->())?
+    var singleSuccessHandler:((url:String, fileName:String)->())?
     var singleFailureBlock:((error:String)->())?
     static var shared:QiNiuUploadHelper{
         struct Helper{
@@ -70,9 +70,15 @@ class QiNiu: NSObject {
         return formatter.stringFromDate(NSDate.init())
     }
     //单图片上传
-    class func uploadImage(scope:String = "", image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String)->())?, failureHandler:((error:String)->())?){
+    class func uploadImage(scope:String = "", image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String,fileName:String)->())?, failureHandler:((error:String)->())?){
         QiNiu.sendAsyncQiNiu { (token) in
             if let tk = token{
+                let qnToken = QNUpToken.parse(tk)
+                if qnToken.bucket == "baby"{
+                    NSUserDefaults.standardUserDefaults().setInteger(1, forKey: BabyZoneConfig.shared.scopeType)
+                }else if qnToken.bucket == "xiangai"{
+                    NSUserDefaults.standardUserDefaults().setInteger(2, forKey: BabyZoneConfig.shared.scopeType)
+                }
                 if let imageData = UIImageJPEGRepresentation(image, 0.01){
                     let fileName = "\(QiNiu.dateTimeString())_pic.png"
                     let opt = QNUploadOption.init(mime: nil, progressHandler: progressHandler, params: nil, checkCrc: false, cancellationSignal: nil)
@@ -83,7 +89,7 @@ class QiNiu: NSObject {
                             if let respKey = resp["key"] as? String{
                                 let url = "\(QiNiu.qiNiuDomain())\(respKey)"
                                 if let success = successHandler{
-                                    success(url: url)
+                                    success(url: url, fileName: respKey)
                                 }
                             }else{
                                 if let failuer = failureHandler{
@@ -95,10 +101,20 @@ class QiNiu: NSObject {
                                 let uploadToken = QiNiuExtensionToken.shared().makeTokenWithScope(scope)
                                 uploadManager.putData(imageData, key: fileName, token: uploadToken, complete: { (responseInfo:QNResponseInfo!, key:String!, resp:[NSObject : AnyObject]!) in
                                     if responseInfo.statusCode == 200 && resp != nil{
+                                        if scope == "baby"{
+                                            setFoldType(BabyZoneConfig.shared.scopeType, type: 1)
+                                        }else if scope == "xiangai"{
+                                            setFoldType(BabyZoneConfig.shared.scopeType, type: 2)
+                                        }
                                         if let respKey = resp["key"] as? String{
-                                            let url = "\(QiNiu.qiNiuDomain())\(respKey)"
+                                            var url = "\(BabyZoneConfig.shared.QiNiuBabyDomain)\(respKey)"
+                                            if scope == BabyZoneConfig.shared.xiangaiScope{
+                                                url = "\(BabyZoneConfig.shared.QiNiuXiangAiDomain)\(respKey)"
+                                            }else if scope == BabyZoneConfig.shared.babyScope{
+                                                url = "\(BabyZoneConfig.shared.QiNiuBabyDomain)\(respKey)"
+                                            }
                                             if let success = successHandler{
-                                                success(url: url)
+                                                success(url: url, fileName: respKey)
                                             }
                                         }else{
                                             if let failuer = failureHandler{
@@ -123,8 +139,10 @@ class QiNiu: NSObject {
         }
     }
     
-    class func uploadImages(images:[UIImage], progress:((progress:CGFloat)->())?, successHandler:((urls:[String])->())?, failureHandler:((error:String)->())?){
+    class func uploadImages(images:[UIImage], progress:((progress:CGFloat)->())?, successHandler:((urls:[String], fileNames:[String])->())?, failureHandler:((error:String)->())?){
         var urlArray:[String] = []
+        var fileNameArray:[String] = []
+        
         var totalProgress:CGFloat = 0
         let partProgress:CGFloat = 1.0 / CGFloat(images.count)
         var currentIndex = 0
@@ -135,8 +153,9 @@ class QiNiu: NSObject {
             return
         }
         
-        QiNiuUploadHelper.shared.singleSuccessHandler = { (url) in
+        QiNiuUploadHelper.shared.singleSuccessHandler = { (url, fileName) in
             urlArray.append(url)
+            fileNameArray.append(fileName)
             totalProgress += partProgress
             if let pro = progress {
                 pro(progress: totalProgress)
@@ -144,7 +163,7 @@ class QiNiu: NSObject {
             currentIndex += 1
             if urlArray.count == images.count {
                 if let success = successHandler {
-                    success(urls: urlArray)
+                    success(urls: urlArray, fileNames: fileNameArray)
                 }
                 return
             }else{

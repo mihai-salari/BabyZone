@@ -45,6 +45,23 @@ let alertTextColor = UIColor.hexStringToColor("#e35572")
 
 let devicePassword = "123"
 
+
+func setFoldType(scope:String, type:Int) -> Void {
+    NSUserDefaults.standardUserDefaults().setInteger(type, forKey: scope)
+}
+
+func foldType(scopeType:String, fileName:String) -> String {
+    let type = NSUserDefaults.standardUserDefaults().integerForKey(scopeType)
+    switch type {
+    case 1:
+        return "\(BabyZoneConfig.shared.QiNiuBabyDomain)\(fileName)"
+    case 2:
+        return "\(BabyZoneConfig.shared.QiNiuXiangAiDomain)\(fileName)"
+    default:
+        return "\(BabyZoneConfig.shared.QiNiuBabyDomain)\(fileName)"
+    }
+}
+
 //MARK:___登录判断___
 func isLogin() -> Bool {
     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {

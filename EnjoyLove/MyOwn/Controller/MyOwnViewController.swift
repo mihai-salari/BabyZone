@@ -72,6 +72,17 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         let headerModel = MyOwnHeader()
         self.section1Data.append(headerModel)
         
+        PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
+            if let weakSelf = self{
+                if let code = errorCode{
+                    if code == PASSCODE{
+                        weakSelf.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+                    }
+                }
+                
+            }
+        }
+        
         var rowData:[MyOwnNormalRowData] = []
         var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
         rowData.append(model)
@@ -95,16 +106,6 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
         self.sectionTitleData.append(sectionData)
         
-        PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
-            if let weakSelf = self{
-                if let code = errorCode{
-                    if code == PASSCODE{
-                        weakSelf.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-                    }
-                }
-                
-            }
-        }
     }
     
     //MARK:____Table view delegate and data source____
@@ -116,7 +117,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var numberRows = 0
         if section == 0 {
-            numberRows = self.section1Data.count
+            numberRows = 1
         }else{
             let model = self.sectionTitleData[section - 1]
             numberRows = model.rowData.count

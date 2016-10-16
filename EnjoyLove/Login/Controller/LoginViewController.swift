@@ -50,6 +50,8 @@ class LoginViewController: BaseViewController {
                                             let login = Login()
                                             login.userId = format(data["userId"])
                                             login.sessionId = format(data["sessionId"])
+                                            login.nickName = format(data["nickName"])
+                                            login.userSign = format(data["userSign"])
                                             login.userName = phone
                                             login.userPhone = phone
                                             login.password = password

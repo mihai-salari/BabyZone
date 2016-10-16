@@ -22,17 +22,22 @@ class BabyZoneConfig: NSObject {
      static let QiNiuXiangAiDomain       = Key<String>("QiNiuXiangAiDomain")
      static let QiNiuBabyDomain          = Key<String>("QiNiuBabyDomain")
      */
+    var QiNiuDomain:String!
+    var xiangaiScope:String!
+    var babyScope:String!
+    var QiNiuScope:String!
+    var QiNiuXiangAiDomain:String!
+    var QiNiuBabyDomain:String!
     var UserPhoneKey:String!
     var AllOrientation:String!
     var signKey:String!
     var appTokenKey:String!
     var pushTokenKey:String!
     var sessionId:String!
+    var sign:String!
     var appToken:String!
     var passCode:String!
-    var scope:String!
-    var QiNiuXiangAiDomain:String!
-    var QiNiuBabyDomain:String!
+    
     
     
     static var shared:BabyZoneConfig{
@@ -42,14 +47,34 @@ class BabyZoneConfig: NSObject {
         }
         
         dispatch_once(&DAO.pred) {
-            DAO.dao = BabyZoneConfig()
+            DAO.dao = BabyZoneConfig.init()
         }
         return DAO.dao!
     }
+    
+    private override init() {
+        super.init()
+        self.readPlist()
+    }
+    
     private func readPlist() ->Void{
         if let plistPath = NSBundle.mainBundle().pathForResource("BabyZoneConfig", ofType: "plist") {
             if let config = Configuration.init(plistPath: plistPath) {
-                
+                self.QiNiuDomain = config.get(.QiNiuDomain)
+                self.xiangaiScope = config.get(.xiangaiScope)
+                self.babyScope = config.get(.babyScope)
+                self.UserPhoneKey = config.get(.UserPhoneKey)
+                self.AllOrientation = config.get(.AllOrientation)
+                self.signKey = config.get(.signKey)
+                self.appTokenKey = config.get(.appTokenKey)
+                self.pushTokenKey = config.get(.pushTokenKey)
+                self.sessionId = config.get(.sessionId)
+                self.sign = config.get(.sign)
+                self.appToken = config.get(.appToken)
+                self.passCode = config.get(.passCode)
+                self.QiNiuScope = config.get(.QiNiuScope)
+                self.QiNiuXiangAiDomain = config.get(.QiNiuXiangAiDomain)
+                self.QiNiuBabyDomain = config.get(.QiNiuBabyDomain)
             }
             
         }
@@ -92,20 +117,21 @@ public final class Key<ValueType: PlistValueType>: Keys {
 }
 
 extension Keys{
-    static let UserPhoneKey             = Key<String>("UserPhoneKey")
-    static let AllOrientation           = Key<String>("AllOrientation")
-    static let signKey                  = Key<String>("signKey")
-    static let appTokenKey              = Key<String>("appTokenKey")
-    static let pushTokenKey             = Key<String>("pushTokenKey")
-    static let sessionId                = Key<String>("sessionId")
-    static let appToken                 = Key<String>("appToken")
-    static let passCode                 = Key<String>("passCode")
-    static let scope                    = Key<String>("scope")
-    static let QiNiuXiangAiDomain       = Key<String>("QiNiuXiangAiDomain")
-    static let QiNiuBabyDomain          = Key<String>("QiNiuBabyDomain")
-    static let QiNiuDomain              = Key<String>("QiNiuDomain")
-    static let xiangaiScope             = Key<String>("xiangaiScope")
-    static let babyScope                = Key<String>("babyScope")
+    static let QiNiuDomain                      = Key<String>("QiNiuDomain")
+    static let xiangaiScope                     = Key<String>("xiangaiScope")
+    static let babyScope                        = Key<String>("babyScope")
+    static let UserPhoneKey                     = Key<String>("UserPhoneKey")
+    static let AllOrientation                   = Key<String>("AllOrientation")
+    static let signKey                          = Key<String>("signKey")
+    static let appTokenKey                      = Key<String>("appTokenKey")
+    static let pushTokenKey                     = Key<String>("pushTokenKey")
+    static let sessionId                        = Key<String>("sessionId")
+    static let sign                             = Key<String>("sign")
+    static let appToken                         = Key<String>("appToken")
+    static let passCode                         = Key<String>("passCode")
+    static let QiNiuScope                       = Key<String>("QiNiuScope")
+    static let QiNiuXiangAiDomain               = Key<String>("QiNiuXiangAiDomain")
+    static let QiNiuBabyDomain                  = Key<String>("QiNiuBabyDomain")
 }
 
 

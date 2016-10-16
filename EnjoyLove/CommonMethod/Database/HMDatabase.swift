@@ -21,6 +21,10 @@ class Login: NSObject,NSCoding {
     var password:String!
     var md5Password:String!
     var isRegist:NSNumber!
+    var nickName:String!
+    var userSign:String!
+    
+    
     
     override init() {
         self.userId = ""
@@ -30,31 +34,39 @@ class Login: NSObject,NSCoding {
         self.contactId = ""
         self.password = ""
         self.md5Password = ""
+        self.nickName = ""
+        self.userSign = ""
         self.isRegist = NSNumber.init(bool: false)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init()
-        if let uid = aDecoder.decodeObjectForKey("userId") as? String {
-            self.userId = uid
+        if let obj = aDecoder.decodeObjectForKey("userId") as? String {
+            self.userId = obj
         }
-        if let un = aDecoder.decodeObjectForKey("userName") as? String {
-            self.userName = un
+        if let obj = aDecoder.decodeObjectForKey("userName") as? String {
+            self.userName = obj
         }
-        if let sId = aDecoder.decodeObjectForKey("sessionId") as? String {
-            self.sessionId = sId
+        if let obj = aDecoder.decodeObjectForKey("sessionId") as? String {
+            self.sessionId = obj
         }
-        if let up = aDecoder.decodeObjectForKey("userPhone") as? String {
-            self.userPhone = up
+        if let obj = aDecoder.decodeObjectForKey("userPhone") as? String {
+            self.userPhone = obj
         }
-        if let pwd = aDecoder.decodeObjectForKey("password") as? String {
-            self.password = pwd
+        if let obj = aDecoder.decodeObjectForKey("password") as? String {
+            self.password = obj
         }
-        if let md5pwd = aDecoder.decodeObjectForKey("md5Password") as? String {
-            self.md5Password = md5pwd
+        if let obj = aDecoder.decodeObjectForKey("md5Password") as? String {
+            self.md5Password = obj
         }
-        if let rigt = aDecoder.decodeObjectForKey("isRegist") as? NSNumber {
-            self.isRegist = rigt
+        if let obj = aDecoder.decodeObjectForKey("isRegist") as? NSNumber {
+            self.isRegist = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("nickName") as? NSNumber {
+            self.isRegist = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("userSign") as? NSNumber {
+            self.isRegist = obj
         }
     }
     
@@ -66,8 +78,9 @@ class Login: NSObject,NSCoding {
         aCoder.encodeObject(self.password, forKey: "password")
         aCoder.encodeObject(self.md5Password, forKey: "md5Password")
         aCoder.encodeObject(self.isRegist, forKey: "isRegist")
+        aCoder.encodeObject(self.isRegist, forKey: "nickName")
+        aCoder.encodeObject(self.isRegist, forKey: "userSign")
     }
-    
     
 }
 
@@ -159,6 +172,12 @@ private class LoginDAO:NSObject{
                 }
                 if note.isRegist != detail.isRegist {
                     note.isRegist = detail.isRegist
+                }
+                if note.nickName != detail.nickName {
+                    note.nickName = detail.nickName
+                }
+                if note.userSign != detail.userSign {
+                    note.userSign = detail.userSign
                 }
                 
                 let theData = NSMutableData.init()
@@ -529,6 +548,10 @@ class PersonDetailBL: NSObject {
     
     class func find(detail:PersonDetail?, key:String = "") ->PersonDetail?{
         return PersonDetailDAO.shared.find(detail, key: key)
+    }
+    
+    class func findAll() ->[PersonDetail]{
+        return PersonDetailDAO.shared.findAll()
     }
     
 }

@@ -26,7 +26,7 @@
 	<string>appToken</string>
 	<key>passCode</key>
 	<string>0000</string>
-	<key>scope</key>
+	<key>QiNiuScope</key>
 	<string>baby</string>
 	<key>QiNiuXiangAiDomain</key>
 	<string>http://of0k04nl6.bkt.clouddn.com/</string>

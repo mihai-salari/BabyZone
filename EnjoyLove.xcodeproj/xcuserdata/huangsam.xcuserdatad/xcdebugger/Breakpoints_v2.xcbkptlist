@@ -83,13 +83,13 @@
                   symbolName = "static EnjoyLove.QiNiu.(uploadImage (Swift.String, image : __ObjC.UIImage, progressHandler : Swift.Optional&lt;(Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, Swift.Float) -&gt; ()&gt;, successHandler : Swift.Optional&lt;(url : Swift.String) -&gt; ()&gt;, failureHandler : Swift.Optional&lt;(error : Swift.String) -&gt; ()&gt;) -&gt; ()).(closure #1).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
-                  timestampString = "498207389.619721"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
+                  timestampString = "498289027.198879"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "85"
                   endingLineNumber = "85"
-                  offsetFromSymbolStart = "1880">
+                  offsetFromSymbolStart = "2392">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -98,13 +98,13 @@
                   symbolName = "static EnjoyLove.QiNiu.(uploadImage (Swift.String, image : __ObjC.UIImage, progressHandler : Swift.Optional&lt;(Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, Swift.Float) -&gt; ()&gt;, successHandler : Swift.Optional&lt;(url : Swift.String) -&gt; ()&gt;, failureHandler : Swift.Optional&lt;(error : Swift.String) -&gt; ()&gt;) -&gt; ()).(closure #1).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
-                  timestampString = "498207389.621415"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
+                  timestampString = "498289027.200095"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "85"
                   endingLineNumber = "85"
-                  offsetFromSymbolStart = "1936">
+                  offsetFromSymbolStart = "2456">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -147,13 +147,13 @@
                   symbolName = "static EnjoyLove.QiNiu.(uploadImage (Swift.String, image : __ObjC.UIImage, progressHandler : Swift.Optional&lt;(Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, Swift.Float) -&gt; ()&gt;, successHandler : Swift.Optional&lt;(url : Swift.String) -&gt; ()&gt;, failureHandler : Swift.Optional&lt;(error : Swift.String) -&gt; ()&gt;) -&gt; ()).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
-                  timestampString = "498207389.627828"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
+                  timestampString = "498289027.206168"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "81"
                   endingLineNumber = "81"
-                  offsetFromSymbolStart = "696">
+                  offsetFromSymbolStart = "796">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -162,15 +162,31 @@
                   symbolName = "static EnjoyLove.QiNiu.(uploadImage (Swift.String, image : __ObjC.UIImage, progressHandler : Swift.Optional&lt;(Swift.ImplicitlyUnwrappedOptional&lt;Swift.String&gt;, Swift.Float) -&gt; ()&gt;, successHandler : Swift.Optional&lt;(url : Swift.String) -&gt; ()&gt;, failureHandler : Swift.Optional&lt;(error : Swift.String) -&gt; ()&gt;) -&gt; ()).(closure #1).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
-                  timestampString = "498207389.631625"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/CommonMethod/HTTP/CommonHTTP.swift"
+                  timestampString = "498289027.207839"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "82"
                   endingLineNumber = "82"
-                  offsetFromSymbolStart = "168">
+                  offsetFromSymbolStart = "244">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyOwn/Controller/MyOwnViewController.swift"
+            timestampString = "498290291.203784"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "initializeDataSource()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

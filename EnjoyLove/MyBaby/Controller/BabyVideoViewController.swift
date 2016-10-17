@@ -30,6 +30,8 @@ class BabyVideoViewController: BaseViewController {
         NSUserDefaults.standardUserDefaults().setBool(true, forKey: AllowOrientationKey)
         self.initializeNotification()
         
+        
+        
         if let contact = deviceContact {
             if let p2p = P2PClient.sharedClient() {
                 p2p.isBCalled = false
@@ -53,6 +55,10 @@ class BabyVideoViewController: BaseViewController {
 
         // Do any additional setup after loading the view.
         if self.deviceContact != nil {
+            P2PClient.sharedClient().isBCalled = false
+            P2PClient.sharedClient().callId = deviceContact.contactId
+            P2PClient.sharedClient().callPassword = deviceContact.contactPassword
+            P2PClient.sharedClient().p2pCallType = P2PCALL_TYPE_MONITOR
             self.initialize()
         }else{
             self.view.backgroundColor = UIColor.whiteColor()
@@ -60,15 +66,23 @@ class BabyVideoViewController: BaseViewController {
             label.text = "正在开发..."
             label.textAlignment = .Center
             self.view.addSubview(label)
-            
+            self.performSelector(#selector(self.popViewController), withObject: nil, afterDelay: 2)
         }
         
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        self.isReject = true
         
+        
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.navigationController?.navigationBarHidden = false
+        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .None)
+        self.isReject = true
+        NSUserDefaults.standardUserDefaults().setBool(false, forKey: AllowOrientationKey)
         
         if let babyView = self.babyVideoView {
             babyView.captureFinishScreen(true)
@@ -92,15 +106,12 @@ class BabyVideoViewController: BaseViewController {
         if AppDelegate.sharedDefault().isMonitoring {
             AppDelegate.sharedDefault().isMonitoring = false
         }
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        self.navigationController?.navigationBarHidden = false
-        UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: .None)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        NSUserDefaults.standardUserDefaults().setBool(false, forKey: AllowOrientationKey)
-        
+    func popViewController() -> Void {
+        self.navigationController?.popViewControllerAnimated(true)
     }
 
     private func initializeNotification(){
@@ -118,7 +129,7 @@ class BabyVideoViewController: BaseViewController {
 
     private func initialize(){
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        UIApplication.sharedApplication().idleTimerDisabled = true
         
         let babyModel = self.baby == nil ? Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0") : self.baby
         self.babyVideoView = BabyVideoView.init(frame: self.view.bounds, baby: babyModel, cancelCompletionHandler: { [weak self] in
@@ -129,6 +140,20 @@ class BabyVideoViewController: BaseViewController {
         self.babyVideoView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight, .FlexibleLeftMargin, .FlexibleRightMargin]
         self.view.addSubview(self.babyVideoView)
         
+        P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_CALLING
+        let isBCalled = P2PClient.sharedClient().isBCalled
+        let type = P2PClient.sharedClient().p2pCallType
+        let callId = P2PClient.sharedClient().callId
+        let callPassword = P2PClient.sharedClient().callPassword
+        
+        if isBCalled == false {
+            let isApMode = (AppDelegate.sharedDefault().dwApContactID != 0)
+            if isApMode == false {
+                P2PClient.sharedClient().p2pCallWithId(callId, password: callPassword, callType: type)
+            }else{
+                P2PClient.sharedClient().p2pCallWithId("1", password: callPassword, callType: type)
+            }
+        }
         
     }
     

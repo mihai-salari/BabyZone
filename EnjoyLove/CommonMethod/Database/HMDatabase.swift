@@ -842,7 +842,7 @@ class BabyBaseInfo: NSObject,NSCoding {
     }
 }
 
-class BabyBaseInfoDAO: NSObject {
+private class BabyBaseInfoDAO: NSObject {
     static var shared:BabyBaseInfoDAO{
         struct DAO{
             static var pred:dispatch_once_t = 0
@@ -1639,7 +1639,7 @@ class Diary: NSObject,NSCoding {
 
 }
 
-class DiaryDAO: NSObject {
+private class DiaryDAO: NSObject {
     static var shared:DiaryDAO{
         struct DAO{
             static var pred:dispatch_once_t = 0
@@ -1786,4 +1786,466 @@ class DiaryBL: NSObject {
         return DiaryDAO.shared.find(detail, key: key)
     }
 }
+//MARK:____Article____
+private let ArticleArchiveKey = "ArticleArchiveKey"
+private let ArticleArchiveFileName = "ArticleArchive.archive"
+class Article: NSObject {
+    /*
+     
+     一级参数	二级参数	类型	必填	描述
+     idBbsNewsInfo		int		咨讯id
+     newsType		int		资讯类型（1：怀孕 2：育儿）
+     title		string		标题
+     imageUrl		string		图片,多个用英文逗号隔开
+     content		string		内容
+     createTime		string		创建时间(yyyy-MM-dd HH:mm)
+
+     
+     */
+    
+    var idBbsNewsInfo:String!
+    var newsType:String!
+    var title:String!
+    var imageUrl:String!
+    var content:String!
+    var createTime:String!
+    
+    override init() {
+        self.idBbsNewsInfo = ""
+        self.newsType = ""
+        self.title = ""
+        self.imageUrl = ""
+        self.content = ""
+        self.createTime = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("idBbsNewsInfo") as? String {
+            self.idBbsNewsInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("newsType") as? String {
+            self.newsType = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("title") as? String {
+            self.title = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imageUrl") as? String {
+            self.imageUrl = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("content") as? String {
+            self.content = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
+            self.createTime = obj
+        }
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.idBbsNewsInfo, forKey: "idBbsNewsInfo")
+        aCoder.encodeObject(self.newsType, forKey: "newsType")
+        aCoder.encodeObject(self.title, forKey: "title")
+        aCoder.encodeObject(self.imageUrl, forKey: "imageUrl")
+        aCoder.encodeObject(self.content, forKey: "content")
+        aCoder.encodeObject(self.createTime, forKey: "createTime")
+    }
+}
+
+private class ArticleDAO: NSObject {
+    static var shared:ArticleDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:ArticleDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = ArticleDAO()
+        }
+        return DAO.dao!
+    }
+    
+    
+    func findAll() -> [Article] {
+        var listData = [Article]()
+        if let theData = NSData.init(contentsOfFile: ArticleArchiveFileName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(ArticleArchiveKey) as? [Article]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:Article) -> Bool {
+        var array = self.findAll()
+        for base in array {
+            if base.idBbsNewsInfo == detail.idBbsNewsInfo {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: ArticleArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
+        
+    }
+    
+    func delete(detail:Article?, key:String = "") -> Bool {
+        var array = self.findAll()
+        for note in array {
+            var babyId = ""
+            if let list = detail {
+                babyId = list.idBbsNewsInfo
+            }
+            let baseKey = key == "" ? babyId : key
+            if note.idBbsNewsInfo == baseKey {
+                if let currentIndex = array.indexOf(note) {
+                    array.removeAtIndex(currentIndex)
+                }
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: ArticleArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func modify(detail:Article, key:String = "") -> Bool {
+        let array = self.findAll()
+        let baseKey = key == "" ? detail.idBbsNewsInfo : key
+        for note in array {
+            
+            if note.idBbsNewsInfo == baseKey {
+                if note.newsType != detail.newsType {
+                    note.newsType = detail.newsType
+                }
+                if note.title != detail.title {
+                    note.title = detail.title
+                }
+                if note.imageUrl != detail.imageUrl {
+                    note.imageUrl = detail.imageUrl
+                }
+                if note.content != detail.content {
+                    note.content = detail.content
+                }
+                if note.createTime != detail.createTime {
+                    note.createTime = detail.createTime
+                }
+                
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: ArticleArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func find(detail:Article?, key:String = "") -> Article? {
+        let array = self.findAll()
+        var result:Article?
+        for note in array {
+            let userId = detail == nil ? "" : note.idBbsNewsInfo
+            let baseKey = key == "" ? userId : key
+            if note.idBbsNewsInfo == baseKey {
+                result = note
+            }
+        }
+        return result
+    }
+
+}
+
+class ArticleBL: NSObject {
+    class func insert(detail:Article) -> [Article]{
+        let result = ArticleDAO.shared.insert(detail)
+        print("baby list result \(result)")
+        return ArticleDAO.shared.findAll()
+    }
+    
+    class func delete(detail:Article, key:String = "") ->[Article]{
+        ArticleDAO.shared.delete(detail, key: key)
+        return ArticleDAO.shared.findAll()
+    }
+    
+    class func modify(detail:Article, key:String = "") ->[Article]{
+        ArticleDAO.shared.modify(detail, key: key)
+        return ArticleDAO.shared.findAll()
+    }
+    
+    class func find(detail:Article?, key:String = "") ->Article?{
+        return ArticleDAO.shared.find(detail, key: key)
+    }
+
+}
+
+
+//MARK:____ArticleList____
+private let ArticleListArchiveKey = "ArticleListArchiveKey"
+private let ArticleListArchiveFileName = "ArticleListArchive.archive"
+class ArticleList: NSObject {
+    /*
+     
+     idBbsNewsInfo		int		咨讯id
+     newsType		int		资讯类型（1：怀孕 2：育儿）
+     babyAgeYear		int		年
+     babyAgeMon		int		月
+     title		string		标题
+     content		string		内容
+     imgList		string		图片
+     imgReplaceormat		string		内容图片占位格式 【图片X】 X=第几张，替换X,然后替换content里的位置作为图片显示
+     videoUrl		string		视频地址
+     browseCount		int		浏览量
+     create_time		string		创建时间（yyyy-MM-dd HH:mm:ss）
+
+     
+     */
+    
+    var idBbsNewsInfo:String!
+    var newsType:String!
+    var babyAgeYear:String!
+    var babyAgeMon:String!
+    var title:String!
+    var content:String!
+    var imgList:String!
+    var imgReplaceormat:String!
+    var videoUrl:String!
+    var browseCount:String!
+    var create_time:String!
+    
+    override init() {
+        self.idBbsNewsInfo = ""
+        self.newsType = ""
+        self.babyAgeYear = ""
+        self.babyAgeMon = ""
+        self.title = ""
+        self.content = ""
+        self.imgList = ""
+        self.imgReplaceormat = ""
+        self.videoUrl = ""
+        self.browseCount = ""
+        self.create_time = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("idBbsNewsInfo") as? String {
+            self.idBbsNewsInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("newsType") as? String {
+            self.newsType = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("babyAgeYear") as? String {
+            self.babyAgeYear = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("babyAgeMon") as? String {
+            self.babyAgeMon = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("title") as? String {
+            self.title = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("content") as? String {
+            self.content = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imgList") as? String {
+            self.imgList = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imgReplaceormat") as? String {
+            self.imgReplaceormat = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("videoUrl") as? String {
+            self.videoUrl = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("browseCount") as? String {
+            self.browseCount = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("create_time") as? String {
+            self.create_time = obj
+        }
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.idBbsNewsInfo, forKey: "idBbsNewsInfo")
+        aCoder.encodeObject(self.newsType, forKey: "newsType")
+        aCoder.encodeObject(self.babyAgeYear, forKey: "babyAgeYear")
+        aCoder.encodeObject(self.babyAgeMon, forKey: "babyAgeMon")
+        aCoder.encodeObject(self.title, forKey: "title")
+        aCoder.encodeObject(self.content, forKey: "content")
+        aCoder.encodeObject(self.imgReplaceormat, forKey: "imgReplaceormat")
+        aCoder.encodeObject(self.videoUrl, forKey: "videoUrl")
+        aCoder.encodeObject(self.browseCount, forKey: "browseCount")
+        aCoder.encodeObject(self.imgList, forKey: "imgList")
+        aCoder.encodeObject(self.create_time, forKey: "create_time")
+    }
+}
+
+private class ArticleListDAO: NSObject {
+    static var shared:ArticleListDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:ArticleListDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = ArticleListDAO()
+        }
+        return DAO.dao!
+    }
+    
+    
+    func findAll() -> [ArticleList] {
+        var listData = [ArticleList]()
+        if let theData = NSData.init(contentsOfFile: ArticleListArchiveFileName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(ArticleListArchiveKey) as? [ArticleList]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:ArticleList) -> Bool {
+        var array = self.findAll()
+        for base in array {
+            if base.idBbsNewsInfo == detail.idBbsNewsInfo {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: ArticleListArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
+        
+    }
+    
+    func delete(detail:ArticleList?, key:String = "") -> Bool {
+        var array = self.findAll()
+        for note in array {
+            var babyId = ""
+            if let list = detail {
+                babyId = list.idBbsNewsInfo
+            }
+            let baseKey = key == "" ? babyId : key
+            if note.idBbsNewsInfo == baseKey {
+                if let currentIndex = array.indexOf(note) {
+                    array.removeAtIndex(currentIndex)
+                }
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: ArticleListArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func modify(detail:ArticleList, key:String = "") -> Bool {
+        let array = self.findAll()
+        let baseKey = key == "" ? detail.idBbsNewsInfo : key
+        for note in array {
+            
+            if note.idBbsNewsInfo == baseKey {
+                if note.newsType != detail.newsType {
+                    note.newsType = detail.newsType
+                }
+                if note.babyAgeYear != detail.babyAgeYear {
+                    note.babyAgeYear = detail.babyAgeYear
+                }
+                if note.babyAgeMon != detail.babyAgeMon {
+                    note.babyAgeMon = detail.babyAgeMon
+                }
+                if note.title != detail.title {
+                    note.title = detail.title
+                }
+                if note.content != detail.content {
+                    note.content = detail.content
+                }
+                if note.imgList != detail.imgList {
+                    note.imgList = detail.imgList
+                }
+                if note.imgReplaceormat != detail.imgReplaceormat {
+                    note.imgReplaceormat = detail.imgReplaceormat
+                }
+                if note.videoUrl != detail.videoUrl {
+                    note.videoUrl = detail.videoUrl
+                }
+                if note.browseCount != detail.browseCount {
+                    note.browseCount = detail.browseCount
+                }
+                if note.create_time != detail.create_time {
+                    note.create_time = detail.create_time
+                }
+                
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: ArticleArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func find(detail:ArticleList?, key:String = "") -> ArticleList? {
+        let array = self.findAll()
+        var result:ArticleList?
+        for note in array {
+            let userId = detail == nil ? "" : note.idBbsNewsInfo
+            let baseKey = key == "" ? userId : key
+            if note.idBbsNewsInfo == baseKey {
+                result = note
+            }
+        }
+        return result
+    }
+    
+}
+
+class ArticleListBL: NSObject {
+    class func insert(detail:ArticleList) -> [ArticleList]{
+        let result = ArticleListDAO.shared.insert(detail)
+        print("baby list result \(result)")
+        return ArticleListDAO.shared.findAll()
+    }
+    
+    class func delete(detail:ArticleList, key:String = "") ->[ArticleList]{
+        ArticleListDAO.shared.delete(detail, key: key)
+        return ArticleListDAO.shared.findAll()
+    }
+    
+    class func modify(detail:ArticleList, key:String = "") ->[ArticleList]{
+        ArticleListDAO.shared.modify(detail, key: key)
+        return ArticleListDAO.shared.findAll()
+    }
+    
+    class func find(detail:ArticleList?, key:String = "") ->ArticleList?{
+        return ArticleListDAO.shared.find(detail, key: key)
+    }
+    
+    class func findAll() ->[ArticleList]{
+        return ArticleListDAO.shared.findAll()
+    }
+}
+
 

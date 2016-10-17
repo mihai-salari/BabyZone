@@ -114,7 +114,7 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
         // Do any additional setnkznkup after loading the view.
 //        self.performSelector(#selector(self.remoteNotification), withObject: nil, afterDelay: 1)
         
-        //2016-10-15+14:56:55_pic.png
+        PersonDetail.sendAsyncPersonDetail(nil)
         
     }
         
@@ -156,7 +156,8 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
             }
         }
         self.view.addSubview(self.babyView)
-                
+        
+        
     }
     
     

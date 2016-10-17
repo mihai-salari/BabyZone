@@ -35,7 +35,8 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
 
         // Do any additional setup after loading the view.
         self.automaticallyAdjustsScrollViewInsets = false
-        self.initialize()
+        self.initializeData()
+        self.initializeSubviews()
     }
 
     override func didReceiveMemoryWarning() {
@@ -43,10 +44,11 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         // Dispose of any resources that can be recreated.
     }
     
-    private func initialize(){
-        
+    private func initializeData(){
+        if self.personInfoData != nil {
+            self.personInfoData = nil
+        }
         self.personInfoData = []
-        
         var detailData:[PersonEidtDetail] = []
         var detailModel = PersonEidtDetail(mainTitle: "头像", subItem: self.personDetailModel.headImg, isHeader: true, eidtType: 0, babyId: "")
         detailData.append(detailModel)
@@ -127,10 +129,14 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                 }
             }
         }
+    }
+    
+    private func initializeSubviews(){
         
         self.personInfoTable = UITableView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight - 10), style: .Grouped)
         self.personInfoTable.dataSource = self
         self.personInfoTable.delegate = self
+        self.personInfoTable.rowHeight = 50
         self.personInfoTable.separatorInset = UIEdgeInsetsZero
         self.personInfoTable.layoutMargins = UIEdgeInsetsZero
         self.personInfoTable.registerClass(PersonInfoCell.self, forCellReuseIdentifier: PersionInfoTableViewCellId)
@@ -148,25 +154,21 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell:PersonInfoCell!
-        if let resultCell = tableView.dequeueReusableCellWithIdentifier(PersionInfoTableViewCellId) {
-            cell = resultCell as! PersonInfoCell
-            cell.separatorInset = UIEdgeInsetsZero
-            cell.layoutMargins = UIEdgeInsetsZero
-            cell.selectionStyle = .None
-            cell.accessoryType = .DisclosureIndicator
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier(PersionInfoTableViewCellId) as? PersonInfoCell
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.selectionStyle = .None
+            resultCell.accessoryType = .DisclosureIndicator
             let model = self.personInfoData[indexPath.section]
             let detailModel = model.detail[indexPath.row]
-            cell.refreshCell(detailModel)
+            resultCell.refreshCell(detailModel)
         }
         
-        return cell
+        return cell!
     }
     
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 50
-    }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.001
@@ -181,7 +183,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         var header:UIView?
-        
         if section == 1 {
             header = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
             header?.backgroundColor = UIColor.hexStringToColor("#60555b")
@@ -224,8 +225,10 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         }
     }
     
-    func reloadBabySection() {
+    
+    func reloadBabySection(baby: AddBaby) {
         if let personTable = self.personInfoTable {
+            self.initializeData()
             personTable.reloadData()
         }
     }

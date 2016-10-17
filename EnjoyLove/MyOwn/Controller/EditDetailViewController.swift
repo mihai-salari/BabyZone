@@ -22,7 +22,7 @@ import Photos
 
 protocol PersonInfoEditDelegate{
     func fetchPersonInfo(editModel:PersonEidtDetail)
-    func reloadBabySection()
+    func reloadBabySection(baby:AddBaby)
 }
 
 class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelegate, BabyEditDelegate,DatePickerDelegate , UIImagePickerControllerDelegate,UINavigationControllerDelegate {
@@ -207,7 +207,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             })
             self.view.addSubview(self.babyEditView)
         case 7:
-            self.navigationBarItem(false, title: "添加宝宝", leftSel: nil, rightSel: #selector(self.confirmAddBaby), rightTitle: "确定")
+            self.navigationBarItem(false, title: "添加宝宝", leftSel: nil, rightSel: #selector(self.confirmAddBaby), rightTitle: "保存")
             var babyData:[BabyInfo] = []
             var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: "请输入姓名", infoType: 0)
             babyData.append(baby)
@@ -361,8 +361,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     }
     
     func datePickerReturn(dateString: String!) {
-        let dates = dateString.componentsSeparatedByString("-")
-        self.babyInfo.subItem = dates.joinWithSeparator(".")
+        self.babyInfo.subItem = dateString
         if let babyView = self.babyEditView {
             babyView.reloadTableViewCell(self.babyIndexPath, baby: self.babyInfo)
         }
@@ -376,8 +375,9 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                         if let error = errorCode{
                             if error == PASSCODE{
                                 if weakSelf.editDelegate != nil{
-                                    weakSelf.editDelegate.reloadBabySection()
+                                    weakSelf.editDelegate.reloadBabySection(baby)
                                 }
+                                weakSelf.navigationController?.popViewControllerAnimated(true)
                             }else{
                                 HUD.showText("添加失败:\(error)", onView: weakSelf.view)
                             }

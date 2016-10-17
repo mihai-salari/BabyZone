@@ -190,7 +190,7 @@ class PersonInfoCell: UITableViewCell {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
-        self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: ScreenWidth - 20, height: self.contentView.frame.height)
+        self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: ScreenWidth - 20, height: 50)
         let mainLabel = UILabel.init(frame: CGRect(x: 20, y: 0, width: self.contentView.frame.width / 2 - 20, height: self.contentView.frame.height))
         mainLabel.text = model.mainTitle
         mainLabel.font = UIFont.boldSystemFontOfSize(14)
@@ -199,7 +199,6 @@ class PersonInfoCell: UITableViewCell {
         
         let imageViewWidth = self.contentView.frame.height * (2 / 3)
         if model.isHeader == true{
-            
             let imageView = UIImageView.init(frame: CGRect(x: self.contentView.frame.width - 2 * imageViewWidth, y: (self.contentView.frame.height - imageViewWidth) / 2, width: imageViewWidth, height: imageViewWidth))
             if model.subItem == "" {
                 imageView.image = UIImage.imageWithName("mamaHeader.png")
@@ -211,7 +210,7 @@ class PersonInfoCell: UITableViewCell {
             imageView.layer.masksToBounds = true
             self.contentView.addSubview(imageView)
         }else{
-            let subLabel = UILabel.init(frame: CGRect(x: self.contentView.frame.width / 2, y: (self.contentView.frame.height - imageViewWidth) / 2, width: self.contentView.frame.width / 2 - 30, height: imageViewWidth))
+            let subLabel = UILabel.init(frame: CGRect(x: self.contentView.frame.width / 2, y: 0, width: self.contentView.frame.width / 2 - 30, height: 50))
             subLabel.textColor = UIColor.lightGrayColor()
             subLabel.text = model.subItem
             subLabel.font = UIFont.systemFontOfSize(10)

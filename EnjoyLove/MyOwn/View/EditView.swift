@@ -502,11 +502,13 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
     
     func fetchAddBabyResult() -> AddBaby? {
         if let baby = self.addBaby {
-            if baby.sex != "1" || baby.sex != "2" {
+            if baby.sex != "1" && baby.sex != "2" {
                 HUD.showText("请选择孩子的性别", onView: self)
+                return nil
             }
             if baby.birthday == "" {
                 HUD.showText("请填写孩子的生日", onView: self)
+                return nil
             }
             if (baby.sex == "1" || baby.sex == "2") && baby.birthday != "" {
                 return baby

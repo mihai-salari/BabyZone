@@ -76,17 +76,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         
         let headerModel = MyOwnHeader()
         self.section1Data.append(headerModel)
-        
-        PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
-            if let weakSelf = self{
-                if let code = errorCode{
-                    if code == PASSCODE{
-                        weakSelf.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-                    }
-                }
-            }
-        }
-        
+                
         var rowData:[MyOwnNormalRowData] = []
         var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
         rowData.append(model)

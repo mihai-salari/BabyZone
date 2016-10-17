@@ -41,7 +41,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "661"
             endingLineNumber = "661"
-            landmarkName = "-onSessionIdError:"
+            landmarkName = "-onReceiveAlarmMessage:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -91,6 +91,38 @@
             endingLineNumber = "242"
             landmarkName = "receiveRemoteMessage(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EnjoyLove.BabyVideoViewController.receiveRemoteMessage (__ObjC.NSNotification) -&gt; ()"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+                  timestampString = "498408047.280084"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "242"
+                  endingLineNumber = "242"
+                  offsetFromSymbolStart = "588">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EnjoyLove.BabyVideoViewController.receiveRemoteMessage (__ObjC.NSNotification) -&gt; ()"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+                  timestampString = "498408047.281372"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "242"
+                  endingLineNumber = "242"
+                  offsetFromSymbolStart = "660">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -115,13 +147,13 @@
                   symbolName = "EnjoyLove.BabyVideoViewController.ack_receiveRemoteMessage (__ObjC.NSNotification) -&gt; ()"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-                  timestampString = "498390099.124575"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+                  timestampString = "498408047.283918"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "270"
                   endingLineNumber = "270"
-                  offsetFromSymbolStart = "684">
+                  offsetFromSymbolStart = "200">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -130,13 +162,13 @@
                   symbolName = "EnjoyLove.BabyVideoViewController.ack_receiveRemoteMessage (__ObjC.NSNotification) -&gt; ()"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-                  timestampString = "498390099.125828"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+                  timestampString = "498408047.285174"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "270"
                   endingLineNumber = "270"
-                  offsetFromSymbolStart = "756">
+                  offsetFromSymbolStart = "560">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -163,13 +195,13 @@
                   symbolName = "__93-[QRCodeNextController searchDeviceWithUdpSocket:receivedData:fromAddress:withFilterContext:]_block_invoke"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyOwn/Controller/QRCodeNextController.mm"
-                  timestampString = "498390099.128394"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyOwn/Controller/QRCodeNextController.mm"
+                  timestampString = "498408047.287751"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
                   endingLineNumber = "411"
-                  offsetFromSymbolStart = "794">
+                  offsetFromSymbolStart = "772">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -178,13 +210,13 @@
                   symbolName = "__93-[QRCodeNextController searchDeviceWithUdpSocket:receivedData:fromAddress:withFilterContext:]_block_invoke_2"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyOwn/Controller/QRCodeNextController.mm"
-                  timestampString = "498390099.129774"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyOwn/Controller/QRCodeNextController.mm"
+                  timestampString = "498408047.288991"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
                   endingLineNumber = "411"
-                  offsetFromSymbolStart = "8">
+                  offsetFromSymbolStart = "20">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -267,6 +299,38 @@
             endingLineNumber = "565"
             landmarkName = "-ack_receiveRemoteMessage:"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[AppDelegate ack_receiveRemoteMessage:]_block_invoke.446"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/AppDelegate.m"
+                  timestampString = "498408047.300533"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "566"
+                  endingLineNumber = "566"
+                  offsetFromSymbolStart = "1528">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[AppDelegate ack_receiveRemoteMessage:]_block_invoke.465"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/AppDelegate.m"
+                  timestampString = "498408047.301762"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "566"
+                  endingLineNumber = "566"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -283,70 +347,38 @@
             endingLineNumber = "609"
             landmarkName = "-ack_receiveRemoteMessage:"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyMainViewController.swift"
-            timestampString = "498379474.735725"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
-            landmarkName = "P2PClientCalling(info:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyMainViewController.swift"
-            timestampString = "498379474.735725"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
-            landmarkName = "P2PClientReady(info:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyMainViewController.swift"
-            timestampString = "498379474.735725"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "207"
-            endingLineNumber = "207"
-            landmarkName = "P2PClientAccept(info:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyMainViewController.swift"
-            timestampString = "498379474.735725"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
-            landmarkName = "P2PClientReject(info:)"
-            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[AppDelegate ack_receiveRemoteMessage:]_block_invoke.474"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/AppDelegate.m"
+                  timestampString = "498408047.304276"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "609"
+                  endingLineNumber = "609"
+                  offsetFromSymbolStart = "1528">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[AppDelegate ack_receiveRemoteMessage:]_block_invoke.483"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/AppDelegate.m"
+                  timestampString = "498408047.305496"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "609"
+                  endingLineNumber = "609"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -377,7 +409,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "490"
             endingLineNumber = "490"
-            landmarkName = "-receiveRemoteMessage:"
+            landmarkName = "-ack_receiveRemoteMessage:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

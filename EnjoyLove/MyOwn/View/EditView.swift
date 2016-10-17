@@ -31,8 +31,18 @@ class EditHeaderView: UIView {
         }
     }
     
+    var uploadProgress:Float = 0{
+        didSet{
+            if let progressL = self.progressLabel {
+                progressL.text = "上传中\(uploadProgress * 100)%"
+            }
+        }
+    }
+    
+    
     private var headerImageView:UIImageView!
     private var loadView:UIView!
+    private var progressLabel:UILabel!
     private var tipView:UIView!
     
     init(frame: CGRect,image:String) {
@@ -69,19 +79,29 @@ class EditHeaderView: UIView {
         let imageViewWidth = self.tipView.frame.width * (2 / 3)
         let tipLabelHeight = self.tipView.frame.width * (1 / 3)
         let imageView = UIImageView.init(frame: CGRect(x: (self.tipView.frame.width - imageViewWidth) / 2, y: 0, width: imageViewWidth, height: imageViewWidth))
-        let tipLabel = UILabel.init(frame: CGRect(x: 0, y: imageView.frame.maxY, width: self.tipView.frame.width, height: tipLabelHeight))
-        tipLabel.font = UIFont.systemFontOfSize(10)
-        tipLabel.textColor = UIColor.hexStringToColor("#db6773")
-        tipLabel.textAlignment = .Center
+        
         if loaded == true {
+            if self.progressLabel != nil {
+                self.progressLabel.removeFromSuperview()
+            }
+            let tipLabel = UILabel.init(frame: CGRect(x: 0, y: imageView.frame.maxY, width: self.tipView.frame.width, height: tipLabelHeight))
+            tipLabel.font = UIFont.systemFontOfSize(10)
+            tipLabel.textColor = UIColor.hexStringToColor("#db6773")
+            tipLabel.textAlignment = .Center
             imageView.image = UIImage.imageWithName("myOwnSuccess.png")
             tipLabel.text = "上传完成"
+            self.tipView.addSubview(tipLabel)
         }else{
+            self.progressLabel = UILabel.init(frame: CGRect(x: 0, y: imageView.frame.maxY, width: self.tipView.frame.width, height: tipLabelHeight))
+            self.progressLabel.font = UIFont.systemFontOfSize(10)
+            self.progressLabel.textColor = UIColor.hexStringToColor("#db6773")
+            self.progressLabel.textAlignment = .Center
             imageView.image = UIImage.imageWithName("myOwnLoading.png")
-            tipLabel.text = "上传中"
+            self.progressLabel.text = "上传中"
+            self.tipView.addSubview(self.progressLabel)
         }
         self.tipView.addSubview(imageView)
-        self.tipView.addSubview(tipLabel)
+        
     }
     
     func removeMask() -> Void {

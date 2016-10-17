@@ -27,9 +27,15 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.navigationBarItem(title: "我的", leftSel: nil, rightSel: nil)
         self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
-        if let table = self.myOwnTable {
-            table.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+        
+        let personChange = personInformationChange()
+        if personChange == true {
+            if let table = self.myOwnTable {
+                table.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+                setPersonInformationChange(false)
+            }
         }
+        
     }
     
     override func viewDidLoad() {
@@ -52,7 +58,6 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     private func initializeTableView(){
         
         self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
-        
         self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
         self.myOwnTable.scrollEnabled = false
         self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
@@ -72,14 +77,17 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         let headerModel = MyOwnHeader()
         self.section1Data.append(headerModel)
         
-        PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
-            if let weakSelf = self{
-                if let code = errorCode{
-                    if code == PASSCODE{
-                        weakSelf.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+        let personChange = personInformationChange()
+        if personChange == true {
+            PersonDetail.sendAsyncPersonDetail {[weak self] (errorCode, msg) in
+                if let weakSelf = self{
+                    if let code = errorCode{
+                        if code == PASSCODE{
+                            weakSelf.myOwnTable.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+                        }
                     }
+                    
                 }
-                
             }
         }
         

@@ -302,22 +302,39 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerEditedImage] as? UIImage, let headerView = self.headerEditView {
-            headerView.refreshWithMask(false)
             //baby : http://oco9loo2g.bkt.clouddn.com/2016-10-15+14:56:55_pic.png
             //xiangai : http://of0k04nl6.bkt.clouddn.com/image
+            headerView.refreshWithMask(false)
             QiNiu.uploadImage("baby",image: image, progressHandler: { (key:String!, progress:Float) in
+                headerView.uploadProgress = progress
                 if Int(progress) == 1{
                     headerView.headImage = image
                 }
                 }, successHandler: { (url, fileName) in
-                    headerView.refreshWithMask(true)
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 person.headImg = fileName
                                 if let modifyResult = PersonDetailBL.modify(person) {
                                     if modifyResult.headImg != ""{
-                                        headerView.removeMask()
+                                        let uploadQueue = dispatch_queue_create("uploadImageQueue", nil)
+                                        uploadQueue.queue({ 
+                                            PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: modifyResult.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { [weak self](errorCode, msg) in
+                                                if let error = errorCode{
+                                                    if error == BabyZoneConfig.shared.passCode{
+                                                        dispatch_get_main_queue().queue({
+                                                            headerView.removeMask()
+                                                            if let weakSelf = self{
+                                                                if weakSelf.editDelegate != nil{
+                                                                    weakSelf.editModel.subItem = modifyResult.headImg
+                                                                    weakSelf.editDelegate.fetchPersonInfo(weakSelf.editModel)
+                                                                }
+                                                            }
+                                                        })
+                                                    }
+                                                }
+                                            })
+                                        })
                                     }
                                 }
                             }

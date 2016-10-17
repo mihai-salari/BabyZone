@@ -554,6 +554,14 @@ extension UIButton{
     }
 }
 
+extension dispatch_queue_t{
+    func queue(block:dispatch_block_t) -> Void{
+        dispatch_async(self, block)
+    }
+}
+
+
+
 
 extension NSMutableArray{
     

@@ -238,6 +238,7 @@ extension PersonDetail {
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
+                                setPersonInformationChange(true)
                                 person.nickName = nickName
                                 person.sex = sex
                                 person.headImg = headImg

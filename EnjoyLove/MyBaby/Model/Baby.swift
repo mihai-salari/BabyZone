@@ -82,6 +82,16 @@ struct PlayDetail {
     var subItem = ""
 }
 
+struct ChildEquipmentList {
+    var userRemark = ""
+    var eqmDesc = ""
+    
+}
+
+struct ChildEquipment {
+    var title = ""
+    var eqmChildList:[ChildEquipmentList]!
+}
 
 
 

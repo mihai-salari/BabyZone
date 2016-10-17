@@ -319,8 +319,9 @@ class ResetPassword: NSObject {
 
 //MARK___宝宝___
 private let babyListUrl = baseEnjoyLoveUrl + "/api/user/babyList"
-private let addBabyUrl = baseEnjoyLoveUrl + ""
-private let modifyBabyUrl = baseEnjoyLoveUrl + ""
+private let addBabyUrl = baseEnjoyLoveUrl + "/api/user/addBaby"
+private let modifyBabyUrl = baseEnjoyLoveUrl + "/api/user/updateBaby"
+private let deleteBabyUrl = baseEnjoyLoveUrl + "/api/user/deleteBaby"
 extension BabyList{
     
     /*
@@ -407,6 +408,30 @@ extension BabyList{
             }
         }
     }
+    
+    class func sendAsyncDeleteBaby(idUserBabyInfo:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(modifyBabyUrl, parameters: ["idUserBabyInfo":idUserBabyInfo], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if errorCode == PASSCODE {
+                    if let babyInfo = BabyListBL.find(nil, key: idUserBabyInfo){
+                        BabyListBL.delete(babyInfo)
+                    }
+                }
+                
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+    
+    
 }
 /**
  *  添加设备
@@ -648,7 +673,7 @@ extension ChildAccount{
     
     
     class func sendAsyncDeleteChildAccount(idUserChildInfo:String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ModifyChildAccountUrl, parameters: ["idUserChildInfo":idUserChildInfo], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(DeleteChildAccountUrl, parameters: ["idUserChildInfo":idUserChildInfo], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
@@ -796,363 +821,14 @@ extension ChildEquipments{
             }
         }
     }
+}
+//MARK:___Diary___
+private let UserNoteListUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteList"
+private let AddUserNoteUrl = baseEnjoyLoveUrl + "/api/user/addUserNote"
+private let DeleteUserNoteUrl = baseEnjoyLoveUrl + "/api/user/deleteUserNote"
+extension Diary{
     
     
-    
 }
 
-/**
- *  我的设备子帐号列表
- */
-//MARK:我的设备子帐号列表
-private let ChildEquipmentUrl = baseEnjoyLoveUrl + ""
-class ChildEquipment: NSObject {
-    var errorCode = ""
-    var msg = ""
-    var title = ""
-    
-    var eqmChildList:[ChildEquipmentList]!
-    /*
-     
-     eqmChildList
-     (列表)	
-     
-     idUserEqmInfo	int	是	用户设备id
-     idEqmInfo	int	是	设备id
-     userRemark	string	是	用户备注名称
 
-     */
-    class func sendAsyncChildEquipment(completionHandler:((eqmChild:ChildEquipment!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ChildEquipmentUrl, parameters: nil, success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let child = ChildEquipment()
-                child.errorCode = format(response["errorCode"])
-                child.msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
-                    if let dataList = data["eqmChildList"] as? [[String:ChildEquipmentList]]{
-                        child.eqmChildList = []
-                        for childEqmList in dataList{
-                            let childList = ChildEquipmentList()
-                            childList.idUserEqmInfo = format(childEqmList["idUserEqmInfo"])
-                            childList.idEqmInfo = format(childEqmList["idEqmInfo"])
-                            childList.userRemark = format(childEqmList["userRemark"])
-                            child.eqmChildList.append(childList)
-                        }
-                    }
-                }
-                if let handle = completionHandler{
-                    handle(eqmChild: child)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(eqmChild: nil)
-                }
-        }
-    }
-}
-
-class ChildEquipmentList: NSObject {
-    var idUserEqmInfo = ""
-    var idEqmInfo = ""
-    var userRemark = ""
-    var eqmDesc = "滑动删除该账户"
-}
-
-/**
- *  添加设备子帐号
- */
-//MARK:添加设备子帐号
-private let AddChildEquipmentUrl = baseEnjoyLoveUrl + ""
-class AddChildEquipment: NSObject {
-    var errorCode = ""
-    var msg = ""
-    var idUserEqmInfo = ""
-    /*
-     idEqmInfo		int		设备id
-     mobile		string		绑定用户手机
-     userRemark		string		用户备注名称
-     eqmUserName		string		设备用户名
-     eqmUserPwd		string		设备密码
-
-     */
-    class func sendAsyncAddChildEquipment(idEqmInfo:String, mobile:String, userRemark:String, eqmUserName:String, eqmUserPwd:String, completionHandler:((addChild:AddChildEquipment!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(AddChildEquipmentUrl, parameters: ["idEqmInfo":idEqmInfo,"mobile":mobile,"userRemark":userRemark,"eqmUserName":eqmUserName,"eqmUserPwd":eqmUserPwd], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let add = AddChildEquipment()
-                add.errorCode = format(response["errorCode"])
-                add.msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
-                    add.idUserEqmInfo = format(data["idUserEqmInfo"])
-                }
-                if let handle = completionHandler{
-                    handle(addChild: add)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(addChild: nil)
-                }
-        }
-    }
-}
-
-/**
- *  修改设备子帐号
- */
-//MARK:__修改设备子帐号__
-private let ModifyChildUserEquipmentUrl = baseEnjoyLoveUrl + ""
-class ModifyChildUserEquipment: NSObject {
-    var errorCode = ""
-    var msg = ""
-    /*
-     idUserEqmInfo		int	是	用户设备id
-     mobile		string		绑定用户手机
-     userRemark		string		用户备注名称
-     eqmUserName		string		设备用户名
-     eqmUserPwd		string		设备密码
-
-     */
-    class func sendAsyncModifyChildUserEquipment(idUserEqmInfo:String, mobile:String, userRemark:String, eqmUserName:String, eqmUserPwd:String, completionHandler:((modifyChild:ModifyChildUserEquipment!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ModifyChildUserEquipmentUrl, parameters: ["idUserEqmInfo":idUserEqmInfo,"mobile":mobile,"userRemark":userRemark,"eqmUserName":eqmUserName,"eqmUserPwd":eqmUserPwd], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let modify = ModifyChildUserEquipment()
-                modify.errorCode = format(response["errorCode"])
-                modify.msg = format(response["msg"])
-                if let handle = completionHandler{
-                    handle(modifyChild: modify)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(modifyChild: nil)
-                }
-        }
-    }
-}
-
-/**
- *  设备子帐号权限详情
- */
-//MARK:___设备子帐号权限详情___
-private let ChildPermissonUrl = baseEnjoyLoveUrl + ""
-class ChildPermisson: NSObject {
-    /*
-     idUserEqmInfo		int	是	用户设备id
-     permission1		int		权限1（1：有 2：无）
-     Permission2		int		权限2（1：有 2：无）
-     Permission3		int		权限3（1：有 2：无）
-
-     */
-    var idUserEqmInfo = ""
-    var permission1 = ""
-    var Permission2 = ""
-    var Permission3 = ""
-    var errorCode = ""
-    var msg = ""
-    /*
-        idUserEqmInfo		int	是	用户设备id
-     */
-    class func sendAsyncChildPermisson(idUserEqmInfo:String, completionHandler:((permisson:ChildPermisson!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ChildPermissonUrl, parameters: ["idUserEqmInfo":idUserEqmInfo], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let permisson = ChildPermisson()
-                permisson.errorCode = format(response["errorCode"])
-                permisson.msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
-                    permisson.idUserEqmInfo = format(data["idUserEqmInfo"])
-                    permisson.permission1 = format(data["permission1"])
-                    permisson.Permission2 = format(data["Permission2"])
-                    permisson.Permission3 = format(data["Permission3"])
-                }
-                if let handle = completionHandler{
-                    handle(permisson: permisson)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(permisson: nil)
-                }
-        }
-    }
-}
-
-//MARK: 修改设备子帐号权限
-private let ModifyChildPermissonUrl = baseEnjoyLoveUrl + ""
-class ModifyChildPermisson: NSObject {
-    var errorCode = ""
-    var msg = ""
-    
-    /*
-     idUserEqmInfo		int	是	用户设备id
-     permission1		int		权限1（1：有 2：无）
-     Permission2		int		权限2（1：有 2：无）
-     Permission3		int		权限3（1：有 2：无）
-     */
-    
-    class func sendAsyncModifyChildPermisson(idUserEqmInfo:String, permission1:String, Permission2:String, Permission3:String, completionHandler:((modify:ModifyChildPermisson!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ModifyChildPermissonUrl, parameters: ["idUserEqmInfo":idUserEqmInfo,"permission1":permission1,"Permission2":Permission2,"Permission3":Permission3], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let modify = ModifyChildPermisson()
-                modify.errorCode = format(response["errorCode"])
-                modify.msg = format(response["msg"])
-                if let handle = completionHandler{
-                    handle(modify: modify)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(modify: nil)
-                }
-        }
-    }
-}
-
-/**
- *  获取我的孕期日记列表
- */
-//MARK:获取我的孕期日记列表
-private let PregnancyDiaryListUrl = baseEnjoyLoveUrl + ""
-
-class PregnancyDiary: NSObject {
-    /*
-     moodStatus		int	是	心情（1：非常愉快 2：愉快 3：一般 4：不开心 5：好难过）
-     weight		int	是	体重（g）
-     bodyStatus		int		身体状态（多个用英文逗号隔开）
-     content		string		内容
-     imgUrls		string		图片（多个用分号隔开）
-     motherStatusDay		int	是	妈妈状态天数
-     createTime		string	是	创建时间(yyyy-MM-dd HH:mm:ss)
-
-     */
-    var moodStatus = ""
-    var weight = ""
-    var bodyStatus = ""
-    var content = ""
-    var imgUrls:[String]!
-    var motherStatusDay = ""
-    var createTime = ""
-    var errorCode = ""
-    var msg = ""
-    
-    /*
-     pageIndex		int	是	当前页
-     pageSize		int	是	每页页数（最多30条）
-     */
-    class func sendAsyncPregnancyDiaryList(pageIndex:String, pageSize:String, completionHandler:((diary:PregnancyDiary!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(PregnancyDiaryListUrl, parameters: ["pageIndex":pageIndex,"pageSize":pageSize], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let diary = PregnancyDiary()
-                diary.errorCode = format(response["errorCode"])
-                diary.msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
-                    diary.moodStatus = format(data["moodStatus"])
-                    diary.weight = format(data["weight"])
-                    diary.bodyStatus = format(data["bodyStatus"])
-                    if let imageUrls = data["imgUrls"]{
-                        diary.imgUrls = format(imageUrls).componentsSeparatedByString(",")
-                    }
-                    diary.motherStatusDay = format(data["motherStatusDay"])
-                    diary.createTime = format(data["createTime"])
-                }
-                if let handle = completionHandler{
-                    handle(diary: diary)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(diary: nil)
-                }
-        }
-    }
-}
-
-/**
- *  添加我的孕期日记
- */
-//MARK:添加我的孕期日记
-private let AddPregnancyDiaryUrl = baseEnjoyLoveUrl + ""
-class AddPregnancyDiary: NSObject {
-    /*
-     idUserNoteInfo		int	是	日记ID
-     */
-    var idUserNoteInfo = ""
-    var errorCode = ""
-    var msg = ""
-    /*
-     moodStatus		int	是	心情（1：非常愉快 2：愉快 3：一般 4：不开心 5：好难过）
-     weight		int	是	体重（g）
-     bodyStatus		int		身体状态（多个用英文逗号隔开）
-     content		string		内容
-     imgUrls		string		图片（多个用分号隔开）
-     motherStatusDay		int	是	妈妈状态天数
-
-     */
-    class func sendAsyncAddPregnancyDiary(moodStatus:String, weight:String, bodyStatus:[String]?, content:String = "", imgUrls:[String]?, motherStatusDay:String, completionHandler:((addDiary:AddPregnancyDiary!)->())?){
-        var bodyStatusStr = ""
-        if let status = bodyStatus {
-            for i in 0 ..< status.count {
-                if i < status.count - 1 {
-                    bodyStatusStr += status[i] + ","
-                }else{
-                    bodyStatusStr += status[i]
-                }
-            }
-        }
-        
-        var imgUrlsStr = ""
-        if let imageUrls = imgUrls {
-            for i in 0 ..< imageUrls.count {
-                if i < imageUrls.count - 1 {
-                    imgUrlsStr += imageUrls[i] + ","
-                }else{
-                    imgUrlsStr += imageUrls[i]
-                }
-            }
-        }
-        HTTPEngine.sharedEngine().postAsyncWith(AddPregnancyDiaryUrl, parameters: ["moodStatus":moodStatus,"weight":weight,"bodyStatus":bodyStatusStr,"content":content,"imgUrls":imgUrlsStr,"motherStatusDay":motherStatusDay], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let add = AddPregnancyDiary()
-                add.errorCode = format(response["errorCode"])
-                add.msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
-                    add.idUserNoteInfo = format(data["idUserNoteInfo"])
-                }
-                if let handle = completionHandler{
-                    handle(addDiary: add)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(addDiary: nil)
-                }
-        }
-    }
-}
-
-/**
- *  删除我的孕期日记
- */
-//MARK:删除我的孕期日记
-private let DeletePregnancyDiaryUrl = baseEnjoyLoveUrl + ""
-class DeletePregnancyDiary: NSObject {
-    var errorCode = ""
-    var msg = ""
-    
-    class func sendAsyncDelegatePregnancyDiary(idUserNoteInfo:String, completionHandler:((deleteDiary:DeletePregnancyDiary!)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(DeletePregnancyDiaryUrl, parameters: ["idUserNoteInfo":idUserNoteInfo], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let deleteDiary = DeletePregnancyDiary()
-                deleteDiary.errorCode = format(response["errorCode"])
-                deleteDiary.msg = format(response["msg"])
-                if let handle = completionHandler{
-                    handle(deleteDiary: deleteDiary)
-                }
-            }
-            }) { (dataTask, error) in
-                if let handle = completionHandler{
-                    handle(deleteDiary: nil)
-                }
-        }
-    }
-}

@@ -10,6 +10,49 @@ import UIKit
 
 
 //MARK:_____咨讯中心接口_____
+private let BabyBaseInfoUrl = baseEnjoyLoveUrl + "/api/user/getBabyBaseInfo"
+extension BabyBaseInfo{
+    /*
+     idComBabyBaseInfo		int	是	主键
+     infoType		int	是	数据类型：1：怀孕2育儿
+     day		int	是	天数 （根据当info_type 1=怀孕天数  2=育儿天数）
+     minWeight		double	是	最小体重（g）
+     maxWeight		double	是	最大体重（g）
+     minHeight		double	是	最小身高（cm）
+     maxHeight		double	是	最大身高（cm）
+     minHead		double	是	最小头围（cm）
+     maxHead		double	是	最大头围（cm）
+
+     */
+    class func sendAsyncBabyBaseInfo(completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(PregnancyBaseDataUrl, parameters: nil, success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let data = response["data"] as? [String:NSObject]{
+                    let info = BabyBaseInfo()
+                    info.idComBabyBaseInfo = format(data["idComBabyBaseInfo"])
+                    info.day = format(data["day"])
+                    info.infoType = format(data["infoType"])
+                    info.minWeight = format(data["minWeight"])
+                    info.maxWeight = format(data["maxWeight"])
+                    info.minHeight = format(data["minHeight"])
+                    info.maxHeight = format(data["maxHeight"])
+                    info.minHead = format(data["minHead"])
+                    info.maxHead = format(data["maxHead"])
+                    BabyBaseInfoBL.insert(info)
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+}
 
 /**
  *  获取孕期基础数据(根据怀孕天数获取)

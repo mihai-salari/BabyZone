@@ -36,13 +36,10 @@ class BabyVideoViewController: BaseViewController {
                 p2p.callId = contact.contactId
                 p2p.callPassword = contact.contactPassword
                 p2p.p2pCallType = P2PCALL_TYPE_MONITOR
-                if AppDelegate.sharedDefault().isDoorBellAlarm {
-                    if let contactId = p2p.callId, let contactPassword = p2p.callPassword {
-                        p2p.sendCustomCmdWithId(contactId, password: contactPassword, cmd: "IPC1anerfa:connect")
-                    }
+                if let contactId = p2p.callId, let contactPassword = p2p.callPassword {
+                    p2p.sendCustomCmdWithId(contactId, password: contactPassword, cmd: "IPC1anerfa:connect")
                 }
             }
-            
             
             AppDelegate.sharedDefault().monitoredContactId = contact.contactId
             if AppDelegate.sharedDefault().isMonitoring {
@@ -55,7 +52,16 @@ class BabyVideoViewController: BaseViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.initialize()
+        if self.deviceContact != nil {
+            self.initialize()
+        }else{
+            self.view.backgroundColor = UIColor.whiteColor()
+            let label = UILabel.init(frame: self.view.bounds)
+            label.text = "正在开发..."
+            label.textAlignment = .Center
+            self.view.addSubview(label)
+            
+        }
         
     }
     
@@ -131,7 +137,25 @@ class BabyVideoViewController: BaseViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    
+    private func loginSuccess(result:LoginResult){
+        let settings = UIUserNotificationSettings.init(forTypes: [.Badge, .Sound, .Alert], categories: nil)
+        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        UIApplication.sharedApplication().registerForRemoteNotifications()
+        
+        UDManager.setIsLogin(true)
+        UDManager.setLoginInfo(result)
+        NetManager.sharedManager().getAccountInfo(result.contactId, sessionId: result.sessionId) { (JSON) in
+            if let accounntResult = JSON as? AccountResult{
+                result.email = accounntResult.email
+                result.phone = accounntResult.phone
+                result.countryCode = accounntResult.countryCode
+                UDManager.setLoginInfo(result)
+            }
+        }
+        if let p2p = P2PClient.sharedClient(){
+            p2p.callId = result.contactId
+        }
+    }
     
     //MARK:___ROTATE____
     func onDeviceOrientationChange(notification:NSNotification) -> Void {
@@ -288,6 +312,8 @@ class BabyVideoViewController: BaseViewController {
         }
         self.isPlaying = false
     }
+    
+    
     
     /*
     // MARK: - Navigation

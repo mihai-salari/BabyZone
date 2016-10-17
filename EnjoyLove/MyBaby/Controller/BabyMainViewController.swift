@@ -14,7 +14,7 @@ private let faceHeight:CGFloat = upRateWidth(55)
 private let faceNumberWidth:CGFloat = upRateWidth(15)
 private let lineBeginX:CGFloat = upRateWidth(15)
 
-class BabyMainViewController: BaseViewController {
+class BabyMainViewController: BaseViewController,P2PClientDelegate {
 
             /// 宝宝数据
     private var babyData:[Baby]!
@@ -36,61 +36,76 @@ class BabyMainViewController: BaseViewController {
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
             self.navigationBarItem(title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
-            self.videoLogin()
+            self.setVideoMonitor()
             self.initialize()
         }
     }
     
+    private func setVideoMonitor() ->Void{
+        
+        self.videoLogin()
+        
+        var result = false
+        if AppDelegate.sharedDefault().dwApContactID == 0 {
+            let loginResult = UDManager.getLoginInfo()
+            result = P2PClient.sharedClient().p2pConnectWithId(loginResult.contactId, codeStr1: loginResult.rCode1, codeStr2: loginResult.rCode2)
+        }else{
+            result = P2PClient.sharedClient().p2pConnectWithId("0517401", codeStr1: "0", codeStr2: "0")
+        }
+        
+        if result == true {
+            P2PClient.sharedClient().delegate = self
+        }else{
+            self.videoLogin()
+        }
+    }
     
     private func videoLogin() -> Void {
         if UDManager.isLogin() == true {
             return
-        }
-        if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
-            if let base = LoginBL.find(nil, key: phone) {
-                if let token = NSUserDefaults.standardUserDefaults().objectForKey(HMTokenKey) as? String {
-                    var countryCode = "86"
-                    let language = NSLocale.preferredLanguages()[0]
-                    if language.hasPrefix("zh") {
-                        countryCode = "86"
-                    }else{
-                        countryCode = "1"
-                    }
-                    let videoPhone = "+\(countryCode)-\(phone)"
-                    NetManager.sharedManager().loginWithUserName(videoPhone, password: base.password, token: token, callBack: { [weak self](result) in
-                        if let weakSelf = self{
-                            var contact = ""
-                            if let callback = result as? LoginResult{
-                                var registNumer:NSNumber!
-                                switch callback.error_code{
-                                case NET_RET_LOGIN_SUCCESS:
-                                    contact = callback.contactId
-                                    weakSelf.loginSuccess(callback)
-                                    registNumer = NSNumber.init(bool: true)
-                                default:
-                                    registNumer = NSNumber.init(bool: false)
-                                    UDManager.setIsLogin(false)
-                                }
-                                
-                                if let baseInfo = LoginBL.find(nil, key: phone){
-                                    baseInfo.userPhone = phone
-                                    baseInfo.userName = phone
-                                    baseInfo.isRegist = registNumer
-                                    baseInfo.contactId = contact
-                                    LoginBL.modify(baseInfo)
-                                }
-                                
-                                
-                                NSUserDefaults.standardUserDefaults().setObject(phone, forKey: UserPhoneKey)
-                                weakSelf.dismissViewControllerAnimated(true, completion: nil)
-                            }
+        }else{
+            if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
+                if let base = LoginBL.find(nil, key: phone) {
+                    if let token = NSUserDefaults.standardUserDefaults().objectForKey(HMTokenKey) as? String {
+                        var countryCode = "86"
+                        let language = NSLocale.preferredLanguages()[0]
+                        if language.hasPrefix("zh") {
+                            countryCode = "86"
+                        }else{
+                            countryCode = "1"
                         }
-                        })
+                        let videoPhone = "+\(countryCode)-\(phone)"
+                        NetManager.sharedManager().loginWithUserName(videoPhone, password: base.password, token: token, callBack: { [weak self](result) in
+                            if let weakSelf = self{
+                                var contact = ""
+                                if let callback = result as? LoginResult{
+                                    var registNumer:NSNumber!
+                                    switch callback.error_code{
+                                    case NET_RET_LOGIN_SUCCESS:
+                                        contact = callback.contactId
+                                        weakSelf.loginSuccess(callback)
+                                        registNumer = NSNumber.init(bool: true)
+                                    default:
+                                        registNumer = NSNumber.init(bool: false)
+                                        UDManager.setIsLogin(false)
+                                    }
+                                    
+                                    if let baseInfo = LoginBL.find(nil, key: phone){
+                                        baseInfo.userPhone = phone
+                                        baseInfo.userName = phone
+                                        baseInfo.isRegist = registNumer
+                                        baseInfo.contactId = contact
+                                        LoginBL.modify(baseInfo)
+                                    }
+                                    NSUserDefaults.standardUserDefaults().setObject(phone, forKey: UserPhoneKey)
+                                }
+                            }
+                            })
+                    }
                 }
+                
             }
-            
         }
-        
     }
     
     override func viewDidLoad() {
@@ -173,9 +188,27 @@ class BabyMainViewController: BaseViewController {
                 UDManager.setLoginInfo(result)
             }
         }
-        if let p2p = P2PClient.sharedClient() as? P2PClient{
+        if let p2p = P2PClient.sharedClient(){
             p2p.callId = result.contactId
+            p2p.delegate = self
         }
+    }
+    
+    //MARK:___P2PClientDelegate____
+    func P2PClientCalling(info: [NSObject : AnyObject]!) {
+        print("Calling info \(info)")
+    }
+    
+    func P2PClientReady(info: [NSObject : AnyObject]!) {
+        print("Ready info \(info)")
+    }
+    
+    func P2PClientAccept(info: [NSObject : AnyObject]!) {
+        print("Accept info \(info)")
+    }
+    
+    func P2PClientReject(info: [NSObject : AnyObject]!) {
+        print("reject info \(info)")
     }
 
     /*

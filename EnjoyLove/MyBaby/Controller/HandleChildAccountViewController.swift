@@ -41,7 +41,7 @@ class HandleChildAccountViewController: BaseViewController,UITableViewDelegate,U
         var modelData:[ChildEquipmentList]! = []
         
         for i in 0 ..< self.childAccountList.count - 1 {
-            let model = ChildEquipmentList()
+            var model = ChildEquipmentList()
             model.userRemark = self.childAccountList[i].mainItem
             modelData.append(model)
         }

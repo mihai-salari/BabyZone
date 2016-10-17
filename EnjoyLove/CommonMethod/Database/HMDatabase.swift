@@ -758,6 +758,237 @@ class BabyListBL: NSObject {
     }
 }
 
+private let BabyBaseInfoArchiveKey = "BabyBaseInfoArchiveKey"
+private let BabyBaseInfoArchiveName = "BabyBaseInfoArchiveName.archive"
+class BabyBaseInfo: NSObject,NSCoding {
+    /*
+     idComBabyBaseInfo		int	是	主键
+     infoType		int	是	数据类型：1：怀孕2育儿
+     day		int	是	天数 （根据当info_type 1=怀孕天数  2=育儿天数）
+     minWeight		double	是	最小体重（g）
+     maxWeight		double	是	最大体重（g）
+     minHeight		double	是	最小身高（cm）
+     maxHeight		double	是	最大身高（cm）
+     minHead		double	是	最小头围（cm）
+     maxHead		double	是	最大头围（cm）
+
+     */
+
+    var idComBabyBaseInfo:String!
+    var infoType:String!
+    var day:String!
+    var minWeight:String!
+    var maxWeight:String!
+    var minHeight:String!
+    var maxHeight:String!
+    var minHead:String!
+    var maxHead:String!
+    
+    override init() {
+        self.idComBabyBaseInfo = ""
+        self.infoType = ""
+        self.day = ""
+        self.minWeight = ""
+        self.maxWeight = ""
+        self.minHeight = ""
+        self.maxHeight = ""
+        self.minHead = ""
+        self.maxHead = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("idComBabyBaseInfo") as? String {
+            self.idComBabyBaseInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("infoType") as? String {
+            self.infoType = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("day") as? String {
+            self.day = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("minWeight") as? String {
+            self.minWeight = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("maxWeight") as? String {
+            self.maxWeight = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("minHeight") as? String {
+            self.minHeight = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("maxHeight") as? String {
+            self.maxHeight = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("minHead") as? String {
+            self.minHead = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("maxHead") as? String {
+            self.maxHead = obj
+        }
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.idComBabyBaseInfo, forKey: "idComBabyBaseInfo")
+        aCoder.encodeObject(self.infoType, forKey: "infoType")
+        aCoder.encodeObject(self.day, forKey: "day")
+        aCoder.encodeObject(self.minWeight, forKey: "minWeight")
+        aCoder.encodeObject(self.maxWeight, forKey: "maxWeight")
+        aCoder.encodeObject(self.minHeight, forKey: "minHeight")
+        aCoder.encodeObject(self.maxHeight, forKey: "maxHeight")
+        aCoder.encodeObject(self.minHead, forKey: "minHead")
+        aCoder.encodeObject(self.maxHead, forKey: "maxHead")
+    }
+}
+
+class BabyBaseInfoDAO: NSObject {
+    static var shared:BabyBaseInfoDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:BabyBaseInfoDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = BabyBaseInfoDAO()
+        }
+        return DAO.dao!
+    }
+    
+    
+    func findAll() -> [BabyBaseInfo] {
+        var listData = [BabyBaseInfo]()
+        if let theData = NSData.init(contentsOfFile: BabyBaseInfoArchiveName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(BabyBaseInfoArchiveKey) as? [BabyBaseInfo]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:BabyBaseInfo) -> Bool {
+        var array = self.findAll()
+        for base in array {
+            if base.idComBabyBaseInfo == detail.idComBabyBaseInfo {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: BabyBaseInfoArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(BabyBaseInfoArchiveName.filePath(), atomically: true)
+        
+    }
+    
+    func delete(detail:BabyBaseInfo?, key:String = "") -> Bool {
+        var array = self.findAll()
+        for note in array {
+            var babyId = ""
+            if let list = detail {
+                babyId = list.idComBabyBaseInfo
+            }
+            let baseKey = key == "" ? babyId : key
+            if note.idComBabyBaseInfo == baseKey {
+                if let currentIndex = array.indexOf(note) {
+                    array.removeAtIndex(currentIndex)
+                }
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: BabyBaseInfoArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(BabyBaseInfoArchiveName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func modify(detail:BabyBaseInfo, key:String = "") -> Bool {
+        let array = self.findAll()
+        let baseKey = key == "" ? detail.idComBabyBaseInfo : key
+        for note in array {
+            
+            if note.idComBabyBaseInfo == baseKey {
+                if note.infoType != detail.infoType {
+                    note.infoType = detail.infoType
+                }
+                if note.day != detail.day {
+                    note.day = detail.day
+                }
+                if note.minWeight != detail.minWeight {
+                    note.minWeight = detail.minWeight
+                }
+                if note.maxWeight != detail.maxWeight {
+                    note.maxWeight = detail.maxWeight
+                }
+                if note.minHeight != detail.minHeight {
+                    note.minHeight = detail.minHeight
+                }
+                if note.maxHeight != detail.maxHeight {
+                    note.maxHeight = detail.maxHeight
+                }
+                if note.minHead != detail.minHead {
+                    note.minHead = detail.minHead
+                }
+                if note.maxHead != detail.maxHead {
+                    note.maxHead = detail.maxHead
+                }
+                
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: BabyBaseInfoArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(BabyBaseInfoArchiveName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func find(detail:BabyBaseInfo?, key:String = "") -> BabyBaseInfo? {
+        let array = self.findAll()
+        var result:BabyBaseInfo?
+        for note in array {
+            let userId = detail == nil ? "" : note.idComBabyBaseInfo
+            let baseKey = key == "" ? userId : key
+            if note.idComBabyBaseInfo == baseKey {
+                result = note
+            }
+        }
+        return result
+    }
+
+}
+
+class BabyBaseInfoBL: NSObject {
+    class func insert(detail:BabyBaseInfo) -> [BabyBaseInfo]{
+        let result = BabyBaseInfoDAO.shared.insert(detail)
+        print("baby list result \(result)")
+        return BabyBaseInfoDAO.shared.findAll()
+    }
+    
+    class func delete(detail:BabyBaseInfo, key:String = "") ->[BabyBaseInfo]{
+        BabyBaseInfoDAO.shared.delete(detail, key: key)
+        return BabyBaseInfoDAO.shared.findAll()
+    }
+    
+    class func modify(detail:BabyBaseInfo, key:String = "") ->[BabyBaseInfo]{
+        BabyBaseInfoDAO.shared.modify(detail, key: key)
+        return BabyBaseInfoDAO.shared.findAll()
+    }
+    
+    class func find(detail:BabyBaseInfo?, key:String = "") ->BabyBaseInfo?{
+        return BabyBaseInfoDAO.shared.find(detail, key: key)
+    }
+    
+}
+
 //MARK:____Equipments____
 private let EquipmentsArchiveKey = "EquipmentsArchive"
 private let EquipmentsArchiveFileName = "EquipmentsArchive.archive"
@@ -1318,6 +1549,241 @@ class ChildEquipmentsBL: NSObject {
     
     class func find(detail:ChildEquipments?, key:String = "") ->ChildEquipments{
         return ChildEquipmentsDAO.shared.find(detail, key: key)
+    }
+}
+
+//MARK:____Diary____
+private let DiaryArchiveKey = "DiaryArchiveKey"
+private let DiaryArchiveFileName = "DiaryArchive.archive"
+
+class Diary: NSObject,NSCoding {
+    /*
+     idUserNoteInfo	int	是	日记id
+     noteType	int	是	日记类型（1：备孕 2：怀孕3：育儿）
+     moodStatus	int	是	心情（1：非常愉快 2：愉快 3：一般 4：不开心 5：好难过）
+     noteLabel	string	是	（多个用、号隔开）
+     content	string		内容
+     imgUrls	string		图片（多个用分号隔开）
+     idUserBabyInfo	int		宝宝id
+     breedStatusDate	int		孕育状态天数
+     createTime	string	是	创建时间(yyyy-MM-dd HH:mm)
+
+     */
+    
+    var idUserNoteInfo:String!
+    var noteType:String!
+    var moodStatus:String!
+    var noteLabel:String!
+    var content:String!
+    var imgUrls:String!
+    var idUserBabyInfo:String!
+    var breedStatusDate:String!
+    var createTime:String!
+    
+    override init() {
+        self.idUserNoteInfo = ""
+        self.noteType = ""
+        self.moodStatus = ""
+        self.noteLabel = ""
+        self.content = ""
+        self.imgUrls = ""
+        self.idUserBabyInfo = ""
+        self.breedStatusDate = ""
+        self.createTime = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("idUserNoteInfo") as? String {
+            self.idUserNoteInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("noteType") as? String {
+            self.noteType = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("moodStatus") as? String {
+            self.moodStatus = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("noteLabel") as? String {
+            self.noteLabel = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("content") as? String {
+            self.content = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imgUrls") as? String {
+            self.imgUrls = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("idUserBabyInfo") as? String {
+            self.idUserBabyInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("breedStatusDate") as? String {
+            self.breedStatusDate = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
+            self.createTime = obj
+        }
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.idUserNoteInfo, forKey: "idUserNoteInfo")
+        aCoder.encodeObject(self.noteType, forKey: "noteType")
+        aCoder.encodeObject(self.moodStatus, forKey: "moodStatus")
+        aCoder.encodeObject(self.noteLabel, forKey: "noteLabel")
+        aCoder.encodeObject(self.content, forKey: "content")
+        aCoder.encodeObject(self.imgUrls, forKey: "imgUrls")
+        aCoder.encodeObject(self.idUserBabyInfo, forKey: "idUserBabyInfo")
+        aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")
+        aCoder.encodeObject(self.createTime, forKey: "createTime")
+    }
+
+}
+
+class DiaryDAO: NSObject {
+    static var shared:DiaryDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:DiaryDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = DiaryDAO()
+        }
+        return DAO.dao!
+    }
+    
+    func findAll() -> [Diary] {
+        var listData = [Diary]()
+        if let theData = NSData.init(contentsOfFile: DiaryArchiveFileName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(DiaryArchiveKey) as? [Diary]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:Diary) -> Bool {
+        var array = self.findAll()
+        for base in array {
+            if base.idUserNoteInfo == detail.idUserNoteInfo {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: DiaryArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
+        
+    }
+    
+    func delete(detail:Diary?, key:String = "") -> Bool {
+        var array = self.findAll()
+        for note in array {
+            var idEqmInfo = ""
+            if let eqm = detail {
+                idEqmInfo = eqm.idUserNoteInfo
+            }
+            
+            let baseKey = key == "" ? idEqmInfo : key
+            if note.idUserNoteInfo == baseKey {
+                if let currentIndex = array.indexOf(note) {
+                    array.removeAtIndex(currentIndex)
+                }
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: DiaryArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func modify(detail:Diary, key:String = "") -> Bool {
+        let array = self.findAll()
+        let baseKey = key == "" ? detail.idUserNoteInfo : key
+        for note in array {
+            
+            if note.idUserNoteInfo == baseKey {
+                if note.noteType != detail.noteType {
+                    note.noteType = detail.noteType
+                }
+                if note.moodStatus != detail.moodStatus {
+                    note.moodStatus = detail.moodStatus
+                }
+                
+                if note.noteLabel != detail.noteLabel {
+                    note.noteLabel = detail.noteLabel
+                }
+                
+                if note.content != detail.content {
+                    note.content = detail.content
+                }
+                if note.imgUrls != detail.imgUrls {
+                    note.imgUrls = detail.imgUrls
+                }
+                if note.idUserBabyInfo != detail.idUserBabyInfo {
+                    note.idUserBabyInfo = detail.idUserBabyInfo
+                }
+                if note.breedStatusDate != detail.breedStatusDate {
+                    note.breedStatusDate = detail.breedStatusDate
+                }
+                if note.createTime != detail.createTime {
+                    note.createTime = detail.createTime
+                }
+                
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: DiaryArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func find(detail:Diary?, key:String = "") -> Diary {
+        let array = self.findAll()
+        var result = Diary()
+        for note in array {
+            let userId = detail == nil ? "" : note.idUserNoteInfo
+            let baseKey = key == "" ? userId : key
+            if note.idUserNoteInfo == baseKey {
+                result = note
+            }
+        }
+        return result
+    }
+
+}
+
+class DiaryBL: NSObject {
+    class func insert(detail:Diary) -> [Diary]{
+        let result = DiaryDAO.shared.insert(detail)
+        print("baby list result \(result)")
+        return DiaryDAO.shared.findAll()
+    }
+    
+    class func delete(detail:Diary?, key:String = "") ->[Diary]{
+        DiaryDAO.shared.delete(detail, key: key)
+        return DiaryDAO.shared.findAll()
+    }
+    
+    class func modify(detail:Diary, key:String = "") ->[Diary]{
+        DiaryDAO.shared.modify(detail, key: key)
+        return DiaryDAO.shared.findAll()
+    }
+    
+    class func find(detail:Diary?, key:String = "") ->Diary{
+        return DiaryDAO.shared.find(detail, key: key)
     }
 }
 

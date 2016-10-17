@@ -412,24 +412,6 @@ UIBackgroundTaskIdentifier backgroundTask;
         self.sWifi = nil;
     }
     
-    if([UDManager isLogin]){
-        
-        LoginResult *loginResult = [UDManager getLoginInfo];
-        [[NetManager sharedManager] getAccountInfo:loginResult.contactId sessionId:loginResult.sessionId callBack:^(id JSON){
-            
-            AccountResult *accountResult = (AccountResult*)JSON;
-            if(accountResult.error_code==NET_RET_GET_ACCOUNT_SUCCESS){
-                loginResult.email = accountResult.email;
-                loginResult.phone = accountResult.phone;
-                loginResult.countryCode = accountResult.countryCode;
-                [UDManager setLoginInfo:loginResult];
-            }
-            
-        }];
-    }else{
-        
-    }
-    
     [[UDPManager sharedDefault] ScanLanDevice];
     return YES;
 }
@@ -440,11 +422,6 @@ UIBackgroundTaskIdentifier backgroundTask;
     
     return (AppDelegate*)[UIApplication sharedApplication].delegate;
 }
-
-+(NSString*)getAppVersion{
-    return [NSString stringWithFormat:APP_VERSION];
-}
-
 
 
 - (void)receiveRemoteMessage:(NSNotification *)notification{

@@ -53,7 +53,6 @@
 @property (nonatomic) BOOL isBeingInP2PVideo;
 @property (nonatomic) BOOL isMonitoring;//而且前提应该是只有监控、视频通话或呼叫状态下
 
-+(NSString*)getAppVersion;
 @property (nonatomic) BOOL isGoBack;
 @property (nonatomic) BOOL isNotificationBeClicked;//YES表示点击系统消息推送通知，将显示系统消息表
 

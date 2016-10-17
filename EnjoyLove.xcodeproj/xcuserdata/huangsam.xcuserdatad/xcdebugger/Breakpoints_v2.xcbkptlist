@@ -89,7 +89,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "242"
             endingLineNumber = "242"
-            landmarkName = "receiveRemoteMessage(note:)"
+            landmarkName = "receiveRemoteMessage(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -105,7 +105,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "270"
             endingLineNumber = "270"
-            landmarkName = "ack_receiveRemoteMessage(note:)"
+            landmarkName = "ack_receiveRemoteMessage(_:)"
             landmarkType = "7">
             <Locations>
                <Location

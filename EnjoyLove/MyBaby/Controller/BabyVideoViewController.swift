@@ -125,6 +125,7 @@ class BabyVideoViewController: BaseViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.receiveRemoteMessage(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.ack_receiveRemoteMessage(_:)), name: ACK_RECEIVE_REMOTE_MESSAGE, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorStartRender(_:)), name: MONITOR_START_RENDER_MESSAGE, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorErrorOccur(_:)), name: NOTIFICATION_ON_SESSION_ERROR, object: nil)
     }
 
     private func initialize(){
@@ -338,7 +339,12 @@ class BabyVideoViewController: BaseViewController {
         self.isPlaying = false
     }
     
-    
+    func monitorErrorOccur(note:NSNotification) -> Void {
+        P2PClient.sharedClient().p2pHungUp()
+        
+        self.navigationController?.popViewControllerAnimated(true)
+        NSNotificationCenter.defaultCenter().postNotificationName(BabyCancelClickNotification, object: nil)
+    }
     
     /*
     // MARK: - Navigation

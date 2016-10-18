@@ -201,7 +201,7 @@ class RegisterView: UIView,UITextFieldDelegate {
                             if code == nil{
                                 HUD.showText("发送验证码失败", onView: weakSelf)
                             }else{
-                                if code.errorCode == PASSCODE{
+                                if code.errorCode == BabyZoneConfig.shared.passCode{
                                     HUD.showText("发送验证码成功，请及时查看", onView: weakSelf)
                                 }else{
                                     HUD.showText("发送验证码失败", onView: weakSelf)

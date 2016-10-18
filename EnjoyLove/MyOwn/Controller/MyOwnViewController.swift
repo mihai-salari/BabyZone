@@ -270,7 +270,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         Logout.sendAsyncLogout { [weak self](logout) in
             if let weakSelf = self{
                 if let log = logout{
-                    if log.errorCode == PASSCODE{
+                    if log.errorCode == BabyZoneConfig.shared.passCode{
                         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                             LoginBL.clear(nil, key: phone)
                         }

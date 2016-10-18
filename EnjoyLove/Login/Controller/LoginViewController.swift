@@ -20,7 +20,7 @@ class LoginViewController: BaseViewController {
                 HUD.showHud("正在登录...", onView: weakSelf.view)
                 NSUserDefaults.standardUserDefaults().setObject(phone, forKey: UserPhoneKey)
                 Login.sendAsyncLogin(phone, userPwd: password, completionHandler: { (errorCode, msg, dataDict) in
-                    if errorCode != nil && errorCode == PASSCODE{
+                    if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
                         if let data = dataDict {
                             if let token = NSUserDefaults.standardUserDefaults().objectForKey(HMTokenKey) as? String{
                                 var countryCode = "86"
@@ -59,7 +59,7 @@ class LoginViewController: BaseViewController {
                                             login.contactId = contact
                                             login.md5Password = password.md5
                                             LoginBL.insert(login)
-                                            
+                                            PersonDetail.sendAsyncPersonDetail(nil)
                                             NSUserDefaults.standardUserDefaults().setObject(phone, forKey: UserPhoneKey)
                                             weakSelf.dismissViewControllerAnimated(true, completion: nil)
                                         }

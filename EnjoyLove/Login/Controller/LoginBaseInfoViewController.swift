@@ -23,7 +23,7 @@ class LoginBaseInfoViewController: BaseViewController {
             if let weakSelf = self{
                 Register.sendAsyncRegist(model.phoneNum, userPwd: model.password, validCode: model.validCode, breedStatus: model.breedStatus, babySex: model.babySex, breedStatusDate: model.breedStatusDate, completionHandler: { (regist) in
                     if let rgst = regist{
-                        if rgst.errorCode == PASSCODE{
+                        if rgst.errorCode == BabyZoneConfig.shared.passCode{
                             weakSelf.dismissToRoot()
                         }
                     }

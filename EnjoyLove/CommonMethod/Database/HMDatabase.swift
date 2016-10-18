@@ -633,7 +633,6 @@ private class BabyListDAO:NSObject{
         return DAO.dao!
     }
     
-    
     func findAll() -> [BabyList] {
         var listData = [BabyList]()
         if let theData = NSData.init(contentsOfFile: BabyListArchiveFileName.filePath()) {
@@ -654,6 +653,8 @@ private class BabyListDAO:NSObject{
                 if let currentIndex = array.indexOf(base) {
                     array.removeAtIndex(currentIndex)
                 }
+            }else{
+                base.isCurr = "2"
             }
         }
         array.append(detail)
@@ -686,6 +687,16 @@ private class BabyListDAO:NSObject{
             }
         }
         return false
+    }
+    
+    func deleteAll() -> Bool {
+        var array = self.findAll()
+        array.removeAll()
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: BabyListArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(BabyListArchiveFileName.filePath(), atomically: true)
     }
     
     func modify(detail:BabyList, key:String = "") -> Bool {

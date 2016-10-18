@@ -17,7 +17,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     private var personInfoTable:UITableView!
     private var personInfoData:[PersonEditInfo]!
     private var personIndexPath:NSIndexPath!
-    private var editPerson:EditPersonInfo!
 
     
     override func viewWillAppear(animated: Bool) {
@@ -87,7 +86,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         BabyList.sendAsyncBabyList { [weak self](errorCode, msg) in
             if let weakSelf = self{
                 if let code = errorCode {
-                    if code == PASSCODE {
+                    if code == BabyZoneConfig.shared.passCode {
                         let babys = BabyListBL.findAll()
                         if babys.count > 0{
                             detailData = []
@@ -211,7 +210,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             let editDetail = EditDetailViewController()
             editDetail.editDelegate = self
             editDetail.editModel = detailModel
-            editDetail.personDetail = personDetailModel
+            editDetail.personDetail = self.personDetailModel
             self.navigationController?.pushViewController(editDetail, animated: true)
         }
     }
@@ -226,7 +225,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     }
     
     
-    func reloadBabySection(baby: AddBaby) {
+    func reloadBabySection() {
         if let personTable = self.personInfoTable {
             self.initializeData()
             personTable.reloadData()

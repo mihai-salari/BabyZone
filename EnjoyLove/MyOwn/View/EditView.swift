@@ -412,14 +412,18 @@ private let EditBabyTableViewCellId = "EditBabyTableViewCellId"
 class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
     private var babyTable:UITableView!
     private var babyData:[BabyInfo]!
+    private var babySexIndex:[Int]!
     private var addBaby:AddBaby!
+    private var babyId:String!
     private var selectedHandler:((baby:BabyInfo, indexPath:NSIndexPath)->())?
+    private var deleteHandler:(()->())?
     
-    init(frame: CGRect, baby:[BabyInfo], completionHandler:((baby:BabyInfo, indexPath:NSIndexPath)->())?) {
+    init(frame: CGRect, baby:[BabyInfo], babyId:String = "", completionHandler:((baby:BabyInfo, indexPath:NSIndexPath)->())?, deleteCompletionHandler:(()->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
         self.addBaby = AddBaby()
         self.babyData = baby
+        self.babyId = babyId
         self.babyTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: 44 * CGFloat(baby.count)), style: .Plain)
         self.babyTable.rowHeight = 44
         self.babyTable.scrollEnabled = false
@@ -429,7 +433,20 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
         self.babyTable.separatorInset = UIEdgeInsetsZero
         self.babyTable.layoutMargins = UIEdgeInsetsZero
         self.addSubview(self.babyTable)
+        
+        if deleteCompletionHandler != nil {
+            let deleteButton = UIButton.init(type: .Custom)
+            deleteButton.frame = CGRect.init(x: viewOriginX, y: (self.frame.height - 36) / 2, width: self.frame.width - 2 * viewOriginX, height: 36)
+            deleteButton.backgroundColor = UIColor.hexStringToColor("#BB5360")
+            deleteButton.setTitle("删除", forState: .Normal)
+            deleteButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            deleteButton.layer.cornerRadius = deleteButton.frame.height / 2 - 3
+            deleteButton.addTarget(self, action: #selector(self.deleteBabyClick), forControlEvents: .TouchUpInside)
+            self.addSubview(deleteButton)
+        }
+        
         self.selectedHandler = completionHandler
+        self.deleteHandler = deleteCompletionHandler
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -515,6 +532,34 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
             }
         }
         return nil
+    }
+    
+    func deleteBabyClick() -> Void {
+        let alertController = UIAlertController.init(title: "确定删除?", message: nil, preferredStyle: .Alert)
+        let cancelAction = UIAlertAction.init(title: "取消", style: .Destructive, handler: nil)
+        if cancelAction.valueForKey("titleTextColor") == nil{
+            cancelAction.setValue(UIColor.redColor(), forKey: "titleTextColor")
+        }
+        alertController.addAction(cancelAction)
+        
+        let confirmAction = UIAlertAction.init(title: "确定", style: .Default) { (alert:UIAlertAction) in
+            BabyList.sendAsyncDeleteBaby(self.babyId, completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let error = errorCode {
+                        if error == BabyZoneConfig.shared.passCode{
+                            if let deleteHandle = weakSelf.deleteHandler {
+                                deleteHandle()
+                            }
+                        }
+                    }
+                }
+            })
+        }
+        if confirmAction.valueForKey("titleTextColor") == nil{
+            confirmAction.setValue(UIColor.lightGrayColor(), forKey: "titleTextColor")
+        }
+        alertController.addAction(confirmAction)
+        HMTablBarController.presentViewController(alertController, animated: true, completion: nil)
     }
 }
 

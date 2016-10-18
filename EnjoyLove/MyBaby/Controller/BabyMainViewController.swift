@@ -115,7 +115,6 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
 //        self.performSelector(#selector(self.remoteNotification), withObject: nil, afterDelay: 1)
         
         PersonDetail.sendAsyncPersonDetail(nil)
-        
     }
         
     

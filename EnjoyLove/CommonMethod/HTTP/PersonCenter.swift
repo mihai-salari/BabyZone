@@ -91,7 +91,7 @@ extension Login {
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE{
+                if errorCode == BabyZoneConfig.shared.passCode{
                     if let data = response["data"] as? [String:NSObject]{
                         if let handle = completionHandler{
                             handle(errorCode: errorCode, msg: msg, dataDict: data)
@@ -185,7 +185,7 @@ extension PersonDetail {
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 
-                if errorCode == PASSCODE{
+                if errorCode == BabyZoneConfig.shared.passCode{
                     if let data = response["data"] as? [String:NSObject]{
                         let detail = PersonDetail()
                         detail.userId = format(data["userId"])
@@ -388,7 +388,7 @@ extension BabyList{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     let list = BabyList()
                     list.idUserBabyInfo = idUserBabyInfo
                     list.babyName = babyName
@@ -414,7 +414,7 @@ extension BabyList{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     if let babyInfo = BabyListBL.find(nil, key: idUserBabyInfo){
                         BabyListBL.delete(babyInfo)
                     }
@@ -532,7 +532,7 @@ extension Equipments {
                     handle(errorCode: errorCode, msg: msg)
                 }
                 
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     let updateEqm = Equipments()
                     updateEqm.idEqmInfo = idEqmInfo
                     updateEqm.eqmName = eqmName
@@ -563,7 +563,7 @@ extension Equipments {
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
                 }
-                if errorCode == PASSCODE{
+                if errorCode == BabyZoneConfig.shared.passCode{
                     EquipmentsBL.delete(nil, key: idEqmInfo)
                 }
             }
@@ -677,7 +677,7 @@ extension ChildAccount{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     ChildAccountBL.delete(nil, key: idUserChildInfo)
                 }
                 if let handle = completionHandler{
@@ -708,7 +708,7 @@ extension ChildEquipments{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     if let data = response["data"] as? [String:NSObject]{
                         if let dataList = data["list"] as? [[String:NSObject]]{
                             for dataDict in dataList{
@@ -749,7 +749,7 @@ extension ChildEquipments{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     if let data = response["data"] as? [String:NSObject]{
                         let eqms = ChildEquipments()
                         eqms.eqmStatus = eqmStatus
@@ -774,7 +774,7 @@ extension ChildEquipments{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     if let data = response["data"] as? [String:NSObject]{
                         let eqms = ChildEquipments()
                         eqms.idUserChildEqmPermission = format(data["idUserChildEqmPermission"])
@@ -802,7 +802,7 @@ extension ChildEquipments{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == PASSCODE {
+                if errorCode == BabyZoneConfig.shared.passCode {
                     let eqms = ChildEquipments()
                     eqms.idUserChildEqmPermission = idUserChildEqmPermission
                     eqms.idUserChildEqmInfo = idUserChildEqmInfo //idUserChildEqmInfo

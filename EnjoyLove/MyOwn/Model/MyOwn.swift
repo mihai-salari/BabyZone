@@ -49,31 +49,13 @@ struct PersonEidtDetail {
     
 }
 
-struct EditPersonInfo {
-    
-    /*
-     headImg		string		头像
-     breedStatus		int		孕育状态(1：正常2：备孕 3：怀孕 4：育儿)
-     breedStatusDate		string		孕育状态时间(yyyy-MM-dd)
-     breedBirthDate		string		孕育预产时间(yyyy-MM-dd)
-     provinceCode		string		省份code
-     cityCode		string		城市code
-     userSign		string		个性签名
-
-     */
-    var headImage = ""
-    var breedStatus = ""
-    var breedStatusDate = ""
-    var breedBirthDate = ""
-    var provinceCode = ""
-    var cityCode = ""
-    var userSign = ""
-}
 
 struct BabyInfo {
     var mainItem = ""
     var subItem = ""
     var infoType:Int!//0:姓名,1性别,2年龄
+    var babyId = ""
+    
 }
 
 struct AddBaby {

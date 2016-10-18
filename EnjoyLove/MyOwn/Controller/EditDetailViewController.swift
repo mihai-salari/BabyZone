@@ -22,7 +22,7 @@ import Photos
 
 protocol PersonInfoEditDelegate{
     func fetchPersonInfo(editModel:PersonEidtDetail)
-    func reloadBabySection(baby:AddBaby)
+    func reloadBabySection()
 }
 
 class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelegate, BabyEditDelegate,DatePickerDelegate , UIImagePickerControllerDelegate,UINavigationControllerDelegate {
@@ -46,7 +46,6 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
         switch self.editModel.eidtType {
         case 0:
             self.navigationBarItem(false, title: "头像", leftSel: nil, rightSel: #selector(EditDetailViewController.exchangeHeader), rightTitle: "更换", rightItemSize: CGSize(width: 30, height: 40))
@@ -63,7 +62,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
-                                        if error == PASSCODE{
+                                        if error == BabyZoneConfig.shared.passCode{
                                             if let delegate = weakSelf.editDelegate{
                                                 weakSelf.editModel.subItem = txt
                                                 delegate.fetchPersonInfo(weakSelf.editModel)
@@ -93,7 +92,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
-                                        if error == PASSCODE{
+                                        if error == BabyZoneConfig.shared.passCode{
                                             if let delegate = weakSelf.editDelegate{
                                                 weakSelf.editModel.subItem = txt
                                                 delegate.fetchPersonInfo(weakSelf.editModel)
@@ -124,7 +123,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
-                                        if error == PASSCODE{
+                                        if error == BabyZoneConfig.shared.passCode{
                                             if let delegate = weakSelf.editDelegate{
                                                 weakSelf.editModel.subItem = sex
                                                 delegate.fetchPersonInfo(weakSelf.editModel)
@@ -157,7 +156,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
-                                        if error == PASSCODE{
+                                        if error == BabyZoneConfig.shared.passCode{
                                             if let delegate = weakSelf.editDelegate{
                                                 weakSelf.editModel.subItem = status
                                                 delegate.fetchPersonInfo(weakSelf.editModel)
@@ -184,14 +183,14 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 babyModel = obj
             }
             var babyData:[BabyInfo] = []
-            var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: babyModel.babyName == "" ? "宝宝" : babyModel.babyName, infoType: 0)
+            var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: babyModel.babyName == "" ? "宝宝" : babyModel.babyName, infoType: 0, babyId: babyId)
             babyData.append(baby)
-            baby = BabyInfo(mainItem: "性别", subItem: babyModel.sex, infoType: 1)
+            baby = BabyInfo(mainItem: "性别", subItem: babyModel.sex, infoType: 1, babyId: babyId)
             babyData.append(baby)
-            baby = BabyInfo(mainItem: "年龄", subItem: babyModel.birthday, infoType: 2)
+            baby = BabyInfo(mainItem: "年龄", subItem: babyModel.birthday, infoType: 2, babyId: babyId)
             babyData.append(baby)
             
-            self.babyEditView = EditBabyView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), baby: babyData, completionHandler: { [weak self] (baby, indexPath) in
+            self.babyEditView = EditBabyView.init(frame:  CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), baby: babyData, babyId: babyId, completionHandler: { [weak self] (baby, indexPath) in
                 if let weakSelf = self{
                     weakSelf.babyInfo = baby
                     weakSelf.babyIndexPath = indexPath
@@ -204,16 +203,22 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                         weakSelf.setupDatePicker()
                     }
                 }
+                }, deleteCompletionHandler: { [weak self] in
+                    if let weakSelf = self{
+                        if weakSelf.editDelegate != nil{
+                            weakSelf.editDelegate.reloadBabySection()
+                        }
+                    }
             })
             self.view.addSubview(self.babyEditView)
         case 7:
             self.navigationBarItem(false, title: "添加宝宝", leftSel: nil, rightSel: #selector(self.confirmAddBaby), rightTitle: "保存")
             var babyData:[BabyInfo] = []
-            var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: "请输入姓名", infoType: 0)
+            var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: "请输入姓名", infoType: 0, babyId: "")
             babyData.append(baby)
-            baby = BabyInfo(mainItem: "性别", subItem: "请选择性别", infoType: 1)
+            baby = BabyInfo(mainItem: "性别", subItem: "请选择性别", infoType: 1, babyId: "")
             babyData.append(baby)
-            baby = BabyInfo(mainItem: "年龄", subItem: "请选择年龄", infoType: 2)
+            baby = BabyInfo(mainItem: "年龄", subItem: "请选择年龄", infoType: 2, babyId: "")
             babyData.append(baby)
             self.babyEditView = EditBabyView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), baby: babyData, completionHandler: { [weak self] (baby, indexPath) in
                 if let weakSelf = self{
@@ -229,7 +234,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                         weakSelf.setupDatePicker()
                     }
                 }
-                })
+                }, deleteCompletionHandler: nil)
             self.view.addSubview(self.babyEditView)
         default:
             break
@@ -373,9 +378,9 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 BabyList.sendAsyncAddBaby(baby.nickName, sex: baby.sex, birthday: baby.birthday, isCurr: "1", completionHandler: { [weak self](errorCode, msg) in
                     if let weakSelf = self{
                         if let error = errorCode{
-                            if error == PASSCODE{
+                            if error == BabyZoneConfig.shared.passCode{
                                 if weakSelf.editDelegate != nil{
-                                    weakSelf.editDelegate.reloadBabySection(baby)
+                                    weakSelf.editDelegate.reloadBabySection()
                                 }
                                 weakSelf.navigationController?.popViewControllerAnimated(true)
                             }else{

@@ -169,7 +169,7 @@ class BandingPhoneView: UIView,UITextFieldDelegate {
                                 if code == nil{
                                     HUD.showText("发送验证码失败", onView: weakSelf)
                                 }else{
-                                    if code.errorCode == PASSCODE{
+                                    if code.errorCode == BabyZoneConfig.shared.passCode{
                                         HUD.showText("发送验证码成功，请及时查看", onView: weakSelf)
                                     }else{
                                         HUD.showText("发送验证码失败", onView: weakSelf)
@@ -373,7 +373,7 @@ class ModifyPasswordView: UIView ,UITextFieldDelegate{
                     ModifyPassword.sendAsyncChangePassword(login.md5Password == nil ? "" : login.md5Password, newUserPwd: newText, completionHandler: { [weak self](pwd) in
                         if let weakSelf = self{
                             if let password = pwd{
-                                if password.errorCode == PASSCODE{
+                                if password.errorCode == BabyZoneConfig.shared.passCode{
                                     if let loginResult = UDManager.getLoginInfo(){
                                         NetManager.sharedManager().modifyLoginPasswordWithUserName(loginResult.contactId, sessionId: loginResult.sessionId, oldPwd: login.password == nil ? "" : login.password, newPwd: newText, rePwd: confirmText, callBack: { (JSON) in
                                             HUD.hideHud(weakSelf)

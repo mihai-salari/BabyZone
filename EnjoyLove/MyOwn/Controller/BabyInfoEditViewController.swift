@@ -39,14 +39,15 @@ class BabyInfoEditViewController: BaseViewController{
                             weakSelf.babyModel.subItem = txt
                         }
                         weakSelf.editDelegate.fetchBabyInfo(weakSelf.babyModel)
-                        weakSelf.navigationController?.popViewControllerAnimated(true)
                     }
+                    
+                    weakSelf.navigationController?.popViewControllerAnimated(true)
                 }
                 })
             self.view.addSubview(editNameView)
         case 1:
             self.navigationBarItem(false, title: "性别", leftSel: nil, rightSel: nil)
-            
+            self.sexStatus = Int(babyModel.subItem) == nil ? 1 : Int(babyModel.subItem)!
             let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: self.sexStatus, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
                     if weakSelf.editDelegate != nil {

@@ -31,9 +31,6 @@ class BabyInfoEditViewController: BaseViewController{
 
         // Do any additional setup after loading the view.
         
-        if let baby = BabyListBL.find(nil, key: babyModel.babyId) {
-            print("baby is curr \(baby.isCurr)")
-        }
         
         switch self.babyModel.infoType {
         case 0:

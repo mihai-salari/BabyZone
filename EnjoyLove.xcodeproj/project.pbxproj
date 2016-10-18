@@ -53,6 +53,7 @@
 		27020FC41DB1FB3000D3BDBE /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 27020FC11DB1FB3000D3BDBE /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27020FD21DB21C3A00D3BDBE /* BabyZoneConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */; };
 		27020FD41DB21D0E00D3BDBE /* BabyZoneConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */; };
+		270210121DB5ED3100D3BDBE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210111DB5ED3000D3BDBE /* LocationViewController.swift */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -587,6 +588,7 @@
 		27020FC11DB1FB3000D3BDBE /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BabyZoneConfig.plist; sourceTree = "<group>"; };
 		27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyZoneConfig.swift; sourceTree = "<group>"; };
+		270210111DB5ED3000D3BDBE /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -2429,6 +2431,7 @@
 				271F15961D95336200CAAEF4 /* AddressBookViewController.swift */,
 				271F15761D94D56500CAAEF4 /* OtherViewController.swift */,
 				271F157C1D950E3700CAAEF4 /* LanguageViewController.swift */,
+				270210111DB5ED3000D3BDBE /* LocationViewController.swift */,
 				271F157E1D95175800CAAEF4 /* AddDeviceViewController.swift */,
 				277A340D1DA9EE470002E53F /* DevicesViewController.swift */,
 				277A340F1DAA0FA50002E53F /* DeviceListViewController.swift */,
@@ -3411,6 +3414,7 @@
 				27830BF81D98CC550036E2BC /* DeviceView.swift in Sources */,
 				27188E781D86AD2100797D41 /* PhotoLibraryViewController.swift in Sources */,
 				271F15971D95336200CAAEF4 /* AddressBookViewController.swift in Sources */,
+				270210121DB5ED3100D3BDBE /* LocationViewController.swift in Sources */,
 				27C662691DA130BC00625C9E /* QRCodeNextController.mm in Sources */,
 				27D002CA1D6D44D700B62A61 /* main.m in Sources */,
 			);

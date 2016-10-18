@@ -69,10 +69,10 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                                 weakSelf.navigationController?.popViewControllerAnimated(true)
                                             }
                                         }else{
-                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
                                         }
                                     }else{
-                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                                     }
                                 })
                             }
@@ -99,10 +99,10 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                                 weakSelf.navigationController?.popViewControllerAnimated(true)
                                             }
                                         }else{
-                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
                                         }
                                     }else{
-                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                                     }
                                 })
                             }
@@ -130,10 +130,10 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                                 weakSelf.navigationController?.popViewControllerAnimated(true)
                                             }
                                         }else{
-                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
                                         }
                                     }else{
-                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                                     }
                                 })
                             }
@@ -163,10 +163,10 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                                 weakSelf.navigationController?.popViewControllerAnimated(true)
                                             }
                                         }else{
-                                            HUD.showText("更改失败", onView: weakSelf.view)
+                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
                                         }
                                     }else{
-                                        HUD.showText("更改失败", onView: weakSelf.view)
+                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                                     }
                                 })
                             }

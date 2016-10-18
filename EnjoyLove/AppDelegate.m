@@ -511,8 +511,6 @@ UIBackgroundTaskIdentifier backgroundTask;
         case ACK_RET_SEND_MESSAGE:
         {
             
-            
-            
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 int flag = [[parameter valueForKey:@"flag"] intValue];
                 MessageDAO *messageDAO = [[MessageDAO alloc] init];

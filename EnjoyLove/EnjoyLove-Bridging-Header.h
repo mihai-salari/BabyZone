@@ -46,3 +46,5 @@
 #import "QiniuSDK.h"
 #import "QNUpToken.h"
 #import "QiNiuExtensionToken.h"
+#import "FMDatabase.h"
+#import "sqlite3.h"

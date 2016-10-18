@@ -54,6 +54,7 @@
 		27020FD21DB21C3A00D3BDBE /* BabyZoneConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */; };
 		27020FD41DB21D0E00D3BDBE /* BabyZoneConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */; };
 		270210121DB5ED3100D3BDBE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210111DB5ED3000D3BDBE /* LocationViewController.swift */; };
+		2702101E1DB6024100D3BDBE /* ga_area.sql in Resources */ = {isa = PBXBuildFile; fileRef = 2702101D1DB6024100D3BDBE /* ga_area.sql */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -336,7 +337,6 @@
 		27830CFD1D9A33610036E2BC /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CDB1D9A33610036E2BC /* FMDatabasePool.m */; };
 		27830CFE1D9A33610036E2BC /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CDD1D9A33610036E2BC /* FMDatabaseQueue.m */; };
 		27830CFF1D9A33610036E2BC /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CE01D9A33610036E2BC /* FMResultSet.m */; };
-		27830D001D9A33610036E2BC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 27830CE11D9A33610036E2BC /* Info.plist */; };
 		27830D011D9A33610036E2BC /* LocalDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CE31D9A33610036E2BC /* LocalDevice.m */; };
 		27830D021D9A33610036E2BC /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CE51D9A33610036E2BC /* Message.m */; };
 		27830D031D9A33610036E2BC /* MessageDAO.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CE71D9A33610036E2BC /* MessageDAO.m */; };
@@ -589,6 +589,7 @@
 		27020FD11DB21C3A00D3BDBE /* BabyZoneConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BabyZoneConfig.plist; sourceTree = "<group>"; };
 		27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyZoneConfig.swift; sourceTree = "<group>"; };
 		270210111DB5ED3000D3BDBE /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
+		2702101D1DB6024100D3BDBE /* ga_area.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ga_area.sql; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -969,7 +970,6 @@
 		27830CDE1D9A33610036E2BC /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
 		27830CDF1D9A33610036E2BC /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
 		27830CE01D9A33610036E2BC /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
-		27830CE11D9A33610036E2BC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		27830CE21D9A33610036E2BC /* LocalDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalDevice.h; sourceTree = "<group>"; };
 		27830CE31D9A33610036E2BC /* LocalDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalDevice.m; sourceTree = "<group>"; };
 		27830CE41D9A33610036E2BC /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
@@ -1215,6 +1215,7 @@
 		27020F181DAC68CC00D3BDBE /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				2702101D1DB6024100D3BDBE /* ga_area.sql */,
 				27020F1C1DAC68F200D3BDBE /* HMDatabase.swift */,
 			);
 			path = Database;
@@ -2170,7 +2171,6 @@
 				27830CDE1D9A33610036E2BC /* FMDB.h */,
 				27830CDF1D9A33610036E2BC /* FMResultSet.h */,
 				27830CE01D9A33610036E2BC /* FMResultSet.m */,
-				27830CE11D9A33610036E2BC /* Info.plist */,
 			);
 			path = fmdb;
 			sourceTree = "<group>";
@@ -3029,6 +3029,7 @@
 				27F410741D8BA58400722051 /* login_pregnancy_normal.png in Resources */,
 				27830D3D1D9B68E50036E2BC /* baby_voice_normal.png in Resources */,
 				275C00831D7D6F3900A52ABC /* user_off@2x.png in Resources */,
+				2702101E1DB6024100D3BDBE /* ga_area.sql in Resources */,
 				27F28D3C1D6FF4ED005E382D /* tool_sad.png in Resources */,
 				27F410CF1D8C071400722051 /* SelectDateView.xib in Resources */,
 				275C04C01D826B8400A52ABC /* baby_menu.png in Resources */,
@@ -3075,7 +3076,6 @@
 				275C009B1D7D704B00A52ABC /* myheader.png in Resources */,
 				2718BE041D819F57002BE29D /* StatusContent.html in Resources */,
 				27F410701D8BA58400722051 /* login_female_selected.png in Resources */,
-				27830D001D9A33610036E2BC /* Info.plist in Resources */,
 				27830D431D9B69380036E2BC /* baby_camera_normal.png in Resources */,
 				27F28D3B1D6FF4ED005E382D /* tool_remain.png in Resources */,
 				27188E771D86AD2100797D41 /* ConfirmViewController.xib in Resources */,

@@ -177,7 +177,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.view.addSubview(editStatusView)
         case 6:
             self.navigationBarItem(false, title: self.editModel.mainTitle, leftSel: nil, rightSel: nil)
-            let babyId = editModel.babyId
+            let babyId = self.editModel.babyId
             var babyModel = BabyList()
             if let obj = BabyListBL.find(nil, key: babyId) {
                 babyModel = obj
@@ -208,6 +208,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                         if weakSelf.editDelegate != nil{
                             weakSelf.editDelegate.reloadBabySection()
                         }
+                        weakSelf.navigationController?.popViewControllerAnimated(true)
                     }
             })
             self.view.addSubview(self.babyEditView)
@@ -368,7 +369,21 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     func datePickerReturn(dateString: String!) {
         self.babyInfo.subItem = dateString
         if let babyView = self.babyEditView {
-            babyView.reloadTableViewCell(self.babyIndexPath, baby: self.babyInfo)
+            if let baby = BabyListBL.find(nil, key: self.editModel.babyId) {
+                HUD.showHud("正在提交...", onView: self.view)
+                BabyList.sendAsyncModifyBaby(baby.idUserBabyInfo, babyName: baby.babyName, sex: baby.sex, birthday: dateString, isCurr: baby.isCurr, completionHandler: { (errorCode, msg) in
+                    HUD.hideHud(self.view)
+                    if let error = errorCode{
+                        if error == BabyZoneConfig.shared.passCode{
+                            babyView.reloadTableViewCell(self.babyIndexPath, baby: self.babyInfo)
+                        }else{
+                            HUD.showText("修改失败:\(msg)", onView: self.view)
+                        }
+                    }else{
+                        HUD.showText("网络异常:\(msg)", onView: self.view)
+                    }
+                })
+            }
         }
     }
     
@@ -384,7 +399,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                 }
                                 weakSelf.navigationController?.popViewControllerAnimated(true)
                             }else{
-                                HUD.showText("添加失败:\(error)", onView: weakSelf.view)
+                                HUD.showText("添加失败:\(msg)", onView: weakSelf.view)
                             }
                         }else{
                             HUD.showText("网络异常:\(msg)", onView: weakSelf.view)

@@ -340,7 +340,7 @@ extension BabyList{
                             list.babyName = format(dataDict["babyName"])
                             list.sex = format(dataDict["sex"])
                             list.birthday = format(dataDict["birthday"])
-                            list.isCurr = format(dataDict["birthday"])
+                            list.isCurr = format(dataDict["isCurr"])
                             BabyListBL.insert(list)
                         }
                     }
@@ -410,7 +410,7 @@ extension BabyList{
     }
     
     class func sendAsyncDeleteBaby(idUserBabyInfo:String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(modifyBabyUrl, parameters: ["idUserBabyInfo":idUserBabyInfo], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(deleteBabyUrl, parameters: ["idUserBabyInfo":idUserBabyInfo], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])

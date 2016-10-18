@@ -550,6 +550,8 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
                             if let deleteHandle = weakSelf.deleteHandler {
                                 deleteHandle()
                             }
+                        }else{
+                            HUD.showText("删除失败", onView: weakSelf)
                         }
                     }
                 }

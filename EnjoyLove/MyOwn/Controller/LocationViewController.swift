@@ -10,7 +10,7 @@ import UIKit
 
 class LocationViewController: BaseViewController {
 
-    
+    private var locationView:LocationView!
     
     override func viewDidLoad() {
         super.viewDidLoad()

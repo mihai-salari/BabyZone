@@ -12,4 +12,6 @@
 
 + (CountryCode *)shared;
 
+- (void)findAll;
+
 @end

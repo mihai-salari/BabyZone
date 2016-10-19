@@ -55,7 +55,7 @@
 		27020FD41DB21D0E00D3BDBE /* BabyZoneConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */; };
 		270210121DB5ED3100D3BDBE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210111DB5ED3000D3BDBE /* LocationViewController.swift */; };
 		2702101E1DB6024100D3BDBE /* ga_area.sql in Resources */ = {isa = PBXBuildFile; fileRef = 2702101D1DB6024100D3BDBE /* ga_area.sql */; };
-		2702104E1DB62A2F00D3BDBE /* CountryCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 2702104D1DB62A2F00D3BDBE /* CountryCode.m */; };
+		270210511DB7167900D3BDBE /* CountryCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 270210501DB7167900D3BDBE /* CountryCode.m */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -591,8 +591,8 @@
 		27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyZoneConfig.swift; sourceTree = "<group>"; };
 		270210111DB5ED3000D3BDBE /* LocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		2702101D1DB6024100D3BDBE /* ga_area.sql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ga_area.sql; sourceTree = "<group>"; };
-		2702104C1DB62A2F00D3BDBE /* CountryCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryCode.h; sourceTree = "<group>"; };
-		2702104D1DB62A2F00D3BDBE /* CountryCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryCode.m; sourceTree = "<group>"; };
+		2702104F1DB7167900D3BDBE /* CountryCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryCode.h; sourceTree = "<group>"; };
+		270210501DB7167900D3BDBE /* CountryCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryCode.m; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -1220,8 +1220,8 @@
 			children = (
 				2702101D1DB6024100D3BDBE /* ga_area.sql */,
 				27020F1C1DAC68F200D3BDBE /* HMDatabase.swift */,
-				2702104C1DB62A2F00D3BDBE /* CountryCode.h */,
-				2702104D1DB62A2F00D3BDBE /* CountryCode.m */,
+				2702104F1DB7167900D3BDBE /* CountryCode.h */,
+				270210501DB7167900D3BDBE /* CountryCode.m */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -3198,7 +3198,7 @@
 				275C04CD1D8270EB00A52ABC /* Int+Timepiece.swift in Sources */,
 				27188E041D863A3500797D41 /* DXBrowserCell.swift in Sources */,
 				27830D1D1D9A60CE0036E2BC /* OBGradientView.m in Sources */,
-				2702104E1DB62A2F00D3BDBE /* CountryCode.m in Sources */,
+				270210511DB7167900D3BDBE /* CountryCode.m in Sources */,
 				27020FBC1DB1FAF300D3BDBE /* GTMBase64.m in Sources */,
 				27F47C111D96B2F400502AEE /* NSString+PinYin4Cocoa.m in Sources */,
 				272A04371D88334400067215 /* ProblemView.swift in Sources */,

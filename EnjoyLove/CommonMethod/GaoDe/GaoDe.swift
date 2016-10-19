@@ -86,7 +86,9 @@ class GaoDe: NSObject,AMapLocationManagerDelegate {
             if let marks = placemarks{
                 if marks.count > 0{
                     let place = marks[0]
+                    let province = place.subAdministrativeArea
                     let currentCity = place.locality
+                    let zipCode = place.postalCode
                     self.handleLocation(currentCity, lat: lat, lon: lon)
                     self.locationManager.stopUpdatingLocation()
                     return

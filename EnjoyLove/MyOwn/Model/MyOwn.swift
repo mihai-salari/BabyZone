@@ -129,3 +129,10 @@ struct Language {
     
 }
 
+struct Location {
+    var provinceName = ""
+    var provinceCode = ""
+    var cityName = ""
+    var cityCode = ""
+}
+

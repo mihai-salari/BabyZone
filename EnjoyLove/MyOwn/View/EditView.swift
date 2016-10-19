@@ -565,4 +565,20 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
     }
 }
 
+class LocationView: UIView {
+    private var locationTable:UITableView!
+    private var location:Location!
+    private var localLocation:[Location]!
+    private var locationHandler:((location:Location)->())?
+    init(frame: CGRect, completionHandler:((location:Location)->())?) {
+        super.init(frame: frame)
+        let gao = GaoDe.sharedInstance()
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 

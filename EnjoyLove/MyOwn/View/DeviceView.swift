@@ -249,13 +249,15 @@ class DeviceListView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var addNewDevice:UIButton!
     private var addNewHandler:(()->())?
     
-    init(frame: CGRect, exchageHandler:((onSwitch:HMSwitch, device:Contact)->())?, enterHandler:((device:Contact)->())?, addNewDeviceHandler:(()->())?) {
+    init(frame: CGRect, contacts:[Contact], exchageHandler:((onSwitch:HMSwitch, device:Contact)->())?, enterHandler:((device:Contact)->())?, addNewDeviceHandler:(()->())?) {
         super.init(frame: frame)
         self.backgroundColor = UIColor.whiteColor()
         self.listTableViewRowHeight = frame.height * (1 / 11)
-        if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
-            self.listData = contacts
+        self.listData = contacts
+        for contact in contacts {
+            contact.isGettingOnLineState = true
         }
+        
         self.onOffData = [:]
         
         var tableViewHeight = self.listData == nil ? 0 : CGFloat(self.listData.count) * self.listTableViewRowHeight
@@ -295,10 +297,11 @@ class DeviceListView: UIView,UITableViewDelegate,UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(DevicesListCell)) as? DevicesListCell
         if let resultCell = cell {
+            let contact = self.listData[indexPath.row]
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
             resultCell.selectionStyle = .None
-            resultCell.refreshCell(self.listData[indexPath.row], completionHandler: { [weak self](onOff, editModel) in
+            resultCell.refreshCell(contact, completionHandler: { [weak self](onOff, editModel) in
                 if let weakSelf = self{
                     weakSelf.onOffData[indexPath] = onOff
                     if let handle = weakSelf.deviceHandler{
@@ -306,6 +309,9 @@ class DeviceListView: UIView,UITableViewDelegate,UITableViewDataSource {
                     }
                 }
             })
+            if contact.onLineState == Int(STATE_ONLINE) && contact.contactType == Int(CONTACT_TYPE_DOORBELL) {
+                
+            }
         }
         
         return cell!
@@ -328,6 +334,17 @@ class DeviceListView: UIView,UITableViewDelegate,UITableViewDataSource {
         if let handle = self.addNewHandler {
             handle()
         }
+    }
+    
+    private func willBindUserIDByContactWithContactId(contactId: String, contactPassword:String){
+        let loginResult = UDManager.getLoginInfo()
+        let key = "KEY\(loginResult.contactId)_\(contactId)"
+        let isDeviceBindedUserID = NSUserDefaults.standardUserDefaults().boolForKey(key)
+        if isDeviceBindedUserID == true {
+            return
+        }
+        P2PClient.sharedClient().getBindAccountWithId(contactId, password: contactPassword)
+        
     }
     
 }

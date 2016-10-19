@@ -14,7 +14,7 @@
 #import "ShakeManager.h"
 @implementation GlobalThread
 static int g_initCount;
-+ (id)sharedThread:(BOOL)isRelease
++ (GlobalThread *)sharedThread:(BOOL)isRelease
 {
     
     static GlobalThread *manager = nil;

@@ -36,29 +36,10 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
             self.navigationBarItem(title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
-            self.setVideoMonitor()
             self.initialize()
         }
     }
     
-    private func setVideoMonitor() ->Void{
-        
-        self.videoLogin()
-        
-        var result = false
-        if AppDelegate.sharedDefault().dwApContactID == 0 {
-            let loginResult = UDManager.getLoginInfo()
-            result = P2PClient.sharedClient().p2pConnectWithId(loginResult.contactId, codeStr1: loginResult.rCode1, codeStr2: loginResult.rCode2)
-        }else{
-            result = P2PClient.sharedClient().p2pConnectWithId("0517401", codeStr1: "0", codeStr2: "0")
-        }
-        
-        if result == true {
-            P2PClient.sharedClient().delegate = self
-        }else{
-            self.videoLogin()
-        }
-    }
     
     private func videoLogin() -> Void {
         if UDManager.isLogin() == true {
@@ -134,6 +115,9 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
     }
     
     private func initialize(){
+        if self.babyData != nil {
+            self.babyData = nil
+        }
         self.babyData = []
         var baby = Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0")
         self.babyData.append(baby)
@@ -164,7 +148,20 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
     }
     
     private func initializeMonitor(){
+        self.videoLogin()
+        var result = false
+        if AppDelegate.sharedDefault().dwApContactID == 0 {
+            if let loginResult = UDManager.getLoginInfo() {
+                result = P2PClient.sharedClient().p2pConnectWithId(loginResult.contactId, codeStr1: loginResult.rCode1, codeStr2: loginResult.rCode2)
+            }
+        }else{
+            result = P2PClient.sharedClient().p2pConnectWithId("0517401", codeStr1: "0", codeStr2: "0")
+        }
+        if result == true {
+            print("p2p connect success")
+        }
         
+        P2PClient.sharedClient().delegate = self
     }
     
     func remoteNotification() -> Void {
@@ -197,7 +194,6 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
         }
         if let p2p = P2PClient.sharedClient(){
             p2p.callId = result.contactId
-            p2p.delegate = self
         }
     }
     

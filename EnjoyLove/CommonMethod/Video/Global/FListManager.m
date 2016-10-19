@@ -27,7 +27,7 @@
     [super dealloc];
 }
 
-+ (id)sharedFList
++ (FListManager *)sharedFList
 {
     
     static FListManager *manager = nil;

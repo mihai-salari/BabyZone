@@ -17,7 +17,7 @@
 
 
 
-+ (id)sharedFList;
++ (FListManager *)sharedFList;
 
 
 -(NSArray*)getContacts;

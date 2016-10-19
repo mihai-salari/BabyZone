@@ -30,8 +30,6 @@ class BabyVideoViewController: BaseViewController {
         NSUserDefaults.standardUserDefaults().setBool(true, forKey: AllowOrientationKey)
         self.initializeNotification()
         
-        
-        
         if let contact = deviceContact {
             if let p2p = P2PClient.sharedClient() {
                 p2p.isBCalled = false
@@ -59,6 +57,22 @@ class BabyVideoViewController: BaseViewController {
             P2PClient.sharedClient().callId = deviceContact.contactId
             P2PClient.sharedClient().callPassword = deviceContact.contactPassword
             P2PClient.sharedClient().p2pCallType = P2PCALL_TYPE_MONITOR
+            P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_CALLING
+            
+            let isBCalled = P2PClient.sharedClient().isBCalled
+            let type = P2PClient.sharedClient().p2pCallType
+            let callId = P2PClient.sharedClient().callId
+            let callPassword = P2PClient.sharedClient().callPassword
+            
+            if isBCalled == false {
+                let isApMode = (AppDelegate.sharedDefault().dwApContactID != 0)
+                if isApMode == false {
+                    P2PClient.sharedClient().p2pCallWithId(callId, password: callPassword, callType: type)
+                }else{
+                    P2PClient.sharedClient().p2pCallWithId("1", password: callPassword, callType: type)
+                }
+            }
+            
             self.initialize()
         }else{
             self.view.backgroundColor = UIColor.whiteColor()
@@ -140,21 +154,6 @@ class BabyVideoViewController: BaseViewController {
         })
         self.babyVideoView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight, .FlexibleLeftMargin, .FlexibleRightMargin]
         self.view.addSubview(self.babyVideoView)
-        
-        P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_CALLING
-        let isBCalled = P2PClient.sharedClient().isBCalled
-        let type = P2PClient.sharedClient().p2pCallType
-        let callId = P2PClient.sharedClient().callId
-        let callPassword = P2PClient.sharedClient().callPassword
-        
-        if isBCalled == false {
-            let isApMode = (AppDelegate.sharedDefault().dwApContactID != 0)
-            if isApMode == false {
-                P2PClient.sharedClient().p2pCallWithId(callId, password: callPassword, callType: type)
-            }else{
-                P2PClient.sharedClient().p2pCallWithId("1", password: callPassword, callType: type)
-            }
-        }
         
     }
     

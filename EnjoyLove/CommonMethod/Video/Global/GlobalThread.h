@@ -12,7 +12,7 @@
 
 @property (nonatomic) BOOL isRun;
 @property (nonatomic) BOOL isPause;
-+(id)sharedThread:(BOOL)isRelease;
++(GlobalThread *)sharedThread:(BOOL)isRelease;
 -(void)kill;
 -(void)start;
 @end

@@ -56,6 +56,7 @@
 		270210121DB5ED3100D3BDBE /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210111DB5ED3000D3BDBE /* LocationViewController.swift */; };
 		270210511DB7167900D3BDBE /* CountryCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 270210501DB7167900D3BDBE /* CountryCode.m */; };
 		270210531DB732D000D3BDBE /* ZZXCity.db in Resources */ = {isa = PBXBuildFile; fileRef = 270210521DB732D000D3BDBE /* ZZXCity.db */; };
+		270210581DB765B300D3BDBE /* BaseVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210571DB765B300D3BDBE /* BaseVideoViewController.swift */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -593,6 +594,7 @@
 		2702104F1DB7167900D3BDBE /* CountryCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryCode.h; sourceTree = "<group>"; };
 		270210501DB7167900D3BDBE /* CountryCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryCode.m; sourceTree = "<group>"; };
 		270210521DB732D000D3BDBE /* ZZXCity.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = ZZXCity.db; sourceTree = "<group>"; };
+		270210571DB765B300D3BDBE /* BaseVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVideoViewController.swift; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -1489,6 +1491,7 @@
 			isa = PBXGroup;
 			children = (
 				27607CDA1D84EF680056FCFC /* BaseViewController.swift */,
+				270210571DB765B300D3BDBE /* BaseVideoViewController.swift */,
 				274DD5711DA7534200BC8435 /* OCBaseViewController.h */,
 				274DD5721DA7534200BC8435 /* OCBaseViewController.m */,
 				271475A71D7428EC003CFC5F /* CustomView.swift */,
@@ -3354,6 +3357,7 @@
 				27020FA61DB085AE00D3BDBE /* QNUpToken.m in Sources */,
 				27830C9F1D9A31A20036E2BC /* ShakeManager.m in Sources */,
 				27020F911DB085AE00D3BDBE /* QNHex.m in Sources */,
+				270210581DB765B300D3BDBE /* BaseVideoViewController.swift in Sources */,
 				27830CBB1D9A31AC0036E2BC /* GetContactMessageResult.m in Sources */,
 				27F47C101D96B2F400502AEE /* HanyuPinyinOutputFormat.m in Sources */,
 				27188E0C1D863A3500797D41 /* DXPickerHelper.swift in Sources */,

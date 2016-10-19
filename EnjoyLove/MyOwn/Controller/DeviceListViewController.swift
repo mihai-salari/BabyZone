@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DeviceListViewController: BaseViewController {
+class DeviceListViewController: BaseVideoViewController {
 
     private var devicesListView:DeviceListView!
     
@@ -20,12 +20,17 @@ class DeviceListViewController: BaseViewController {
         self.navigationBarItem(title: "设备列表", leftSel: nil, rightSel: nil)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        self.devicesListView = DeviceListView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), exchageHandler: { (onSwitch, device) in
+        self.devicesListView = DeviceListView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), contacts: self.contactsData, exchageHandler: { (onSwitch, device) in
             
             }, enterHandler: { (device) in
                 let video = BabyVideoViewController()
@@ -44,7 +49,7 @@ class DeviceListViewController: BaseViewController {
         
     }
     
-
+    
     /*
     // MARK: - Navigation
 

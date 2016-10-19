@@ -14,7 +14,7 @@ private let faceHeight:CGFloat = upRateWidth(55)
 private let faceNumberWidth:CGFloat = upRateWidth(15)
 private let lineBeginX:CGFloat = upRateWidth(15)
 
-class BabyMainViewController: BaseViewController,P2PClientDelegate {
+class BabyMainViewController: BaseVideoViewController {
 
             /// 宝宝数据
     private var babyData:[Baby]!
@@ -41,60 +41,12 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
     }
     
     
-    private func videoLogin() -> Void {
-        if UDManager.isLogin() == true {
-            return
-        }else{
-            if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
-                if let base = LoginBL.find(nil, key: phone) {
-                    if let token = NSUserDefaults.standardUserDefaults().objectForKey(HMTokenKey) as? String {
-                        var countryCode = "86"
-                        let language = NSLocale.preferredLanguages()[0]
-                        if language.hasPrefix("zh") {
-                            countryCode = "86"
-                        }else{
-                            countryCode = "1"
-                        }
-                        let videoPhone = "+\(countryCode)-\(phone)"
-                        NetManager.sharedManager().loginWithUserName(videoPhone, password: base.password, token: token, callBack: { [weak self](result) in
-                            if let weakSelf = self{
-                                var contact = ""
-                                if let callback = result as? LoginResult{
-                                    var registNumer:NSNumber!
-                                    switch callback.error_code{
-                                    case NET_RET_LOGIN_SUCCESS:
-                                        contact = callback.contactId
-                                        weakSelf.loginSuccess(callback)
-                                        registNumer = NSNumber.init(bool: true)
-                                    default:
-                                        registNumer = NSNumber.init(bool: false)
-                                        UDManager.setIsLogin(false)
-                                    }
-                                    
-                                    if let baseInfo = LoginBL.find(nil, key: phone){
-                                        baseInfo.userPhone = phone
-                                        baseInfo.userName = phone
-                                        baseInfo.isRegist = registNumer
-                                        baseInfo.contactId = contact
-                                        LoginBL.modify(baseInfo)
-                                    }
-                                    NSUserDefaults.standardUserDefaults().setObject(phone, forKey: UserPhoneKey)
-                                }
-                            }
-                            })
-                    }
-                }
-                
-            }
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setnkznkup after loading the view.
 //        self.performSelector(#selector(self.remoteNotification), withObject: nil, afterDelay: 1)
-        self.initializeMonitor()
         let personDetailQueue = dispatch_queue_create("personDetailQueue", nil)
         personDetailQueue.queue { 
             PersonDetail.sendAsyncPersonDetail(nil)
@@ -147,22 +99,6 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
         
     }
     
-    private func initializeMonitor(){
-        self.videoLogin()
-        var result = false
-        if AppDelegate.sharedDefault().dwApContactID == 0 {
-            if let loginResult = UDManager.getLoginInfo() {
-                result = P2PClient.sharedClient().p2pConnectWithId(loginResult.contactId, codeStr1: loginResult.rCode1, codeStr2: loginResult.rCode2)
-            }
-        }else{
-            result = P2PClient.sharedClient().p2pConnectWithId("0517401", codeStr1: "0", codeStr2: "0")
-        }
-        if result == true {
-            print("p2p connect success")
-        }
-        
-        P2PClient.sharedClient().delegate = self
-    }
     
     func remoteNotification() -> Void {
         let push = BabyPushViewController()
@@ -177,43 +113,6 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
     }
     
     
-    private func loginSuccess(result:LoginResult){
-        let settings = UIUserNotificationSettings.init(forTypes: [.Badge, .Sound, .Alert], categories: nil)
-        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
-        UIApplication.sharedApplication().registerForRemoteNotifications()
-        
-        UDManager.setIsLogin(true)
-        UDManager.setLoginInfo(result)
-        NetManager.sharedManager().getAccountInfo(result.contactId, sessionId: result.sessionId) { (JSON) in
-            if let accounntResult = JSON as? AccountResult{
-                result.email = accounntResult.email
-                result.phone = accounntResult.phone
-                result.countryCode = accounntResult.countryCode
-                UDManager.setLoginInfo(result)
-            }
-        }
-        if let p2p = P2PClient.sharedClient(){
-            p2p.callId = result.contactId
-        }
-    }
-    
-    //MARK:___P2PClientDelegate____
-    func P2PClientCalling(info: [NSObject : AnyObject]!) {
-        print("Calling info \(info)")
-    }
-    
-    func P2PClientReady(info: [NSObject : AnyObject]!) {
-        print("Ready info \(info)")
-    }
-    
-    func P2PClientAccept(info: [NSObject : AnyObject]!) {
-        print("Accept info \(info)")
-    }
-    
-    func P2PClientReject(info: [NSObject : AnyObject]!) {
-        print("reject info \(info)")
-    }
-
     /*
     // MARK: - Navigation
 

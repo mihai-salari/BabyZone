@@ -134,5 +134,7 @@ struct Location {
     var provinceCode = ""
     var cityName = ""
     var cityCode = ""
+    var lat:Double = 0
+    var lon:Double = 0
 }
 

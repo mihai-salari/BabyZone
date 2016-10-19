@@ -100,6 +100,8 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
         self.sectionTitleData.append(sectionData)
         
+        
+        
     }
     
     //MARK:____Table view delegate and data source____

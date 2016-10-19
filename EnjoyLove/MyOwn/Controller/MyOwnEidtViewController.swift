@@ -128,6 +128,20 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                 }
             }
         }
+        
+        GaoDe.sharedInstance().getCityInformation { [weak self](location) in
+            if let weakSelf = self{
+                if let table = weakSelf.personInfoTable{
+                    if weakSelf.personInfoData.count > 0{
+                        if weakSelf.personInfoData[0].detail.count > 0{
+                            var personEidt = weakSelf.personInfoData[0].detail[4]
+                            personEidt.subItem = "\(location.provinceName) \(location.cityName)"
+                            table.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 4, inSection: 0)], withRowAnimation: .None)
+                        }
+                    }
+                }
+            }
+        }
     }
     
     private func initializeSubviews(){
@@ -201,6 +215,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         let detailModel = model.detail[indexPath.row]
         
         if detailModel.eidtType == 4 {
+            return
             let cityPicker = ChooseCityController()
             cityPicker.delegate = self
             cityPicker.chooseType = ChooseType.init(1)

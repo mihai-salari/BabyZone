@@ -2259,7 +2259,9 @@ class ArticleListBL: NSObject {
     }
 }
 
-
+class CityCode: NSObject {
+    
+}
 
 
 

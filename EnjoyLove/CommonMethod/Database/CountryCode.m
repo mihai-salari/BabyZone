@@ -9,7 +9,8 @@
 #import "CountryCode.h"
 #import "FMDB.h"
 #define DBFILE_NAME @"NotesList.sqlite3"
-#define TABLE_NAME @"global_area"
+#define TABLE_NAME @"ZZXCity"
+
 
 @interface CountryCode ()
 
@@ -31,21 +32,12 @@
 
 - (void)createEditableCopyOfDatabaseIfNeeded {
     
-    NSString *writableDBPath = [self applicationDocumentsDirectoryFile];
-    self.fmdb = [FMDatabase databaseWithPath:writableDBPath];
+     NSString *dbPath = [[NSBundle mainBundle] pathForResource:@"ZZXCity" ofType:@"db"];
+    self.fmdb = [FMDatabase databaseWithPath:dbPath];
     if ([self.fmdb open]) {
-        BOOL isExists = [self.fmdb tableExists:TABLE_NAME];
-        if (!isExists) {
-            NSString *sqlPath = [[NSBundle mainBundle] pathForResource:@"ga_area" ofType:@"sql"];
-            NSString *createSQL = [[NSString alloc] initWithContentsOfFile:sqlPath encoding:NSUTF8StringEncoding error:nil];
-            if ([self.fmdb executeUpdate:createSQL]) {
-                NSLog(@"=========================建表成功=====================");
-            }
-            [self.fmdb close];
-        }
-    }else{
-        [self.fmdb close];
+        NSLog(@"打开成功");
     }
+    [self.fmdb close];
 }
 
 - (NSString *)applicationDocumentsDirectoryFile {
@@ -56,11 +48,27 @@
     }
     return path;
 }
-
+/*
+ "_id" = 0;
+ "area_code" = 1;
+ "area_name" = 2;
+ "area_tel_code" = 5;
+ center = 6;
+ level = 4;
+ "parent_code" = 3;
+ */
 - (void)findAll{
     if ([self.fmdb open]) {
-        FMResultSet *result = [self.fmdb executeQuery:[NSString stringWithFormat:@"select * from global_area;"]];
-        NSLog(@"obj =====%@",result);
+        FMResultSet *result = [self.fmdb executeQuery:[NSString stringWithFormat:@"select * from ZZXCity;"]];
+        while ([result next]) {
+            NSLog(@"column 0 data %@",[result stringForColumnIndex:0]);
+            NSLog(@"column 1 data %@",[result stringForColumnIndex:1]);
+            NSLog(@"column 2 data %@",[result stringForColumnIndex:2]);
+            NSLog(@"column 3 data %@",[result stringForColumnIndex:3]);
+            NSLog(@"column 4 data %@",[result stringForColumnIndex:4]);
+            NSLog(@"column 5 data %@",[result stringForColumnIndex:5]);
+            NSLog(@"column 6 data %@",[result stringForColumnIndex:6]);
+        }
     }
     [self.fmdb close];
 }

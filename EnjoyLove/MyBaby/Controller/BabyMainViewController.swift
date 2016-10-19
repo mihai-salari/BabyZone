@@ -113,11 +113,7 @@ class BabyMainViewController: BaseViewController,P2PClientDelegate {
 
         // Do any additional setnkznkup after loading the view.
 //        self.performSelector(#selector(self.remoteNotification), withObject: nil, afterDelay: 1)
-        let codeQueue = dispatch_queue_create("codeQueue", nil)
-        codeQueue.queue { 
-            let code = CountryCode.shared()
-            code.findAll()
-        }
+        CountryCode.shared().findAll()
         PersonDetail.sendAsyncPersonDetail(nil)
     }
         

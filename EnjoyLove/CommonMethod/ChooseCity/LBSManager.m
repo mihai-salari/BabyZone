@@ -59,6 +59,7 @@
     }
 }
 
+
 - (void)setupLocationManager {
     
     //初始化locationManager

@@ -567,13 +567,48 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
 
 class LocationView: UIView {
     private var locationTable:UITableView!
-    private var location:Location!
-    private var localLocation:[Location]!
+    private var locationData:[Location]!
     private var locationHandler:((location:Location)->())?
     init(frame: CGRect, completionHandler:((location:Location)->())?) {
         super.init(frame: frame)
-        let gao = GaoDe.sharedInstance()
         
+        self.locationData = []
+        
+        var provinceData:[CityCode] = []
+        var province = CityCode()
+        province.codeAreaName = "正在定位..."
+        provinceData.append(province)
+        
+        
+        var provincial = Provincial(province: provinceData, city: nil)
+        var provincialData:[Provincial] = []
+        provincialData.append(provincial)
+        var location = Location(mainTitle: "所在城市", provincial: provincialData)
+        self.locationData.append(location)
+        provincialData.append(provincial)
+        
+        provincialData = []
+        if let provinces = CountryCode.shared().findViaLevel("1") as? [CityCode] {
+            provinceData = []
+            for province in provinces {
+                var cityData:[CityCode] = []
+                if let citys = CountryCode.shared().findViaParentCode(province.codeParentCode) as? [CityCode] {
+                    for city in citys {
+                        cityData.append(city)
+                    }
+                }
+                provinceData.append(province)
+                provincial = Provincial(province: provinceData, city: cityData)
+            }
+        }
+        location = Location(mainTitle: "中国", provincial: provincialData)
+        self.locationData.append(location)
+        
+        GaoDe.sharedInstance().startLocation { [weak self](province, city) in
+            if let weakSelf = self{
+                
+            }
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -61,7 +61,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         detailModel = PersonEidtDetail(mainTitle: "性别", subItem: Int(self.personDetailModel.sex) == 1 ? "男":"女", isHeader: false, eidtType: 3, babyId: "")
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? "广东深圳市" : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
+        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? "广东 深圳市" : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
         detailData.append(detailModel)
         
         var pregStatus = "有宝宝"
@@ -129,19 +129,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             }
         }
         
-        GaoDe.sharedInstance().getCityInformation { [weak self](location) in
-            if let weakSelf = self{
-                if let table = weakSelf.personInfoTable{
-                    if weakSelf.personInfoData.count > 0{
-                        if weakSelf.personInfoData[0].detail.count > 0{
-                            var personEidt = weakSelf.personInfoData[0].detail[4]
-                            personEidt.subItem = "\(location.provinceName) \(location.cityName)"
-                            table.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 4, inSection: 0)], withRowAnimation: .None)
-                        }
-                    }
-                }
-            }
-        }
     }
     
     private func initializeSubviews(){

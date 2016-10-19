@@ -9,17 +9,14 @@
 import UIKit
 
 private let GaoDeKey = "5525276dc4688afe0598bb9deba57dda"
-private let DefaultLocationTimeout = 6
-private let DefaultReGeocodeTimeout = 3
+private let DefaultLocationTimeout = 2
+private let DefaultReGeocodeTimeout = 2
 
 
 
-class GaoDe: NSObject,AMapLocationManagerDelegate {
+class GaoDe: NSObject {
     
-    var location:Location!
     private var locationManager:AMapLocationManager!
-    private var locationBlock:((location:Location)->())?
-    private var locationError:Bool = false
     
     class func sharedInstance() ->GaoDe{
         struct Shared{
@@ -34,75 +31,35 @@ class GaoDe: NSObject,AMapLocationManagerDelegate {
     
     func uploadKey(){
         AMapServices.sharedServices().apiKey = GaoDeKey
-        if CLLocationManager.locationServicesEnabled() {
-            
-        }
     }
     
-    func startLocation(completionHandler:((location:Location)->())?) -> Void {
+    func startLocation(completionHandler:((province:String, city:String)->())?) -> Void {
         if CLLocationManager.locationServicesEnabled() {
             self.locationManager = AMapLocationManager()
-            self.locationManager.delegate = self
             self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
             self.locationManager.pausesLocationUpdatesAutomatically = false
             self.locationManager.locationTimeout = DefaultLocationTimeout
             self.locationManager.reGeocodeTimeout = DefaultReGeocodeTimeout
-        }
-        self.locationBlock = completionHandler
-    }
-    
-    func stopLocation() -> Void {
-        self.locationManager.stopUpdatingLocation()
-        self.locationManager.delegate = nil
-        self.locationManager = nil
-    }
-    
-    func getCityInformation(completiomHandler:((location:Location)->())) -> Void {
-        self.startLocation(completiomHandler)
-        self.locationBlock = completiomHandler
-    }
-    
-    private func handleLocation(province: String?, city:String?, lat:CLLocationDegrees,lon:CLLocationDegrees){
-        if NSOperationQueue.currentQueue() == NSOperationQueue.mainQueue() {
-            if let handler = self.locationBlock {
-                self.location = Location(provinceName: province == nil ? "" : province!, provinceCode: "", cityName: city == nil ? "" : city!, cityCode: "", lat: lat, lon: lon)
-                handler(location: self.location)
-            }
-        }else{
-            dispatch_async(dispatch_get_main_queue(), { 
-                if let handler = self.locationBlock {
-                    self.location = Location(provinceName: province == nil ? "" : province!, provinceCode: "", cityName: city == nil ? "" : city!, cityCode: "", lat: lat, lon: lon)
-                    handler(location: self.location)
+            self.locationManager.requestLocationWithReGeocode(true, completionBlock: { (cllocation:CLLocation!, regeocode:AMapLocationReGeocode!, error:NSError!) in
+                if error != nil{
+                    return
+                }
+                if let handle = completionHandler{
+                    dispatch_async(dispatch_get_main_queue(), {
+                        handle(province: regeocode.province, city: regeocode.city)
+                        self.stopLocation()
+                    })
                 }
             })
         }
     }
     
-    func amapLocationManager(manager: AMapLocationManager!, didFailWithError error: NSError!) {
-        if error != nil {
-            self.locationError = true
-        }
+    func stopLocation() -> Void {
+        self.locationManager.stopUpdatingLocation()
+        self.locationManager = nil
     }
     
-    func amapLocationManager(manager: AMapLocationManager!, didUpdateLocation location: CLLocation!) {
-        let geocoder = CLGeocoder()
-        let lat = location.coordinate.latitude
-        let lon = location.coordinate.longitude
-        
-        geocoder.reverseGeocodeLocation(location) { (placemarks:[CLPlacemark]?, error:NSError?) in
-            if let marks = placemarks{
-                if marks.count > 0{
-                    let place = marks[0]
-                    let province = place.subAdministrativeArea
-                    let currentCity = place.locality
-                    self.handleLocation(province, city: currentCity, lat: lat, lon: lon)
-                    self.locationManager.stopUpdatingLocation()
-                    return
-                }
-                self.handleLocation(nil, city: nil, lat: 0, lon: 0)
-            }
-            self.handleLocation(nil, city: nil, lat: 0, lon: 0)
-        }
-    }
+    
+    
     
 }

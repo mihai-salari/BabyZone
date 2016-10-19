@@ -22,14 +22,30 @@ class BabyVideoViewController: BaseViewController {
     private var netType:Int32 = 0
     private var lastNetType:Int32 = 0
     
+    private var lastGroup:Int32 = 0
+    private var lastPin:Int32 = 0
+    private var lastValue:Int32 = 0
+    private var lastTime:Int32 = 0
+    
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = true
         self.tabBarController?.tabBar.hidden = true
         UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: .None)
         NSUserDefaults.standardUserDefaults().setBool(true, forKey: AllowOrientationKey)
-        self.initializeNotification()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onDeviceOrientationChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillResignActive(_:)), name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appBecomeActive(_:)), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.receiveRemoteMessage(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.ack_receiveRemoteMessage(_:)), name: ACK_RECEIVE_REMOTE_MESSAGE, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorStartRender(_:)), name: MONITOR_START_RENDER_MESSAGE, object: nil)
+
         if let contact = deviceContact {
             if let p2p = P2PClient.sharedClient() {
                 p2p.isBCalled = false
@@ -128,19 +144,7 @@ class BabyVideoViewController: BaseViewController {
         self.navigationController?.popViewControllerAnimated(true)
     }
 
-    private func initializeNotification(){
-         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onDeviceOrientationChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillResignActive(_:)), name: UIApplicationWillResignActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appBecomeActive(_:)), name: UIApplicationDidBecomeActiveNotification, object: nil)
-        
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.receiveRemoteMessage(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.ack_receiveRemoteMessage(_:)), name: ACK_RECEIVE_REMOTE_MESSAGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorStartRender(_:)), name: MONITOR_START_RENDER_MESSAGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorErrorOccur(_:)), name: NOTIFICATION_ON_SESSION_ERROR, object: nil)
-    }
+    
 
     private func initialize(){
         
@@ -266,27 +270,34 @@ class BabyVideoViewController: BaseViewController {
     
     func ack_receiveRemoteMessage(note:NSNotification) -> Void {
         if let userInfo = note.userInfo {
-            if let keyValue = userInfo["key"] as? String {
-                if let key = Int32(keyValue) {
-                    var result:Int32 = 0
-                    if let resultValue = userInfo["result"] as? String {
-                        if let rt = Int32(resultValue) {
-                            result = rt
-                        }
-                    }
+            if let keyValue = userInfo["key"] as? String, let resultValue  = userInfo["result"] as? String {
+                if let key = Int32(keyValue), let result = Int32(resultValue) {
                     switch key {
                     case ACK_RET_SET_GPIO_CTL:
                         dispatch_async(dispatch_get_main_queue(), { 
                             if result == 1{
                                 
                             }else if result == 2{
+                                P2PClient.sharedClient().setGpioCtrlWithId(P2PClient.sharedClient().callId, password: P2PClient.sharedClient().callPassword, group: VideoTime.shared().lastGroup, pin: VideoTime.shared().lastPin, value: VideoTime.shared().lastValue, time: VideoTime.shared().lastTime)
+                            }
+                        })
+                    case ACK_RET_GET_LIGHT_STATE:
+                        dispatch_get_main_queue().queue({
+                            if result == 1 {
+                                
+                            }else if result == 2{
+                                 P2PClient.sharedClient().getLightStateWithDeviceId(P2PClient.sharedClient().callId, password: P2PClient.sharedClient().callPassword)
+                            }
+                        })
+                        
+                    case ACK_RET_SET_LIGHT_STATE:
+                        dispatch_get_main_queue().queue({ 
+                            if result == 1{
+                                
+                            }else if result == 2{
                                 
                             }
                         })
-                    case RET_SET_GPIO_CTL:
-                        break
-                    case RET_GET_LIGHT_SWITCH_STATE:
-                        break
                     case RET_SET_LIGHT_SWITCH_STATE:
                         break
                     case RET_DEVICE_NOT_SUPPORT:
@@ -338,12 +349,6 @@ class BabyVideoViewController: BaseViewController {
         self.isPlaying = false
     }
     
-    func monitorErrorOccur(note:NSNotification) -> Void {
-        P2PClient.sharedClient().p2pHungUp()
-        
-        self.navigationController?.popViewControllerAnimated(true)
-        NSNotificationCenter.defaultCenter().postNotificationName(BabyCancelClickNotification, object: nil)
-    }
     
     /*
     // MARK: - Navigation

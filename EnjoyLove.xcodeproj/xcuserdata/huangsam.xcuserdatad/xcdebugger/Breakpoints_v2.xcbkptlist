@@ -52,61 +52,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498559885.88397"
+            timestampString = "498561369.092645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
-            landmarkName = "receiveRemoteMessage(_:)"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
+            landmarkName = "cancelButtonClick()"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498559885.88397"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
-            landmarkName = "ack_receiveRemoteMessage(_:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EnjoyLove.BabyVideoViewController.ack_receiveRemoteMessage (__ObjC.NSNotification) -&gt; ()"
-                  moduleName = "EnjoyLove"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-                  timestampString = "498560025.493756"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "684">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EnjoyLove.BabyVideoViewController.ack_receiveRemoteMessage (__ObjC.NSNotification) -&gt; ()"
-                  moduleName = "EnjoyLove"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-                  timestampString = "498560025.495707"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "270"
-                  endingLineNumber = "270"
-                  offsetFromSymbolStart = "756">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -169,8 +121,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "332"
             endingLineNumber = "332"
-            landmarkName = "renderView()"
-            landmarkType = "7">
+            landmarkName = "BabyVideoViewController"
+            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "Yes"
@@ -180,7 +132,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-                  timestampString = "498560025.529459"
+                  timestampString = "498560596.242302"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "332"
@@ -195,7 +147,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-                  timestampString = "498560025.532066"
+                  timestampString = "498560596.244455"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "332"
@@ -211,13 +163,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498550228.10192"
+            filePath = "EnjoyLove/CommonMethod/BaseMethod/BaseVideoViewController.swift"
+            timestampString = "498560564.734311"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "viewWillAppear(_:)"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "P2PClientReject(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -227,13 +179,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498550230.11816"
+            filePath = "EnjoyLove/CommonMethod/BaseMethod/BaseVideoViewController.swift"
+            timestampString = "498560565.590203"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "viewWillAppear(_:)"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "P2PClientAccept(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -243,13 +195,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498550233.126251"
+            filePath = "EnjoyLove/CommonMethod/BaseMethod/BaseVideoViewController.swift"
+            timestampString = "498560566.46364"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "viewWillAppear(_:)"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "P2PClientReady(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -259,29 +211,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498550440.886551"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
-            timestampString = "498550442.214795"
+            filePath = "EnjoyLove/CommonMethod/BaseMethod/BaseVideoViewController.swift"
+            timestampString = "498560567.550434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "72"
             endingLineNumber = "72"
-            landmarkName = "viewDidLoad()"
+            landmarkName = "P2PClientCalling(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -291,13 +227,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/AppDelegate.m"
-            timestampString = "498550716.833805"
+            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+            timestampString = "498560939.699721"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "429"
-            endingLineNumber = "429"
-            landmarkName = "-receiveRemoteMessage:"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
+            landmarkName = "ack_receiveRemoteMessage(note:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -307,13 +243,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/AppDelegate.m"
-            timestampString = "498550720.818079"
+            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+            timestampString = "498560940.860698"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "489"
-            endingLineNumber = "489"
-            landmarkName = "-ack_receiveRemoteMessage:"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
+            landmarkName = "BabyVideoViewController"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/Controller/BabyVideoViewController.swift"
+            timestampString = "498560944.156658"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "325"
+            endingLineNumber = "325"
+            landmarkName = "monitorStartRender(note:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

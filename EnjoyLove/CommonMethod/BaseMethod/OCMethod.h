@@ -51,6 +51,18 @@
 
 @end
 
+@interface VideoTime : NSObject
+
++ (VideoTime *)shared;
+
+@property(readonly) int lastGroup;
+@property(readonly) int lastPin;
+@property(readonly) int lastValue;
+@property(readonly) int *lastTime;
+
+- (void)refresh:(int)group pin:(int)p value:(int)val;
+
+@end
 
 
 

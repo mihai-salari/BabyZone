@@ -231,7 +231,54 @@ static int hudViewTag = 1000000;
 @end
 
 
+@interface VideoTime ()
 
+@property(nonatomic) int lastGroup;
+@property(nonatomic) int lastPin;
+@property(nonatomic) int lastValue;
+@property(nonatomic) int *lastTime;
+
+@end
+
+@implementation VideoTime
+
+
++ (VideoTime *)shared{
+    static VideoTime *manager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        manager = [[self alloc] init];
+        [manager setIfNeed];
+    });
+    return manager;
+}
+
+- (void)setIfNeed{
+    int time[8] = {0};
+    time[0] = -15;
+    time[1] = 6000;
+    time[2] = -1;
+    //记录当前的GPIO设置参数
+    self.lastGroup = 1;
+    self.lastPin = 0;
+    self.lastValue = 3;
+    self.lastTime = time;
+}
+
+- (void)refresh:(int)group pin:(int)p value:(int)val{
+    int time[8] = {0};
+    time[0] = -1000;
+    time[1] = 1000;
+    time[2] = -1000;
+    time[3] = 1000;
+    time[4] = -1000;
+    self.lastGroup = group;
+    self.lastPin = p;
+    self.lastValue = val;
+    self.lastTime = time;
+}
+
+@end
 
 
 

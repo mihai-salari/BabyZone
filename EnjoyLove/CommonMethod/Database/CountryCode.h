@@ -12,6 +12,12 @@
 
 + (CountryCode *)shared;
 
-- (void)findAll;
+- (NSArray *)findViaName:(NSString *)name;
+
+- (NSArray *)findViaLevel:(NSString *)level;
+
+- (NSArray *)findViaParentCode:(NSString *)parentCode;
+
+- (NSArray *)findAll;
 
 @end

@@ -2260,7 +2260,13 @@ class ArticleListBL: NSObject {
 }
 
 class CityCode: NSObject {
-    
+    var codeId = ""
+    var codeAreaCode = ""
+    var codeAreaName = ""
+    var codeParentCode = ""
+    var codeLevel = ""
+    var codeAreaTelCode = ""
+    var codeCenter = ""
 }
 
 

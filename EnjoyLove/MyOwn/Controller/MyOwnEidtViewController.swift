@@ -61,7 +61,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         detailModel = PersonEidtDetail(mainTitle: "性别", subItem: Int(self.personDetailModel.sex) == 1 ? "男":"女", isHeader: false, eidtType: 3, babyId: "")
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? "广东 深圳市" : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
+        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? "广东省 深圳市" : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
         detailData.append(detailModel)
         
         var pregStatus = "有宝宝"
@@ -85,20 +85,29 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         
         BabyList.sendAsyncBabyList { [weak self](errorCode, msg) in
             if let weakSelf = self{
-                if let code = errorCode {
-                    if code == BabyZoneConfig.shared.passCode {
-                        let babys = BabyListBL.findAll()
-                        if babys.count > 0{
-                            detailData = []
-                            for baby in babys{
-                                detailModel = PersonEidtDetail(mainTitle: baby.babyName, subItem: "姓名/性别/年龄", isHeader: false, eidtType: 6, babyId: baby.idUserBabyInfo)
+                dispatch_queue_create("babyListQueue", nil).queue({ 
+                    if let code = errorCode {
+                        if code == BabyZoneConfig.shared.passCode {
+                            let babys = BabyListBL.findAll()
+                            if babys.count > 0{
+                                detailData = []
+                                for baby in babys{
+                                    detailModel = PersonEidtDetail(mainTitle: baby.babyName, subItem: "姓名/性别/年龄", isHeader: false, eidtType: 6, babyId: baby.idUserBabyInfo)
+                                    detailData.append(detailModel)
+                                }
+                                detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7, babyId: "")
                                 detailData.append(detailModel)
+                                
+                                model = PersonEditInfo(title: "宝宝", detail: detailData)
+                                weakSelf.personInfoData.append(model)
+                            }else{
+                                detailData = []
+                                detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7, babyId: "")
+                                detailData.append(detailModel)
+                                
+                                model = PersonEditInfo(title: "宝宝", detail: detailData)
+                                weakSelf.personInfoData.append(model)
                             }
-                            detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7, babyId: "")
-                            detailData.append(detailModel)
-                            
-                            model = PersonEditInfo(title: "宝宝", detail: detailData)
-                            weakSelf.personInfoData.append(model)
                         }else{
                             detailData = []
                             detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7, babyId: "")
@@ -115,17 +124,12 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                         model = PersonEditInfo(title: "宝宝", detail: detailData)
                         weakSelf.personInfoData.append(model)
                     }
-                }else{
-                    detailData = []
-                    detailModel = PersonEidtDetail(mainTitle: "添加宝宝", subItem: "更多宝宝", isHeader: false, eidtType: 7, babyId: "")
-                    detailData.append(detailModel)
-                    
-                    model = PersonEditInfo(title: "宝宝", detail: detailData)
-                    weakSelf.personInfoData.append(model)
-                }
-                if let personTable = weakSelf.personInfoTable{
-                    personTable.reloadData()
-                }
+                    if let personTable = weakSelf.personInfoTable{
+                        dispatch_get_main_queue().queue({
+                            personTable.reloadData()
+                        })
+                    }
+                })
             }
         }
         

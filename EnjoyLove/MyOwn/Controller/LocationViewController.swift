@@ -24,7 +24,18 @@ class LocationViewController: BaseViewController {
         // Do any additional setup after loading the view.
         self.locationView = LocationView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), completionHandler: { [weak self](location, section) in
             if let weakSelf = self{
-                
+                if section == 0{
+                    
+                }else if section == 1{
+                    let cityViewController = LocationCityViewController()
+                    cityViewController.provincial = location.provincial
+                    cityViewController.codeHandler = {[weak self](province, city) in
+                        if let weakSelf = self{
+                            
+                        }
+                    }
+                    weakSelf.navigationController?.pushViewController(cityViewController, animated: true)
+                }
             }
         })
         self.view.addSubview(self.locationView)

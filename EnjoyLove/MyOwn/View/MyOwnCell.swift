@@ -20,7 +20,7 @@ private let editButtonWidth:CGFloat = upRateWidth(35)
 class MyOwnCell: UITableViewCell {
 
     private var headerDescribeLabel:UILabel!
-    private var headerButton:UIButton!
+    private var headerButton:UIImageView!
     private var headerNickNameLabel:UILabel!
     private var headerDescLabel:UILabel!
     private var headerPostLabel:UILabel!
@@ -57,14 +57,14 @@ class MyOwnCell: UITableViewCell {
                     for subview in self.contentView.subviews {
                         subview.removeFromSuperview()
                     }
-                    self.headerButton = UIButton.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
+                    self.headerButton = UIImageView.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
                     self.headerButton.layer.cornerRadius = self.contentView.frame.height * (1 / 2.5) / 2
                     self.headerButton.layer.masksToBounds = true
                     if person.headImg == "" {
-                        self.headerButton.setImage(UIImage.imageWithName("mamaHeader.png"), forState: .Normal)
+                        self.headerButton.image = UIImage.imageWithName("mamaHeader.png")
                     }else{
                         let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: person.headImg)
-                        self.headerButton.setImageURL(imageUrl, state: .Normal)
+                        self.headerButton.setImageURL(imageUrl)
                         
                     }
                     
@@ -150,7 +150,7 @@ class MyOwnCell: UITableViewCell {
     }
     
     func refreshSubviewsForEdit(model:MyOwnHeader){
-        self.headerButton.setImage(UIImage.imageWithName(model.header), forState: .Normal)
+        self.headerButton.image = UIImage.imageWithName(model.header)
         self.headerNickNameLabel.text = model.nickName
         self.headerDescLabel.frame = CGRectMake(CGRectGetMinX(self.headerNickNameLabel.frame), CGRectGetMaxY(self.headerNickNameLabel.frame), CGRectGetWidth(textRect(model.desc, fontSize: 14, size: CGSizeMake(textWidth, CGRectGetHeight(self.headerNickNameLabel.frame)))), CGRectGetHeight(self.headerNickNameLabel.frame))
         self.headerDescLabel.text = model.desc

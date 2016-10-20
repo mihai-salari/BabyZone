@@ -613,14 +613,20 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
         self.locationTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: LocationTableViewCellId)
         self.addSubview(self.locationTable)
         
-        GaoDe.sharedInstance().startLocation { [weak self](province, city) in
-            if let weakSelf = self{
-                if let table = weakSelf.locationTable{
-                    if weakSelf.locationData.count > 0 && weakSelf.locationData[0].provincial.count > 0{
-                        weakSelf.locationData[0].provincial[0].province.codeAreaName = "\(province) \(city)"
-                        weakSelf.locationProvince = province
-                        weakSelf.locationCity = city
-                        table.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: 0)], withRowAnimation: .None)
+        
+        let locationQueue = dispatch_queue_create("locationQueue", nil)
+        locationQueue.queue { 
+            GaoDe.sharedInstance().startLocation { [weak self](province, city) in
+                if let weakSelf = self{
+                    if let table = weakSelf.locationTable{
+                        if weakSelf.locationData.count > 0 && weakSelf.locationData[0].provincial.count > 0{
+                            weakSelf.locationData[0].provincial[0].province.codeAreaName = "\(province) \(city)"
+                            weakSelf.locationProvince = province
+                            weakSelf.locationCity = city
+                            dispatch_get_main_queue().queue({ 
+                                table.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                            })
+                        }
                     }
                 }
             }
@@ -683,12 +689,14 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
             if indexPath.section == 0 {
                 if self.locationProvince != "" && self.locationCity != ""{
                     if let provinceCode = CountryCode.shared().findViaDetermineName(self.locationProvince), let cityCode = CountryCode.shared().findViaDetermineName(self.locationCity) {
-                        handle(location: LocationResult(provinceCode: provinceCode.codeAreaCode, cityCode: cityCode.codeAreaCode), section: indexPath.section)
+                        handle(location: LocationResult(provincial: nil, provinceCode: provinceCode, cityCode: cityCode), section: indexPath.section)
                     }
                 }
             }else{
                 let provincial = self.locationData[indexPath.section].provincial[indexPath.row]
-                handle(location: LocationResult(provinceCode: provincial.province.codeAreaCode, cityCode: ""), section: indexPath.section)
+                if provincial.city.count > 0 {
+                    handle(location: LocationResult(provincial: provincial, provinceCode: nil, cityCode: nil), section: indexPath.section)
+                }
             }
         }
     }

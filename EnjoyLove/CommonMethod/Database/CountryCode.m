@@ -117,7 +117,6 @@
             code.codeLevel = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:4]];
             code.codeAreaTelCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:5]];
             code.codeCenter = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:6]];
-            [self.fmdb close];
             return code;
         }
     }

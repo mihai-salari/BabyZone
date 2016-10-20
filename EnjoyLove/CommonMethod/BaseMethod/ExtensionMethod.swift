@@ -44,6 +44,20 @@ extension NSObject{
         return result
     }
     
+    func actionQueue(label: UnsafePointer<Int8>, subQueueBlock: dispatch_block_t?, mainQueueBlock:dispatch_block_t?) -> Void {
+        let subQueue = dispatch_queue_create(label, nil)
+        subQueue.queue { 
+            if let subBlock = subQueueBlock{
+                subBlock()
+            }
+            if let mainQueue = mainQueueBlock{
+                dispatch_get_main_queue().queue({
+                    mainQueue()
+                })
+            }
+        }
+        
+    }
 }
 
 
@@ -477,16 +491,14 @@ extension UIImage{
         return newImage!
     }
     
-    func setImageURL(url:String, imageHandler:((image:UIImage)->())?) -> Void {
+    class func setImageURL(url:String) -> UIImage {
         dispatch_async(dispatch_queue_create("imageDownloadQueue", nil)) {
             do{
                 if let imageUrl = NSURL.init(string: url){
                     let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
                     if let resultImage = UIImage.init(data: imageData){
                         dispatch_async(dispatch_get_main_queue(), {
-                            if let handle = imageHandler{
-                                handle(image: resultImage)
-                            }
+                            return resultImage
                         })
                     }
                 }
@@ -494,6 +506,7 @@ extension UIImage{
                 
             }
         }
+        return UIImage.init()
     }
     
 }
@@ -551,6 +564,24 @@ extension UIButton{
                 
             }
         }
+    }
+}
+
+extension NSData{
+    
+    class func dataWithUrl(url:String) -> NSData {
+        var resultData:NSData!
+        dispatch_async(dispatch_queue_create("ImageToDataQueue", nil)) { 
+            do{
+                if let imageUrl = NSURL.init(string: url){
+                    let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
+                    resultData = imageData
+                }
+            }catch{
+                
+            }
+        }
+        return resultData == nil ? NSData.init() : resultData
     }
 }
 

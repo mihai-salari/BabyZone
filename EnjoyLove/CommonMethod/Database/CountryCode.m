@@ -105,6 +105,26 @@
     return [allData copy];
 }
 
+- (CityCode *)findViaDetermineName:(NSString *)name{
+    if ([self.fmdb open]) {
+        FMResultSet *result = [self.fmdb executeQuery:[NSString stringWithFormat:@"select * from ZZXCity where area_name='%@';",name]];
+        while ([result next]) {
+            CityCode *code = [[CityCode alloc] init];
+            code.codeId = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:0]];
+            code.codeAreaCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:1]];
+            code.codeAreaName = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:2]];
+            code.codeParentCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:3]];
+            code.codeLevel = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:4]];
+            code.codeAreaTelCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:5]];
+            code.codeCenter = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:6]];
+            [self.fmdb close];
+            return code;
+        }
+    }
+    [self.fmdb close];
+    return nil;
+}
+
 - (NSArray *)findViaLevel:(NSString *)level{
     if (![level isEqualToString:@"0"] && ![level isEqualToString:@"1"] && ![level isEqualToString:@"2"] && ![level isEqualToString:@"3"]) {
         return nil;

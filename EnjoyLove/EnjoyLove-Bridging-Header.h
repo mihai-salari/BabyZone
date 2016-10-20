@@ -12,7 +12,6 @@
 #import "XMLDictionary.h"
 #import "AppDelegate.h"
 #import "PickerControllView.h"
-#import "ChooseCityController.h"
 #import "MBProgressHUD.h"
 #import "HMAddressBook.h"
 #import "HMPersonModel.h"

@@ -138,3 +138,8 @@ struct Provincial {
     var province:CityCode!
     var city:[CityCode]!
 }
+
+struct LocationResult {
+    var provinceCode = ""
+    var cityCode = ""
+}

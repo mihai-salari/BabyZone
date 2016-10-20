@@ -8,11 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
+@class CityCode;
 @interface CountryCode : NSObject
 
 + (CountryCode *)shared;
 
 - (NSArray *)findViaName:(NSString *)name;
+
+- (CityCode *)findViaDetermineName:(NSString *)name;
 
 - (NSArray *)findViaLevel:(NSString *)level;
 

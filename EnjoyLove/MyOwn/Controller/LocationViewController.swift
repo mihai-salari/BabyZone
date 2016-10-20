@@ -15,14 +15,17 @@ class LocationViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
+        self.navigationBarItem(title: "地区", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.locationView = LocationView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), completionHandler: { (location) in
-            
+        self.locationView = LocationView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), completionHandler: { [weak self](location, section) in
+            if let weakSelf = self{
+                
+            }
         })
         self.view.addSubview(self.locationView)
     }

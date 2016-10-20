@@ -570,9 +570,12 @@ private let LocationTableViewCellId = "LocationTableViewCellId"
 class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var locationTable:UITableView!
     private var locationData:[Location]!
-    private var locationHandler:((location:Location)->())?
-    init(frame: CGRect, completionHandler:((location:Location)->())?) {
+    private var locationHandler:((location:LocationResult, section:Int)->())?
+    private var locationProvince:String = ""
+    private var locationCity:String = ""
+    init(frame: CGRect, completionHandler:((location:LocationResult, section:Int)->())?) {
         super.init(frame: frame)
+        self.backgroundColor = UIColor.whiteColor()
         
         self.locationData = []
         
@@ -602,23 +605,28 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
         location = Location(mainTitle: "中国", provincial: provincialData)
         self.locationData.append(location)
         
-        self.locationTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
+        self.locationTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: self.frame.height), style: .Plain)
         self.locationTable.separatorInset = UIEdgeInsetsZero
         self.locationTable.layoutMargins = UIEdgeInsetsZero
         self.locationTable.delegate = self
         self.locationTable.dataSource = self
         self.locationTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: LocationTableViewCellId)
+        self.addSubview(self.locationTable)
         
         GaoDe.sharedInstance().startLocation { [weak self](province, city) in
             if let weakSelf = self{
                 if let table = weakSelf.locationTable{
                     if weakSelf.locationData.count > 0 && weakSelf.locationData[0].provincial.count > 0{
-                        weakSelf.locationData[0].provincial[0].province.codeAreaName = province
+                        weakSelf.locationData[0].provincial[0].province.codeAreaName = "\(province) \(city)"
+                        weakSelf.locationProvince = province
+                        weakSelf.locationCity = city
                         table.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: 0)], withRowAnimation: .None)
                     }
                 }
             }
         }
+        
+        self.locationHandler = completionHandler
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -639,11 +647,50 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
         if let resultCell = cell {
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.selectionStyle = .None
             let detail = self.locationData[indexPath.section]
             let provincial = detail.provincial[indexPath.row]
             resultCell.textLabel?.text = provincial.province.codeAreaName
+            if indexPath.section == 1 && provincial.city.count > 0{
+                resultCell.accessoryType = .DisclosureIndicator
+            }
         }
         return cell!
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.001
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var header:UIView?
+        header = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
+        header?.backgroundColor = UIColor.hexStringToColor("#60555b")
+        let label = UILabel.init(frame: CGRect(x: 20, y: 0, width: header!.frame.width - 40, height: header!.frame.height))
+        label.font = UIFont.systemFontOfSize(11)
+        label.text = self.locationData[section].mainTitle
+        label.textColor = UIColor.whiteColor()
+        header?.addSubview(label)
+        return header
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if let handle = self.locationHandler {
+            if indexPath.section == 0 {
+                if self.locationProvince != "" && self.locationCity != ""{
+                    if let provinceCode = CountryCode.shared().findViaDetermineName(self.locationProvince), let cityCode = CountryCode.shared().findViaDetermineName(self.locationCity) {
+                        handle(location: LocationResult(provinceCode: provinceCode.codeAreaCode, cityCode: cityCode.codeAreaCode), section: indexPath.section)
+                    }
+                }
+            }else{
+                let provincial = self.locationData[indexPath.section].provincial[indexPath.row]
+                handle(location: LocationResult(provinceCode: provincial.province.codeAreaCode, cityCode: ""), section: indexPath.section)
+            }
+        }
     }
     
 }

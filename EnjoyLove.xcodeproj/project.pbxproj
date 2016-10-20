@@ -57,6 +57,7 @@
 		270210511DB7167900D3BDBE /* CountryCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 270210501DB7167900D3BDBE /* CountryCode.m */; };
 		270210531DB732D000D3BDBE /* ZZXCity.db in Resources */ = {isa = PBXBuildFile; fileRef = 270210521DB732D000D3BDBE /* ZZXCity.db */; };
 		270210581DB765B300D3BDBE /* BaseVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210571DB765B300D3BDBE /* BaseVideoViewController.swift */; };
+		2702105A1DB8679100D3BDBE /* LocationCityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210591DB8679100D3BDBE /* LocationCityViewController.swift */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270BC50C1D8F81B200C3DCCE /* ProblemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */; };
 		270BC50E1D8F831100C3DCCE /* ProblemDetailListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */; };
@@ -589,6 +590,7 @@
 		270210501DB7167900D3BDBE /* CountryCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryCode.m; sourceTree = "<group>"; };
 		270210521DB732D000D3BDBE /* ZZXCity.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = ZZXCity.db; sourceTree = "<group>"; };
 		270210571DB765B300D3BDBE /* BaseVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVideoViewController.swift; sourceTree = "<group>"; };
+		270210591DB8679100D3BDBE /* LocationCityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCityViewController.swift; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270BC50B1D8F81B100C3DCCE /* ProblemDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailViewController.swift; sourceTree = "<group>"; };
 		270BC50D1D8F831100C3DCCE /* ProblemDetailListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemDetailListViewController.swift; sourceTree = "<group>"; };
@@ -2407,6 +2409,7 @@
 				271F15761D94D56500CAAEF4 /* OtherViewController.swift */,
 				271F157C1D950E3700CAAEF4 /* LanguageViewController.swift */,
 				270210111DB5ED3000D3BDBE /* LocationViewController.swift */,
+				270210591DB8679100D3BDBE /* LocationCityViewController.swift */,
 				271F157E1D95175800CAAEF4 /* AddDeviceViewController.swift */,
 				277A340D1DA9EE470002E53F /* DevicesViewController.swift */,
 				277A340F1DAA0FA50002E53F /* DeviceListViewController.swift */,
@@ -3244,6 +3247,7 @@
 				277E58651D9BB787002FE20C /* ChildDetailViewController.swift in Sources */,
 				27020F951DB085AE00D3BDBE /* QNAsyncRun.m in Sources */,
 				27830C7B1D9A24900036E2BC /* P2PClient.m in Sources */,
+				2702105A1DB8679100D3BDBE /* LocationCityViewController.swift in Sources */,
 				278400FC1D913AEF00A46437 /* SecurityView.swift in Sources */,
 				27188E091D863A3500797D41 /* DXUnAuthorizedTipsView.swift in Sources */,
 				27020FA01DB085AE00D3BDBE /* QNFileRecorder.m in Sources */,

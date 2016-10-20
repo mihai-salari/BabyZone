@@ -616,11 +616,11 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
         
         let locationQueue = dispatch_queue_create("locationQueue", nil)
         locationQueue.queue { 
-            GaoDe.sharedInstance().startLocation { [weak self](province, city) in
+            GaoDe.sharedInstance().startLocation { [weak self](province, city, success) in
                 if let weakSelf = self{
                     if let table = weakSelf.locationTable{
                         if weakSelf.locationData.count > 0 && weakSelf.locationData[0].provincial.count > 0{
-                            weakSelf.locationData[0].provincial[0].province.codeAreaName = "\(province) \(city)"
+                            weakSelf.locationData[0].provincial[0].province.codeAreaName = success == true ?  "\(province) \(city)" : "定位失败"
                             weakSelf.locationProvince = province
                             weakSelf.locationCity = city
                             dispatch_get_main_queue().queue({ 

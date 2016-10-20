@@ -33,7 +33,7 @@ class GaoDe: NSObject {
         AMapServices.sharedServices().apiKey = GaoDeKey
     }
     
-    func startLocation(completionHandler:((province:String, city:String)->())?) -> Void {
+    func startLocation(completionHandler:((province:String, city:String, success:Bool)->())?) -> Void {
         if CLLocationManager.locationServicesEnabled() {
             self.locationManager = AMapLocationManager()
             self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
@@ -41,12 +41,13 @@ class GaoDe: NSObject {
             self.locationManager.locationTimeout = DefaultLocationTimeout
             self.locationManager.reGeocodeTimeout = DefaultReGeocodeTimeout
             self.locationManager.requestLocationWithReGeocode(true, completionBlock: { (cllocation:CLLocation!, regeocode:AMapLocationReGeocode!, error:NSError!) in
-                if error != nil{
-                    return
-                }
                 if let handle = completionHandler{
+                    if error != nil{
+                        handle(province: "", city: "", success: false)
+                        return
+                    }
                     dispatch_async(dispatch_get_main_queue(), {
-                        handle(province: regeocode.province, city: regeocode.city)
+                        handle(province: regeocode.province, city: regeocode.city, success: true)
                         self.stopLocation()
                     })
                 }

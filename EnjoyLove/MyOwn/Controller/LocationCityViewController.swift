@@ -18,6 +18,7 @@ class LocationCityViewController: BaseViewController,UITableViewDelegate,UITable
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.automaticallyAdjustsScrollViewInsets = false
         self.navigationBarItem(title: "地区", leftSel: nil, rightSel: nil)
     }
     

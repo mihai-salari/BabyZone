@@ -11,6 +11,7 @@ import UIKit
 class LocationViewController: BaseViewController {
 
     private var locationView:LocationView!
+    var locationInfoHandler:((provinceCode:String, cityCode:String)->())?
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -25,13 +26,17 @@ class LocationViewController: BaseViewController {
         self.locationView = LocationView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), completionHandler: { [weak self](location, section) in
             if let weakSelf = self{
                 if section == 0{
-                    
+                    if let locationInfo = weakSelf.locationInfoHandler{
+                        locationInfo(provinceCode: location.provinceCode.codeAreaCode, cityCode: location.cityCode.codeAreaCode)
+                        weakSelf.navigationController?.popViewControllerAnimated(true)
+                    }
                 }else if section == 1{
                     let cityViewController = LocationCityViewController()
                     cityViewController.provincial = location.provincial
-                    cityViewController.codeHandler = {[weak self](province, city) in
-                        if let weakSelf = self{
-                            
+                    cityViewController.codeHandler = {(province, city) in
+                        if let locationInfo = weakSelf.locationInfoHandler{
+                            locationInfo(provinceCode: province, cityCode: city)
+                            weakSelf.navigationController?.popViewControllerAnimated(false)
                         }
                     }
                     weakSelf.navigationController?.pushViewController(cityViewController, animated: true)

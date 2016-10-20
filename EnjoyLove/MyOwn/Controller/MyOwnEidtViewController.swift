@@ -62,11 +62,13 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         detailData.append(detailModel)
         
         var district = "广东省 深圳市"
-        if let province = CountryCode.shared().findViaAreaCode(self.personDetailModel.provinceCode), let city = CountryCode.shared().findViaAreaCode(self.personDetailModel.cityCode) {
-            district = "\(province.codeAreaName) \(city.codeAreaName)"
+        if self.personDetailModel.province == "" || self.personDetailModel.city == "" {
+            if let province = CountryCode.shared().findViaAreaCode(self.personDetailModel.provinceCode), let city = CountryCode.shared().findViaAreaCode(self.personDetailModel.cityCode) {
+                district = "\(province.codeAreaName) \(city.codeAreaName)"
+            }
         }
         
-        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? district : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
+        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? district : "\(self.personDetailModel.province) \(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
         detailData.append(detailModel)
         
         var pregStatus = "有宝宝"
@@ -226,7 +228,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                                             person.city = city.codeAreaName
                                             PersonDetailBL.modify(person)
                                             if weakSelf.personInfoData.count > 0 && weakSelf.personInfoData[0].detail.count > 0{
-                                                weakSelf.personInfoData[0].detail[4].subItem = "\(province.codeAreaName) \(city.codeAreaName)"
+                                                weakSelf.personInfoData[0].detail[4].subItem = "\(province.codeAreaName)  \(city.codeAreaName)"
                                                 tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                                             }
                                         }else{

@@ -187,6 +187,7 @@ extension PersonDetail {
                 
                 if errorCode == BabyZoneConfig.shared.passCode{
                     if let data = response["data"] as? [String:NSObject]{
+                        print("data === \(data)")
                         let detail = PersonDetail()
                         detail.userId = format(data["userId"])
                         detail.userName = format(data["userName"])

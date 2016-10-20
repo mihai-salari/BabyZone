@@ -21,6 +21,8 @@
 
 - (NSArray *)findViaParentCode:(NSString *)parentCode;
 
+- (CityCode *)findViaAreaCode:(NSString *)areaCode;
+
 - (NSArray *)findAll;
 
 @end

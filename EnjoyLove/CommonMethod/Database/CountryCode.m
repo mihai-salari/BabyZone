@@ -168,6 +168,26 @@
     return [allData copy];
 }
 
+- (CityCode *)findViaAreaCode:(NSString *)areaCode{
+    if ([self.fmdb open]) {
+        FMResultSet *result = [self.fmdb executeQuery:[NSString stringWithFormat:@"select * from ZZXCity where area_code='%@';",areaCode]];
+        while ([result next]) {
+            CityCode *code = [[CityCode alloc] init];
+            code.codeId = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:0]];
+            code.codeAreaCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:1]];
+            code.codeAreaName = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:2]];
+            code.codeParentCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:3]];
+            code.codeLevel = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:4]];
+            code.codeAreaTelCode = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:5]];
+            code.codeCenter = [NSString stringWithFormat:@"%@", [result stringForColumnIndex:6]];
+            return code;
+        }
+    }
+    [self.fmdb close];
+    return nil;
+
+}
+
 @end
 
 

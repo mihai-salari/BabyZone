@@ -61,7 +61,12 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         detailModel = PersonEidtDetail(mainTitle: "性别", subItem: Int(self.personDetailModel.sex) == 1 ? "男":"女", isHeader: false, eidtType: 3, babyId: "")
         detailData.append(detailModel)
         
-        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? "广东省 深圳市" : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
+        var district = "广东省 深圳市"
+        if let province = CountryCode.shared().findViaAreaCode(self.personDetailModel.provinceCode), let city = CountryCode.shared().findViaAreaCode(self.personDetailModel.cityCode) {
+            district = "\(province.codeAreaName) \(city.codeAreaName)"
+        }
+        
+        detailModel = PersonEidtDetail(mainTitle: "地区", subItem: self.personDetailModel.province == "" ? district : "\(self.personDetailModel.province)\(self.personDetailModel.city)", isHeader: false, eidtType: 4, babyId: "")
         detailData.append(detailModel)
         
         var pregStatus = "有宝宝"
@@ -207,6 +212,35 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         
         if detailModel.eidtType == 4 {
             let cityPicker = LocationViewController()
+            cityPicker.locationInfoHandler = { [weak self](province, city) in
+                if let weakSelf = self {
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                        if let login = LoginBL.find(nil, key: phone){
+                            if let person = PersonDetailBL.find(nil, key: login.userId){
+                                HUD.showHud("正在提交...", onView: weakSelf.view)
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: province.codeAreaCode, cityCode: city.codeAreaCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                    HUD.hideHud(weakSelf.view)
+                                    if let error = errorCode{
+                                        if error == BabyZoneConfig.shared.passCode{
+                                            person.province = province.codeAreaName
+                                            person.city = city.codeAreaName
+                                            PersonDetailBL.modify(person)
+                                            if weakSelf.personInfoData.count > 0 && weakSelf.personInfoData[0].detail.count > 0{
+                                                weakSelf.personInfoData[0].detail[4].subItem = "\(province.codeAreaName) \(city.codeAreaName)"
+                                                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                            }
+                                        }else{
+                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
+                                        }
+                                    }else{
+                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+            }
             self.navigationController?.pushViewController(cityPicker, animated: true)
         }else{
             let editDetail = EditDetailViewController()

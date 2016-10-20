@@ -12,7 +12,7 @@ private let LocationCityTableViewCellId = "LocationCityTableViewCellId"
 class LocationCityViewController: BaseViewController,UITableViewDelegate,UITableViewDataSource {
 
     var provincial:Provincial!
-    var codeHandler:((provinceCode:String, cityCode:String)->())?
+    var codeHandler:((provinceCode:CityCode, cityCode:CityCode)->())?
     
     private var cityTable:UITableView!
     
@@ -58,9 +58,11 @@ class LocationCityViewController: BaseViewController,UITableViewDelegate,UITable
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let handle = self.codeHandler {
-            handle(provinceCode: self.provincial.province.codeAreaCode, cityCode: self.provincial.city[indexPath.row].codeAreaCode)
+            handle(provinceCode: self.provincial.province, cityCode: self.provincial.city[indexPath.row])
+            if let viewControllers = self.navigationController?.viewControllers {
+                self.navigationController?.popToViewController(viewControllers[1], animated: true)
+            }
         }
-        self.navigationController?.popViewControllerAnimated(true)
     }
     
 

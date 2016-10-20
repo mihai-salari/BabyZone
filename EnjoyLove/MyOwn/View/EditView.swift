@@ -396,7 +396,7 @@ class EditPregStatusView: UIView,UITableViewDelegate,UITableViewDataSource {
                     status = 2
                 case "怀孕":
                     status = 3
-                case "已有宝宝":
+                case "有宝宝":
                     status = 4
                 default:
                     break
@@ -587,13 +587,13 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
         provincialData.append(provincial)
         var location = Location(mainTitle: "所在城市", provincial: provincialData)
         self.locationData.append(location)
-        provincialData.append(provincial)
+        
         
         provincialData = []
         if let provinces = CountryCode.shared().findViaLevel("1") as? [CityCode] {
             for province in provinces {
                 var cityData:[CityCode] = []
-                if let citys = CountryCode.shared().findViaParentCode(province.codeParentCode) as? [CityCode] {
+                if let citys = CountryCode.shared().findViaParentCode(province.codeAreaCode) as? [CityCode] {
                     for city in citys {
                         cityData.append(city)
                     }
@@ -659,6 +659,9 @@ class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
             resultCell.textLabel?.text = provincial.province.codeAreaName
             if indexPath.section == 1 && provincial.city.count > 0{
                 resultCell.accessoryType = .DisclosureIndicator
+            }
+            if indexPath.section == 0 {
+                resultCell.accessoryType = .None
             }
         }
         return cell!

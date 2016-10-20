@@ -565,7 +565,9 @@ class EditBabyView: UIView ,UITableViewDelegate, UITableViewDataSource{
     }
 }
 
-class LocationView: UIView {
+private let LocationTableViewCellId = "LocationTableViewCellId"
+
+class LocationView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var locationTable:UITableView!
     private var locationData:[Location]!
     private var locationHandler:((location:Location)->())?
@@ -574,13 +576,10 @@ class LocationView: UIView {
         
         self.locationData = []
         
-        var provinceData:[CityCode] = []
-        var province = CityCode()
+        let province = CityCode()
         province.codeAreaName = "正在定位..."
-        provinceData.append(province)
         
-        
-        var provincial = Provincial(province: provinceData, city: nil)
+        var provincial = Provincial(province: province, city: nil)
         var provincialData:[Provincial] = []
         provincialData.append(provincial)
         var location = Location(mainTitle: "所在城市", provincial: provincialData)
@@ -589,7 +588,6 @@ class LocationView: UIView {
         
         provincialData = []
         if let provinces = CountryCode.shared().findViaLevel("1") as? [CityCode] {
-            provinceData = []
             for province in provinces {
                 var cityData:[CityCode] = []
                 if let citys = CountryCode.shared().findViaParentCode(province.codeParentCode) as? [CityCode] {
@@ -597,16 +595,28 @@ class LocationView: UIView {
                         cityData.append(city)
                     }
                 }
-                provinceData.append(province)
-                provincial = Provincial(province: provinceData, city: cityData)
+                provincial = Provincial(province: province, city: cityData)
+                provincialData.append(provincial)
             }
         }
         location = Location(mainTitle: "中国", provincial: provincialData)
         self.locationData.append(location)
         
+        self.locationTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: self.frame.height))
+        self.locationTable.separatorInset = UIEdgeInsetsZero
+        self.locationTable.layoutMargins = UIEdgeInsetsZero
+        self.locationTable.delegate = self
+        self.locationTable.dataSource = self
+        self.locationTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: LocationTableViewCellId)
+        
         GaoDe.sharedInstance().startLocation { [weak self](province, city) in
             if let weakSelf = self{
-                
+                if let table = weakSelf.locationTable{
+                    if weakSelf.locationData.count > 0 && weakSelf.locationData[0].provincial.count > 0{
+                        weakSelf.locationData[0].provincial[0].province.codeAreaName = province
+                        table.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: 0)], withRowAnimation: .None)
+                    }
+                }
             }
         }
     }
@@ -614,6 +624,28 @@ class LocationView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return self.locationData.count
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let detail = self.locationData[section]
+        return detail.provincial.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(LocationTableViewCellId)
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            let detail = self.locationData[indexPath.section]
+            let provincial = detail.provincial[indexPath.row]
+            resultCell.textLabel?.text = provincial.province.codeAreaName
+        }
+        return cell!
+    }
+    
 }
 
 

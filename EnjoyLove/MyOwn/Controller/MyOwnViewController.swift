@@ -288,7 +288,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                                         
                                         UDManager.setIsLogin(false)
                                         GlobalThread.sharedThread(false).kill()
-                                        if let manager = FListManager.sharedFList() as? FListManager{
+                                        if let manager = FListManager.sharedFList(){
                                             manager.isReloadData = true
                                         }
                                         HMTablBarController.selectedIndex = 0

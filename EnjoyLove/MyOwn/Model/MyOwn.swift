@@ -135,6 +135,6 @@ struct Location {
 }
 
 struct Provincial {
-    var province:[CityCode]!
+    var province:CityCode!
     var city:[CityCode]!
 }

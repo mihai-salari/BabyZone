@@ -10,7 +10,7 @@ import UIKit
 
 private let PersionInfoTableViewCellId = "PersionInfoTableViewCellId"
 
-class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableViewDataSource,PersonInfoEditDelegate,ChooseCityDelegate {
+class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableViewDataSource,PersonInfoEditDelegate {
     
     var infoModel:MyOwnHeader!
     var personDetailModel:PersonDetail!
@@ -202,12 +202,8 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         let detailModel = model.detail[indexPath.row]
         
         if detailModel.eidtType == 4 {
-            return
-            let cityPicker = ChooseCityController()
-            cityPicker.delegate = self
-            cityPicker.chooseType = ChooseType.init(1)
-            let nav = UINavigationController.init(rootViewController: cityPicker)
-            self.presentViewController(nav, animated: true, completion: nil)
+            let cityPicker = LocationViewController()
+            self.navigationController?.pushViewController(cityPicker, animated: true)
         }else{
             let editDetail = EditDetailViewController()
             editDetail.editDelegate = self
@@ -234,14 +230,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         }
     }
     
-    
-    func areaPicker(picker: ChooseCityController!, didSelectAddress provinceValue: String!, andCityValue cityValue: String!, andAreaValue areaValue: String!) {
-        print("\(provinceValue)")
-        print("\(cityValue)")
-        print("\(areaValue)")
-        picker.dismissViewControllerAnimated(true, completion: nil)
-    }
-   
     /*
     // MARK: - Navigation
 

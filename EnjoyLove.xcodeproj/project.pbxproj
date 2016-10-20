@@ -79,12 +79,6 @@
 		271476001D755AD7003CFC5F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 271475FF1D755AD7003CFC5F /* libsqlite3.tbd */; };
 		271476031D7563EC003CFC5F /* call.png in Resources */ = {isa = PBXBuildFile; fileRef = 271476011D7563EC003CFC5F /* call.png */; };
 		271476041D7563EC003CFC5F /* video.png in Resources */ = {isa = PBXBuildFile; fileRef = 271476021D7563EC003CFC5F /* video.png */; };
-		2717BD5D1D8E8B8400DB9E69 /* area.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2717BD531D8E8B8400DB9E69 /* area.plist */; };
-		2717BD5E1D8E8B8400DB9E69 /* ChooseCityController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2717BD551D8E8B8400DB9E69 /* ChooseCityController.m */; };
-		2717BD5F1D8E8B8400DB9E69 /* CityData.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2717BD561D8E8B8400DB9E69 /* CityData.plist */; };
-		2717BD601D8E8B8400DB9E69 /* CityModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2717BD581D8E8B8400DB9E69 /* CityModel.m */; };
-		2717BD611D8E8B8400DB9E69 /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = 2717BD5A1D8E8B8400DB9E69 /* Config.m */; };
-		2717BD621D8E8B8400DB9E69 /* LBSManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2717BD5C1D8E8B8400DB9E69 /* LBSManager.m */; };
 		27188DD31D86379B00797D41 /* normal_face_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188DC91D86379B00797D41 /* normal_face_1.png */; };
 		27188DD41D86379B00797D41 /* normal_face_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188DCA1D86379B00797D41 /* normal_face_2.png */; };
 		27188DD51D86379B00797D41 /* normal_face_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188DCB1D86379B00797D41 /* normal_face_3.png */; };
@@ -619,16 +613,6 @@
 		271475FF1D755AD7003CFC5F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		271476011D7563EC003CFC5F /* call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = call.png; sourceTree = "<group>"; };
 		271476021D7563EC003CFC5F /* video.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = video.png; sourceTree = "<group>"; };
-		2717BD531D8E8B8400DB9E69 /* area.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = area.plist; sourceTree = "<group>"; };
-		2717BD541D8E8B8400DB9E69 /* ChooseCityController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseCityController.h; sourceTree = "<group>"; };
-		2717BD551D8E8B8400DB9E69 /* ChooseCityController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseCityController.m; sourceTree = "<group>"; };
-		2717BD561D8E8B8400DB9E69 /* CityData.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CityData.plist; sourceTree = "<group>"; };
-		2717BD571D8E8B8400DB9E69 /* CityModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CityModel.h; sourceTree = "<group>"; };
-		2717BD581D8E8B8400DB9E69 /* CityModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CityModel.m; sourceTree = "<group>"; };
-		2717BD591D8E8B8400DB9E69 /* Config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
-		2717BD5A1D8E8B8400DB9E69 /* Config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Config.m; sourceTree = "<group>"; };
-		2717BD5B1D8E8B8400DB9E69 /* LBSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LBSManager.h; sourceTree = "<group>"; };
-		2717BD5C1D8E8B8400DB9E69 /* LBSManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LBSManager.m; sourceTree = "<group>"; };
 		27188DC91D86379B00797D41 /* normal_face_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_face_1.png; sourceTree = "<group>"; };
 		27188DCA1D86379B00797D41 /* normal_face_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_face_2.png; sourceTree = "<group>"; };
 		27188DCB1D86379B00797D41 /* normal_face_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal_face_3.png; sourceTree = "<group>"; };
@@ -1521,23 +1505,6 @@
 				271475FD1D755369003CFC5F /* libGeTuiSdk-1.4.3.a */,
 			);
 			path = GeTui;
-			sourceTree = "<group>";
-		};
-		2717BD521D8E8B8400DB9E69 /* ChooseCity */ = {
-			isa = PBXGroup;
-			children = (
-				2717BD531D8E8B8400DB9E69 /* area.plist */,
-				2717BD561D8E8B8400DB9E69 /* CityData.plist */,
-				2717BD541D8E8B8400DB9E69 /* ChooseCityController.h */,
-				2717BD551D8E8B8400DB9E69 /* ChooseCityController.m */,
-				2717BD571D8E8B8400DB9E69 /* CityModel.h */,
-				2717BD581D8E8B8400DB9E69 /* CityModel.m */,
-				2717BD591D8E8B8400DB9E69 /* Config.h */,
-				2717BD5A1D8E8B8400DB9E69 /* Config.m */,
-				2717BD5B1D8E8B8400DB9E69 /* LBSManager.h */,
-				2717BD5C1D8E8B8400DB9E69 /* LBSManager.m */,
-			);
-			path = ChooseCity;
 			sourceTree = "<group>";
 		};
 		27188DDD1D863A3400797D41 /* DXPhotoPicker */ = {
@@ -2588,7 +2555,6 @@
 				271F15891D9532E700CAAEF4 /* AddressBook */,
 				278400F21D910EFF00A46437 /* Localize */,
 				27C0FFD71D8FBF71003925D1 /* HUD */,
-				2717BD521D8E8B8400DB9E69 /* ChooseCity */,
 				27F410B81D8C071400722051 /* DatePicker */,
 				27188E4F1D86AD2100797D41 /* ALCameraViewController */,
 				27188DDD1D863A3400797D41 /* DXPhotoPicker */,
@@ -3100,7 +3066,6 @@
 				27F28D251D6FF4A5005E382D /* myOwnArrow.png in Resources */,
 				275C04C21D826CD200A52ABC /* arrow_left.png in Resources */,
 				27B5B04D1D93C86C006AE37E /* myOwnWiFi.png in Resources */,
-				2717BD5D1D8E8B8400DB9E69 /* area.plist in Resources */,
 				27188DDA1D86379B00797D41 /* selected_face_3.png in Resources */,
 				27F28D371D6FF4ED005E382D /* tool_mama.png in Resources */,
 				270210531DB732D000D3BDBE /* ZZXCity.db in Resources */,
@@ -3114,7 +3079,6 @@
 				270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */,
 				27378CA41D75C87B0090A764 /* pregnantMama.png in Resources */,
 				27F410711D8BA58400722051 /* login_female_normal.png in Resources */,
-				2717BD5F1D8E8B8400DB9E69 /* CityData.plist in Resources */,
 				2786979A1D77BACC00205ABF /* yunfumama.png in Resources */,
 				27188DD61D86379B00797D41 /* normal_face_4.png in Resources */,
 				275C039B1D800E7F00A52ABC /* search_device.png in Resources */,
@@ -3147,7 +3111,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				27188E6E1D86AD2100797D41 /* SingleImageFetcher.swift in Sources */,
-				2717BD611D8E8B8400DB9E69 /* Config.m in Sources */,
 				27F410C81D8C071400722051 /* DayPickerView.m in Sources */,
 				27020F8B1DB085AE00D3BDBE /* QNResolver.m in Sources */,
 				2753E6DE1D7B93D300FDB8D0 /* AFNetworkActivityIndicatorManager.m in Sources */,
@@ -3222,7 +3185,6 @@
 				27830C801D9A24900036E2BC /* RtspInterface.mm in Sources */,
 				2753E6D61D7B93D300FDB8D0 /* AFHTTPSessionManager.m in Sources */,
 				27830C141D9921DA0036E2BC /* PlayMusicViewController.swift in Sources */,
-				2717BD601D8E8B8400DB9E69 /* CityModel.m in Sources */,
 				27020F811DB085AE00D3BDBE /* QNIpModel.m in Sources */,
 				27188E701D86AD2100797D41 /* UIButtonExtensions.swift in Sources */,
 				27830CA01D9A31A20036E2BC /* UDPManager.m in Sources */,
@@ -3257,7 +3219,6 @@
 				27020F821DB085AE00D3BDBE /* QNDnsManager.m in Sources */,
 				27830CFE1D9A33610036E2BC /* FMDatabaseQueue.m in Sources */,
 				27830CBA1D9A31AC0036E2BC /* GetAlarmRecordResult.m in Sources */,
-				2717BD5E1D8E8B8400DB9E69 /* ChooseCityController.m in Sources */,
 				27020F8D1DB085AE00D3BDBE /* QNTxtResolver.m in Sources */,
 				27C9230E1D7EFAA3009581EF /* PregInfoViewController.swift in Sources */,
 				27830C781D9A24900036E2BC /* CameraManager.m in Sources */,
@@ -3313,7 +3274,6 @@
 				27F410CD1D8C071400722051 /* PickerSubView.m in Sources */,
 				27F47C1C1D96CD9B00502AEE /* HMSortString.m in Sources */,
 				2753E6DF1D7B93D300FDB8D0 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
-				2717BD621D8E8B8400DB9E69 /* LBSManager.m in Sources */,
 				2753E6E41D7B93D300FDB8D0 /* UIWebView+AFNetworking.m in Sources */,
 				27188E021D863A3500797D41 /* DXAssetCell.swift in Sources */,
 				275C048C1D812EA800A52ABC /* BabyStatusViewController.swift in Sources */,

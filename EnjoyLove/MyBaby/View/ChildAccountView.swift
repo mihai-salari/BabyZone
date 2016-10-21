@@ -8,40 +8,129 @@
 
 import UIKit
 
-class ChildAccountCell: UITableViewCell {
+class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
+    private var childTable:UITableView!
+    private var accountList:[ChildAccountList]!
+    private var tableRowHeight:CGFloat = 0
+    private var addNewCompletionHandler:(()->())?
     
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    init(frame: CGRect, addNewHandler:(()->())?) {
+        super.init(frame: frame)
+        self.accountList = []
         
-        // Configure the view for the selected state
-    }
-    
-    func refreshCell(model:ChildEquipmentList) -> Void {
-        for subview in self.contentView.subviews {
-            subview.removeFromSuperview()
+        var accountData:[ChildAccount] = []
+        if ChildAccountBL.findAll().count > 0 {
+            accountData.appendContentsOf(ChildAccountBL.findAll())
+        }else{
+            let accountModel = ChildAccount()
+            accountModel.childName = "暂时没有绑定子账号"
+            accountData.append(accountModel)
         }
-        self.contentView.frame = CGRectMake(CGRectGetMinX(self.contentView.frame), CGRectGetMinY(self.contentView.frame), ScreenWidth, self.contentView.frame.height)
-        let mainItemLabel = UILabel.init(frame: CGRectMake(2 * viewOriginX, 0, CGRectGetWidth(self.contentView.frame) / 2 - 4 * viewOriginX, CGRectGetHeight(self.contentView.frame)))
-        mainItemLabel.adjustsFontSizeToFitWidth = true
-        mainItemLabel.font = UIFont.systemFontOfSize(upRateWidth(15))
-        mainItemLabel.textColor = UIColor.darkGrayColor()
-        mainItemLabel.text = model.userRemark
-        self.contentView.addSubview(mainItemLabel)
+        var model = ChildAccountList(title: "子账号列表", account: accountData)
+        self.accountList.append(model)
         
-        let subItemLabel = UILabel.init(frame: CGRectMake(CGRectGetWidth(self.contentView.frame) / 2 , 0, CGRectGetWidth(self.contentView.frame) / 2 - upRateWidth(30), CGRectGetHeight(self.contentView.frame)))
-        subItemLabel.text = model.eqmDesc
-        subItemLabel.font = UIFont.systemFontOfSize(upRateWidth(10))
-        subItemLabel.textColor = UIColor.lightGrayColor()
-        subItemLabel.textAlignment = .Right
-        self.contentView.addSubview(subItemLabel)
+        model = ChildAccountList(title: "+ 添加新的子账号", account: nil)
+        self.accountList.append(model)
         
+        self.tableRowHeight = (ScreenHeight - navigationBarHeight - 30) * (1 / 12)
+        self.childTable = UITableView.init(frame: CGRectMake(0, 0, self.frame.width, self.frame.height), style: .Grouped)
+        self.childTable.backgroundColor = UIColor.whiteColor()
+        self.childTable.dataSource = self
+        self.childTable.delegate = self
+        self.childTable.rowHeight = self.tableRowHeight
+        self.childTable.separatorInset = UIEdgeInsetsZero
+        self.childTable.layoutMargins = UIEdgeInsetsZero
+        self.addSubview(self.childTable)
+        
+        self.addNewCompletionHandler = addNewHandler
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return self.accountList.count
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.accountList[section].account == nil ? 0 : self.accountList[section].account.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cellId = "childAccountListCellId"
+        var cell = tableView.dequeueReusableCellWithIdentifier(cellId)
+        if cell == nil {
+            cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: cellId)
+        }
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.textLabel?.text = self.accountList[indexPath.section].account == nil ? "" : self.accountList[indexPath.section].account[indexPath.row].childName
+        }
+        return cell!
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 0:
+            return 30
+        default:
+            return self.tableRowHeight
+        }
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.01
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 0:
+            let headView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
+            headView.backgroundColor = UIColor.hexStringToColor("#60555b")
+            let label = UILabel.init(frame: CGRect(x: 2 * viewOriginX, y: 0, width: headView.frame.width - 2 * viewOriginX, height: headView.frame.height))
+            label.text = self.accountList[section].title
+            label.font = UIFont.systemFontOfSize(13)
+            label.textColor = UIColor.whiteColor()
+            headView.addSubview(label)
+            return headView
+        case 1:
+            let headButton = UIButton.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: tableRowHeight))
+            headButton.backgroundColor = UIColor.hexStringToColor("#f9f4f7")
+            headButton.setTitle(self.accountList[section].title, forState: .Normal)
+            headButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            headButton.addTarget(self, action: #selector(self.addNewAccountClick), forControlEvents: .TouchUpInside)
+            return headButton
+        default:
+            return nil
+        }
+    }
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            if var data = self.accountList[indexPath.section].account {
+                data.removeAtIndex(indexPath.row)
+                self.accountList[indexPath.section].account = data
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+            }
+        }
+    }
+    
+    func addNewAccountClick() -> Void {
+        if let handle = self.addNewCompletionHandler {
+            handle()
+        }
+    }
+    
 }
+
+
 
 class ChildDetailCell: UITableViewCell,UITextFieldDelegate {
     override func awakeFromNib() {

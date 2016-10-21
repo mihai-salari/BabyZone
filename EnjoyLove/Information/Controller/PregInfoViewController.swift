@@ -20,6 +20,8 @@ class PregInfoViewController: BaseViewController {
         self.navigationBarItem(title: "育儿资讯", leftSel:nil, rightSel: nil)
         
         
+        
+        
     }
     
     override func viewDidLoad() {
@@ -39,6 +41,13 @@ class PregInfoViewController: BaseViewController {
         self.pregBabyData = []
         self.pregInfoStatusData = []
         
+        let babyData = BabyListBL.findAll()
+        if babyData.count > 0 {
+            
+        }else{
+            
+        }
+        
         var babyModel = PregBabyInfo(pregBabyDate: "36周宝宝", pregDate: "孕期46周+5天", pregProgress: 80, pregWeight: "4.1~7.7", pregHeight: "55.8~66.4", pregOutDay: "20", pregBabyImage: "pregBaby.png")
         self.pregBabyData.append(babyModel)
         babyModel = PregBabyInfo(pregBabyDate: "56周宝宝", pregDate: "孕期56周+5天", pregProgress: 75, pregWeight: "4.1~7.7", pregHeight: "55.8~66.4", pregOutDay: "16", pregBabyImage: "pregBaby.png")
@@ -51,13 +60,6 @@ class PregInfoViewController: BaseViewController {
         
         var pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: "本周宝宝状态", pregInfoData: infoData, pregBabyId: "0", pregMoreImage: "pregMore.png")
         self.pregInfoStatusData.append(pregInfoStatus)
-        /*
-        infoData = []
-        statusCellModel = InfoStatus(pregMainImage: "baby_status.png", pregItem: "玩耍，学习，习惯的养成和教育", pregSubItem: "玩具上松动的零件，毛绒玩具未粘牢的眼睛，鼻子，玩具上掉落的纽扣，这些小零件玩具上松动的零件，毛绒玩具未粘牢的眼睛，鼻子，玩具上掉落的纽扣", pregItemId: "1", pregItemDate: "2016.10.16", pregCellHeight: 200)
-        infoData.append(statusCellModel)
-        pregInfoStatus = PregInfoStatus(pregStatusImage: "pregCare.png", pregStatusDesc: "猜你喜欢", pregInfoData: infoData, pregBabyId: "1", pregMoreImage: "pregMore.png")
-        self.pregInfoStatusData.append(pregInfoStatus)
- */
         
     }
     

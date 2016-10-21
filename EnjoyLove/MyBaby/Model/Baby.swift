@@ -25,14 +25,14 @@ struct Baby {
 struct BabySetting {
     var title = ""
     var setting:[SettingDetail]!
-    
 }
+
 
 struct SettingDetail {
     var mainItem = ""
     var subItem = ""
-    var videoPermission:Int = -1//0:没权限，1：有权限 其它不管
-    var voicePermission:Int = -1//0:没权限，1：有权限 其它不管
+    var tipPermission:Int = -1//0:关闭提醒，1：打开提醒
+    var modePermission:Int = -1//0:震动提醒，1：消息提醒
     
 }
 
@@ -80,6 +80,11 @@ struct PlayMusic {
 struct PlayDetail {
     var mainItem = ""
     var subItem = ""
+}
+
+struct ChildAccountList {
+    var title = ""
+    var account:[ChildAccount]!
 }
 
 struct ChildEquipmentList {

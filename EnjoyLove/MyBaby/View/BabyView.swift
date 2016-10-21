@@ -170,61 +170,195 @@ class BabyView: UIView,UIScrollViewDelegate{
 
 }
 
-
-
-private let mainItemLabelWidth:CGFloat = upRateWidth(120)
-private let switchHeight:CGFloat = upRateWidth(20)
-private let switchWidth:CGFloat = upRateWidth(60)
-private let subItemLabelWidth:CGFloat = upRateWidth(100)
-
-
-class BabySettingCell: UITableViewCell {
+private let BabySettingSwitchTag = 1000
+private let BabySettingTableViewCellId = "BabySettingTableViewCellId"
+class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
+    private var settingData:[BabySetting]!
+    private var settingTable:UITableView!
+    private var selectionHandler:((indexPath:NSIndexPath, data:[SettingDetail])->())?
     
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    init(frame: CGRect, selectionHandler:((indexPath:NSIndexPath, data:[SettingDetail])->())?) {
+        super.init(frame: frame)
         
-        // Configure the view for the selected state
-    }
-    
-    func refreshCellWithModel(model:SettingDetail) -> Void {
-        self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: self.contentView.frame.width - 20, height: self.contentView.frame.height)
-        let mainItemLabel = UILabel.init(frame: CGRectMake(20, 0, mainItemLabelWidth, CGRectGetHeight(self.contentView.frame)))
-        mainItemLabel.text = model.mainItem
-        mainItemLabel.font = UIFont.boldSystemFontOfSize(14)
-        self.contentView.addSubview(mainItemLabel)
+        self.backgroundColor = UIColor.whiteColor()
         
-        if model.subItem == "0" || model.subItem == "1"{
-            let onSwitch = HMSwitch.init(frame: CGRectMake(self.contentView.frame.width - upRateWidth(70), (CGRectGetHeight(self.contentView.frame) - switchHeight) / 2, switchWidth, switchHeight))
-            onSwitch.onLabel.font = UIFont.boldSystemFontOfSize(upRateWidth(8))
-            onSwitch.onTintColor = navigationBarColor
-            onSwitch.borderColor = navigationBarColor
-            onSwitch.onLabel.textColor = UIColor.whiteColor()
-            onSwitch.offLabel.textColor = UIColor.whiteColor()
-            onSwitch.on = true
-            if model.subItem == "0" {
-                onSwitch.onLabel.text = "打开提醒"
-            }else{
-                onSwitch.onLabel.text = "消息提醒"
+        self.settingData = []
+        var settingDetailData:[SettingDetail] = []
+        
+        var model = SettingDetail(mainItem: "异常提醒", subItem: "0", tipPermission: 0, modePermission: 1)
+        settingDetailData.append(model)
+        
+        model = SettingDetail(mainItem: "提醒方式", subItem: "1", tipPermission: 0, modePermission: 1)
+        settingDetailData.append(model)
+        
+        var settingModel = BabySetting(title: "提醒设置", setting: settingDetailData)
+        self.settingData.append(settingModel)
+        
+        ChildAccount.sendAsyncChildAccountList { [weak self](errorCode, msg) in
+            if let weakSelf = self{
+                dispatch_queue_create("childAccountListQueue", nil).queue({
+                    var subCountData:[SettingDetail] = []
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            let childAccounts = ChildAccountBL.findAll()
+                            if childAccounts.count > 0{
+                                for account in childAccounts{
+                                    model = SettingDetail()
+                                    model.mainItem = account.childName
+                                    model.subItem = account.childMobile
+                                    subCountData.append(model)
+                                }
+                            }else{
+                                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                                subCountData.append(model)
+                            }
+                        }else{
+                            model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                            subCountData.append(model)
+                        }
+                    }else{
+                        model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                        subCountData.append(model)
+                    }
+                    settingModel = BabySetting(title: "子账号设置", setting: subCountData)
+                    weakSelf.settingData.append(settingModel)
+                    dispatch_get_main_queue().queue({
+                        if let table = weakSelf.settingTable{
+                            table.reloadData()
+                        }
+                    })
+                })
             }
-            self.contentView.addSubview(onSwitch)
         }
         
-        if model.subItem != "0" && model.subItem != "1" {
-            let subItemLabel = UILabel.init(frame: CGRectMake(self.contentView.frame.width - upRateWidth(130), 0, subItemLabelWidth, settingTableRowHeight))
-            subItemLabel.text = model.subItem
-            subItemLabel.font = UIFont.boldSystemFontOfSize(10)
-            subItemLabel.textAlignment = .Right
-            subItemLabel.textColor = UIColor.lightGrayColor()
-            self.contentView.addSubview(subItemLabel)
-        }
+        self.settingTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: 3 * 44 + 2 * 30), style: .Plain)
+        self.settingTable.scrollEnabled = false
+        self.settingTable.delegate = self
+        self.settingTable.dataSource = self
+        self.settingTable.separatorInset = UIEdgeInsetsZero
+        self.settingTable.layoutMargins = UIEdgeInsetsZero
+        self.settingTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: BabySettingTableViewCellId)
+        self.addSubview(self.settingTable)
         
+        let line = UIView.init(frame: CGRect.init(x: 0, y: self.settingTable.frame.maxY, width: self.settingTable.frame.width, height: 1))
+        line.backgroundColor = UIColor.hexStringToColor("#f0f0f0")
+        self.addSubview(line)
+        
+        
+        self.selectionHandler = selectionHandler
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return self.settingData.count
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.settingData[section].setting.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier(BabySettingTableViewCellId)
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.selectionStyle = .None
+            switch indexPath.section {
+            case 1:
+                resultCell.accessoryType = .DisclosureIndicator
+            default:
+                resultCell.accessoryType = .None
+            }
+            for subview in resultCell.contentView.subviews {
+                subview.removeFromSuperview()
+            }
+            let model = self.settingData[indexPath.section].setting[indexPath.row]
+            resultCell.textLabel?.text = model.mainItem
+            resultCell.textLabel?.font = UIFont.systemFontOfSize(14)
+            
+            if model.subItem == "0" || model.subItem == "1"{
+                let onSwitch = HMSwitch.init(frame: CGRectMake(resultCell.contentView.frame.width - 80, (CGRectGetHeight(resultCell.contentView.frame) - resultCell.contentView.frame.height * (2 / 3)) / 2, 70, resultCell.contentView.frame.height * (2 / 3)))
+                onSwitch.onLabel.textColor = UIColor.whiteColor()
+                onSwitch.offLabel.textColor = UIColor.whiteColor()
+                onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
+                onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
+                onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
+                onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
+                onSwitch.inactiveColor = UIColor.lightGrayColor()
+                onSwitch.tag = BabySettingSwitchTag + indexPath.row
+                onSwitch.addTarget(self, action: #selector(self.switchOnOff(_:)), forControlEvents: UIControlEvents.ValueChanged)
+                if model.subItem == "0" {
+                    onSwitch.onLabel.text = "打开提醒"
+                    onSwitch.offLabel.text = "关闭提醒"
+                    if model.tipPermission == 1 {
+                        onSwitch.on = true
+                    }else{
+                        onSwitch.on = false
+                    }
+                }else{
+                    onSwitch.onLabel.text = "消息提醒"
+                    onSwitch.offLabel.text = "震动提醒"
+                    if model.modePermission == 1 {
+                        onSwitch.on = true
+                    }else{
+                        onSwitch.on = false
+                    }
+                }
+                
+                resultCell.contentView.addSubview(onSwitch)
+            }
+            
+            if model.subItem != "0" && model.subItem != "1" {
+                let subItemLabel = UILabel.init(frame: CGRectMake(resultCell.contentView.frame.width - 120, 0, 110, resultCell.contentView.frame.height))
+                subItemLabel.text = model.subItem
+                subItemLabel.font = UIFont.boldSystemFontOfSize(10)
+                subItemLabel.textAlignment = .Right
+                subItemLabel.textColor = UIColor.lightGrayColor()
+                resultCell.contentView.addSubview(subItemLabel)
+            }
+        }
+        return cell!
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
+        headerView.backgroundColor = UIColor.hexStringToColor("#5f545a")
+        let titleLabel = UILabel.init(frame: CGRect(x: 12, y: 0, width: headerView.frame.width - 20, height: headerView.frame.height))
+        titleLabel.font = UIFont.systemFontOfSize(13)
+        titleLabel.text = self.settingData[section].title
+        titleLabel.textColor = UIColor.whiteColor()
+        headerView.addSubview(titleLabel)
+        return headerView
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 30
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.01
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if let handle = self.selectionHandler {
+            handle(indexPath: indexPath, data: self.settingData[indexPath.section].setting)
+        }
+    }
+    
+    func switchOnOff(on:HMSwitch) -> Void {
+        if on.tag == BabySettingSwitchTag {
+            print("tag \(on.tag) on off \(on.on)")
+        }else if on.tag == BabySettingSwitchTag + 1{
+            print("tag \(on.tag) on off \(on.on)")
+        }
     }
 }
+
+
 
 class BabyPushView: UIView {
     private var verifyHandle:(()->())?

@@ -1292,11 +1292,13 @@ class ChildAccount: NSObject {
     var idUserChildInfo:String!
     var idChild:String!
     var childName:String!
+    var childMobile:String!
     
     override init() {
         self.idUserChildInfo = ""
         self.idChild = ""
         self.childName = ""
+        self.childMobile = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -1311,13 +1313,16 @@ class ChildAccount: NSObject {
         if let obj = aDecoder.decodeObjectForKey("childName") as? String {
             self.childName = obj
         }
-        
+        if let obj = aDecoder.decodeObjectForKey("childMobile") as? String {
+            self.childMobile = obj
+        }
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(self.idUserChildInfo, forKey: "idUserChildInfo")
         aCoder.encodeObject(self.idChild, forKey: "idChild")
         aCoder.encodeObject(self.childName, forKey: "childName")
+        aCoder.encodeObject(self.childMobile, forKey: "childMobile")
     }
 }
 
@@ -1340,7 +1345,7 @@ private class ChildAccountDAO: NSObject {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
                 if let arr = unArchive.decodeObjectForKey(ChildAccountArchiveKey) as? [ChildAccount]{
-                    listData = arr
+                    listData.appendContentsOf(arr)
                 }
             }
         }
@@ -1401,6 +1406,9 @@ private class ChildAccountDAO: NSObject {
                 if note.idChild != detail.idChild {
                     note.idChild = detail.idChild
                 }
+                if note.childMobile != detail.childMobile {
+                    note.childMobile = detail.childMobile
+                }
                 
                 let theData = NSMutableData.init()
                 let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
@@ -1445,6 +1453,9 @@ class ChildAccountBL: NSObject {
     
     class func find(detail:ChildAccount?, key:String = "") ->ChildAccount{
         return ChildAccountDAO.shared.find(detail, key: key)
+    }
+    class func findAll() ->[ChildAccount]{
+        return ChildAccountDAO.shared.findAll()
     }
 }
 

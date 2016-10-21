@@ -824,13 +824,125 @@ extension ChildEquipments{
         }
     }
 }
+
+//MARK:___4.26.	获取心情日记标签___
+private let UserNoteLabelUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteLabel"
+extension NoteLabel{
+    class func sendAsyncUserNoteLabel(completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ModifyChildEquipmentsPermissionUrl, parameters: nil, success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let data = response["data"] as? [String: NSObject] {
+                    if let list = data["list"] as? [[String : NSObject]]{
+                        for listDict in list{
+                            let noteLabel = NoteLabel()
+                            noteLabel.labelName = format(listDict["labelName"])
+                            NoteLabelBL.insert(noteLabel)
+                        }
+                    }
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                    
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+}
+
 //MARK:___Diary___
 private let UserNoteListUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteList"
 private let AddUserNoteUrl = baseEnjoyLoveUrl + "/api/user/addUserNote"
 private let DeleteUserNoteUrl = baseEnjoyLoveUrl + "/api/user/deleteUserNote"
 extension Diary{
+    class func sendAsyncUserNoteList(pageIndex: String, pageSize:String, year:String, month:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":pageIndex, "pageSize":pageSize, "year":year, "month":month,], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let data = response["data"] as? [String: NSObject] {
+                    if let list = data["list"] as? [[String : NSObject]]{
+                        for listDict in list{
+                            let diary = Diary()
+                            diary.idUserBabyInfo = format(listDict["idUserNoteInfo"])
+                            diary.noteType = format(listDict["noteType"])
+                            diary.moodStatus = format(listDict["moodStatus"])
+                            diary.noteLabel = format(listDict["noteLabel"])
+                            diary.content = format(listDict["content"])
+                            diary.imgUrls = format(listDict["imgUrls"])
+                            diary.idUserBabyInfo = format(listDict["idUserBabyInfo"])
+                            diary.breedStatusDate = format(listDict["breedStatusDate"])
+                            diary.createTime = format(listDict["createTime"])
+                            DiaryBL.insert(diary)
+                        }
+                    }
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                    
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
     
+    class func sendAsyncAddUserNote(moodStatus: String, noteLabel:String, content:String, imgUrls:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(AddUserNoteUrl, parameters: ["moodStatus":moodStatus, "noteLabel":noteLabel, "content":content, "imgUrls":imgUrls,], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let data = response["data"] as? [String: NSObject] {
+                    if let list = data["list"] as? [[String : NSObject]]{
+                        for listDict in list{
+                            let diary = Diary()
+                            diary.idUserBabyInfo = format(listDict["idUserNoteInfo"])
+                            diary.moodStatus = moodStatus
+                            diary.content = content
+                            diary.imgUrls = imgUrls
+                            DiaryBL.modify(diary)
+                        }
+                    }
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                    
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
     
+    class func sendAsyncDeleteUserNote(idUserNoteInfo: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(DeleteUserNoteUrl, parameters: ["idUserNoteInfo":idUserNoteInfo], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if errorCode == BabyZoneConfig.shared.passCode {
+                    let diary = DiaryBL.find(nil, key: idUserNoteInfo)
+                    DiaryBL.delete(diary)
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                    
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
 }
 
 

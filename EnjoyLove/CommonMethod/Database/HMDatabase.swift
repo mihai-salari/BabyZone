@@ -777,6 +777,92 @@ class BabyListBL: NSObject {
     }
 }
 
+private let UserNoteLabelArchiveKey = "UserNoteLabelArchiveKey"
+private let UserNoteLabelArchiveName = "UserNoteLabelArchive.archive"
+class NoteLabel: NSObject,NSCoding {
+    /*
+        labelName	string	是	标签名称
+     */
+    var labelName = ""
+    
+    override init() {
+        self.labelName = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("labelName") as? String {
+            self.labelName = obj
+        }
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.labelName, forKey: "labelName")
+    }
+}
+
+class NoteLabelDAO: NSObject {
+    static var shared:NoteLabelDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:NoteLabelDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = NoteLabelDAO()
+        }
+        return DAO.dao!
+    }
+    
+    
+    func findAll() -> [NoteLabel] {
+        var listData = [NoteLabel]()
+        if let theData = NSData.init(contentsOfFile: UserNoteLabelArchiveName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(UserNoteLabelArchiveKey) as? [NoteLabel]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:NoteLabel) -> Bool {
+        var array = self.findAll()
+        for base in array {
+            if base.labelName == detail.labelName {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: UserNoteLabelArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(UserNoteLabelArchiveName.filePath(), atomically: true)
+        
+    }
+}
+
+class NoteLabelBL: NSObject {
+    class func insert(detail:NoteLabel) -> [NoteLabel]{
+        let result = NoteLabelDAO.shared.insert(detail)
+        print("baby list result \(result)")
+        return NoteLabelDAO.shared.findAll()
+    }
+    
+    class func findAll() ->[NoteLabel]{
+        return NoteLabelDAO.shared.findAll()
+    }
+    
+}
+
 private let BabyBaseInfoArchiveKey = "BabyBaseInfoArchiveKey"
 private let BabyBaseInfoArchiveName = "BabyBaseInfoArchiveName.archive"
 class BabyBaseInfo: NSObject,NSCoding {

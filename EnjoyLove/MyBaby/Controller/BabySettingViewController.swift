@@ -19,7 +19,7 @@ class BabySettingViewController: BaseViewController {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "设置", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "设置", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

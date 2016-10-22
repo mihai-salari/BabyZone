@@ -17,7 +17,7 @@ class DiaryRecordViewController: BaseViewController {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
-        self.navigationBarItem(false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
+        self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
     }
     
     

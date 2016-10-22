@@ -41,7 +41,7 @@ class AddressBookViewController: BaseViewController,UISearchResultsUpdating,UITa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "查看通讯录", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "查看通讯录", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

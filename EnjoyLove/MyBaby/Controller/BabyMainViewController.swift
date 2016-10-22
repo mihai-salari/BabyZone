@@ -35,7 +35,7 @@ class BabyMainViewController: BaseVideoViewController {
             self.automaticallyAdjustsScrollViewInsets = false
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
-            self.navigationBarItem(title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
+            self.navigationBarItem(self, title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
             self.initialize()
         }
     }

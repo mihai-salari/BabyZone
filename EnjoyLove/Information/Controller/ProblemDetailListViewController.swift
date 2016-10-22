@@ -17,7 +17,7 @@ class ProblemDetailListViewController: BaseViewController,UITableViewDelegate, U
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationBarItem(title: self.detailListModel == nil ? "问题" : self.detailListModel.mainItem, leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self,title: self.detailListModel == nil ? "问题" : self.detailListModel.mainItem, leftSel: nil, rightSel: nil)
     }
     
     

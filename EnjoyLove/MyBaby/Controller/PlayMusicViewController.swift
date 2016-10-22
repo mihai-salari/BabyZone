@@ -18,7 +18,7 @@ class PlayMusicViewController: BaseViewController ,UITableViewDataSource,UITable
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(title: "音乐播放", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "音乐播放", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

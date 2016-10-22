@@ -1283,6 +1283,10 @@ class EquipmentsBL: NSObject {
     class func find(detail:Equipments?, key:String = "") ->Equipments{
         return EquipmentsDAO.shared.find(detail, key: key)
     }
+    
+    class func findAll() ->[Equipments]{
+        return EquipmentsDAO.shared.findAll()
+    }
 }
 
 //MARK:____ChildAccount____

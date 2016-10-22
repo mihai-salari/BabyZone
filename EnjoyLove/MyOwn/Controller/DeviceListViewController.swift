@@ -17,7 +17,7 @@ class DeviceListViewController: BaseVideoViewController {
         self.tabBarController?.tabBar.hidden = true
         self.navigationController?.navigationBarHidden = false
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "设备列表", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "设备列表", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidAppear(animated: Bool) {

@@ -231,8 +231,8 @@ extension PersonDetail {
      userSign		string		个性签名
 
      */
-    class func sendAsyncChangePersonInfo(nickName:String,sex:String,headImg:String,breedStatus:String,breedStatusDate:String,breedBirthDate:String,provinceCode:String,cityCode:String, userSign:String,completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ModifyPersonInfoUrl, parameters: ["nickName":nickName,"sex":sex,"headImg":headImg,"breedStatus":breedStatus,"breedStatusDate":breedStatusDate,"breedBirthDate":breedBirthDate,"provinceCode":provinceCode,"cityCode":cityCode, "userSign":userSign], success: { (dataTask, responseObject) in
+    class func sendAsyncChangePersonInfo(nickName:String,sex:String,headImg:String,breedStatus:String,breedStatusDate:String,breedBirthDate:String,province:String,provinceCode:String,city:String,cityCode:String, userSign:String,completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ModifyPersonInfoUrl, parameters: ["nickName":nickName,"sex":sex,"headImg":headImg,"breedStatus":breedStatus,"breedStatusDate":breedStatusDate,"breedBirthDate":breedBirthDate,"provinceCode":provinceCode, "province":province,"cityCode":cityCode, "city":city, "userSign":userSign], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
@@ -247,7 +247,9 @@ extension PersonDetail {
                                 person.breedStatus = breedStatus
                                 person.breedStatusDate = breedStatusDate
                                 person.breedBirthDate = breedBirthDate
+                                person.province = province
                                 person.provinceCode = provinceCode
+                                person.city = city
                                 person.cityCode = cityCode
                                 person.userSign = userSign
                                 PersonDetailBL.modify(person)

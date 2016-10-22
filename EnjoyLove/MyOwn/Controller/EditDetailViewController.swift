@@ -48,18 +48,18 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
         // Do any additional setup after loading the view.
         switch self.editModel.eidtType {
         case 0:
-            self.navigationBarItem(false, title: "头像", leftSel: nil, rightSel: #selector(EditDetailViewController.exchangeHeader), rightTitle: "更换", rightItemSize: CGSize(width: 30, height: 40))
+            self.navigationBarItem(self, isImage: false, title: "头像", leftSel: nil, rightSel: #selector(EditDetailViewController.exchangeHeader), rightTitle: "更换", rightItemSize: CGSize(width: 30, height: 40))
             self.headerEditView = EditHeaderView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: ScreenHeight - navigationBarHeight), image: self.editModel.subItem)
             self.view.addSubview(self.headerEditView)
         case 1:
-            self.navigationBarItem(false, title: "名字", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "名字", leftSel: nil, rightSel: nil)
             let editNameView = EditNameView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: ScreenHeight - navigationBarHeight - 10), completionHandler: { [weak self](txt) in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
                                         if error == BabyZoneConfig.shared.passCode{
@@ -82,14 +82,14 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             })
             self.view.addSubview(editNameView)
         case 2:
-            self.navigationBarItem(false, title: "个性签名", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "个性签名", leftSel: nil, rightSel: nil)
             let editSignView = EditSignView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), completionHandler: {[weak self] (txt) in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
                                         if error == BabyZoneConfig.shared.passCode{
@@ -112,7 +112,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             })
             self.view.addSubview(editSignView)
         case 3:
-            self.navigationBarItem(false, title: "性别", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "性别", leftSel: nil, rightSel: nil)
             let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: Int(self.personDetail.sex)!, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
                     
@@ -120,7 +120,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
                                         if error == BabyZoneConfig.shared.passCode{
@@ -143,16 +143,16 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 })
             self.view.addSubview(editSexView)
         case 4:
-            self.navigationBarItem(false, title: "地区", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "地区", leftSel: nil, rightSel: nil)
         case 5:
-            self.navigationBarItem(false, title: "孕育状态", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "孕育状态", leftSel: nil, rightSel: nil)
             let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: Int(self.personDetail.breedStatus) == nil ? 1 : Int(self.personDetail.breedStatus)!, completionHandler: {[weak self] (status, statusId) in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
                                         if error == BabyZoneConfig.shared.passCode{
@@ -175,7 +175,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             })
             self.view.addSubview(editStatusView)
         case 6:
-            self.navigationBarItem(false, title: self.editModel.mainTitle, leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: self.editModel.mainTitle, leftSel: nil, rightSel: nil)
             let babyId = self.editModel.babyId
             var babyModel = BabyList()
             if let obj = BabyListBL.find(nil, key: babyId) {
@@ -212,7 +212,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             })
             self.view.addSubview(self.babyEditView)
         case 7:
-            self.navigationBarItem(false, title: "添加宝宝", leftSel: nil, rightSel: #selector(self.confirmAddBaby), rightTitle: "保存")
+            self.navigationBarItem(self, isImage: false, title: "添加宝宝", leftSel: nil, rightSel: #selector(self.confirmAddBaby), rightTitle: "保存")
             var babyData:[BabyInfo] = []
             var baby:BabyInfo = BabyInfo(mainItem: "姓名", subItem: "请输入姓名", infoType: 0, babyId: "")
             babyData.append(baby)
@@ -324,7 +324,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                                     if modifyResult.headImg != ""{
                                         let uploadQueue = dispatch_queue_create("uploadImageQueue", nil)
                                         uploadQueue.queue({ 
-                                            PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: modifyResult.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: person.provinceCode, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { [weak self](errorCode, msg) in
+                                            PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: modifyResult.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate,  province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { [weak self](errorCode, msg) in
                                                 if let error = errorCode{
                                                     if error == BabyZoneConfig.shared.passCode{
                                                         dispatch_get_main_queue().queue({

@@ -13,7 +13,7 @@ class BabyPushViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
-        self.self.navigationBarItem(title: "您有新的邀请", leftSel: nil, rightSel: nil)
+        self.self.navigationBarItem(self, title: "您有新的邀请", leftSel: nil, rightSel: nil)
     }
     override func viewDidLoad() {
         super.viewDidLoad()

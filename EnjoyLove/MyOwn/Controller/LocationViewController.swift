@@ -16,7 +16,7 @@ class LocationViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "地区", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "地区", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

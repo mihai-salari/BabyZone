@@ -15,7 +15,7 @@ class BabyCheckViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(title: "安全验证", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "安全验证", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

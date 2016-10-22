@@ -22,7 +22,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(title: "编辑个人信息", leftSel: nil, leftTitle: "返回", rightSel: nil)
+        self.navigationBarItem(self, isImage: true,title: "编辑个人信息", leftSel: nil, rightSel: nil)
     }
     
     func turnBack() -> Void {
@@ -220,7 +220,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, provinceCode: province.codeAreaCode, cityCode: city.codeAreaCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: province.codeAreaName, provinceCode: province.codeAreaCode, city: city.codeAreaName, cityCode: city.codeAreaCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)
                                     if let error = errorCode{
                                         if error == BabyZoneConfig.shared.passCode{

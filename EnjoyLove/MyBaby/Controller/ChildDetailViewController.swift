@@ -19,7 +19,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: childAccount.mainItem, leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: childAccount.mainItem, leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

@@ -22,7 +22,7 @@ class BabyInfoEditViewController: BaseViewController{
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(false, title: babyModel.mainItem, leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, isImage: false, title: babyModel.mainItem, leftSel: nil, rightSel: nil)
         
     }
     
@@ -60,7 +60,7 @@ class BabyInfoEditViewController: BaseViewController{
                 })
             self.view.addSubview(editNameView)
         case 1:
-            self.navigationBarItem(false, title: "性别", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "性别", leftSel: nil, rightSel: nil)
             self.sexStatus = Int(self.babyModel.subItem) == nil ? -1 : Int(self.babyModel.subItem)!
             let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: self.sexStatus, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{

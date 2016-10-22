@@ -18,8 +18,8 @@ class AddChildAccountViewController: BaseViewController ,UITableViewDelegate,UIT
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "添加新的子账号", leftSel: nil, rightSel: nil)
-        self.navigationBarItem(false, title: "添加新的子账号", leftSel: nil, rightSel: #selector(self.addConfirmClick), rightTitle: "添加")
+        //#selector(self.addConfirmClick)
+        self.navigationBarItem(self, isImage: false, title: "添加", leftSel: nil, rightSel: #selector(self.addConfirmClick), rightTitle: "确定")
     }
     
     
@@ -71,6 +71,15 @@ class AddChildAccountViewController: BaseViewController ,UITableViewDelegate,UIT
         
         mainModel = AddChildAccount(title: "设备权限", detail: detail)
         self.addAccountData.append(mainModel)
+        
+        var eqms:[Equipments] = []
+        if EquipmentsBL.findAll().count > 0 {
+            eqms.appendContentsOf(EquipmentsBL.findAll())
+        }else{
+            var eqm = Equipments()
+            eqm.eqmName = "您未绑定设备"
+            eqms.append(eqm)
+        }
         
         self.tableRowHeight = (ScreenHeight - navigationBarHeight - 60) * (1 / 12) > 44 ? (ScreenHeight - navigationBarHeight - 60) * (1 / 12) : 44
         self.addAccountTable = UITableView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: ScreenWidth - 2 * viewOriginX, height: ScreenHeight - navigationBarHeight), style: .Plain)

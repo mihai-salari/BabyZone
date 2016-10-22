@@ -14,7 +14,7 @@ class HandleChildAccountViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "添加/删除 子账号", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "添加/删除 子账号", leftSel: nil, rightSel: nil)
     }
 
     override func viewDidLoad() {

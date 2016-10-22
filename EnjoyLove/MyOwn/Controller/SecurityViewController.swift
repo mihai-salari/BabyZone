@@ -25,7 +25,7 @@ class SecurityViewController: BaseViewController,UITableViewDelegate,UITableView
 
         // Do any additional setup after loading the view.
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "账号与安全", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "账号与安全", leftSel: nil, rightSel: nil)
         self.initialize()
     }
 

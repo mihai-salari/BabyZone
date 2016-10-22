@@ -800,16 +800,16 @@ extension UIViewController{
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func navigationBarItem(isImage:Bool = true, title:String ,leftSel:Selector?, leftImage:String = "", leftTitle:String = "", leftItemSize:CGSize = CGSizeZero, rightSel:Selector? ,rightItemSize:CGSize = CGSizeZero, rightImage:String = "", rightTitle:String = "") -> Void {
+    func navigationBarItem(vc:UIViewController,isImage:Bool = true, title:String ,leftSel:Selector?, leftImage:String = "", leftTitle:String = "", leftItemSize:CGSize = CGSizeZero, rightSel:Selector? ,rightItemSize:CGSize = CGSizeZero, rightImage:String = "", rightTitle:String = "") -> Void {
         
-        self.navigationItem.title = title
+        vc.title = title
         if let action = leftSel {
             if isImage == true {
                 let button = UIButton.init(type: .Custom)
                 button.frame = CGRectMake(0, 0, leftItemSize.width, leftItemSize.height)
                 button.setImage(UIImage.imageWithName(leftImage), forState: .Normal)
                 button.addTarget(self, action: action, forControlEvents: .TouchUpInside)
-                self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: button)
+                vc.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: button)
             }else{
                 self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: leftTitle, style: .Plain, target: self, action: action)
             }
@@ -821,9 +821,9 @@ extension UIViewController{
                 button.frame = CGRectMake(0, 0, rightItemSize.width, rightItemSize.height)
                 button.setImage(UIImage.imageWithName(rightImage), forState: .Normal)
                 button.addTarget(self, action: action, forControlEvents: .TouchUpInside)
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(customView: button)
+                vc.navigationItem.rightBarButtonItem = UIBarButtonItem.init(customView: button)
             }else{
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: rightTitle, style: .Plain, target: self, action: action)
+                vc.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: rightTitle, style: .Plain, target: self, action: action)
             }
             
         }

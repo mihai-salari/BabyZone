@@ -15,9 +15,7 @@ class DiaryDetailViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationBarItem(title: model.date1, leftSel: nil, rightSel: nil)
-        let today =  model.date1
-        self.navigationBarItem(false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
+        self.navigationBarItem(self, isImage: false, title: model.date1, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
     }
     
     override func viewDidLoad() {

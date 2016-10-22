@@ -24,7 +24,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "设备权限", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "设备权限", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

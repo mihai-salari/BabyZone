@@ -19,7 +19,7 @@ class LanguageViewController: BaseViewController,UITableViewDelegate,UITableView
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(title: "语言", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "语言", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

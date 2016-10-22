@@ -17,7 +17,7 @@ class OtherViewController: BaseViewController,UITableViewDelegate, UITableViewDa
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(title: "其他", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "其他", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

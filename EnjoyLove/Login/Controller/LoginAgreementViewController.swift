@@ -13,7 +13,7 @@ class LoginAgreementViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(true, title: "享爱软件许可及服务协议", leftSel: #selector(LoginAgreementViewController.controllerDismissClick), leftImage: "arrow_left.png", leftItemSize: CGSize(width: 10, height: 15),rightSel: nil)
+        self.navigationBarItem(self, isImage: true, title: "享爱软件许可及服务协议", leftSel: #selector(LoginAgreementViewController.controllerDismissClick), leftImage: "arrow_left.png", leftItemSize: CGSize(width: 10, height: 15),rightSel: nil)
     }
     
     override func viewDidLoad() {

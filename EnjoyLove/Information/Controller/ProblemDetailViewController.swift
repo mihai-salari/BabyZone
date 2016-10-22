@@ -12,7 +12,7 @@ class ProblemDetailViewController: BaseViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationBarItem(title: "详情", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "详情", leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

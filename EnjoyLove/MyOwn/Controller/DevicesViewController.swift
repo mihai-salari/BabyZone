@@ -16,7 +16,7 @@ class DevicesViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(false, title: "选择设备", leftSel: nil, rightSel: #selector(self.confirmDevice), rightTitle: "确定")
+        self.navigationBarItem(self, isImage: false, title: "选择设备", leftSel: nil, rightSel: #selector(self.confirmDevice), rightTitle: "确定")
     }
     
     override func viewDidLoad() {

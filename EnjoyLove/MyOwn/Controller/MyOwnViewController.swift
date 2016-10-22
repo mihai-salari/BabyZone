@@ -24,7 +24,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationBarItem(title: "我的", leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: "我的", leftSel: nil, rightSel: nil)
         self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
         

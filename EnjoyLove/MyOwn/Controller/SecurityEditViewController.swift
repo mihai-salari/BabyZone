@@ -22,14 +22,14 @@ class SecurityEditViewController: BaseViewController {
         switch self.editModel.itemType {
         case 0:
             let isBanding = BandingPhone.isBanding()
-            self.navigationBarItem(false, title: isBanding ? "手机号" : "绑定手机号", leftSel: nil, rightSel: isBanding ? #selector(SecurityEditViewController.unBandingPhone) : #selector(SecurityEditViewController.bandingPhone), rightTitle: isBanding ? "解除绑定" : "绑定")
+            self.navigationBarItem(self, isImage: false, title: isBanding ? "手机号" : "绑定手机号", leftSel: nil, rightSel: isBanding ? #selector(SecurityEditViewController.unBandingPhone) : #selector(SecurityEditViewController.bandingPhone), rightTitle: isBanding ? "解除绑定" : "绑定")
         case 1:
-            self.navigationBarItem(false, title: "微信号", leftSel: nil, rightSel: #selector(SecurityEditViewController.unBandingWeChat), rightTitle: "解除绑定")
+            self.navigationBarItem(self, isImage: false, title: "微信号", leftSel: nil, rightSel: #selector(SecurityEditViewController.unBandingWeChat), rightTitle: "解除绑定")
         case 2:
-            self.navigationBarItem(false, title: "修改密码", leftSel: nil, rightSel: #selector(SecurityEditViewController.confirmModifyPassword), rightTitle: "确定")
+            self.navigationBarItem(self, isImage: false, title: "修改密码", leftSel: nil, rightSel: #selector(SecurityEditViewController.confirmModifyPassword), rightTitle: "确定")
         case 3:
             self.automaticallyAdjustsScrollViewInsets = false
-            self.navigationBarItem(false, title: "隐私", leftSel: nil, rightSel: nil)
+            self.navigationBarItem(self, isImage: false, title: "隐私", leftSel: nil, rightSel: nil)
         default:
             break
         }

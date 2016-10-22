@@ -211,6 +211,8 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
                                     model.subItem = account.childMobile
                                     subCountData.append(model)
                                 }
+                                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                                subCountData.append(model)
                             }else{
                                 model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
                                 subCountData.append(model)
@@ -234,18 +236,15 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             }
         }
         
-        self.settingTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: 3 * 44 + 2 * 30), style: .Plain)
+        self.settingTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: self.frame.height), style: .Plain)
         self.settingTable.scrollEnabled = false
         self.settingTable.delegate = self
         self.settingTable.dataSource = self
+        self.settingTable.tableFooterView = UIView.init()
         self.settingTable.separatorInset = UIEdgeInsetsZero
         self.settingTable.layoutMargins = UIEdgeInsetsZero
         self.settingTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: BabySettingTableViewCellId)
         self.addSubview(self.settingTable)
-        
-        let line = UIView.init(frame: CGRect.init(x: 0, y: self.settingTable.frame.maxY, width: self.settingTable.frame.width, height: 1))
-        line.backgroundColor = UIColor.hexStringToColor("#f0f0f0")
-        self.addSubview(line)
         
         self.selectionHandler = selectionHandler
     }
@@ -314,7 +313,7 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             }
             
             if model.subItem != "0" && model.subItem != "1" {
-                let subItemLabel = UILabel.init(frame: CGRectMake(resultCell.contentView.frame.width - 120, 0, 110, resultCell.contentView.frame.height))
+                let subItemLabel = UILabel.init(frame: CGRectMake(resultCell.contentView.frame.width - resultCell.contentView.frame.width / 2, 0, resultCell.contentView.frame.width / 2, resultCell.contentView.frame.height))
                 subItemLabel.text = model.subItem
                 subItemLabel.font = UIFont.boldSystemFontOfSize(10)
                 subItemLabel.textAlignment = .Right
@@ -340,9 +339,6 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
         return 30
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.01
-    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let handle = self.selectionHandler {

@@ -24,6 +24,11 @@ class HandleChildAccountViewController: BaseViewController {
         self.handleView = HandleChildAccountView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), addNewHandler: { [weak self] in
             if let weakSelf = self{
                 let addNew = AddChildAccountViewController()
+                addNew.addResultRefreshHandler = { [weak self] in
+                    if let weakSelf = self{
+                        weakSelf.handleView.refreshHandleAccountCell()
+                    }
+                }
                 weakSelf.navigationController?.pushViewController(addNew, animated: true)
             }
         })

@@ -10,6 +10,9 @@ import UIKit
 
 class AddChildAccountViewController: BaseViewController {
 
+    
+    var addResultRefreshHandler:(()->())?
+    
     private var addAccountData:[AddChildAccount]!
     private var addAccountTable:UITableView!
     private var tableRowHeight:CGFloat = 0
@@ -58,7 +61,16 @@ class AddChildAccountViewController: BaseViewController {
     }
     
     func addConfirmClick() -> Void {
-        
+        if let add = self.addAccountView {
+            add.fetchData({ [weak self] in
+                if let weakSelf = self{
+                    if let handle = weakSelf.addResultRefreshHandler{
+                        handle()
+                    }
+                    weakSelf.navigationController?.popViewControllerAnimated(true)
+                }
+            })
+        }
     }
     
     

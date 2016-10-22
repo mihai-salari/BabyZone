@@ -14,6 +14,8 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
 
     var detail:AccountDetail!
     var indexPath:NSIndexPath!
+    var flag = 0
+    
     var changeResultHandler:((indexPath:NSIndexPath, result1:String?, result2: String?)->())?
     private var videoPermission = "0"
     private var voicePermission = "0"
@@ -25,7 +27,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(self, isImage: false, title: self.indexPath.section == 1 ? "设备权限" : self.detail.mainItem, leftSel: nil, rightSel: #selector(self.confirmChange), rightTitle: "确定")
+        self.navigationBarItem(self, isImage: false, title: self.flag == 1 ? "设备权限" : self.detail.mainItem, leftSel: nil, rightSel: #selector(self.confirmChange), rightTitle: "确定")
     }
     
     override func viewDidLoad() {
@@ -41,15 +43,20 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     }
     
     private func initialize(){
-        switch self.indexPath.section {
+        self.flag = self.indexPath == nil ? self.flag : self.indexPath.section
+        switch self.flag {
         case 0:
             let backgroundView = UIView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight))
             backgroundView.backgroundColor = UIColor.whiteColor()
             self.view.addSubview(backgroundView)
             
-            self.editTextField = UITextField.textField(CGRect.init(x: 0, y: 0, width: backgroundView.frame.width, height: 45), title: nil, titleColor: UIColor.lightGrayColor(), seperatorColor: UIColor.lightGrayColor(), holder: self.detail.mainItem, clear: true)
+            self.editTextField = UITextField.textField(CGRect.init(x: 10, y: 0, width: backgroundView.frame.width - 20, height: 45), title: nil, titleColor: UIColor.lightGrayColor(), seperatorColor: UIColor.clearColor(), holder: self.detail.mainItem, clear: true)
             self.editTextField.delegate = self
             backgroundView.addSubview(self.editTextField)
+            let line = UIView.init(frame: CGRect.init(x: 0, y: self.editTextField.frame.maxY, width: backgroundView.frame.width, height: 1))
+            line.backgroundColor = UIColor.lightGrayColor()
+            backgroundView.addSubview(line)
+            
         case 1:
             self.permissionData = []
             var model = Permission(mainItem: "观看权限", onTitle: "能看宝宝", offTitle: "不能看宝宝")

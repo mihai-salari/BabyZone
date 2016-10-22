@@ -633,6 +633,7 @@ extension ChildAccount{
                     let eqm = ChildAccount()
                     eqm.idUserChildInfo = format(data["idUserChildInfo"])
                     eqm.childName = childName
+                    eqm.childMobile = mobile
                     ChildAccountBL.insert(eqm)
 
                 }

@@ -17,21 +17,8 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     init(frame: CGRect, addNewHandler:(()->())?) {
         super.init(frame: frame)
-        self.accountList = []
         
-        var accountData:[ChildAccount] = []
-        if ChildAccountBL.findAll().count > 0 {
-            accountData.appendContentsOf(ChildAccountBL.findAll())
-        }else{
-            let accountModel = ChildAccount()
-            accountModel.childName = "暂时没有绑定子账号"
-            accountData.append(accountModel)
-        }
-        var model = ChildAccountList(title: "子账号列表", account: accountData)
-        self.accountList.append(model)
-        
-        model = ChildAccountList(title: "+ 添加新的子账号", account: nil)
-        self.accountList.append(model)
+        self.initializeData()
         
         self.tableRowHeight = (ScreenHeight - navigationBarHeight - 30) * (1 / 12)
         self.childTable = UITableView.init(frame: CGRectMake(0, 0, self.frame.width, self.frame.height), style: .Grouped)
@@ -48,6 +35,28 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func initializeData() -> Void{
+        if self.accountList != nil {
+            self.accountList.removeAll()
+            self.accountList = nil
+        }
+        
+        self.accountList = []
+        var accountData:[ChildAccount] = []
+        if ChildAccountBL.findAll().count > 0 {
+            accountData.appendContentsOf(ChildAccountBL.findAll())
+        }else{
+            let accountModel = ChildAccount()
+            accountModel.childName = "暂时没有绑定子账号"
+            accountData.append(accountModel)
+        }
+        var model = ChildAccountList(title: "子账号列表", account: accountData)
+        self.accountList.append(model)
+        
+        model = ChildAccountList(title: "+ 添加新的子账号", account: nil)
+        self.accountList.append(model)
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -125,6 +134,13 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     func addNewAccountClick() -> Void {
         if let handle = self.addNewCompletionHandler {
             handle()
+        }
+    }
+    
+    func refreshHandleAccountCell() -> Void {
+        if let listTable = self.childTable {
+            self.initializeData()
+            listTable.reloadData()
         }
     }
     
@@ -321,7 +337,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             HUD.showText("请输入手机号", onView: self)
             return
         }
-        if self.phone.isTelNumber() == true {
+        if self.phone.isTelNumber() == false {
             HUD.showText("请输入正确的手机号", onView: self)
             return
         }

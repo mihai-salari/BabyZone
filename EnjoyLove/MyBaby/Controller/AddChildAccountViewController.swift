@@ -7,13 +7,14 @@
 //
 
 import UIKit
-let addChildTableViewCellHeight = upRateWidth(40)
-private let addFinishButtonViewHeight = upRateHeight(80)
-class AddChildAccountViewController: BaseViewController ,UITableViewDelegate,UITableViewDataSource{
+
+class AddChildAccountViewController: BaseViewController {
 
     private var addAccountData:[AddChildAccount]!
     private var addAccountTable:UITableView!
     private var tableRowHeight:CGFloat = 0
+    
+    private var addAccountView:AddChildAccountView!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -27,7 +28,28 @@ class AddChildAccountViewController: BaseViewController ,UITableViewDelegate,UIT
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.initialize()
+        self.addAccountView = AddChildAccountView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), selectHandler: { [weak self](indexPath, model) in
+            if let weakSelf = self{
+                let permission = ChildPermissionViewController()
+                permission.detail = model
+                permission.indexPath = indexPath
+                permission.changeResultHandler = { [weak self] (indexPath, result1, result2) in
+                    if let weakSelf = self{
+                        if indexPath.section == 0{
+                            if let result = result1{
+                                weakSelf.addAccountView.refreshCell(indexPath, result1: result, result2: "")
+                            }
+                        }else if indexPath.section == 1{
+                            if let rst1 = result1, let rst2 = result2{
+                                weakSelf.addAccountView.refreshCell(indexPath, result1: rst1, result2: rst2)
+                            }
+                        }
+                    }
+                }
+                weakSelf.navigationController?.pushViewController(permission, animated: true)
+            }
+            })
+        self.view.addSubview(self.addAccountView)
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,119 +61,6 @@ class AddChildAccountViewController: BaseViewController ,UITableViewDelegate,UIT
         
     }
     
-    private func initialize(){
-        self.addAccountData = []
-        
-        var detail:[AccountDetail] = []
-        var subModel = AccountDetail()
-        subModel.mainItem = "输入对方手机号"
-        subModel.subItem = "输入对方手机号"
-        detail.append(subModel)
-        
-        subModel = AccountDetail()
-        subModel.mainItem = "名字"
-        subModel.subItem = "更名"
-        detail.append(subModel)
-        
-        var mainModel = AddChildAccount(title: "子账号设置", detail: detail)
-        self.addAccountData.append(mainModel)
-        
-        detail = []
-        subModel = AccountDetail()
-        subModel.mainItem = "设备1"
-        subModel.devicePermisson = 0
-        subModel.deviceId = 1
-        detail.append(subModel)
-        
-        subModel = AccountDetail()
-        subModel.mainItem = "设备2"
-        subModel.devicePermisson = 1
-        subModel.deviceId = 2
-        detail.append(subModel)
-        
-        mainModel = AddChildAccount(title: "设备权限", detail: detail)
-        self.addAccountData.append(mainModel)
-        
-        var eqms:[Equipments] = []
-        if EquipmentsBL.findAll().count > 0 {
-            eqms.appendContentsOf(EquipmentsBL.findAll())
-        }else{
-            var eqm = Equipments()
-            eqm.eqmName = "您未绑定设备"
-            eqms.append(eqm)
-        }
-        
-        self.tableRowHeight = (ScreenHeight - navigationBarHeight - 60) * (1 / 12) > 44 ? (ScreenHeight - navigationBarHeight - 60) * (1 / 12) : 44
-        self.addAccountTable = UITableView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: ScreenWidth - 2 * viewOriginX, height: ScreenHeight - navigationBarHeight), style: .Plain)
-        self.addAccountTable.backgroundColor = UIColor.whiteColor()
-        self.addAccountTable.separatorInset = UIEdgeInsetsZero
-        self.addAccountTable.layoutMargins = UIEdgeInsetsZero
-        self.addAccountTable.rowHeight = self.tableRowHeight
-        self.addAccountTable.delegate = self
-        self.addAccountTable.dataSource = self
-        self.addAccountTable.registerClass(AddAccountCell.self, forCellReuseIdentifier: NSStringFromClass(AddAccountCell))
-        self.view.addSubview(self.addAccountTable)
-        
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return self.addAccountData.count
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.addAccountData[section].detail.count
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(AddAccountCell)) as? AddAccountCell
-        if let resultCell = cell {
-            resultCell.separatorInset = UIEdgeInsetsZero
-            resultCell.layoutMargins = UIEdgeInsetsZero
-            switch indexPath.section {
-            case 0:
-                resultCell.accessoryType = .DisclosureIndicator
-            default:
-                break
-            }
-            if let modelData = self.addAccountData[indexPath.section].detail {
-                if modelData.count > 0 {
-                    let model = modelData[indexPath.row]
-                    resultCell.refreshCell(model, row: indexPath.row)
-                }
-            }
-            
-        }
-        return cell!
-    }
-
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
-    }
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let model = self.addAccountData[section]
-        let headView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30))
-        headView.backgroundColor = UIColor.hexStringToColor("#60555b")
-        let label = UILabel.init(frame: CGRect(x: 2 * viewOriginX, y: 0, width: headView.frame.width - 2 * viewOriginX, height: headView.frame.height))
-        label.text = model.title
-        label.font = UIFont.systemFontOfSize(13)
-        label.textColor = UIColor.whiteColor()
-        headView.addSubview(label)
-        return headView
-    }
-   
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 1 {
-            if let modelData = self.addAccountData[indexPath.section].detail {
-                if modelData.count > 0 {
-                    let model = modelData[indexPath.row]
-                    let permission = ChildPermissionViewController()
-                    permission.detail = model
-                    self.navigationController?.pushViewController(permission, animated: true)
-                }
-            }
-        }
-    }
     
     /*
     // MARK: - Navigation

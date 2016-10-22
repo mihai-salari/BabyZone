@@ -195,8 +195,10 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
         var settingModel = BabySetting(title: "提醒设置", setting: settingDetailData)
         self.settingData.append(settingModel)
         
+        HUD.showHud("正在加载...", onView: self)
         ChildAccount.sendAsyncChildAccountList { [weak self](errorCode, msg) in
             if let weakSelf = self{
+                HUD.hideHud(weakSelf)
                 dispatch_queue_create("childAccountListQueue", nil).queue({
                     var subCountData:[SettingDetail] = []
                     if let err = errorCode{
@@ -244,7 +246,6 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
         let line = UIView.init(frame: CGRect.init(x: 0, y: self.settingTable.frame.maxY, width: self.settingTable.frame.width, height: 1))
         line.backgroundColor = UIColor.hexStringToColor("#f0f0f0")
         self.addSubview(line)
-        
         
         self.selectionHandler = selectionHandler
     }

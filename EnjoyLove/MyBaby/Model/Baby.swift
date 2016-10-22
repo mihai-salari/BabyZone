@@ -47,7 +47,6 @@ struct Permission {
 struct AddChildAccount {
     var title = ""
     var detail:[AccountDetail]!
-    
 }
 
 struct AccountDetail {
@@ -57,6 +56,8 @@ struct AccountDetail {
     var deviceId:Int = -1//设备绑定id
     
 }
+
+
 
 struct AccountInfo {
     var title = ""

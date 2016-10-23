@@ -31,6 +31,7 @@ struct BabySetting {
 struct SettingDetail {
     var mainItem = ""
     var subItem = ""
+    var itemId = ""
     var tipPermission:Int = -1//0:关闭提醒，1：打开提醒
     var modePermission:Int = -1//0:震动提醒，1：消息提醒
     
@@ -46,22 +47,20 @@ struct Permission {
 
 struct AddChildAccount {
     var title = ""
-    var detail:[AccountDetail]!
+    var detail:[ChildEquipments]!
 }
 
-struct AccountDetail {
-    var mainItem = ""
-    var subItem = ""
-    var devicePermisson:Int = -1//0:关闭 1:打开
-    var deviceId:Int = -1//设备绑定id
-    
-}
-
-
+//struct AccountDetail {
+//    var mainItem = ""
+//    var subItem = ""
+//    var devicePermisson:Int = -1//0:关闭 1:打开
+//    var deviceId = ""//设备绑定id
+//    
+//}
 
 struct AccountInfo {
     var title = ""
-    var detail:[AccountDetail]!
+    var detail:[ChildEquipments]!
     
 }
 
@@ -88,16 +87,9 @@ struct ChildAccountList {
     var account:[ChildAccount]!
 }
 
-struct ChildEquipmentList {
-    var userRemark = ""
-    var eqmDesc = ""
-    
-}
 
-struct ChildEquipment {
-    var title = ""
-    var eqmChildList:[ChildEquipmentList]!
-}
+
+
 
 
 

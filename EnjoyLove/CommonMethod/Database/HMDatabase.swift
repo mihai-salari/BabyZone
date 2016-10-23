@@ -1479,11 +1479,13 @@ class ChildEquipments: NSObject,NSCoding {
     var eqmName = ""
     var eqmStatus = ""
     var idUserChildEqmInfo = ""
+    
     var idUserChildEqmPermission = ""
     var idUserEqmInfo = ""
     var voicePermission = ""
     var imagePermission = ""
     
+    var eqmSubItem = ""
     
     
     override init() {
@@ -1635,9 +1637,9 @@ private class ChildEquipmentsDAO: NSObject {
         return false
     }
     
-    func find(detail:ChildEquipments?, key:String = "") -> ChildEquipments {
+    func find(detail:ChildEquipments?, key:String = "") -> ChildEquipments? {
         let array = self.findAll()
-        var result = ChildEquipments()
+        var result:ChildEquipments!
         for note in array {
             let userId = detail == nil ? "" : note.idUserChildEqmInfo
             let baseKey = key == "" ? userId : key
@@ -1667,7 +1669,7 @@ class ChildEquipmentsBL: NSObject {
         return ChildEquipmentsDAO.shared.findAll()
     }
     
-    class func find(detail:ChildEquipments?, key:String = "") ->ChildEquipments{
+    class func find(detail:ChildEquipments?, key:String = "") ->ChildEquipments?{
         return ChildEquipmentsDAO.shared.find(detail, key: key)
     }
     

@@ -10,27 +10,30 @@ import UIKit
 
 class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
+    private var deleteHandler:(()->())?
     private var childTable:UITableView!
     private var accountList:[ChildAccountList]!
     private var tableRowHeight:CGFloat = 0
     private var addNewCompletionHandler:(()->())?
     
-    init(frame: CGRect, addNewHandler:(()->())?) {
+    init(frame: CGRect, addNewHandler:(()->())?, deleteRefreshHandler:(()->())?) {
         super.init(frame: frame)
         
         self.initializeData()
         
         self.tableRowHeight = (ScreenHeight - navigationBarHeight - 30) * (1 / 12)
-        self.childTable = UITableView.init(frame: CGRectMake(0, 0, self.frame.width, self.frame.height), style: .Grouped)
+        self.childTable = UITableView.init(frame: CGRectMake(0, 0, self.frame.width, self.frame.height), style: .Plain)
         self.childTable.backgroundColor = UIColor.whiteColor()
         self.childTable.dataSource = self
         self.childTable.delegate = self
         self.childTable.rowHeight = self.tableRowHeight
+        self.childTable.tableFooterView = UIView.init()
         self.childTable.separatorInset = UIEdgeInsetsZero
         self.childTable.layoutMargins = UIEdgeInsetsZero
         self.addSubview(self.childTable)
         
         self.addNewCompletionHandler = addNewHandler
+        self.deleteHandler = deleteRefreshHandler
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -90,9 +93,7 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         }
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.01
-    }
+    
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch section {
@@ -124,9 +125,30 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             if var data = self.accountList[indexPath.section].account {
-                data.removeAtIndex(indexPath.row)
-                self.accountList[indexPath.section].account = data
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                dispatch_queue_create("deleteChildAccountQueue", nil).queue({
+                    HUD.showHud("正在提交...", onView: self)
+                    ChildAccount.sendAsyncDeleteChildAccount(data[indexPath.row].idUserChildInfo, completionHandler: { [weak self](errorCode, msg) in
+                        if let weakSelf = self{
+                            HUD.hideHud(weakSelf)
+                            if let err = errorCode{
+                                if err == BabyZoneConfig.shared.passCode{
+                                    data.removeAtIndex(indexPath.row)
+                                    weakSelf.accountList[indexPath.section].account = data
+                                    dispatch_get_main_queue().queue({ 
+                                        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                        if let deleteHandle = weakSelf.deleteHandler{
+                                            deleteHandle()
+                                        }
+                                    })
+                                }else{
+                                    HUD.showText("删除失败", onView: weakSelf)
+                                }
+                            }else{
+                                HUD.showText("删除失败", onView: weakSelf)
+                            }
+                        }
+                    })
+                })
             }
         }
     }
@@ -154,60 +176,61 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var tableRowHeight:CGFloat = 0
     private var phone = ""
     private var name = ""
-    private var selectionHandler:((indexPath:NSIndexPath, model:AccountDetail)->())?
+    private var idUserChildInfo = ""
+    private var selectionHandler:((indexPath:NSIndexPath, model:ChildEquipments)->())?
     
-    init(frame: CGRect, selectHandler:((indexPath:NSIndexPath, model:AccountDetail)->())?) {
+    init(frame: CGRect, selectHandler:((indexPath:NSIndexPath, model:ChildEquipments)->())?) {
         super.init(frame: frame)
         
         self.addAccountData = []
-        var detail:[AccountDetail] = []
-        var subModel = AccountDetail()
-        subModel.mainItem = "手机号"
-        subModel.subItem = "输入手机号"
+        var detail:[ChildEquipments] = []
+        var subModel = ChildEquipments()
+        subModel.eqmName = "手机号"
+        subModel.eqmSubItem = "输入手机号"
         detail.append(subModel)
         
-        subModel = AccountDetail()
-        subModel.mainItem = "名字"
-        subModel.subItem = "更名"
+        subModel = ChildEquipments()
+        subModel.eqmName = "名字"
+        subModel.eqmSubItem = "更名"
         detail.append(subModel)
         
         var mainModel = AddChildAccount(title: "子账号设置", detail: detail)
         self.addAccountData.append(mainModel)
         
         detail = []
-        subModel = AccountDetail()
-        subModel.mainItem = "设备1"
-        subModel.devicePermisson = 0
-        subModel.deviceId = 1
+        subModel = ChildEquipments()
+        subModel.eqmName = "设备1"
+        subModel.eqmStatus = "0"
+        subModel.idEqmInfo = "1"
         detail.append(subModel)
         
-        subModel = AccountDetail()
-        subModel.mainItem = "设备2"
-        subModel.devicePermisson = 1
-        subModel.deviceId = 2
+        subModel = ChildEquipments()
+        subModel.eqmName = "设备2"
+        subModel.eqmStatus = "0"
+        subModel.idEqmInfo = "2"
         detail.append(subModel)
         
         mainModel = AddChildAccount(title: "设备权限", detail: detail)
         self.addAccountData.append(mainModel)
         
         /*
-        var eqms:[ChildEquipments] = []
-        if ChildEquipmentsBL.findAll().count > 0 {
-            eqms.appendContentsOf(ChildEquipmentsBL.findAll())
+        detail = []
+        if EquipmentsBL.findAll().count > 0 {
+            for eqm in EquipmentsBL.findAll() {
+                let childEqm = ChildEquipments()
+                childEqm.eqmName = eqm.eqmName
+                childEqm.idEqmInfo = eqm.idEqmInfo
+                childEqm.eqmStatus = "0"
+                detail.append(childEqm)
+            }
         }else{
             let eqm = ChildEquipments()
             eqm.eqmName = "您未绑定设备"
-            eqms.append(eqm)
-        }
-        
-        detail = []
-        for eqm in eqms {
-            subModel = AccountDetail(mainItem: eqm.eqmName, subItem: eqm.idEqmInfo, devicePermisson: 0, deviceId: 0)
-            detail.append(subModel)
+            detail.append(eqm)
         }
         mainModel = AddChildAccount(title: "设备权限", detail: detail)
         self.addAccountData.append(mainModel)
-        */
+ */
         
         self.addAccountTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: ScreenHeight - navigationBarHeight), style: .Plain)
         self.addAccountTable.backgroundColor = UIColor.whiteColor()
@@ -251,14 +274,14 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             resultCell.textLabel?.font = UIFont.systemFontOfSize(14)
             resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(14)
             let modelData = self.addAccountData[indexPath.section].detail[indexPath.row]
-            resultCell.textLabel?.text = modelData.mainItem
+            resultCell.textLabel?.text = modelData.eqmName
             if indexPath.section == 0 {
-                resultCell.detailTextLabel?.text = modelData.subItem
+                resultCell.detailTextLabel?.text = modelData.eqmSubItem
             }
             
             if indexPath.section == 1 {
                 let onSwitch = HMSwitch.init(frame: CGRect(x: resultCell.contentView.frame.width - 50, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
-                onSwitch.on = modelData.devicePermisson == 0 ? false : true
+                onSwitch.on = modelData.eqmStatus == "0" ? false : true
                 onSwitch.onLabel.text = "打开"
                 onSwitch.offLabel.text = "关闭"
                 onSwitch.onLabel.textColor = UIColor.whiteColor()
@@ -307,14 +330,14 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     func equipmentOnOff(onSwicth:HMSwitch) -> Void {
         if self.addAccountData.count > 1 {
             let detail = self.addAccountData[1].detail[onSwicth.tag]
-//            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(<#T##idUserChildInfo: String##String#>, idEqmInfo: <#T##String#>, eqmStatus: <#T##String#>, completionHandler: <#T##((errorCode: String?, msg: String?) -> ())?##((errorCode: String?, msg: String?) -> ())?##(errorCode: String?, msg: String?) -> ()#>)
+            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(<#T##idUserChildInfo: String##String#>, idEqmInfo: <#T##String#>, eqmStatus: <#T##String#>, completionHandler: <#T##((errorCode: String?, msg: String?) -> ())?##((errorCode: String?, msg: String?) -> ())?##(errorCode: String?, msg: String?) -> ()#>)
         }
     }
     
     func refreshCell(indexPath:NSIndexPath, result1:String, result2:String) -> Void {
         if let table = self.addAccountTable {
             dispatch_queue_create("addAccountQueue", nil).queue({ 
-                self.addAccountData[indexPath.section].detail[indexPath.row].mainItem = result1
+                self.addAccountData[indexPath.section].detail[indexPath.row].eqmName = result1
                 if indexPath.section == 0 {
                     switch indexPath.row{
                     case 0:
@@ -354,7 +377,11 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
                         if let handle = completionHandler{
                             handle()
                         }
+                    }else{
+                        HUD.showText("添加失败:\(msg)", onView: weakSelf)
                     }
+                }else{
+                    HUD.showText("添加失败:\(msg)", onView: weakSelf)
                 }
             }
         }
@@ -362,128 +389,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
 }
 
-class ChildDetailCell: UITableViewCell,UITextFieldDelegate {
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-    
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
-    }
 
-    func refreshCell(model:AccountDetail, row:Int) -> Void {
-        for subview in self.contentView.subviews {
-            subview.removeFromSuperview()
-        }
-        self.contentView.frame = CGRect(origin: self.contentView.frame.origin, size: CGSize(width: ScreenWidth - 2 * viewOriginX, height: self.contentView.frame.height))
-        if model.devicePermisson == -1 {
-            let rightLabel = UILabel.init(frame: CGRect(x: 0, y: 0, width: self.contentView.frame.width * (2 / 5), height: self.contentView.frame.height))
-            rightLabel.textColor = UIColor.lightGrayColor()
-            rightLabel.text = model.subItem
-            rightLabel.textAlignment = .Right
-            rightLabel.font = UIFont.systemFontOfSize(12)
-            let inputTF = UITextField.textField(CGRect(x: 2 * viewOriginX, y: 0, width: self.contentView.frame.width - 20 - 2 * viewOriginX, height: self.contentView.frame.height), title: nil, holder: model.mainItem, right: true, rightView: rightLabel)
-            inputTF.delegate = self
-            inputTF.tag = inputTFStartIndex + row
-            self.contentView.addSubview(inputTF)
-        }else{
-            let mainLabel = UILabel.init(frame: CGRect(x: 2 * viewOriginX, y: 0, width: self.contentView.frame.width / 2, height: self.contentView.frame.height))
-            mainLabel.text = model.mainItem
-            mainLabel.font = UIFont.boldSystemFontOfSize(14)
-            mainLabel.textColor = UIColor.hexStringToColor("#330429")
-            self.contentView.addSubview(mainLabel)
-            
-            let onSwitch = HMSwitch.init(frame: CGRect(x: self.contentView.frame.width - AddAccountSwitchWidth - 15, y: (self.contentView.frame.height - AddAccountSwitchHeight) / 2, width: AddAccountSwitchWidth, height: AddAccountSwitchHeight))
-            onSwitch.on = model.devicePermisson == 0 ? false : true
-            onSwitch.onLabel.text = "打开"
-            onSwitch.offLabel.text = "关闭"
-            onSwitch.onLabel.textColor = UIColor.whiteColor()
-            onSwitch.offLabel.textColor = UIColor.whiteColor()
-            onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
-            onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
-            onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
-            onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
-            onSwitch.inactiveColor = UIColor.lightGrayColor()
-            self.contentView.addSubview(onSwitch)
-        }
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-}
-
-private let inputTFStartIndex = 100
-private let AddAccountSwitchWidth:CGFloat = 50
-private let AddAccountSwitchHeight:CGFloat = 20
-class AddAccountCell: UITableViewCell,UITextFieldDelegate {
-    
-    private var phoneString:String!
-    private var userName:String!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-    
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        // Configure the view for the selected state
-    }
-    
-    func refreshCell(model:AccountDetail, row:Int) -> Void {
-        for subview in self.contentView.subviews {
-            subview.removeFromSuperview()
-        }
-        self.contentView.frame = CGRect(origin: self.contentView.frame.origin, size: CGSize(width: ScreenWidth - 2 * viewOriginX, height: self.contentView.frame.height))
-        if model.devicePermisson == -1 {
-            let rightLabel = UILabel.init(frame: CGRect(x: 0, y: 0, width: self.contentView.frame.width * (2 / 5), height: self.contentView.frame.height))
-            rightLabel.textColor = UIColor.lightGrayColor()
-            rightLabel.text = model.subItem
-            rightLabel.textAlignment = .Right
-            rightLabel.font = UIFont.systemFontOfSize(12)
-            let inputTF = UITextField.textField(CGRect(x: 2 * viewOriginX, y: 0, width: self.contentView.frame.width - 30 - 2 * viewOriginX, height: self.contentView.frame.height), title: nil, holder: model.mainItem, right: true, rightView: rightLabel)
-            inputTF.delegate = self
-            inputTF.tag = inputTFStartIndex + row
-            self.contentView.addSubview(inputTF)
-        }else{
-            let mainLabel = UILabel.init(frame: CGRect(x: 2 * viewOriginX, y: 0, width: self.contentView.frame.width / 2, height: self.contentView.frame.height))
-            mainLabel.text = model.mainItem
-            mainLabel.font = UIFont.boldSystemFontOfSize(14)
-            mainLabel.textColor = UIColor.hexStringToColor("#330429")
-            self.contentView.addSubview(mainLabel)
-            
-            let onSwitch = HMSwitch.init(frame: CGRect(x: self.contentView.frame.width - AddAccountSwitchWidth - 15, y: (self.contentView.frame.height - AddAccountSwitchHeight) / 2, width: AddAccountSwitchWidth, height: AddAccountSwitchHeight))
-            onSwitch.on = model.devicePermisson == 0 ? false : true
-            onSwitch.onLabel.text = "打开"
-            onSwitch.offLabel.text = "关闭"
-            onSwitch.onLabel.textColor = UIColor.whiteColor()
-            onSwitch.offLabel.textColor = UIColor.whiteColor()
-            onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
-            onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
-            onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
-            onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
-            onSwitch.inactiveColor = UIColor.lightGrayColor()
-            self.contentView.addSubview(onSwitch)
-        }
-    }
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func finishAddAccount() -> Void {
-        
-    }
-    
-}
 
 
 

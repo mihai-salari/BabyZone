@@ -32,10 +32,19 @@ class BabySettingViewController: BaseViewController {
                     switch indexPath.row {
                     case data.count - 1:
                         let handleChildAccount = HandleChildAccountViewController()
+                        handleChildAccount.settingRefreshHandler = {
+                            weakSelf.settingView.refreshData()
+                        }
+                        handleChildAccount.settingDeleteHandler = {
+                            weakSelf.settingView.refreshData()
+                        }
                         weakSelf.navigationController?.pushViewController(handleChildAccount, animated: true)
                     default:
                         let accountDetail = ChildDetailViewController()
                         accountDetail.childAccount = data[indexPath.row]
+                        accountDetail.reloadHandler = { (isDelete)in
+                            weakSelf.settingView.refreshData()
+                        }
                         weakSelf.navigationController?.pushViewController(accountDetail, animated: true)
                     }
                 }

@@ -657,11 +657,10 @@ extension ChildAccount{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
-                    let eqm = ChildAccount()
-                    eqm.idUserChildInfo = format(data["idUserChildInfo"])
-                    eqm.idChild = format(data["idChild"])
-                    eqm.childName = format(data["childName"])
+                if errorCode == BabyZoneConfig.shared.passCode {
+                    let eqm = ChildAccountBL.find(nil, key: idUserChildInfo)
+                    eqm.idUserChildInfo = idUserChildInfo
+                    eqm.childName = childName
                     ChildAccountBL.modify(eqm)
                 }
                 if let handle = completionHandler{

@@ -12,9 +12,11 @@ private let ChildPermissionSwitchTag = 1000
 private let PermissionCellId = "PermissionCellId"
 class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITableViewDataSource ,UITextFieldDelegate{
 
-    var detail:AccountDetail!
+    var detail:ChildEquipments!
     var indexPath:NSIndexPath!
     var flag = 0
+    var isName:Bool = false
+    
     
     var changeResultHandler:((indexPath:NSIndexPath, result1:String?, result2: String?)->())?
     private var videoPermission = "0"
@@ -27,7 +29,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(self, isImage: false, title: self.flag == 1 ? "设备权限" : self.detail.mainItem, leftSel: nil, rightSel: #selector(self.confirmChange), rightTitle: "确定")
+        self.navigationBarItem(self, isImage: false, title: self.flag == 1 ? "设备权限" : self.detail.eqmName, leftSel: nil, rightSel: self.flag == 0 ? #selector(self.confirmChange) : nil, rightTitle: self.flag == 0 ? "确定" : "")
     }
     
     override func viewDidLoad() {
@@ -50,7 +52,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             backgroundView.backgroundColor = UIColor.whiteColor()
             self.view.addSubview(backgroundView)
             
-            self.editTextField = UITextField.textField(CGRect.init(x: 10, y: 0, width: backgroundView.frame.width - 20, height: 45), title: nil, titleColor: UIColor.lightGrayColor(), seperatorColor: UIColor.clearColor(), holder: self.detail.mainItem, clear: true)
+            self.editTextField = UITextField.textField(CGRect.init(x: 10, y: 0, width: backgroundView.frame.width - 20, height: 45), title: self.detail.eqmName, titleColor: UIColor.lightGrayColor(), seperatorColor: UIColor.clearColor(), holder: nil, clear: true)
             self.editTextField.delegate = self
             backgroundView.addSubview(self.editTextField)
             let line = UIView.init(frame: CGRect.init(x: 0, y: self.editTextField.frame.maxY, width: backgroundView.frame.width, height: 1))
@@ -138,7 +140,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             if let tf = self.editTextField {
                 tf.resignFirstResponder()
                 if let txt = tf.text {
-                    if self.indexPath.row == 0 {
+                    if self.indexPath.row == 0 && self.isName == false{
                         if txt.isTelNumber() == false {
                             HUD.showText("请输入正确的手机号", onView: self.view)
                             return

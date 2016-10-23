@@ -186,10 +186,10 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
         self.settingData = []
         var settingDetailData:[SettingDetail] = []
         
-        var model = SettingDetail(mainItem: "异常提醒", subItem: "0", tipPermission: 0, modePermission: 1)
+        var model = SettingDetail(mainItem: "异常提醒", subItem: "0", itemId: "", tipPermission: 0, modePermission: 1)
         settingDetailData.append(model)
         
-        model = SettingDetail(mainItem: "提醒方式", subItem: "1", tipPermission: 0, modePermission: 1)
+        model = SettingDetail(mainItem: "提醒方式", subItem: "1", itemId: "", tipPermission: 0, modePermission: 1)
         settingDetailData.append(model)
         
         var settingModel = BabySetting(title: "提醒设置", setting: settingDetailData)
@@ -209,20 +209,21 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
                                     model = SettingDetail()
                                     model.mainItem = account.childName
                                     model.subItem = account.childMobile
+                                    model.itemId = account.idUserChildInfo
                                     subCountData.append(model)
                                 }
-                                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", itemId: "", tipPermission: -1, modePermission: -1)
                                 subCountData.append(model)
                             }else{
-                                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", itemId: "", tipPermission: -1, modePermission: -1)
                                 subCountData.append(model)
                             }
                         }else{
-                            model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                            model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", itemId: "", tipPermission: -1, modePermission: -1)
                             subCountData.append(model)
                         }
                     }else{
-                        model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", tipPermission: -1, modePermission: -1)
+                        model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", itemId: "", tipPermission: -1, modePermission: -1)
                         subCountData.append(model)
                     }
                     settingModel = BabySetting(title: "子账号设置", setting: subCountData)
@@ -353,6 +354,53 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             print("tag \(on.tag) on off \(on.on)")
         }
     }
+    
+    func refreshData() -> Void {
+        dispatch_queue_create("refreshSettingDataQueue", nil).queue { 
+            if self.settingData != nil {
+                self.settingData = nil
+            }
+            self.settingData = []
+            var settingDetailData:[SettingDetail] = []
+            
+            var model = SettingDetail(mainItem: "异常提醒", subItem: "0", itemId: "", tipPermission: 0, modePermission: 1)
+            settingDetailData.append(model)
+            
+            model = SettingDetail(mainItem: "提醒方式", subItem: "1", itemId: "", tipPermission: 0, modePermission: 1)
+            settingDetailData.append(model)
+            
+            var settingModel = BabySetting(title: "提醒设置", setting: settingDetailData)
+            self.settingData.append(settingModel)
+            
+            var subCountData:[SettingDetail] = []
+            let childAccounts = ChildAccountBL.findAll()
+            if childAccounts.count > 0{
+                for account in childAccounts{
+                    model = SettingDetail()
+                    model.mainItem = account.childName
+                    model.subItem = account.childMobile
+                    model.itemId = account.idUserChildInfo
+                    subCountData.append(model)
+                }
+                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", itemId: "", tipPermission: -1, modePermission: -1)
+                subCountData.append(model)
+                settingModel = BabySetting(title: "子账号设置", setting: subCountData)
+                self.settingData.append(settingModel)
+            }else{
+                model = SettingDetail(mainItem: "添加/删除子账号", subItem: "添加/删除设备", itemId: "", tipPermission: -1, modePermission: -1)
+                subCountData.append(model)
+                settingModel = BabySetting(title: "子账号设置", setting: subCountData)
+                self.settingData.append(settingModel)
+            }
+            
+            dispatch_get_main_queue().queue({ 
+                if let table = self.settingTable{
+                    table.reloadData()
+                }
+            })
+        }
+    }
+    
 }
 
 

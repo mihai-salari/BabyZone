@@ -67,7 +67,7 @@ class LoginViewController: BaseViewController {
                                     })
                             }else{
                                 HUD.hideHud(weakSelf.view)
-                                HUD.showText("登录失败:无法获取token", onView: weakSelf.view)
+                                HUD.showText("登录失败:请允许APP远程通知", onView: weakSelf.view)
                             }
                         }else{
                             HUD.hideHud(weakSelf.view)

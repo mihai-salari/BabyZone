@@ -1098,12 +1098,30 @@ class BabyBaseInfoBL: NSObject {
 private let EquipmentsArchiveKey = "EquipmentsArchive"
 private let EquipmentsArchiveFileName = "EquipmentsArchive.archive"
 class Equipments: NSObject,NSCoding {
+    /*
+     idEqmInfo	int	是	设备id
+     eqmName	string	是	设备名称
+     eqmType	int	是	设备类型（1：摄像头）
+     eqmDid	string	是	设备DID
+     eqmAccount	string	是	设备帐号
+     eqmPwd	string	是	设备密码
+     eqmLevel	int	是	设备级别（1：主设备 2：子帐号设备（无权修改设备信息））
+
+     */
     var idEqmInfo:String!
     var eqmName:String!
     var eqmType:String!
     var eqmDid:String!
     var eqmAccount:String!
     var eqmPwd:String!
+    var eqmLevel:String!
+    var eqmStatus:Int32!
+    var eqmMessageCount:Int32!
+    var defenceState:Int32!
+    var isClickDefenceStateBtn:Bool!
+    var isGettingOnLineState:Bool!
+    
+    
     
     override init() {
         self.idEqmInfo = ""
@@ -1112,6 +1130,12 @@ class Equipments: NSObject,NSCoding {
         self.eqmDid = ""
         self.eqmAccount = ""
         self.eqmPwd = ""
+        self.eqmLevel = ""
+        self.eqmStatus = 0
+        self.eqmMessageCount = 0
+        self.defenceState = 0
+        self.isClickDefenceStateBtn = false
+        self.isGettingOnLineState = false
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -1135,7 +1159,14 @@ class Equipments: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("eqmPwd") as? String {
             self.eqmPwd = obj
         }
-        
+        if let obj = aDecoder.decodeObjectForKey("eqmLevel") as? String {
+            self.eqmLevel = obj
+        }
+        self.eqmStatus = aDecoder.decodeIntForKey("eqmStatus")
+        self.eqmMessageCount = aDecoder.decodeIntForKey("eqmMessageCount")
+        self.defenceState = aDecoder.decodeIntForKey("defenceState")
+        self.isClickDefenceStateBtn = aDecoder.decodeBoolForKey("isClickDefenceStateBtn")
+        self.isGettingOnLineState = aDecoder.decodeBoolForKey("isGettingOnLineState")
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -1145,7 +1176,14 @@ class Equipments: NSObject,NSCoding {
         aCoder.encodeObject(self.eqmDid, forKey: "eqmDid")
         aCoder.encodeObject(self.eqmAccount, forKey: "eqmAccount")
         aCoder.encodeObject(self.eqmPwd, forKey: "eqmPwd")
+        aCoder.encodeObject(self.eqmLevel, forKey: "eqmLevel")
+        aCoder.encodeInt(self.eqmStatus, forKey: "eqmStatus")
+        aCoder.encodeInt(self.eqmMessageCount, forKey: "eqmMessageCount")
+        aCoder.encodeInt(self.defenceState, forKey: "defenceState")
+        aCoder.encodeBool(self.isClickDefenceStateBtn, forKey: "isClickDefenceStateBtn")
+        aCoder.encodeBool(self.isGettingOnLineState, forKey: "isGettingOnLineState")
     }
+    
 }
 
 private class EquipmentsDAO:NSObject{
@@ -1238,7 +1276,24 @@ private class EquipmentsDAO:NSObject{
                 if note.eqmPwd != detail.eqmPwd {
                     note.eqmPwd = detail.eqmPwd
                 }
-                
+                if note.eqmLevel != detail.eqmLevel {
+                    note.eqmLevel = detail.eqmLevel
+                }
+                if note.eqmStatus != detail.eqmStatus {
+                    note.eqmStatus = detail.eqmStatus
+                }
+                if note.eqmMessageCount != detail.eqmMessageCount {
+                    note.eqmMessageCount = detail.eqmMessageCount
+                }
+                if note.defenceState != detail.defenceState {
+                    note.defenceState = detail.defenceState
+                }
+                if note.isClickDefenceStateBtn != detail.isClickDefenceStateBtn {
+                    note.isClickDefenceStateBtn = detail.isClickDefenceStateBtn
+                }
+                if note.isGettingOnLineState != detail.isGettingOnLineState {
+                    note.isGettingOnLineState = detail.isGettingOnLineState
+                }
                 let theData = NSMutableData.init()
                 let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
                 archiver.encodeObject(array, forKey: EquipmentsArchiveKey)
@@ -1249,9 +1304,9 @@ private class EquipmentsDAO:NSObject{
         return false
     }
     
-    func find(detail:Equipments?, key:String = "") -> Equipments {
+    func find(detail:Equipments?, key:String = "") -> Equipments? {
         let array = self.findAll()
-        var result = Equipments()
+        var result:Equipments?
         for note in array {
             let userId = detail == nil ? "" : note.idEqmInfo
             let baseKey = key == "" ? userId : key
@@ -1280,12 +1335,23 @@ class EquipmentsBL: NSObject {
         return EquipmentsDAO.shared.findAll()
     }
     
-    class func find(detail:Equipments?, key:String = "") ->Equipments{
+    class func find(detail:Equipments?, key:String = "") ->Equipments?{
         return EquipmentsDAO.shared.find(detail, key: key)
     }
     
     class func findAll() ->[Equipments]{
         return EquipmentsDAO.shared.findAll()
+    }
+    
+    class func contactFromEquipment(eqm:Equipments) -> Contact{
+        if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
+            for contact in contacts {
+                if contact.contactId == eqm.eqmDid {
+                    return contact
+                }
+            }
+        }
+        return Contact()
     }
 }
 

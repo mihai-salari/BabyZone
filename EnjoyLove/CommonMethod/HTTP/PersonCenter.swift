@@ -492,7 +492,7 @@ extension Equipments {
 
 
      */
-    class func sendAsyncAddEquitment(eqmName:String,eqmType:String,eqmDid:String,eqmAccount:String,eqmPwd:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncAddEquitment(eqmName:String,eqmType:String,eqmDid:String,eqmAccount:String,eqmPwd:String, eqmStatus:Int32, completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(AddEquipmentUrl, parameters: ["eqmName":eqmName,"eqmType":eqmType,"eqmDid":eqmDid,"eqmAccount":eqmAccount,"eqmPwd":eqmPwd], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
@@ -505,6 +505,7 @@ extension Equipments {
                     addEqm.eqmDid = eqmDid
                     addEqm.eqmAccount = eqmAccount
                     addEqm.eqmPwd = eqmPwd
+                    addEqm.eqmStatus = eqmStatus
                     EquipmentsBL.insert(addEqm)
                 }
                 if let handle = completionHandler{

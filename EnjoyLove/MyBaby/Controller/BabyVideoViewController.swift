@@ -28,41 +28,7 @@ class BabyVideoViewController: BaseVideoViewController {
     private var lastTime:Int32 = 0
     
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.navigationBarHidden = true
-        self.tabBarController?.tabBar.hidden = true
-        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: .None)
-        NSUserDefaults.standardUserDefaults().setBool(true, forKey: AllowOrientationKey)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onDeviceOrientationChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillResignActive(_:)), name: UIApplicationWillResignActiveNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appBecomeActive(_:)), name: UIApplicationDidBecomeActiveNotification, object: nil)
-        
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.receiveRemoteMessage(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.ack_receiveRemoteMessage(_:)), name: ACK_RECEIVE_REMOTE_MESSAGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorStartRender(_:)), name: MONITOR_START_RENDER_MESSAGE, object: nil)
 
-        if let contact = deviceContact {
-            if let p2p = P2PClient.sharedClient() {
-                p2p.isBCalled = false
-                p2p.callId = contact.contactId
-                p2p.callPassword = contact.contactPassword
-                p2p.p2pCallType = P2PCALL_TYPE_MONITOR
-                if let contactId = p2p.callId, let contactPassword = p2p.callPassword {
-                    p2p.sendCustomCmdWithId(contactId, password: contactPassword, cmd: "IPC1anerfa:connect")
-                }
-            }
-            
-            AppDelegate.sharedDefault().monitoredContactId = contact.contactId
-            if AppDelegate.sharedDefault().isMonitoring {
-                AppDelegate.sharedDefault().isMonitoring = true
-            }
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +71,40 @@ class BabyVideoViewController: BaseVideoViewController {
         super.viewWillDisappear(animated)
         
         
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBarHidden = true
+        self.tabBarController?.tabBar.hidden = true
+        UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: .None)
+        NSUserDefaults.standardUserDefaults().setBool(true, forKey: AllowOrientationKey)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onDeviceOrientationChange), name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillResignActive(_:)), name: UIApplicationWillResignActiveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appDidEnterBackground(_:)), name: UIApplicationDidEnterBackgroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appWillEnterForeground(_:)), name: UIApplicationWillEnterForegroundNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.appBecomeActive(_:)), name: UIApplicationDidBecomeActiveNotification, object: nil)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.monitorStartRender(_:)), name: MONITOR_START_RENDER_MESSAGE, object: nil)
+        
+        if let contact = deviceContact {
+            if let p2p = P2PClient.sharedClient() {
+                p2p.isBCalled = false
+                p2p.callId = contact.contactId
+                p2p.callPassword = contact.contactPassword
+                p2p.p2pCallType = P2PCALL_TYPE_MONITOR
+                if let contactId = p2p.callId, let contactPassword = p2p.callPassword {
+                    p2p.sendCustomCmdWithId(contactId, password: contactPassword, cmd: "IPC1anerfa:connect")
+                }
+            }
+            
+            AppDelegate.sharedDefault().monitoredContactId = contact.contactId
+            if AppDelegate.sharedDefault().isMonitoring {
+                AppDelegate.sharedDefault().isMonitoring = true
+            }
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {

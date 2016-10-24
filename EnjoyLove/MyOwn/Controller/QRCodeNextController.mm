@@ -427,7 +427,7 @@ withFilterContext:(id)filterContext
                                 
                                 [[P2PClient sharedClient] getContactsStates:[NSArray arrayWithObject:contact.contactId]];
                                 [[P2PClient sharedClient] getDefenceState:contact.contactId password:contact.contactPassword];
-                                [Equipments sendAsyncAddEquitment:contact.contactName eqmType:@"1" eqmDid:contact.contactId eqmAccount:[[NSUserDefaults standardUserDefaults] objectForKey:[[BabyZoneConfig shared] UserPhoneKey]] eqmPwd:contact.contactPassword completionHandler:^(NSString * _Nullable errorCode, NSString * _Nullable msg) {
+                                [Equipments sendAsyncAddEquitment:contact.contactName eqmType:@"1" eqmDid:contact.contactId eqmAccount:[[NSUserDefaults standardUserDefaults] objectForKey:[[BabyZoneConfig shared] UserPhoneKey]] eqmPwd:contact.contactPassword eqmStatus:contact.onLineState  completionHandler:^(NSString * _Nullable errorCode, NSString * _Nullable msg) {
                                     if (errorCode && [errorCode isEqualToString:[[BabyZoneConfig shared] UserPhoneKey]]) {
                                         
                                     }

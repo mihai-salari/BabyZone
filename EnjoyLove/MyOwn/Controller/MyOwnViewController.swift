@@ -259,6 +259,12 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                     let addDevice = AddDeviceViewController()
                     self.navigationController?.pushViewController(addDevice, animated: true)
                 }
+            case 1:
+                if EquipmentsBL.findAll().count > 0 {
+                    let deleteDevice = DeviceListViewController()
+                    deleteDevice.isDelete = true
+                    self.navigationController?.pushViewController(deleteDevice, animated: true)
+                }
             default:
                 return
             }

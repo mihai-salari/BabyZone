@@ -11,10 +11,11 @@ import UIKit
 private let deviceListSwitchTag = 1000
 class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITableViewDataSource {
 
-    private var devicesListView:DeviceListView!
+    var isDelete:Bool = false
     private var deviceListTable:UITableView!
-    private var contacts:[Contact]!
-    private var selectedContact:Contact!
+//    private var contacts:[Contact]!
+    private var devices:[Equipments]!
+    private var selectedContact:Equipments!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -35,7 +36,11 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
 
         // Do any additional setup after loading the view.
         
-        self.contacts = self.contactData
+//        self.contacts = self.contactData
+        self.devices = []
+        if EquipmentsBL.findAll().count > 0 {
+            self.devices.appendContentsOf(EquipmentsBL.findAll())
+        }
         self.initialize()
     }
 
@@ -58,9 +63,9 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         self.deviceListTable.tableFooterView = UIView.init()
         self.deviceListTable.addPullToRefreshWithActionHandler { 
             var contactIds:[String] = []
-            for contact in self.contacts{
-                contactIds.append(contact.contactId)
-                P2PClient.sharedClient().checkDeviceUpdateWithId(contact.contactId, password: contact.contactPassword)
+            for contact in self.devices{
+                contactIds.append(contact.eqmDid)
+                P2PClient.sharedClient().checkDeviceUpdateWithId(contact.eqmDid, password: contact.eqmPwd)
             }
             P2PClient.sharedClient().getContactsStates(contactIds)
             FListManager.sharedFList().getDefenceStates()
@@ -68,18 +73,20 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         }
         backgroudView.addSubview(self.deviceListTable)
         
-        let addNewDevice = UIButton.init(frame: CGRect(x: 10, y: backgroudView.frame.height - 50, width: backgroudView.frame.width - 20, height: 40))
-        addNewDevice.layer.cornerRadius = addNewDevice.frame.height / 2 - 3
-        addNewDevice.layer.masksToBounds = true
-        addNewDevice.backgroundColor = UIColor.hexStringToColor("#bb5360")
-        addNewDevice.setTitle("添加新的设备", forState: .Normal)
-        addNewDevice.addTarget(self, action: #selector(self.addNewDeviceClick), forControlEvents: .TouchUpInside)
-        backgroudView.addSubview(addNewDevice)
+        if isDelete == false {
+            let addNewDevice = UIButton.init(frame: CGRect(x: 10, y: backgroudView.frame.height - 50, width: backgroudView.frame.width - 20, height: 40))
+            addNewDevice.layer.cornerRadius = addNewDevice.frame.height / 2 - 3
+            addNewDevice.layer.masksToBounds = true
+            addNewDevice.backgroundColor = UIColor.hexStringToColor("#bb5360")
+            addNewDevice.setTitle("添加新的设备", forState: .Normal)
+            addNewDevice.addTarget(self, action: #selector(self.addNewDeviceClick), forControlEvents: .TouchUpInside)
+            backgroudView.addSubview(addNewDevice)
+        }
         
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.contacts.count
+        return self.devices.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -95,11 +102,11 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
             resultCell.selectionStyle = .None
-            let contact = self.contacts[indexPath.row]
+            let device = self.devices[indexPath.row]
             resultCell.textLabel?.font = UIFont.systemFontOfSize(15)
-            resultCell.textLabel?.text = contact.contactName
+            resultCell.textLabel?.text = device.eqmName
             
-            let onSwitch = HMSwitch.init(frame: CGRect(x: resultCell.contentView.frame.width - 60 - 30, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
+            let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 60 - 10, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
             onSwitch.on = false
             onSwitch.onLabel.text = "连接"
             onSwitch.offLabel.text = "解除"
@@ -114,7 +121,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             onSwitch.addTarget(self, action: #selector(self.onSwichtOnOff(_:)), forControlEvents: .ValueChanged)
             resultCell.contentView.addSubview(onSwitch)
             
-            
+            let contact = EquipmentsBL.contactFromEquipment(device)
             if contact.onLineState == Int(STATE_ONLINE) && contact.contactType == Int(CONTACT_TYPE_DOORBELL) {
                 self.willBindUserIDByContactWithContactId(contact.contactId, contactPassword: contact.contactPassword)
             }
@@ -124,35 +131,73 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let cell = tableView.cellForRowAtIndexPath(indexPath) {
-            let contact = self.contacts[indexPath.row]
+            let contact = self.devices[indexPath.row]
             if let aView = cell.viewWithTag(deviceListSwitchTag + indexPath.row) as? HMSwitch{
                 if aView.on == true {
                     self.selectedContact = contact
                     let video = BabyVideoViewController()
-                    video.deviceContact = contact
+                    video.deviceContact = EquipmentsBL.contactFromEquipment(contact)
                     self.navigationController?.pushViewController(video, animated: true)
                 }
             }
         }
     }
     
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if isDelete == true {
+            return true
+        }
+        return false
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if isDelete == true {
+            dispatch_queue_create("removeDataQueue", nil).queue({ 
+                let device = self.devices[indexPath.row]
+                Equipments.sendAsyncDeleteEquipment(device.idEqmInfo, eqmUserName: device.eqmName, eqmUserPwd: device.eqmPwd, completionHandler: { [weak self](errorCode, msg) in
+                    if let weakSelf = self{
+                        if let err = errorCode{
+                            if err == BabyZoneConfig.shared.passCode{
+                                let contact = EquipmentsBL.contactFromEquipment(device)
+                                let loginResult = UDManager.getLoginInfo()
+                                let key = "KEY\(loginResult.contactId)_\(contact.contactId)"
+                                key.setDefaultsForFlag(false)
+                                FListManager.sharedFList().delete(contact)
+                                if let index = weakSelf.devices.indexOf(device) {
+                                    weakSelf.devices.removeAtIndex(index)
+                                }
+                                dispatch_get_main_queue().queue({
+                                    if let table = weakSelf.deviceListTable{
+                                        table.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                    }
+                                })
+                            }else{
+                                HUD.showText("删除失败\(msg!)", onView: weakSelf.view)
+                            }
+                        }else{
+                            HUD.showText("删除失败\(msg!)", onView: weakSelf.view)
+                        }
+                    }
+                })
+            })
+        }
+    }
+    /*
+     
+     */
     
     override func refreshContact() {
-        if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
-            self.contacts = contacts
-            if let table = self.deviceListTable {
-                table.reloadData()
-            }
+        self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
+        if let table = self.deviceListTable {
+            table.reloadData()
         }
     }
     
     override func stopAnimating() {
-        if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
-            self.contacts = contacts
-            if let table = self.deviceListTable {
-                table.pullToRefreshView.stopAnimating()
-                table.reloadData()
-            }
+        self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
+        if let table = self.deviceListTable {
+            table.pullToRefreshView.stopAnimating()
+            table.reloadData()
         }
     }
     
@@ -247,7 +292,32 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     }
     
     func onSwichtOnOff(on:HMSwitch) -> Void {
+        let index = on.tag - deviceListSwitchTag
+        let contact = self.devices[index]
+        var eqmId = ""
         
+        
+        if on.on == true {
+//            HUD.showHud("正在修改...", onView: self.view)
+//            Equipments.sendAsyncAddEquitment(contact.contactName, eqmType: "1", eqmDid: contact.contactId, eqmAccount: contact.contactId, eqmPwd: contact.contactPassword, eqmStatus: contact.onLineState == 0 ? false : true) { [weak self](errorCode, msg) in
+//                if let weakSelf = self{
+//                    HUD.hideHud(weakSelf.view)
+//                    if let err = errorCode{
+//                        if err == BabyZoneConfig.shared.passCode{
+//                            
+//                        }else{
+//                            HUD.showText("修改失败\(msg!)", onView: weakSelf.view)
+//                            on.on = !on.on
+//                        }
+//                    }else{
+//                        HUD.showText("修改失败\(msg!)", onView: weakSelf.view)
+//                        on.on = !on.on
+//                    }
+//                }
+//            }
+        }else{
+            
+        }
     }
     
     private func willBindUserIDByContactWithContactId(contactId: String, contactPassword:String){

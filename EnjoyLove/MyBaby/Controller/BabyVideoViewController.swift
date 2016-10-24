@@ -34,6 +34,7 @@ class BabyVideoViewController: BaseVideoViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.initialize()
         if self.deviceContact != nil {
             P2PClient.sharedClient().isBCalled = false
             P2PClient.sharedClient().callId = deviceContact.contactId
@@ -55,7 +56,6 @@ class BabyVideoViewController: BaseVideoViewController {
                 }
             }
             
-            self.initialize()
         }else{
             self.view.backgroundColor = UIColor.whiteColor()
             let label = UILabel.init(frame: self.view.bounds)
@@ -301,7 +301,9 @@ class BabyVideoViewController: BaseVideoViewController {
                         P2PClient.sharedClient().getDefenceState(P2PClient.sharedClient().callId, password: P2PClient.sharedClient().callPassword)
                         
                     case ACK_RET_SET_NPCSETTINGS_REMOTE_DEFENCE:
-                        break
+                        if result == 2 {
+                            
+                        }
                         
                     default:
                         break

@@ -149,6 +149,13 @@ class BabyVideoViewController: BaseVideoViewController {
         let babyModel = self.baby == nil ? Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0") : self.baby
         self.babyVideoView = BabyVideoView.init(frame: self.view.bounds, baby: babyModel, cancelCompletionHandler: { [weak self] in
             if let weakSelf = self{
+                if weakSelf.isReject == false{
+                    weakSelf.isReject = !weakSelf.isReject
+                    while weakSelf.isPlaying{
+                        usleep(50 * 1000)
+                    }
+                    P2PClient.sharedClient().p2pHungUp()
+                }
                 weakSelf.navigationController?.popViewControllerAnimated(true)
             }
         })
@@ -326,6 +333,7 @@ class BabyVideoViewController: BaseVideoViewController {
             self.isReject = false
             NSThread.detachNewThreadSelector(#selector(self.renderView), toTarget: self, withObject: nil)
         }
+        self.operationAfterRender()
     }
     
     func renderView() -> Void {
@@ -345,6 +353,20 @@ class BabyVideoViewController: BaseVideoViewController {
             usleep(10000)
         }
         self.isPlaying = false
+    }
+    
+    private func operationAfterRender(){
+        PAIOUnit.sharedUnit().muteAudio = false
+        PAIOUnit.sharedUnit().setSpeckState(true)
+        if AppDelegate.sharedDefault().isDoorBellAlarm == true {
+            PAIOUnit.sharedUnit().setSpeckState(false)
+        }else{
+            PAIOUnit.sharedUnit().setSpeckState(true)
+        }
+        
+        P2PClient.sharedClient().getDefenceState(P2PClient.sharedClient().callId, password: P2PClient.sharedClient().callPassword)
+        P2PClient.sharedClient().getNpcSettingsWithId(P2PClient.sharedClient().callId, password: P2PClient.sharedClient().callPassword)
+        
     }
     
     

@@ -60,6 +60,7 @@
 		2702105A1DB8679100D3BDBE /* LocationCityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210591DB8679100D3BDBE /* LocationCityViewController.swift */; };
 		270210611DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 2702105E1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m */; };
 		270210621DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 270210601DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m */; };
+		270210631DBE12C700D3BDBE /* BabyVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27830C1B1D9A19DA0036E2BC /* BabyVideoViewController.swift */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270F6F621D7DA61F000DFEA0 /* audioRecord.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F5F1D7DA61F000DFEA0 /* audioRecord.png */; };
 		270F6F631D7DA61F000DFEA0 /* musicPlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F601D7DA61F000DFEA0 /* musicPlay.png */; };
@@ -3396,6 +3397,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				270210631DBE12C700D3BDBE /* BabyVideoViewController.swift in Sources */,
 				27D002EE1D6D44D800B62A61 /* EnjoyLoveUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

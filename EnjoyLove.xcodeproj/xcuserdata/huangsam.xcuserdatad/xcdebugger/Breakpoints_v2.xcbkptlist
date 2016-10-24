@@ -52,12 +52,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/MyOwn/Controller/DeviceListViewController.swift"
-            timestampString = "498983536.227561"
+            timestampString = "499004681.744005"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "335"
-            endingLineNumber = "335"
-            landmarkName = "willBindUserIDByContactWithContactId(contactId:contactPassword:)"
+            startingLineNumber = "338"
+            endingLineNumber = "338"
+            landmarkName = "willBindUserIDByContactWithContactId(_:contactPassword:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

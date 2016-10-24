@@ -175,6 +175,9 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
                                     if let table = weakSelf.deviceListTable{
                                         table.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                                     }
+                                    if weakSelf.devices.count == 0{
+                                        weakSelf.navigationController?.popViewControllerAnimated(true)
+                                    }
                                 })
                             }else{
                                 HUD.showText("删除失败\(msg!)", onView: weakSelf.view)

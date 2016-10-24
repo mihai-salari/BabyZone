@@ -47,7 +47,7 @@ struct Permission {
 
 struct AddChildAccount {
     var title = ""
-    var detail:[ChildEquipments]!
+    var detail:[Equipments]!
 }
 
 //struct AccountDetail {

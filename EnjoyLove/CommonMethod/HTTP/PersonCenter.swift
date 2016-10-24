@@ -529,7 +529,7 @@ extension Equipments {
 
      */
     class func sendAsyncModifyEquipment(idEqmInfo:String, eqmName:String, eqmType:String, eqmDid:String, eqmAccountName:String, eqmPwd:String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(AddEquipmentUrl, parameters: ["idEqmInfo": idEqmInfo, "eqmName":eqmName,"eqmType":eqmType,"eqmDid":eqmDid,"eqmAccountName":eqmAccountName,"eqmPwd":eqmPwd], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(UpdateEquitmentUrl, parameters: ["idEqmInfo": idEqmInfo, "eqmName":eqmName,"eqmType":eqmType,"eqmDid":eqmDid,"eqmAccountName":eqmAccountName,"eqmPwd":eqmPwd], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
@@ -561,7 +561,7 @@ extension Equipments {
 
      */
     class func sendAsyncDeleteEquipment(idEqmInfo:String, eqmUserName:String, eqmUserPwd:String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(AddEquipmentUrl, parameters: ["idEqmInfo": idEqmInfo, "eqmUserName":eqmUserName,"eqmUserPwd":eqmUserPwd], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(DeleteEquipmentUrl, parameters: ["idEqmInfo": idEqmInfo, "eqmAccount":eqmUserName,"eqmPwd":eqmUserPwd], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])

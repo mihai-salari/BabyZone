@@ -168,7 +168,7 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
 }
 
-
+private let AddChildAccoutSwitchTag = 1000
 class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     private var addAccountData:[AddChildAccount]!
@@ -177,60 +177,37 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var phone = ""
     private var name = ""
     private var idUserChildInfo = ""
-    private var selectionHandler:((indexPath:NSIndexPath, model:ChildEquipments)->())?
+    private var selectionHandler:((indexPath:NSIndexPath, model:Equipments)->())?
     
-    init(frame: CGRect, selectHandler:((indexPath:NSIndexPath, model:ChildEquipments)->())?) {
+    init(frame: CGRect, selectHandler:((indexPath:NSIndexPath, model:Equipments)->())?) {
         super.init(frame: frame)
         
         self.addAccountData = []
-        var detail:[ChildEquipments] = []
-        var subModel = ChildEquipments()
+        var detail:[Equipments] = []
+        var subModel = Equipments()
         subModel.eqmName = "手机号"
-        subModel.eqmSubItem = "输入手机号"
+        subModel.eqmAccount = "输入手机号"
         detail.append(subModel)
         
-        subModel = ChildEquipments()
+        subModel = Equipments()
         subModel.eqmName = "名字"
-        subModel.eqmSubItem = "更名"
+        subModel.eqmAccount = "更名"
         detail.append(subModel)
         
         var mainModel = AddChildAccount(title: "子账号设置", detail: detail)
         self.addAccountData.append(mainModel)
-        /*
-        var detail:[ChildEquipments] = []
-        subModel = ChildEquipments()
-        subModel.eqmName = "设备1"
-        subModel.eqmStatus = "0"
-        subModel.idEqmInfo = "1"
-        detail.append(subModel)
         
-        subModel = ChildEquipments()
-        subModel.eqmName = "设备2"
-        subModel.eqmStatus = "0"
-        subModel.idEqmInfo = "2"
-        detail.append(subModel)
-        
-        mainModel = AddChildAccount(title: "设备权限", detail: detail)
-        self.addAccountData.append(mainModel)
-        */
-        /*
         detail = []
         if EquipmentsBL.findAll().count > 0 {
-            for eqm in EquipmentsBL.findAll() {
-                let childEqm = ChildEquipments()
-                childEqm.eqmName = eqm.eqmName
-                childEqm.idEqmInfo = eqm.idEqmInfo
-                childEqm.eqmStatus = "0"
-                detail.append(childEqm)
-            }
+            detail.appendContentsOf(EquipmentsBL.findAll())
         }else{
-            let eqm = ChildEquipments()
+            let eqm = Equipments()
             eqm.eqmName = "您未绑定设备"
             detail.append(eqm)
         }
         mainModel = AddChildAccount(title: "设备权限", detail: detail)
         self.addAccountData.append(mainModel)
- */
+
         
         self.addAccountTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: ScreenHeight - navigationBarHeight), style: .Plain)
         self.addAccountTable.backgroundColor = UIColor.whiteColor()
@@ -276,12 +253,12 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             let modelData = self.addAccountData[indexPath.section].detail[indexPath.row]
             resultCell.textLabel?.text = modelData.eqmName
             if indexPath.section == 0 {
-                resultCell.detailTextLabel?.text = modelData.eqmSubItem
+                resultCell.detailTextLabel?.text = modelData.eqmAccount
             }
             
             if indexPath.section == 1 {
-                let onSwitch = HMSwitch.init(frame: CGRect(x: resultCell.contentView.frame.width - 50, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
-                onSwitch.on = modelData.eqmStatus == "0" ? false : true
+                let onSwitch = HMSwitch.init(frame: CGRect(x: self.frame.width - 90, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
+                onSwitch.on = false
                 onSwitch.onLabel.text = "打开"
                 onSwitch.offLabel.text = "关闭"
                 onSwitch.onLabel.textColor = UIColor.whiteColor()
@@ -291,7 +268,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
                 onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
                 onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
                 onSwitch.inactiveColor = UIColor.lightGrayColor()
-                onSwitch.tag = indexPath.row
+                onSwitch.tag = indexPath.row + AddChildAccoutSwitchTag
                 onSwitch.addTarget(self, action: #selector(self.equipmentOnOff(_:)), forControlEvents: .ValueChanged)
                 resultCell.contentView.addSubview(onSwitch)
             }
@@ -320,7 +297,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         if let handle = self.selectionHandler {
             if let modelData = self.addAccountData[indexPath.section].detail {
                 if modelData.count > 0 {
-                    handle(indexPath: indexPath, model: self.addAccountData[indexPath.section].detail[indexPath.row])
+                    handle(indexPath: indexPath, model: modelData[indexPath.row])
                 }
             }
         }
@@ -328,10 +305,15 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     
     func equipmentOnOff(onSwicth:HMSwitch) -> Void {
-        
+        if self.idUserChildInfo == "" {
+            HUD.showText("请先添加子账号", onView: self)
+            return
+        }
         if self.addAccountData.count > 1 {
-            let detail = self.addAccountData[1].detail[onSwicth.tag]
-//            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(<#T##idUserChildInfo: String##String#>, idEqmInfo: <#T##String#>, eqmStatus: <#T##String#>, completionHandler: <#T##((errorCode: String?, msg: String?) -> ())?##((errorCode: String?, msg: String?) -> ())?##(errorCode: String?, msg: String?) -> ()#>)
+            let detail = self.addAccountData[1].detail[onSwicth.tag - AddChildAccoutSwitchTag]
+            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(self.idUserChildInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: "\(detail.eqmStatus)", completionHandler: { (errorCode, msg) in
+                
+            })
         }
     }
     
@@ -376,8 +358,8 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
                 if let err = errorCode {
                     if err == BabyZoneConfig.shared.passCode{
                         dispatch_queue_create("refreshDataQeueu", nil).queue({ 
-                            weakSelf.refreshData()
-                            dispatch_get_main_queue().queue({ 
+//                            weakSelf.refreshData()
+                            dispatch_get_main_queue().queue({
                                 if let table = weakSelf.addAccountTable{
                                     table.reloadData()
                                 }
@@ -396,24 +378,6 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         }
     }
     
-    
-    private func refreshData() ->Void{
-        var detail:[ChildEquipments] = []
-        var subModel = ChildEquipments()
-        subModel.eqmName = "设备1"
-        subModel.eqmStatus = "0"
-        subModel.idEqmInfo = "1"
-        detail.append(subModel)
-        
-        subModel = ChildEquipments()
-        subModel.eqmName = "设备2"
-        subModel.eqmStatus = "0"
-        subModel.idEqmInfo = "2"
-        detail.append(subModel)
-        
-        let mainModel = AddChildAccount(title: "设备权限", detail: detail)
-        self.addAccountData.append(mainModel)
-    }
 }
 
 

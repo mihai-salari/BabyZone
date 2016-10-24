@@ -263,7 +263,12 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(BabySettingTableViewCellId)
+        let cellId = "SettingTableViewCellId"
+        var cell = tableView.dequeueReusableCellWithIdentifier(cellId)
+        if cell == nil {
+            cell = UITableViewCell.init(style: UITableViewCellStyle.Value1, reuseIdentifier: cellId)
+        }
+        
         if let resultCell = cell {
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
@@ -277,11 +282,12 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             for subview in resultCell.contentView.subviews {
                 subview.removeFromSuperview()
             }
+            
             let model = self.settingData[indexPath.section].setting[indexPath.row]
             resultCell.textLabel?.text = model.mainItem
             resultCell.textLabel?.font = UIFont.systemFontOfSize(14)
             
-            if model.subItem == "0" || model.subItem == "1"{
+            if model.subItem == "0" || model.subItem == "1" {
                 let onSwitch = HMSwitch.init(frame: CGRectMake(resultCell.contentView.frame.width - 80, (CGRectGetHeight(resultCell.contentView.frame) - resultCell.contentView.frame.height * (2 / 3)) / 2, 70, resultCell.contentView.frame.height * (2 / 3)))
                 onSwitch.onLabel.textColor = UIColor.whiteColor()
                 onSwitch.offLabel.textColor = UIColor.whiteColor()
@@ -314,13 +320,10 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             }
             
             if model.subItem != "0" && model.subItem != "1" {
-                let subItemLabel = UILabel.init(frame: CGRectMake(resultCell.contentView.frame.width - resultCell.contentView.frame.width / 2, 0, resultCell.contentView.frame.width / 2, resultCell.contentView.frame.height))
-                subItemLabel.text = model.subItem
-                subItemLabel.font = UIFont.boldSystemFontOfSize(10)
-                subItemLabel.textAlignment = .Right
-                subItemLabel.textColor = UIColor.lightGrayColor()
-                resultCell.contentView.addSubview(subItemLabel)
+                resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(12)
+                resultCell.detailTextLabel?.text =  model.subItem
             }
+            
         }
         return cell!
     }

@@ -34,7 +34,7 @@ class AddChildAccountViewController: BaseViewController {
         self.addAccountView = AddChildAccountView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - navigationBarHeight), selectHandler: { [weak self](indexPath, model) in
             if let weakSelf = self{
                 let permission = ChildPermissionViewController()
-                permission.detail = model
+                permission.equipment = model
                 permission.indexPath = indexPath
                 permission.changeResultHandler = { [weak self] (indexPath, result1, result2) in
                     if let weakSelf = self{

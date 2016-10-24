@@ -34,6 +34,7 @@ class BabyVideoViewController: BaseVideoViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
         self.initialize()
         if self.deviceContact != nil {
             P2PClient.sharedClient().isBCalled = false
@@ -55,7 +56,6 @@ class BabyVideoViewController: BaseVideoViewController {
                     P2PClient.sharedClient().p2pCallWithId("1", password: callPassword, callType: type)
                 }
             }
-            
         }else{
             self.view.backgroundColor = UIColor.whiteColor()
             let label = UILabel.init(frame: self.view.bounds)
@@ -69,7 +69,6 @@ class BabyVideoViewController: BaseVideoViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
         
     }
     
@@ -99,7 +98,6 @@ class BabyVideoViewController: BaseVideoViewController {
                     p2p.sendCustomCmdWithId(contactId, password: contactPassword, cmd: "IPC1anerfa:connect")
                 }
             }
-            
             AppDelegate.sharedDefault().monitoredContactId = contact.contactId
             AppDelegate.sharedDefault().isMonitoring = true
         }
@@ -141,7 +139,6 @@ class BabyVideoViewController: BaseVideoViewController {
     }
 
     
-
     private func initialize(){
         
         UIApplication.sharedApplication().idleTimerDisabled = true
@@ -332,8 +329,9 @@ class BabyVideoViewController: BaseVideoViewController {
             }
             self.isReject = false
             NSThread.detachNewThreadSelector(#selector(self.renderView), toTarget: self, withObject: nil)
+            self.operationAfterRender()
         }
-        self.operationAfterRender()
+        
     }
     
     func renderView() -> Void {

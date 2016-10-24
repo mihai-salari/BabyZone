@@ -179,6 +179,16 @@ extension String{
         }
         return String()
     }
+    
+    func setDefaultsForFlag(flag:Bool) -> Void {
+        NSUserDefaults.standardUserDefaults().setBool(flag, forKey: self)
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    func defaultsForFlag() -> Bool {
+        return NSUserDefaults.standardUserDefaults().boolForKey(self)
+    }
+    
 }
 
 
@@ -827,6 +837,12 @@ extension UIViewController{
             }
             
         }
+    }
+}
+
+extension Bool{
+    func setUserDefaults(key:String) -> Void {
+        
     }
 }
 

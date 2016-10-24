@@ -216,7 +216,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let modelData = self.childList[indexPath.section].detail {
             if modelData.count > 0 {
-                if (indexPath.section == 0 && indexPath.row == 0) || (indexPath.section == 1 && modelData[indexPath.row].eqmStatus != "-1"){
+                if (indexPath.section == 0 && indexPath.row == 0) || (indexPath.section == 1 && modelData[indexPath.row].eqmStatus == "1"){
                     let model = modelData[indexPath.row]
                     let permission = ChildPermissionViewController()
                     permission.changeResultHandler = { [weak self](indexPath, result1, result2) in

@@ -260,17 +260,12 @@ class DeviceListView: UIView,UITableViewDelegate,UITableViewDataSource {
         
         self.onOffData = [:]
         
-        var tableViewHeight = self.listData == nil ? 0 : CGFloat(self.listData.count) * self.listTableViewRowHeight
-        if tableViewHeight > self.frame.height - 60 {
-            tableViewHeight = self.frame.height - 60
-        }
-        self.listTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: tableViewHeight), style: .Plain)
+        self.listTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height - 60), style: .Plain)
         self.listTable.rowHeight = self.listTableViewRowHeight
         self.listTable.dataSource = self
         self.listTable.delegate = self
         self.listTable.separatorInset = UIEdgeInsetsZero
         self.listTable.layoutMargins = UIEdgeInsetsZero
-        self.listTable.registerClass(DevicesListCell.self, forCellReuseIdentifier: NSStringFromClass(DevicesListCell))
         self.addSubview(self.listTable)
         
         self.addNewDevice = UIButton.init(frame: CGRect(x: 10, y: self.frame.height - 60, width: self.frame.width - 20, height: 35))
@@ -295,6 +290,21 @@ class DeviceListView: UIView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//        let cellId = "deviceListTableViewCellId"
+//        var cell = tableView.dequeueReusableCellWithIdentifier(cellId)
+//        if cell == nil {
+//            cell = UITableViewCell.init(style: .Default, reuseIdentifier: cellId)
+//        }
+//        if let resultCell = cell {
+//            for subview in resultCell.contentView.subviews {
+//                subview.removeFromSuperview()
+//            }
+//            resultCell.separatorInset = UIEdgeInsetsZero
+//            resultCell.layoutMargins = UIEdgeInsetsZero
+//            resultCell.selectionStyle = .None
+//            
+//        }
+        
         let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(DevicesListCell)) as? DevicesListCell
         if let resultCell = cell {
             let contact = self.listData[indexPath.row]

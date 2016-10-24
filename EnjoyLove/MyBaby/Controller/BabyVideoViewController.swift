@@ -10,7 +10,7 @@ import UIKit
 
 let BabyCancelClickNotification = "BabyCancelClickNotification"
 
-class BabyVideoViewController: BaseViewController {
+class BabyVideoViewController: BaseVideoViewController {
 
     var deviceContact:Contact!
     var baby:Baby!
@@ -239,7 +239,7 @@ class BabyVideoViewController: BaseViewController {
         
     }
     
-    func receiveRemoteMessage(note:NSNotification) -> Void {
+    override func receiveRemoteMessage(note:NSNotification) -> Void {
         if let userInfo = note.userInfo {
             if let keyValue = userInfo["key"] as? String {
                 if let key = Int32(keyValue) {
@@ -268,7 +268,7 @@ class BabyVideoViewController: BaseViewController {
         }
     }
     
-    func ack_receiveRemoteMessage(note:NSNotification) -> Void {
+    override func ack_receiveRemoteMessage(note:NSNotification) -> Void {
         if let userInfo = note.userInfo {
             if let keyValue = userInfo["key"] as? String, let resultValue  = userInfo["result"] as? String {
                 if let key = Int32(keyValue), let result = Int32(resultValue) {

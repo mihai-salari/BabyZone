@@ -196,8 +196,8 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         
         var mainModel = AddChildAccount(title: "子账号设置", detail: detail)
         self.addAccountData.append(mainModel)
-        
-        detail = []
+        /*
+        var detail:[ChildEquipments] = []
         subModel = ChildEquipments()
         subModel.eqmName = "设备1"
         subModel.eqmStatus = "0"
@@ -212,7 +212,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         
         mainModel = AddChildAccount(title: "设备权限", detail: detail)
         self.addAccountData.append(mainModel)
-        
+        */
         /*
         detail = []
         if EquipmentsBL.findAll().count > 0 {
@@ -328,9 +328,10 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     
     func equipmentOnOff(onSwicth:HMSwitch) -> Void {
+        
         if self.addAccountData.count > 1 {
             let detail = self.addAccountData[1].detail[onSwicth.tag]
-            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(<#T##idUserChildInfo: String##String#>, idEqmInfo: <#T##String#>, eqmStatus: <#T##String#>, completionHandler: <#T##((errorCode: String?, msg: String?) -> ())?##((errorCode: String?, msg: String?) -> ())?##(errorCode: String?, msg: String?) -> ()#>)
+//            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(<#T##idUserChildInfo: String##String#>, idEqmInfo: <#T##String#>, eqmStatus: <#T##String#>, completionHandler: <#T##((errorCode: String?, msg: String?) -> ())?##((errorCode: String?, msg: String?) -> ())?##(errorCode: String?, msg: String?) -> ()#>)
         }
     }
     
@@ -374,6 +375,14 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
                 HUD.hideHud(weakSelf)
                 if let err = errorCode {
                     if err == BabyZoneConfig.shared.passCode{
+                        dispatch_queue_create("refreshDataQeueu", nil).queue({ 
+                            weakSelf.refreshData()
+                            dispatch_get_main_queue().queue({ 
+                                if let table = weakSelf.addAccountTable{
+                                    table.reloadData()
+                                }
+                            })
+                        })
                         if let handle = completionHandler{
                             handle()
                         }
@@ -387,6 +396,24 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         }
     }
     
+    
+    private func refreshData() ->Void{
+        var detail:[ChildEquipments] = []
+        var subModel = ChildEquipments()
+        subModel.eqmName = "设备1"
+        subModel.eqmStatus = "0"
+        subModel.idEqmInfo = "1"
+        detail.append(subModel)
+        
+        subModel = ChildEquipments()
+        subModel.eqmName = "设备2"
+        subModel.eqmStatus = "0"
+        subModel.idEqmInfo = "2"
+        detail.append(subModel)
+        
+        let mainModel = AddChildAccount(title: "设备权限", detail: detail)
+        self.addAccountData.append(mainModel)
+    }
 }
 
 

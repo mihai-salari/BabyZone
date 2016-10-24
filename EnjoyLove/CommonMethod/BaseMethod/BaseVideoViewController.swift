@@ -10,8 +10,9 @@ import UIKit
 
 class BaseVideoViewController: BaseViewController,P2PClientDelegate {
 
-    var contactsData:[Contact]!
     private var isInitPull:Bool = false
+    var contactData:[Contact]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -31,23 +32,25 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
         
         P2PClient.sharedClient().delegate = self
         
-        self.contactsData = []
+        self.contactData = []
         if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
             for contact in contacts  {
                 contact.isGettingOnLineState = true
             }
-            self.contactsData.appendContentsOf(contacts)
+            self.contactData.appendContentsOf(contacts)
         }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: NET_WORK_CHANGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: "updateContactState", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: "refreshMessage", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: "refreshLocalDevices", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: ACK_RECEIVE_REMOTE_MESSAGE, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.stopAnimating), name: "updateContactState", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshContact), name: "refreshMessage", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshLocalDevices), name: "refreshLocalDevices", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.receiveRemoteMessage(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.ack_receiveRemoteMessage(_:)), name: ACK_RECEIVE_REMOTE_MESSAGE, object: nil)
+        
+        
         
         if self.isInitPull == false {
             GlobalThread.sharedThread(false).start()
@@ -74,6 +77,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     
     func P2PClientReady(info: [NSObject : AnyObject]!) {
         print("Ready info \(info)")
+        P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_READY_P2P
     }
     
     func P2PClientAccept(info: [NSObject : AnyObject]!) {
@@ -88,6 +92,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     //MARK:___通知___
     
     func onNetWorkChange(note:NSNotification) -> Void {
+        /*
         if let parameter = note.userInfo {
             if let statusStr = parameter["status"] as? String {
                 if let status = Int(statusStr) {
@@ -103,27 +108,33 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
                 }
             }
         }
+        */
     }
     
-    func stopAnimating(note:NSNotification) -> Void {
+    func stopAnimating() -> Void {
         
     }
     
-    func refreshContact(note:NSNotification) -> Void {
+    func refreshContact() -> Void {
         
     }
     
-    func refreshLocalDevices(note:NSNotification) -> Void {
+    func refreshLocalDevices() -> Void {
         
     }
     
     func receiveRemoteMessage(note:NSNotification) -> Void {
+        /*
         if let parameter = note.userInfo {
             if let keyStr = parameter["key"] as? String{
                 if let key = Int32(keyStr) {
                     switch key {
                     case RET_DO_DEVICE_UPDATE:
-                        break
+                        if let resultStr = parameter["result"] as? String, let valueStr = parameter["value"] as? String {
+                            if let result = Int(resultStr), let value = Int(valueStr) {
+                                <#code#>
+                            }
+                        }
                     case RET_CHECK_DEVICE_UPDATE:
                         break
                     case RET_GET_BIND_ACCOUNT:
@@ -136,9 +147,11 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
                 }
             }
         }
+         */
     }
     
     func ack_receiveRemoteMessage(note:NSNotification) -> Void {
+        /*
         if let parameter = note.userInfo {
             if let keyStr = parameter["key"] as? String, let resultStr = parameter["result"] as? String{
                 if let key = Int32(keyStr), let result = Int32(resultStr) {
@@ -160,6 +173,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
                 }
             }
         }
+        */
     }
     
     

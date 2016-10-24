@@ -58,6 +58,8 @@
 		270210531DB732D000D3BDBE /* ZZXCity.db in Resources */ = {isa = PBXBuildFile; fileRef = 270210521DB732D000D3BDBE /* ZZXCity.db */; };
 		270210581DB765B300D3BDBE /* BaseVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210571DB765B300D3BDBE /* BaseVideoViewController.swift */; };
 		2702105A1DB8679100D3BDBE /* LocationCityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210591DB8679100D3BDBE /* LocationCityViewController.swift */; };
+		270210611DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 2702105E1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m */; };
+		270210621DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 270210601DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270F6F621D7DA61F000DFEA0 /* audioRecord.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F5F1D7DA61F000DFEA0 /* audioRecord.png */; };
 		270F6F631D7DA61F000DFEA0 /* musicPlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F601D7DA61F000DFEA0 /* musicPlay.png */; };
@@ -591,6 +593,11 @@
 		270210521DB732D000D3BDBE /* ZZXCity.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = ZZXCity.db; sourceTree = "<group>"; };
 		270210571DB765B300D3BDBE /* BaseVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVideoViewController.swift; sourceTree = "<group>"; };
 		270210591DB8679100D3BDBE /* LocationCityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationCityViewController.swift; sourceTree = "<group>"; };
+		2702105C1DBD9CF300D3BDBE /* SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPullToRefresh.h; sourceTree = "<group>"; };
+		2702105D1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVInfiniteScrolling.h"; sourceTree = "<group>"; };
+		2702105E1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVInfiniteScrolling.m"; sourceTree = "<group>"; };
+		2702105F1DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SVPullToRefresh.h"; sourceTree = "<group>"; };
+		270210601DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SVPullToRefresh.m"; sourceTree = "<group>"; };
 		270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ProblemDetail.html; sourceTree = "<group>"; };
 		270F6F5F1D7DA61F000DFEA0 /* audioRecord.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioRecord.png; sourceTree = "<group>"; };
 		270F6F601D7DA61F000DFEA0 /* musicPlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = musicPlay.png; sourceTree = "<group>"; };
@@ -1433,6 +1440,18 @@
 				27020FD31DB21D0E00D3BDBE /* BabyZoneConfig.swift */,
 			);
 			path = Config;
+			sourceTree = "<group>";
+		};
+		2702105B1DBD9CF300D3BDBE /* SVPullToRefresh */ = {
+			isa = PBXGroup;
+			children = (
+				2702105C1DBD9CF300D3BDBE /* SVPullToRefresh.h */,
+				2702105D1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.h */,
+				2702105E1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m */,
+				2702105F1DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.h */,
+				270210601DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m */,
+			);
+			path = SVPullToRefresh;
 			sourceTree = "<group>";
 		};
 		271475201D74007A003CFC5F /* InfoImage */ = {
@@ -2531,6 +2550,7 @@
 				27188DDD1D863A3400797D41 /* DXPhotoPicker */,
 				275C04C31D8270EB00A52ABC /* DateSources */,
 				275C04441D8105B000A52ABC /* MJRefresh */,
+				2702105B1DBD9CF300D3BDBE /* SVPullToRefresh */,
 				2753E6E51D7B9B3200FDB8D0 /* XMLDictionary */,
 				2753E6B21D7B93D300FDB8D0 /* AFNetwork */,
 				2753E6AF1D7B92EF00FDB8D0 /* HTTP */,
@@ -3245,6 +3265,7 @@
 				27F410CD1D8C071400722051 /* PickerSubView.m in Sources */,
 				27F47C1C1D96CD9B00502AEE /* HMSortString.m in Sources */,
 				2753E6DF1D7B93D300FDB8D0 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
+				270210621DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m in Sources */,
 				2753E6E41D7B93D300FDB8D0 /* UIWebView+AFNetworking.m in Sources */,
 				275BF5031DB9CDF100DD9BB3 /* DiaryRecordViewController.swift in Sources */,
 				27188E021D863A3500797D41 /* DXAssetCell.swift in Sources */,
@@ -3335,6 +3356,7 @@
 				27020F901DB085AE00D3BDBE /* QNGetAddrInfo.m in Sources */,
 				27020FA11DB085AE00D3BDBE /* QNConfiguration.m in Sources */,
 				27F47C121D96B2F400502AEE /* PinyinFormatter.m in Sources */,
+				270210611DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m in Sources */,
 				275C034E1D7F9C3000A52ABC /* DiaryRecordView.swift in Sources */,
 				27F410601D8B861500722051 /* LoginViewController.swift in Sources */,
 				2753E6D91D7B93D300FDB8D0 /* AFURLRequestSerialization.m in Sources */,

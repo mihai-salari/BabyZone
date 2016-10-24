@@ -39,6 +39,7 @@
 #import "NetManager.h"
 #import "UDManager.h"
 #import "FListManager.h"
+#import "ContactDAO.h"
 #import "P2PClient.h"
 #import "GlobalThread.h"
 #import "P2PCInterface.h"
@@ -47,3 +48,4 @@
 #import "QiNiuExtensionToken.h"
 #import "FMDatabase.h"
 #import "CountryCode.h"
+#import "SVPullToRefresh.h"

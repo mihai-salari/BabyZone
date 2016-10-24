@@ -78,6 +78,9 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     func P2PClientReady(info: [NSObject : AnyObject]!) {
         print("Ready info \(info)")
         P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_READY_P2P
+        if P2PClient.sharedClient().p2pCallType == P2PCALL_TYPE_MONITOR {
+            NSNotificationCenter.defaultCenter().postNotificationName(MONITOR_START_RENDER_MESSAGE, object: nil)
+        }
     }
     
     func P2PClientAccept(info: [NSObject : AnyObject]!) {
@@ -92,23 +95,6 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     //MARK:___通知___
     
     func onNetWorkChange(note:NSNotification) -> Void {
-        /*
-        if let parameter = note.userInfo {
-            if let statusStr = parameter["status"] as? String {
-                if let status = Int(statusStr) {
-                    if NetworkStatus.init(status) == NotReachable {
-                        
-                    }else{
-                        var contactIds:[String] = []
-                        for contact in self.contactsData {
-                            contactIds.append(contact.contactId)
-                        }
-                        P2PClient.sharedClient().getContactsStates(contactIds)
-                    }
-                }
-            }
-        }
-        */
     }
     
     func stopAnimating() -> Void {
@@ -124,56 +110,9 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     }
     
     func receiveRemoteMessage(note:NSNotification) -> Void {
-        /*
-        if let parameter = note.userInfo {
-            if let keyStr = parameter["key"] as? String{
-                if let key = Int32(keyStr) {
-                    switch key {
-                    case RET_DO_DEVICE_UPDATE:
-                        if let resultStr = parameter["result"] as? String, let valueStr = parameter["value"] as? String {
-                            if let result = Int(resultStr), let value = Int(valueStr) {
-                                <#code#>
-                            }
-                        }
-                    case RET_CHECK_DEVICE_UPDATE:
-                        break
-                    case RET_GET_BIND_ACCOUNT:
-                        break
-                    case RET_SET_BIND_ACCOUNT:
-                        break
-                    default:
-                        break
-                    }
-                }
-            }
-        }
-         */
     }
     
     func ack_receiveRemoteMessage(note:NSNotification) -> Void {
-        /*
-        if let parameter = note.userInfo {
-            if let keyStr = parameter["key"] as? String, let resultStr = parameter["result"] as? String{
-                if let key = Int32(keyStr), let result = Int32(resultStr) {
-                    if key != ACK_RET_GET_NPC_SETTINGS {
-                        return
-                    }
-                    switch result {
-                    case 0:
-                        break
-                    case 1:
-                        break
-                    case 2:
-                        break
-                    case 4:
-                        break
-                    default:
-                        break
-                    }
-                }
-            }
-        }
-        */
     }
     
     

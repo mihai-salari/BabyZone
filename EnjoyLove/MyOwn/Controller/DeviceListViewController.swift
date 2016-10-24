@@ -107,7 +107,6 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             resultCell.textLabel?.text = device.eqmName
             
             let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 60 - 10, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
-            onSwitch.on = false
             onSwitch.onLabel.text = "连接"
             onSwitch.offLabel.text = "解除"
             onSwitch.onLabel.textColor = UIColor.whiteColor()
@@ -122,6 +121,12 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             resultCell.contentView.addSubview(onSwitch)
             
             let contact = EquipmentsBL.contactFromEquipment(device)
+            if isDelete == true {
+                onSwitch.userInteractionEnabled = false
+                onSwitch.on = false
+            }else{
+                onSwitch.on = contact.onLineState == 0 ? false : true
+            }
             if contact.onLineState == Int(STATE_ONLINE) && contact.contactType == Int(CONTACT_TYPE_DOORBELL) {
                 self.willBindUserIDByContactWithContactId(contact.contactId, contactPassword: contact.contactPassword)
             }

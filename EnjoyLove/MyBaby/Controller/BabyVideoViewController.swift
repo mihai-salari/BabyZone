@@ -101,9 +101,7 @@ class BabyVideoViewController: BaseVideoViewController {
             }
             
             AppDelegate.sharedDefault().monitoredContactId = contact.contactId
-            if AppDelegate.sharedDefault().isMonitoring {
-                AppDelegate.sharedDefault().isMonitoring = true
-            }
+            AppDelegate.sharedDefault().isMonitoring = true
         }
     }
     
@@ -133,9 +131,7 @@ class BabyVideoViewController: BaseVideoViewController {
         }
         
         AppDelegate.sharedDefault().monitoredContactId = nil
-        if AppDelegate.sharedDefault().isMonitoring {
-            AppDelegate.sharedDefault().isMonitoring = false
-        }
+        AppDelegate.sharedDefault().isMonitoring = false
         NSNotificationCenter.defaultCenter().removeObserver(self)
         UIApplication.sharedApplication().idleTimerDisabled = false
     }
@@ -298,13 +294,13 @@ class BabyVideoViewController: BaseVideoViewController {
                                 
                             }
                         })
-                    case RET_SET_LIGHT_SWITCH_STATE:
+                    case ACK_RET_GET_DEFENCE_STATE:
                         break
                     case RET_DEVICE_NOT_SUPPORT:
-                        break
-                    case RET_GET_NPCSETTINGS_REMOTE_DEFENCE:
-                        break
-                    case RET_SET_NPCSETTINGS_REMOTE_DEFENCE:
+                        
+                        P2PClient.sharedClient().getDefenceState(P2PClient.sharedClient().callId, password: P2PClient.sharedClient().callPassword)
+                        
+                    case ACK_RET_SET_NPCSETTINGS_REMOTE_DEFENCE:
                         break
                         
                     default:

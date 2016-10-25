@@ -89,12 +89,14 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     
     func P2PClientReject(info: [NSObject : AnyObject]!) {
         print("reject info \(info)")
+        
     }
 
     
     //MARK:___通知___
     
     func onNetWorkChange(note:NSNotification) -> Void {
+        
     }
     
     func stopAnimating() -> Void {

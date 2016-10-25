@@ -180,6 +180,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var phone = ""
     private var name = ""
     private var idUserChildInfo = ""
+    private var idUserChildEqmInfo = ""
     private var selectionHandler:((indexPath:NSIndexPath, model:Equipments)->())?
     
     init(frame: CGRect, selectHandler:((indexPath:NSIndexPath, model:Equipments)->())?) {
@@ -199,18 +200,6 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         
         let mainModel = AddChildAccount(title: "子账号设置", detail: detail)
         self.addAccountData.append(mainModel)
-        /*
-        detail = []
-        if EquipmentsBL.findAll().count > 0 {
-            detail.appendContentsOf(EquipmentsBL.findAll())
-        }else{
-            let eqm = Equipments()
-            eqm.eqmName = "您未绑定设备"
-            detail.append(eqm)
-        }
-        mainModel = AddChildAccount(title: "设备权限", detail: detail)
-        self.addAccountData.append(mainModel)
- */
         
         self.addAccountTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: ScreenHeight - navigationBarHeight), style: .Plain)
         self.addAccountTable.backgroundColor = UIColor.whiteColor()
@@ -260,6 +249,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             case 0:
                 resultCell.detailTextLabel?.text = modelData.eqmAccount
             case 1:
+                resultCell.detailTextLabel?.text = nil
                 if EquipmentsBL.findAll().count > 0 {
                     let onSwitch = HMSwitch.init(frame: CGRect(x: self.frame.width - 90, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
                     onSwitch.on = false
@@ -276,7 +266,6 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
                     onSwitch.addTarget(self, action: #selector(self.equipmentOnOff(_:)), forControlEvents: .ValueChanged)
                     resultCell.contentView.addSubview(onSwitch)
                 }else{
-                    resultCell.detailTextLabel?.text = nil
                     resultCell.accessoryType = .None
                 }
             default:
@@ -303,6 +292,15 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 1, let cell = tableView.cellForRowAtIndexPath(indexPath) {
+            if let onSwitch = cell.viewWithTag(indexPath.row + AddChildAccoutSwitchTag) as? HMSwitch {
+                if onSwitch.on == false {
+                    HUD.showText("请先打开，绑定账号", onView: self)
+                    return
+                }
+            }
+            
+        }
         if let handle = self.selectionHandler {
             if let modelData = self.addAccountData[indexPath.section].detail {
                 if modelData.count > 0 {
@@ -320,8 +318,20 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         }
         if self.addAccountData.count > 1 {
             let detail = self.addAccountData[1].detail[onSwicth.tag - AddChildAccoutSwitchTag]
-            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(self.idUserChildInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: "\(detail.eqmStatus)", completionHandler: { (errorCode, msg) in
-                
+            HUD.showHud("正在提交...", onView: self)
+            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(self.idUserChildInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: "\(detail.eqmStatus)", completionHandler: { [weak self](errorCode, msg, userChildEqmInfo) in
+                if let weakSelf = self{
+                    HUD.hideHud(weakSelf)
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode, let eqmInfo = userChildEqmInfo{
+                            weakSelf.idUserChildEqmInfo = eqmInfo
+                        }else{
+                            HUD.showText("绑定失败", onView: weakSelf)
+                        }
+                    }else{
+                        HUD.showText("绑定失败", onView: weakSelf)
+                    }
+                }
             })
         }
     }

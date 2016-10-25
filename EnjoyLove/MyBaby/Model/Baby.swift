@@ -50,14 +50,6 @@ struct AddChildAccount {
     var detail:[Equipments]!
 }
 
-//struct AccountDetail {
-//    var mainItem = ""
-//    var subItem = ""
-//    var devicePermisson:Int = -1//0:关闭 1:打开
-//    var deviceId = ""//设备绑定id
-//    
-//}
-
 struct AccountInfo {
     var title = ""
     var detail:[ChildEquipments]!

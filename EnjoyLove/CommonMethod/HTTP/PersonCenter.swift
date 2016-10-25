@@ -599,12 +599,13 @@ extension ChildAccount{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if let data = response["data"] as? [String:NSObject]{
-                    if let dataList = data["list"] as? [[String:NSObject]]{
+                    if let dataList = data["childAccountList"] as? [[String:NSObject]]{
                         for dataDict in dataList{
                             let eqm = ChildAccount()
                             eqm.idUserChildInfo = format(dataDict["idUserChildInfo"])
                             eqm.idChild = format(dataDict["idChild"])
                             eqm.childName = format(dataDict["childName"])
+                            eqm.childMobile = format(dataDict["childMobile"])
                             ChildAccountBL.insert(eqm)
                         }
                     }
@@ -725,10 +726,6 @@ extension ChildEquipments{
                                 eqms.eqmName = format(dataDict["eqmName"])
                                 eqms.eqmStatus = format(dataDict["eqmStatus"])
                                 eqms.idUserChildEqmInfo = format(dataDict["idUserChildEqmInfo"])
-                                eqms.idUserChildEqmPermission = ""
-                                eqms.imagePermission = ""
-                                eqms.voicePermission = ""
-                                eqms.idUserEqmInfo = ""
                                 ChildEquipmentsBL.insert(eqms)
                             }
                         }
@@ -752,7 +749,7 @@ extension ChildEquipments{
      eqmStatus		int	是	设备状态(1：开 2：关)
      
      */
-    class func sendAsyncModifyChildEquipmentsStatus(idUserChildInfo:String, idEqmInfo:String, eqmStatus:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncModifyChildEquipmentsStatus(idUserChildInfo:String, idEqmInfo:String, eqmStatus:String, completionHandler:((errorCode:String?, msg:String?, idUserChildEqmInfo:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(ModifyChildEquipmentsStatusUrl, parameters: ["idUserChildInfo":idUserChildInfo, "idEqmInfo":idEqmInfo, "eqmStatus":eqmStatus], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
@@ -763,16 +760,20 @@ extension ChildEquipments{
                         eqms.eqmStatus = eqmStatus
                         eqms.idUserChildEqmInfo = format(data["idUserChildEqmInfo"])
                         ChildEquipmentsBL.modify(eqms)
+                        if let handle = completionHandler{
+                            handle(errorCode: errorCode, msg: msg, idUserChildEqmInfo: eqms.idUserChildEqmInfo)
+                        }
+                    }
+                }else{
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, idUserChildEqmInfo: nil)
                     }
                 }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
-                    
-                }
+                
             }
         }) { (dataTask, error) in
             if let handle = completionHandler{
-                handle(errorCode: nil, msg: error?.localizedDescription)
+                handle(errorCode: nil, msg: error?.localizedDescription, idUserChildEqmInfo: nil)
             }
         }
     }
@@ -785,10 +786,10 @@ extension ChildEquipments{
                 if errorCode == BabyZoneConfig.shared.passCode {
                     if let data = response["data"] as? [String:NSObject]{
                         let eqms = ChildEquipments()
-                        eqms.idUserChildEqmPermission = format(data["idUserChildEqmPermission"])
-                        eqms.idUserEqmInfo = format(data["idUserEqmInfo"])
-                        eqms.voicePermission = format(data["voicePermission"])
-                        eqms.imagePermission = format(data["imagePermission"])
+//                        eqms.idUserChildEqmPermission = format(data["idUserChildEqmPermission"])
+//                        eqms.idUserEqmInfo = format(data["idUserEqmInfo"])
+//                        eqms.voicePermission = format(data["voicePermission"])
+//                        eqms.imagePermission = format(data["imagePermission"])
                         ChildEquipmentsBL.insert(eqms)
                     }
                 }
@@ -812,10 +813,10 @@ extension ChildEquipments{
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
                     let eqms = ChildEquipments()
-                    eqms.idUserChildEqmPermission = idUserChildEqmPermission
-                    eqms.idUserChildEqmInfo = idUserChildEqmInfo //idUserChildEqmInfo
-                    eqms.voicePermission = voicePermission
-                    eqms.imagePermission = imagePermission
+//                    eqms.idUserChildEqmPermission = idUserChildEqmPermission
+//                    eqms.idUserChildEqmInfo = idUserChildEqmInfo //idUserChildEqmInfo
+//                    eqms.voicePermission = voicePermission
+//                    eqms.imagePermission = imagePermission
                     ChildEquipmentsBL.modify(eqms)
                 }
                 if let handle = completionHandler{

@@ -10,7 +10,7 @@ import UIKit
 
 let BabyCancelClickNotification = "BabyCancelClickNotification"
 
-class BabyVideoViewController: BaseVideoViewController {
+class BabyVideoViewController: BaseVideoViewController ,OpenGLViewDelegate{
 
     var deviceContact:Contact!
     var baby:Baby!
@@ -27,6 +27,7 @@ class BabyVideoViewController: BaseVideoViewController {
     private var lastValue:Int32 = 0
     private var lastTime:Int32 = 0
     
+    private var glView:VideoView!
     
 
     
@@ -37,6 +38,7 @@ class BabyVideoViewController: BaseVideoViewController {
         
         self.initialize()
         if self.deviceContact != nil {
+            AppDelegate.sharedDefault().isDoorBellAlarm = false
             P2PClient.sharedClient().isBCalled = false
             P2PClient.sharedClient().callId = deviceContact.contactId
             P2PClient.sharedClient().callPassword = deviceContact.contactPassword
@@ -67,8 +69,7 @@ class BabyVideoViewController: BaseVideoViewController {
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
+    func onScreenShotted(image: UIImage!) {
         
     }
     
@@ -240,12 +241,26 @@ class BabyVideoViewController: BaseVideoViewController {
     }
     
     override func receiveRemoteMessage(note:NSNotification) -> Void {
+        super.receiveRemoteMessage(note)
         if let userInfo = note.userInfo {
             if let keyValue = userInfo["key"] as? String {
                 if let key = Int32(keyValue) {
                     switch key {
                     case RET_GET_FOCUS_ZOOM:
-                        break
+                        if let valueStr = userInfo["value"] as? String {
+                            if let value = Int(valueStr) {
+                                switch value {
+                                case 1:
+                                    break
+                                case 2:
+                                    break
+                                case 3:
+                                    break
+                                default:
+                                    break
+                                }
+                            }
+                        }
                     case RET_SET_GPIO_CTL:
                         break
                     case RET_GET_LIGHT_SWITCH_STATE:
@@ -269,6 +284,7 @@ class BabyVideoViewController: BaseVideoViewController {
     }
     
     override func ack_receiveRemoteMessage(note:NSNotification) -> Void {
+        super.ack_receiveRemoteMessage(note)
         if let userInfo = note.userInfo {
             if let keyValue = userInfo["key"] as? String, let resultValue  = userInfo["result"] as? String {
                 if let key = Int32(keyValue), let result = Int32(resultValue) {
@@ -336,20 +352,22 @@ class BabyVideoViewController: BaseVideoViewController {
     
     func renderView() -> Void {
         self.isPlaying = true
-        
-        var m_pAVFrame:UnsafeMutablePointer<GAVFrame> = nil
-        while self.isReject == false {
-            if fgGetVideoFrameToDisplay(&m_pAVFrame) != 0{
-                if self.isOkRenderVideoFrame == false {
-                    self.isOkRenderVideoFrame = true
-                    self.isOkFirstRenderVideoFrame = true
+        dispatch_get_main_queue().queue { 
+            var m_pAVFrame:UnsafeMutablePointer<GAVFrame> = nil
+            while self.isReject == false {
+                if fgGetVideoFrameToDisplay(&m_pAVFrame) == 1 {
+                    if self.isOkRenderVideoFrame == false {
+                        self.isOkRenderVideoFrame = true
+                        self.isOkFirstRenderVideoFrame = true
+                    }
+                    if let babyVideo = self.babyVideoView {
+                        babyVideo.renderFrame(m_pAVFrame)
+                    }
                 }
-                if let videoView = self.babyVideoView {
-                    videoView.renderFrame(m_pAVFrame)
-                }
+                usleep(10000)
             }
-            usleep(10000)
         }
+        
         self.isPlaying = false
     }
     

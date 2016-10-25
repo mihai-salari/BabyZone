@@ -41,8 +41,6 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     
     private func initialize(){
         
-        
-        
         HUD.showHud("正在加载...", onView: self.view)
         ChildEquipments.sendAsyncChildEquipmentsList(self.childAccount.itemId) { [weak self](errorCode, msg) in
             if let weakSelf = self{
@@ -113,15 +111,10 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
                 subModel.idUserChildEqmInfo = device.idUserChildEqmInfo
                 modelData.append(subModel)
             }
-        }else{
-            subModel = ChildEquipments()
-            subModel.eqmName = "设备1"
-            subModel.eqmSubItem = ""
-            subModel.eqmStatus = "1"
-            modelData.append(subModel)
+            mainModel = AccountInfo(title: "设备权限", detail: modelData)
+            self.childList.append(mainModel)
         }
-        mainModel = AccountInfo(title: "设备权限", detail: modelData)
-        self.childList.append(mainModel)
+        
         
         mainModel = AccountInfo()
         mainModel.title = "- 删除子账号"
@@ -292,7 +285,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     func equipmentOnOff(onSwicth:HMSwitch) -> Void {
         if self.childList.count > 1 {
             let detail = self.childList[1].detail[onSwicth.tag]
-            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(detail.idUserChildEqmInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: detail.eqmStatus, completionHandler: { [weak self](errorCode, msg) in
+            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(detail.idUserChildEqmInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: detail.eqmStatus, completionHandler: { [weak self](errorCode, msg, idUserChildEqmInfo) in
                 if let weakSelf = self{
                     HUD.hideHud(weakSelf.view)
                     if let err = errorCode{

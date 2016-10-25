@@ -1364,6 +1364,7 @@ class ChildAccount: NSObject {
     var childName:String!
     var childMobile:String!
     
+    
     override init() {
         self.idUserChildInfo = ""
         self.idChild = ""
@@ -1536,33 +1537,37 @@ private let ChildEquipmentsArchiveFileName = "ChildEquipmentsArchive.archive"
 class ChildEquipments: NSObject,NSCoding {
     /*
      idEqmInfo	int	是	设备id
+     eqmDid	string	是	设备DID
      eqmName	string	是	设备名称
-     eqmStatus	string	是	设备状态(1：开 2：关)
+     eqmStatus	int	是	设备状态(1：开 2：关)
      idUserChildEqmInfo	int	是	用户子帐号设备id（0表示未新增，需要更新后才生成）
+     eqmAccount	string	是	设备帐号
+     eqmPwd	string	是	设备密码
 
      */
-    var idEqmInfo = ""
-    var eqmName = ""
-    var eqmStatus = ""
-    var idUserChildEqmInfo = ""
+    var idUserChildInfo:String!
+    var idEqmInfo:String!
+    var eqmDid:String!
+    var eqmName:String!
+    var eqmStatus:String!
+    var idUserChildEqmInfo:String!
+    var eqmAccount:String!
+    var eqmPwd:String!
     
-    var idUserChildEqmPermission = ""
-    var idUserEqmInfo = ""
-    var voicePermission = ""
-    var imagePermission = ""
+
+    
     
     var eqmSubItem = ""
     
     
     override init() {
         self.idEqmInfo = ""
+        self.eqmDid = ""
         self.eqmName = ""
         self.eqmStatus = ""
         self.idUserChildEqmInfo = ""
-        self.idUserChildEqmPermission = ""
-        self.idUserEqmInfo = ""
-        self.voicePermission = ""
-        self.imagePermission = ""
+        self.eqmAccount = ""
+        self.eqmPwd = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -1570,6 +1575,9 @@ class ChildEquipments: NSObject,NSCoding {
         
         if let obj = aDecoder.decodeObjectForKey("idEqmInfo") as? String {
             self.idEqmInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("eqmDid") as? String {
+            self.eqmDid = obj
         }
         if let obj = aDecoder.decodeObjectForKey("eqmName") as? String {
             self.eqmName = obj
@@ -1580,30 +1588,23 @@ class ChildEquipments: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("idUserChildEqmInfo") as? String {
             self.idUserChildEqmInfo = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("idUserChildEqmPermission") as? String {
-            self.idUserChildEqmPermission = obj
+        if let obj = aDecoder.decodeObjectForKey("eqmAccount") as? String {
+            self.eqmStatus = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("idUserEqmInfo") as? String {
-            self.idUserEqmInfo = obj
+        if let obj = aDecoder.decodeObjectForKey("eqmPwd") as? String {
+            self.idUserChildEqmInfo = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("voicePermission") as? String {
-            self.voicePermission = obj
-        }
-        if let obj = aDecoder.decodeObjectForKey("imagePermission") as? String {
-            self.imagePermission = obj
-        }
-        
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(self.idEqmInfo, forKey: "idEqmInfo")
+        aCoder.encodeObject(self.eqmDid, forKey: "eqmDid")
         aCoder.encodeObject(self.eqmName, forKey: "eqmName")
         aCoder.encodeObject(self.eqmStatus, forKey: "eqmStatus")
         aCoder.encodeObject(self.idUserChildEqmInfo, forKey: "idUserChildEqmInfo")
-        aCoder.encodeObject(self.idUserChildEqmPermission, forKey: "idUserChildEqmPermission")
-        aCoder.encodeObject(self.idUserEqmInfo, forKey: "idUserEqmInfo")
-        aCoder.encodeObject(self.voicePermission, forKey: "voicePermission")
-        aCoder.encodeObject(self.imagePermission, forKey: "imagePermission")
+        aCoder.encodeObject(self.eqmAccount, forKey: "eqmAccount")
+        aCoder.encodeObject(self.eqmPwd, forKey: "eqmPwd")
+        
     }
     
 }
@@ -1743,6 +1744,204 @@ class ChildEquipmentsBL: NSObject {
         return ChildEquipmentsDAO.shared.findAll()
     }
 }
+
+
+
+private let ChildEquipmentsPermissionKey = "ChildEquipmentsPermissionKey"
+private let ChildEquipmentsPermissionName = "ChildEquipmentsPermission.archive"
+class ChildEquipmentsPermission: NSObject,NSCoding {
+    /*
+     idUserChildEqmInfo		int	是	用户设备id
+     idUserChildEqmPermission		int	是	设备子帐号权限id
+     idUserEqmInfo		int	是	用户设备id
+     voicePermission		int	是	声音权限（1：有 2：无）
+     imagePermission		int	是	图像权限（1：有 2：无）
+     
+     */
+    var idUserChildEqmInfo:String!
+    var idUserChildEqmPermission:String!
+    var idUserEqmInfo:String!
+    var voicePermission:String!
+    var imagePermission:String!
+    
+    
+    override init() {
+        self.idUserChildEqmInfo = ""
+        self.idUserChildEqmPermission = ""
+        self.idUserEqmInfo = ""
+        self.voicePermission = ""
+        self.imagePermission = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        if let obj = aDecoder.decodeObjectForKey("idUserChildEqmInfo") as? String {
+            self.idUserChildEqmInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("idUserChildEqmPermission") as? String {
+            self.idUserChildEqmPermission = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("idUserEqmInfo") as? String {
+            self.idUserEqmInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("voicePermission") as? String {
+            self.voicePermission = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imagePermission") as? String {
+            self.imagePermission = obj
+        }
+        
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.idUserChildEqmInfo, forKey: "idUserChildEqmInfo")
+        aCoder.encodeObject(self.idUserChildEqmPermission, forKey: "idUserChildEqmPermission")
+        aCoder.encodeObject(self.idUserEqmInfo, forKey: "idUserEqmInfo")
+        aCoder.encodeObject(self.voicePermission, forKey: "voicePermission")
+        aCoder.encodeObject(self.imagePermission, forKey: "imagePermission")
+    }
+    
+}
+
+private class ChildEquipmentsPermissionDAO: NSObject {
+    static var shared:ChildEquipmentsPermissionDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:ChildEquipmentsPermissionDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = ChildEquipmentsPermissionDAO()
+        }
+        return DAO.dao!
+    }
+    
+    func findAll() -> [ChildEquipmentsPermission] {
+        var listData = [ChildEquipmentsPermission]()
+        if let theData = NSData.init(contentsOfFile: ChildEquipmentsPermissionName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(ChildEquipmentsPermissionKey) as? [ChildEquipmentsPermission]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:ChildEquipmentsPermission) -> Bool {
+        var array = self.findAll()
+        for base in array {
+            if base.idUserChildEqmInfo == detail.idUserChildEqmInfo {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: ChildEquipmentsPermissionKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
+        
+    }
+    
+    func delete(detail:ChildEquipmentsPermission?, key:String = "") -> Bool {
+        var array = self.findAll()
+        for note in array {
+            var idEqmInfo = ""
+            if let eqm = detail {
+                idEqmInfo = eqm.idUserChildEqmInfo
+            }
+            
+            let baseKey = key == "" ? idEqmInfo : key
+            if note.idUserChildEqmInfo == baseKey {
+                if let currentIndex = array.indexOf(note) {
+                    array.removeAtIndex(currentIndex)
+                }
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: ChildEquipmentsPermissionKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func modify(detail:ChildEquipmentsPermission, key:String = "") -> Bool {
+        let array = self.findAll()
+        let baseKey = key == "" ? detail.idUserChildEqmInfo : key
+        for note in array {
+            
+            if note.idUserChildEqmInfo == baseKey {
+                if note.idUserChildEqmPermission != detail.idUserChildEqmPermission {
+                    note.idUserChildEqmPermission = detail.idUserChildEqmPermission
+                }
+                if note.idUserEqmInfo != detail.idUserEqmInfo {
+                    note.idUserEqmInfo = detail.idUserEqmInfo
+                }
+                if note.voicePermission != detail.voicePermission {
+                    note.voicePermission = detail.voicePermission
+                }
+                if note.imagePermission != detail.imagePermission {
+                    note.imagePermission = detail.imagePermission
+                }
+                
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: ChildEquipmentsPermissionKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
+            }
+        }
+        return false
+    }
+    
+    func find(detail:ChildEquipmentsPermission?, key:String = "") -> ChildEquipmentsPermission? {
+        let array = self.findAll()
+        var result:ChildEquipmentsPermission!
+        for note in array {
+            let userId = detail == nil ? "" : note.idUserChildEqmInfo
+            let baseKey = key == "" ? userId : key
+            if note.idUserChildEqmInfo == baseKey {
+                result = note
+            }
+        }
+        return result
+    }
+    
+}
+
+class ChildEquipmentsPermissionBL: NSObject {
+    class func insert(detail:ChildEquipmentsPermission) -> [ChildEquipmentsPermission]{
+        let result = ChildEquipmentsPermissionDAO.shared.insert(detail)
+        print("baby list result \(result)")
+        return ChildEquipmentsPermissionDAO.shared.findAll()
+    }
+    
+    class func delete(detail:ChildEquipmentsPermission?, key:String = "") ->[ChildEquipmentsPermission]{
+        ChildEquipmentsPermissionDAO.shared.delete(detail, key: key)
+        return ChildEquipmentsPermissionDAO.shared.findAll()
+    }
+    
+    class func modify(detail:ChildEquipmentsPermission, key:String = "") ->[ChildEquipmentsPermission]{
+        ChildEquipmentsPermissionDAO.shared.modify(detail, key: key)
+        return ChildEquipmentsPermissionDAO.shared.findAll()
+    }
+    
+    class func find(detail:ChildEquipmentsPermission?, key:String = "") ->ChildEquipmentsPermission?{
+        return ChildEquipmentsPermissionDAO.shared.find(detail, key: key)
+    }
+    
+    class func findAll() -> [ChildEquipmentsPermission]{
+        return ChildEquipmentsPermissionDAO.shared.findAll()
+    }
+
+}
+
 
 //MARK:____Diary____
 private let DiaryArchiveKey = "DiaryArchiveKey"

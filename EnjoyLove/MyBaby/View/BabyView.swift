@@ -238,7 +238,6 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
         }
         
         self.settingTable = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height: self.frame.height), style: .Plain)
-        self.settingTable.scrollEnabled = false
         self.settingTable.delegate = self
         self.settingTable.dataSource = self
         self.settingTable.tableFooterView = UIView.init()
@@ -273,57 +272,54 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
             resultCell.selectionStyle = .None
-            switch indexPath.section {
-            case 1:
-                resultCell.accessoryType = .DisclosureIndicator
-            default:
-                resultCell.accessoryType = .None
-            }
             for subview in resultCell.contentView.subviews {
                 subview.removeFromSuperview()
             }
-            
             let model = self.settingData[indexPath.section].setting[indexPath.row]
             resultCell.textLabel?.text = model.mainItem
             resultCell.textLabel?.font = UIFont.systemFontOfSize(14)
             
-            if model.subItem == "0" || model.subItem == "1" {
-                let onSwitch = HMSwitch.init(frame: CGRectMake(self.frame.width - 80, (CGRectGetHeight(resultCell.contentView.frame) - resultCell.contentView.frame.height * (2 / 3)) / 2, 70, resultCell.contentView.frame.height * (2 / 3)))
-                onSwitch.onLabel.textColor = UIColor.whiteColor()
-                onSwitch.offLabel.textColor = UIColor.whiteColor()
-                onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
-                onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
-                onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
-                onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
-                onSwitch.inactiveColor = UIColor.lightGrayColor()
-                onSwitch.tag = BabySettingSwitchTag + indexPath.row
-                onSwitch.addTarget(self, action: #selector(self.switchOnOff(_:)), forControlEvents: UIControlEvents.ValueChanged)
-                if model.subItem == "0" {
-                    onSwitch.onLabel.text = "打开提醒"
-                    onSwitch.offLabel.text = "关闭提醒"
-                    if model.tipPermission == 1 {
-                        onSwitch.on = true
+            switch indexPath.section {
+            case 0:
+                resultCell.accessoryType = .None
+                if model.subItem == "0" || model.subItem == "1" {
+                    let onSwitch = HMSwitch.init(frame: CGRectMake(self.frame.width - 80, (CGRectGetHeight(resultCell.contentView.frame) - resultCell.contentView.frame.height * (2 / 3)) / 2, 70, resultCell.contentView.frame.height * (2 / 3)))
+                    onSwitch.onLabel.textColor = UIColor.whiteColor()
+                    onSwitch.offLabel.textColor = UIColor.whiteColor()
+                    onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
+                    onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
+                    onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
+                    onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
+                    onSwitch.inactiveColor = UIColor.lightGrayColor()
+                    onSwitch.tag = BabySettingSwitchTag + indexPath.row
+                    onSwitch.addTarget(self, action: #selector(self.switchOnOff(_:)), forControlEvents: UIControlEvents.ValueChanged)
+                    if model.subItem == "0" {
+                        onSwitch.onLabel.text = "打开提醒"
+                        onSwitch.offLabel.text = "关闭提醒"
+                        if model.tipPermission == 1 {
+                            onSwitch.on = true
+                        }else{
+                            onSwitch.on = false
+                        }
                     }else{
-                        onSwitch.on = false
+                        onSwitch.onLabel.text = "消息提醒"
+                        onSwitch.offLabel.text = "震动提醒"
+                        if model.modePermission == 1 {
+                            onSwitch.on = true
+                        }else{
+                            onSwitch.on = false
+                        }
                     }
-                }else{
-                    onSwitch.onLabel.text = "消息提醒"
-                    onSwitch.offLabel.text = "震动提醒"
-                    if model.modePermission == 1 {
-                        onSwitch.on = true
-                    }else{
-                        onSwitch.on = false
-                    }
+                    
+                    resultCell.contentView.addSubview(onSwitch)
                 }
-                
-                resultCell.contentView.addSubview(onSwitch)
-            }
-            
-            if model.subItem != "0" && model.subItem != "1" {
+            case 1:
+                resultCell.accessoryType = .DisclosureIndicator
                 resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(12)
                 resultCell.detailTextLabel?.text =  model.subItem
+            default:
+                break
             }
-            
         }
         return cell!
     }

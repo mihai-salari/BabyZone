@@ -175,12 +175,14 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self interfaceOrientation:UIInterfaceOrientationLandscapeRight];
+//    [self interfaceOrientation:UIInterfaceOrientationLandscapeRight];
     self.navigationController.navigationBarHidden = YES;
     self.tabBarController.tabBar.hidden = YES;
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:[BabyZoneConfig shared].AllowOrientation];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
     [self forceOrientationLandscape];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveRemoteMessage:) name:RECEIVE_REMOTE_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ack_receiveRemoteMessage:) name:ACK_RECEIVE_REMOTE_MESSAGE object:nil];
@@ -190,7 +192,6 @@
      * 2. 在函数monitorStartRender里，开始渲染监控画面
      */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(monitorStartRender:) name:MONITOR_START_RENDER_MESSAGE object:nil];
-    _isCanAutoOrientation = NO;
     
     NSString *contactId = [[P2PClient sharedClient] callId];
     NSString *contactPassword = [[P2PClient sharedClient] callPassword];
@@ -202,15 +203,31 @@
     [AppDelegate sharedDefault].monitoredContactId = contactId;
     
     [AppDelegate sharedDefault].isMonitoring = YES;//当前是监控、视频通话或呼叫状态下
+    
+    NSLog(@"frame %@",NSStringFromCGRect([UIScreen mainScreen].bounds));
+    
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+     //释放约束
+    AppDelegate *appdelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
+    appdelegate.isForcePortrait=NO;
+    appdelegate.isForceLandscape=NO;
+    [appdelegate application:[UIApplication sharedApplication] supportedInterfaceOrientationsForWindow:self.view.window];
+    [self interfaceOrientation:UIInterfaceOrientationPortrait];
+    
+    
+    NSLog(@"frame %@",NSStringFromCGRect([UIScreen mainScreen].bounds));
+
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:[BabyZoneConfig shared].AllowOrientation];
     
     self.isReject = YES;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -2124,63 +2141,33 @@
     [[P2PClient sharedClient] getNpcSettingsWithId:callId password:callPassword];
 }
 
-#pragma mark - 竖屏时，显示状态栏
--(BOOL)prefersStatusBarHidden{
-    return YES;
-}
+//#pragma mark - 竖屏时，显示状态栏
+//-(BOOL)prefersStatusBarHidden{
+//    return YES;
+//}
 
 #pragma mark - 屏幕Autorotate
 
 - (void)forceOrientationLandscape
 {
     AppDelegate *appdelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
-//    appdelegate.isForceLandscape=YES;
-//    appdelegate.isForcePortrait=NO;
+    appdelegate.isForceLandscape=YES;
+    appdelegate.isForcePortrait=NO;
     [appdelegate application:[UIApplication sharedApplication] supportedInterfaceOrientationsForWindow:self.view.window];
+    [self interfaceOrientation:UIInterfaceOrientationLandscapeRight];
 }
 
 - (void)forceOrientationPortrait
 {
     AppDelegate *appdelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
-//    appdelegate.isForcePortrait=YES;
-//    appdelegate.isForceLandscape=NO;
+    appdelegate.isForcePortrait=YES;
+    appdelegate.isForceLandscape=NO;
     [appdelegate application:[UIApplication sharedApplication] supportedInterfaceOrientationsForWindow:self.view.window];
+    [self interfaceOrientation:UIInterfaceOrientationPortrait];
 }
 
--(BOOL)shouldAutorotate{
-    return YES;
-}
-
-#pragma mark 屏幕支持的旋转方向
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interface {
-    return (interface == UIInterfaceOrientationLandscapeLeft || interface == UIInterfaceOrientationLandscapeRight);
-}
-
-
-#pragma mark 支持哪些方向
--(UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
-}
-
-#pragma mark 一开始希望的屏幕方向
--(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
-    return UIInterfaceOrientationLandscapeRight;
-}
-
-#pragma mark - 屏幕旋转
--(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    if (toInterfaceOrientation == UIInterfaceOrientationPortrait)
-    {
-        [self quitFullController];
-    }
-    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
-        
-    }
-    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight)
-    {
-        [self enterFullController];
-    }
+- (void)releaseOrientation{
+    
 }
 
 #pragma mark 屏幕旋转（退出全屏）

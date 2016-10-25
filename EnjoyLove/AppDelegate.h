@@ -63,6 +63,13 @@
 
 @property (nonatomic, assign) id<GApplicationDelegate> gApplicationDelegate;
 
+/*
+ appdelegate.isForcePortrait=YES;
+ //    appdelegate.isForceLandscape=NO;
+ */
+@property (nonatomic, assign) BOOL isForcePortrait;
+@property (nonatomic, assign) BOOL isForceLandscape;
+
 //停止播放报警铃声
 -(void)stopToPlayAlarmRing;
 

@@ -21,6 +21,9 @@
 - (void)dismissToRootViewController;
 
 - (void)navigationBarItemWithNavigationTitle:(NSString *)title isImage:(BOOL)image leftSelector:(SEL)lsel leftImage:(NSString *)limage letfTitle:(NSString *)ltitle leftItemSize:(CGSize)lsize rightSelector:(SEL)rsel rightImage:(NSString *)rimage rightTitle:(NSString *)rtitle rightItemSize:(CGSize)rsize;
+
+- (void)interfaceOrientation:(UIInterfaceOrientation)orientation;
+
 @end
 
 @interface HMHUD : NSObject

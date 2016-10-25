@@ -36,6 +36,7 @@
 #import "UDPManager.h"
 #import "PAIOUnit.h"//rtsp监控界面弹出修改
 #import "MD5Manager.h"
+#import "P2PMonitorController.h"
 
 //MARK:___个推___
 #define kGtAppId           @"iMahVVxurw6BNr7XSn9EF2"
@@ -293,14 +294,32 @@ UIBackgroundTaskIdentifier backgroundTask;
 }
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{
-    BOOL isAll = [[NSUserDefaults standardUserDefaults] boolForKey:[BabyZoneConfig shared].AllowOrientation];
-    if (isAll) {
+    if ([NSStringFromClass([[self topViewController] class]) isEqualToString: NSStringFromClass([P2PMonitorController class])]) {
         return UIInterfaceOrientationMaskLandscapeLeft | UIUserInterfaceLayoutDirectionLeftToRight;
     }else{
         return UIInterfaceOrientationMaskPortrait;
     }
 }
 
+//获取界面最上层的控制器
+- (UIViewController*)topViewController {
+    return [self topViewControllerWithRootViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+}
+//一层一层的进行查找判断
+- (UIViewController*)topViewControllerWithRootViewController:(UIViewController*)rootViewController {
+    if ([rootViewController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController* tabBarController = (UITabBarController*)rootViewController;
+        return [self topViewControllerWithRootViewController:tabBarController.selectedViewController];
+    } else if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController* nav = (UINavigationController*)rootViewController;
+        return [self topViewControllerWithRootViewController:nav.visibleViewController];
+    } else if (rootViewController.presentedViewController) {
+        UIViewController* presentedViewController = rootViewController.presentedViewController;
+        return [self topViewControllerWithRootViewController:presentedViewController];
+    } else {
+        return rootViewController;
+    }
+}
 
 
 //MARK:__个推注册__

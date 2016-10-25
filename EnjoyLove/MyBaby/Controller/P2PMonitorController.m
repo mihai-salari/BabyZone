@@ -15,6 +15,7 @@
  4、当前观看人数
  rtsp:不支持 （因为rtsp连接时不会收到通知，所以不用处理此处逻辑）
  ******************************/
+#import "EnjoyLove-Swift.h"
 #import "P2PMonitorController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
@@ -50,46 +51,87 @@
     
     BOOL _isCanAutoOrientation;//限制屏幕什么时候可以旋转
 }
+
+@property (nonatomic, strong) OpenGLView *remoteView;
+@property (nonatomic) BOOL isReject;
+@property (nonatomic) BOOL isFullScreen4B3;
+@property (nonatomic) BOOL isShowControllerBar;
+@property (nonatomic) BOOL isVideoModeHD;
+
+@property (nonatomic,strong) UIScrollView *scrollView;//监控界面缩放
+@property (nonatomic) BOOL isScale;//监控界面缩放
+
+@property (strong, nonatomic) UIView *bottomView;//重新调整监控画面
+@property (strong, nonatomic) UIView *pressView;
+@property (nonatomic) BOOL isTalking;
+
+@property (strong, nonatomic) UIView *controllerRight;
+@property (strong, nonatomic) UIView *controllerRightBg;//重新调整监控画面
+@property (strong, nonatomic) UIView *bottomBarView;//重新调整监控画面
+@property (strong, nonatomic) UIView *controllBar;
+
+@property (nonatomic) BOOL isAlreadyShowResolution;//重新调整监控画面
+
+@property (nonatomic) BOOL isDefenceOn;//重新调整监控画面
+
+//GPIO 口控制参数记录
+//@property(strong, nonatomic) CustomBorderButton *customBorderButton;
+//@property(strong, nonatomic) CustomView *leftView;
+@property(nonatomic) BOOL isShowLeftView;
+
+@property(nonatomic) int lastGroup;
+@property(nonatomic) int lastPin;
+@property(nonatomic) int lastValue;
+@property(nonatomic) int *lastTime;
+
+@property(nonatomic, strong) UIButton *clickGPIO0_0Button;
+@property(nonatomic, strong) UIButton *clickGPIO0_1Button;
+@property(nonatomic, strong) UIButton *clickGPIO0_2Button;
+@property(nonatomic, strong) UIButton *clickGPIO0_3Button;
+@property(nonatomic, strong) UIButton *clickGPIO0_4Button;
+@property(nonatomic, strong) UIButton *clickGPIO2_6Button;
+
+@property(nonatomic, strong) UIButton *lightButton;
+@property (nonatomic) BOOL isLightSwitchOn;
+@property (strong, nonatomic) UIActivityIndicatorView *progressView;
+@property (nonatomic) BOOL isSupportLightSwitch;
+
+
+
+@property (strong, nonatomic) UIView *focalLengthView;
+@property (nonatomic) BOOL isSupportFocalLength;
+@property (strong, nonatomic) UIPinchGestureRecognizer *pinchGestureRecognizer;
+
+//判断当前监控处于横屏还是竖屏界面
+@property (assign,nonatomic) BOOL isFullScreen;
+@property (strong, nonatomic) UIView *fullScreenBgView;
+
+//竖屏控件
+@property (nonatomic,strong) UIView *canvasView;    //显示监控画面的载体
+@property (assign,nonatomic) CGRect canvasframe;
+@property (nonatomic,strong) UIButton *promptButton;
+@property (nonatomic,strong) UILabel *labelTip;
+//@property (strong, nonatomic) ProgressImageView *yProgressView;
+@property (nonatomic,strong) UIView *midToolHView;   //全屏时，隐藏
+@property (nonatomic,strong) UIView *bottomToolHView;   //全屏时，隐藏
+@property (nonatomic,strong) UIButton *defenceButtonH;   //布防撤防按钮
+
+//YES表示当前处于监控中，且接收到推送，点击观看监控
+@property (assign,nonatomic) BOOL isIntoMonitorFromMonitor;
+
+
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *cameraButton;
+@property (nonatomic, strong) UIButton *videoButton;
+@property (nonatomic, strong) UIButton *musicButton;
+@property (nonatomic, strong) UIButton *voiceButton;
+@property (nonatomic, strong) UIView *buttonContainerView;
+
 @end
 
 @implementation P2PMonitorController
 
--(void)dealloc{
-//    [self.remoteView release];
-//    [self.bottomView release];//重新调整监控画面
-//    [self.pressView release];
-//    [self.controllerRight release];
-//    [self.controllerRightBg release];//重新调整监控画面
-//    [self.bottomBarView release];//重新调整监控画面
-//    [self.controllBar release];
-//    [self.customBorderButton release];
-//    [self.leftView release];
-//    [self.clickGPIO0_0Button release];
-//    [self.clickGPIO0_1Button release];
-//    [self.clickGPIO0_2Button release];
-//    [self.clickGPIO0_3Button release];
-//    [self.clickGPIO0_4Button release];
-//    [self.clickGPIO2_6Button release];
-//    [self.lightButton release];
-//    [self.progressView release];
-//    [self.yProgressView release];//rtsp监控界面弹出修改
-//    [self.focalLengthView release];
-//    [self.pinchGestureRecognizer release];
-//    
-//    [self.fullScreenBgView release];
-//    //竖屏
-//    [self.topBar release];
-//    [self.canvasView release];
-//    [self.promptButton release];
-//    [self.labelTip release];
-//    [self.midToolHView release];
-//    [self.defenceButtonH release];
-//    [self.bottomToolHView release];
-//    if (self.scrollView) {
-//        [self.scrollView release];
-//    }
-//    [super dealloc];
-}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -100,11 +142,69 @@
     return self;
 }
 
--(void)viewWillDisappear:(BOOL)animated{
-//    if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
-//        [[UIDevice currentDevice] performSelector:@selector(setOrientation:)
-//                                       withObject:(id)UIDeviceOrientationPortrait];
-//    }
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self initializeSubviews];
+    
+    if (self.deviceContact) {
+        self.isShowControllerBar = YES;
+        self.isVideoModeHD = NO;
+        
+        [AppDelegate sharedDefault].monitoredContactId = self.deviceContact.contactId;
+        
+        [[P2PClient sharedClient] setIsBCalled:NO];
+        [[P2PClient sharedClient] setCallId:self.deviceContact.contactId];
+        [[P2PClient sharedClient] setP2pCallType:P2PCALL_TYPE_MONITOR];
+        [[P2PClient sharedClient] setCallPassword:self.deviceContact.contactPassword];
+        
+        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+        
+        //监控竖屏时，各控件初始化(先)
+        [self initializeSubviews];
+        
+        
+        //rtsp监控界面弹出修改
+        [self monitorP2PCall];
+    }
+    
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+    self.navigationController.navigationBarHidden = YES;
+    self.tabBarController.tabBar.hidden = YES;
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:[BabyZoneConfig shared].AllowOrientation];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveRemoteMessage:) name:RECEIVE_REMOTE_MESSAGE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ack_receiveRemoteMessage:) name:ACK_RECEIVE_REMOTE_MESSAGE object:nil];
+    //rtsp监控界面弹出修改
+    /*
+     * 1. 注册监控渲染监听通知
+     * 2. 在函数monitorStartRender里，开始渲染监控画面
+     */
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(monitorStartRender:) name:MONITOR_START_RENDER_MESSAGE object:nil];
+    _isCanAutoOrientation = NO;
+    
+    NSString *contactId = [[P2PClient sharedClient] callId];
+    NSString *contactPassword = [[P2PClient sharedClient] callPassword];
+    if ([AppDelegate sharedDefault].isDoorBellAlarm) {//透传连接
+        [[P2PClient sharedClient] sendCustomCmdWithId:contactId password:contactPassword cmd:@"IPC1anerfa:connect"];
+    }
+    
+    //过滤当前被监控帐号的推送显示
+    [AppDelegate sharedDefault].monitoredContactId = contactId;
+    
+    [AppDelegate sharedDefault].isMonitoring = YES;//当前是监控、视频通话或呼叫状态下
+}
+
+- (void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:[BabyZoneConfig shared].AllowOrientation];
+    
     self.isReject = YES;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     if (self.isFullScreen){
@@ -130,29 +230,7 @@
     }
 }
 
--(void)viewWillAppear:(BOOL)animated{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveRemoteMessage:) name:RECEIVE_REMOTE_MESSAGE object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ack_receiveRemoteMessage:) name:ACK_RECEIVE_REMOTE_MESSAGE object:nil];
-    //rtsp监控界面弹出修改
-    /*
-     * 1. 注册监控渲染监听通知
-     * 2. 在函数monitorStartRender里，开始渲染监控画面
-     */
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(monitorStartRender:) name:MONITOR_START_RENDER_MESSAGE object:nil];
-    _isCanAutoOrientation = NO;
-    
-    NSString *contactId = [[P2PClient sharedClient] callId];
-    NSString *contactPassword = [[P2PClient sharedClient] callPassword];
-    if ([AppDelegate sharedDefault].isDoorBellAlarm) {//透传连接
-        
-        [[P2PClient sharedClient] sendCustomCmdWithId:contactId password:contactPassword cmd:@"IPC1anerfa:connect"];
-    }
-    
-    //过滤当前被监控帐号的推送显示
-    [AppDelegate sharedDefault].monitoredContactId = contactId;
-    
-    [AppDelegate sharedDefault].isMonitoring = YES;//当前是监控、视频通话或呼叫状态下
-}
+
 
 #define MESG_SET_GPIO_PERMISSION_DENIED 86
 #define MESG_GPIO_CTRL_QUEUE_IS_FULL 87
@@ -186,7 +264,6 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.pinchGestureRecognizer addTarget:self action:@selector(localLengthPinchToZoom:)];
                 });
-                
             }
         }
             break;
@@ -435,78 +512,9 @@
     
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    if (self.deviceContact) {
-        self.isShowControllerBar = YES;
-        self.isVideoModeHD = NO;
-        
-        [AppDelegate sharedDefault].monitoredContactId = self.deviceContact.contactId;
-        
-        [[P2PClient sharedClient] setIsBCalled:NO];
-        [[P2PClient sharedClient] setCallId:self.deviceContact.contactId];
-        [[P2PClient sharedClient] setP2pCallType:P2PCALL_TYPE_MONITOR];
-        [[P2PClient sharedClient] setCallPassword:self.deviceContact.contactPassword];
-        
-        [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-        
-        //监控竖屏时，各控件初始化(先)
-        [self initComponentForPortrait];
-        
-        //监控横屏时，各控件初始化(后)
-        [self initComponentForHorizontalScreen];
-        
-        
-        //rtsp监控界面弹出修改
-        [self monitorP2PCall];
-    }
-    
-    
-    //设置代理
-//    [AppDelegate sharedDefault].mainController.mainControllerDelegate = self;
-//    [AppDelegate sharedDefault].gApplicationDelegate = self;
-}
 
-#pragma mark - 收到推送，点击观看时，代理回调
--(void)gApplicationWithId:(NSString *)contactId password:(NSString *)password callType:(P2PCallType)type{
-    //过滤当前被监控帐号的推送显示
-    [AppDelegate sharedDefault].monitoredContactId = contactId;
-    
-    [[P2PClient sharedClient] setIsBCalled:NO];
-    [[P2PClient sharedClient] setCallId:contactId];
-    [[P2PClient sharedClient] setP2pCallType:type];
-    [[P2PClient sharedClient] setCallPassword:password];
-    
-    //视频监控连接中的标题
-    NSString *deviceName = @"";
-    if ([[AppDelegate sharedDefault] dwApContactID] == 0) {
-        deviceName = [NSString stringWithFormat:@"Cam%@",contactId];
-        
-        ContactDAO *contactDAO = [[ContactDAO alloc] init];
-        Contact *contact = [contactDAO isContact:contactId];
-        NSString *contactName = contact.contactName;
-//        [contactDAO release];
-        if (contactName) {
-            deviceName = contactName;
-        }
-    }else{
-        deviceName = [NSString stringWithFormat:@"Cam%d", [[AppDelegate sharedDefault] dwApContactID]];
-    }
-//    [self.topBar setTitle:deviceName];
-    
-    
-    self.isIntoMonitorFromMonitor = YES;
-    
-    
-    //已经挂断了，此时再从推送中点击观看
-    if (self.isReject) {
-        self.isIntoMonitorFromMonitor = NO;
-        [self hiddenMonitoringUI:NO callErrorInfo:nil isReCall:YES];
-        [self monitorP2PCall];
-    }
-}
+
+
 
 #pragma mark - 监控断开设备回调(代理)
 -(void)mainControllerMonitorReject:(NSDictionary*)info{
@@ -759,7 +767,7 @@
 #pragma mark - 监控横屏时，各控件初始化
 -(void)initComponentForHorizontalScreen{
     
-    CGRect rect = [AppDelegate getScreenSize:NO isHorizontal:YES];
+    CGRect rect = [AppDelegate getScreenSizeHorizontal:YES];
     CGFloat width = rect.size.width;
     _monitorInterfaceW = width;
     
@@ -1242,6 +1250,19 @@
 #pragma mark - 监控竖屏时，各控件初始化
 
 #define LOADINGPRESSVIEW_WIDTH_HEIGHT (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 50:30)
+
+- (void)initializeSubviews{
+    //取得竖屏的rect
+    CGRect rect = [AppDelegate getScreenSizeHorizontal:YES];
+    CGFloat width = rect.size.width;
+    CGFloat height = rect.size.height;
+    
+    
+    
+    
+    
+}
+
 -(void)initComponentForPortrait{
     
     //view的背景颜色
@@ -1249,11 +1270,11 @@
     
     
     //显示状态栏
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
     
     
     //取得竖屏的rect
-    CGRect rect = [AppDelegate getScreenSize:YES isHorizontal:NO];
+    CGRect rect = [AppDelegate getScreenSizeHorizontal:NO];
     CGFloat width = rect.size.width;
     
     CGFloat height = rect.size.height;
@@ -2121,7 +2142,6 @@
     UIImage *tempImage = [[UIImage alloc] initWithCGImage:image.CGImage];
     NSData *imgData = [NSData dataWithData:UIImagePNGRepresentation(tempImage)];
     [Utils saveScreenshotFile:imgData];
-//    [tempImage release];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.view makeToast:NSLocalizedString(@"screenshot_success", nil)];
     });
@@ -2232,7 +2252,7 @@
     
     BOOL is16B9 = [[P2PClient sharedClient] is16B9];
     if(!is16B9){
-        CGRect rect = [AppDelegate getScreenSize:NO isHorizontal:YES];
+        CGRect rect = [AppDelegate getScreenSizeHorizontal:YES];
         CGFloat width = rect.size.width;
         CGFloat height = rect.size.height;
         if(CURRENT_VERSION<7.0){
@@ -2511,11 +2531,7 @@
 
 #pragma mark 支持哪些方向
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    if (_isCanAutoOrientation) {
-        return UIInterfaceOrientationMaskPortrait|UIInterfaceOrientationMaskLandscapeRight;
-    }
-    
-    return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeRight;
 }
 
 #pragma mark 一开始希望的屏幕方向

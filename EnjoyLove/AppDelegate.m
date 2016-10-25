@@ -293,9 +293,9 @@ UIBackgroundTaskIdentifier backgroundTask;
 }
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{
-    BOOL isAll = [[NSUserDefaults standardUserDefaults] boolForKey:ALLORIENTATIONSKEY];
+    BOOL isAll = [[NSUserDefaults standardUserDefaults] boolForKey:[BabyZoneConfig shared].AllowOrientation];
     if (isAll) {
-        return UIInterfaceOrientationMaskAllButUpsideDown;
+        return UIInterfaceOrientationMaskLandscapeLeft | UIUserInterfaceLayoutDirectionLeftToRight;
     }else{
         return UIInterfaceOrientationMaskPortrait;
     }
@@ -423,15 +423,10 @@ UIBackgroundTaskIdentifier backgroundTask;
     return (AppDelegate*)[UIApplication sharedApplication].delegate;
 }
 
-+(CGRect)getScreenSize:(BOOL)isNavigation isHorizontal:(BOOL)isHorizontal{
++(CGRect)getScreenSizeHorizontal:(BOOL)isHorizontal{
     CGRect rect = [UIScreen mainScreen].bounds;
-    
     if(isHorizontal){
         rect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.height, rect.size.width);
-    }
-    
-    if([[[UIDevice currentDevice] systemVersion] floatValue]<7.0){
-        rect = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height-20);
     }
     return rect;
 }

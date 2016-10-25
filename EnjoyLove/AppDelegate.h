@@ -37,7 +37,7 @@
 @property (strong, nonatomic) Contact *contact;//重新调整监控画面
 @property (nonatomic) NetworkStatus networkStatus;
 +(AppDelegate*)sharedDefault;
-+(CGRect)getScreenSize:(BOOL)isNavigation isHorizontal:(BOOL)isHorizontal;
++(CGRect)getScreenSizeHorizontal:(BOOL)isHorizontal;
 @property (strong, nonatomic) NSString *token;
 @property (strong, nonatomic) NSString *alarmContactId;
 @property (strong, nonatomic) NSString *monitoredContactId;

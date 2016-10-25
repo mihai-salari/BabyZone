@@ -141,7 +141,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
                 if aView.on == true {
                     self.selectedContact = contact
                     let video = P2PMonitorController()
-                    video.deviceContact = EquipmentsBL.contactFromEquipment(contact)
+//                    video.deviceContact = EquipmentsBL.contactFromEquipment(contact)
                     self.navigationController?.pushViewController(video, animated: true)
                 }
             }

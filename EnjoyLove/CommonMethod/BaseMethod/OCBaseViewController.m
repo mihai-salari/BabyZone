@@ -8,6 +8,7 @@
 
 #import "OCBaseViewController.h"
 #import "OCMethod.h"
+#import "P2PMonitorController.h"
 
 @interface OCBaseViewController ()<UIGestureRecognizerDelegate>
 
@@ -58,6 +59,9 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer{
     if (self.navigationController.viewControllers.count == 1) {
+        return NO;
+    }
+    if ([self isKindOfClass: [P2PMonitorController class]]) {
         return NO;
     }
     return YES;

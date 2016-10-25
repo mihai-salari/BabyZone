@@ -16,7 +16,7 @@
 	<string>baby</string>
 	<key>UserPhoneKey</key>
 	<string>USERPHONEKEY</string>
-	<key>AllOrientation</key>
+	<key>AllowOrientation</key>
 	<string>ALLORIENTATIONS</string>
 	<key>signKey</key>
 	<string>SIGNKEY</string>

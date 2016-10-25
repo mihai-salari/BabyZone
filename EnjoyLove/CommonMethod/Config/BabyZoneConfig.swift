@@ -29,7 +29,7 @@ class BabyZoneConfig: NSObject {
     var QiNiuXiangAiDomain:String!
     var QiNiuBabyDomain:String!
     var UserPhoneKey:String!
-    var AllOrientation:String!
+    var AllowOrientation:String!
     var signKey:String!
     var appTokenKey:String!
     var pushTokenKey:String!
@@ -67,7 +67,7 @@ class BabyZoneConfig: NSObject {
                 self.xiangaiScope = config.get(.xiangaiScope)
                 self.babyScope = config.get(.babyScope)
                 self.UserPhoneKey = config.get(.UserPhoneKey)
-                self.AllOrientation = config.get(.AllOrientation)
+                self.AllowOrientation = config.get(.AllowOrientation)
                 self.signKey = config.get(.signKey)
                 self.appTokenKey = config.get(.appTokenKey)
                 self.pushTokenKey = config.get(.pushTokenKey)
@@ -127,7 +127,7 @@ extension Keys{
     static let xiangaiScope                     = Key<String>("xiangaiScope")
     static let babyScope                        = Key<String>("babyScope")
     static let UserPhoneKey                     = Key<String>("UserPhoneKey")
-    static let AllOrientation                   = Key<String>("AllOrientation")
+    static let AllowOrientation                 = Key<String>("AllowOrientation")
     static let signKey                          = Key<String>("signKey")
     static let appTokenKey                      = Key<String>("appTokenKey")
     static let pushTokenKey                     = Key<String>("pushTokenKey")

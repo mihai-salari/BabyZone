@@ -140,7 +140,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             if let aView = cell.viewWithTag(deviceListSwitchTag + indexPath.row) as? HMSwitch{
                 if aView.on == true {
                     self.selectedContact = contact
-                    let video = BabyVideoViewController()
+                    let video = P2PMonitorController()
                     video.deviceContact = EquipmentsBL.contactFromEquipment(contact)
                     self.navigationController?.pushViewController(video, animated: true)
                 }

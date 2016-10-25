@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/AppDelegate.m"
-            timestampString = "498550744.730309"
+            timestampString = "499073186.824048"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "846"
-            endingLineNumber = "846"
+            startingLineNumber = "859"
+            endingLineNumber = "859"
             landmarkName = "-onReceiveDoorbellAlarmMessage:"
             landmarkType = "7">
          </BreakpointContent>
@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/AppDelegate.m"
-            timestampString = "498444778.108571"
+            timestampString = "499073186.824048"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "441"
-            endingLineNumber = "441"
+            startingLineNumber = "454"
+            endingLineNumber = "454"
             landmarkName = "-receiveRemoteMessage:"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,6 +74,22 @@
             startingLineNumber = "720"
             endingLineNumber = "720"
             landmarkName = "sendAsyncChildEquipmentsList(idUserChildInfo:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/AppDelegate.m"
+            timestampString = "499073186.824048"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "563"
+            endingLineNumber = "563"
+            landmarkName = "-ack_receiveRemoteMessage:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

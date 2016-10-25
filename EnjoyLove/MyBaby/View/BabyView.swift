@@ -610,7 +610,6 @@ class BabyVideoView: UIView,OpenGLViewDelegate {
     private var cancelHandle:(()->())?
     private var babyModel:Baby!
     private var remoteView:OpenGLView!
-    private var remoteMaskView:UIView!
     private var cancelButton:UIButton!
     private var cameraButton:UIButton!
     private var videoButton:UIButton!
@@ -643,12 +642,12 @@ class BabyVideoView: UIView,OpenGLViewDelegate {
                     }
                 }
             }
-            
         }
         
         
-        self.remoteView = OpenGLView.init(frame: self.bounds)
+        self.remoteView = OpenGLView.init(frame: CGRect.init(x: 100, y: 200, width: 200, height: 200))
         self.remoteView.layer.masksToBounds = true
+        self.remoteView.backgroundColor = UIColor.blueColor()
         self.remoteView.delegate = self
         self.addSubview(self.remoteView)
         

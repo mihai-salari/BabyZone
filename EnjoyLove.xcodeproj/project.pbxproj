@@ -379,6 +379,7 @@
 		278400FE1D913F0B00A46437 /* SecurityEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278400FD1D913F0B00A46437 /* SecurityEditViewController.swift */; };
 		2786979A1D77BACC00205ABF /* yunfumama.png in Resources */ = {isa = PBXBuildFile; fileRef = 278697991D77BACC00205ABF /* yunfumama.png */; };
 		278697A31D77CAFF00205ABF /* ExtensionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278697A21D77CAFF00205ABF /* ExtensionMethod.swift */; };
+		279F92C51DBF3B80004661DF /* P2PMonitorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F92C41DBF3B80004661DF /* P2PMonitorController.m */; };
 		27B5B0491D93C86C006AE37E /* myOwnChecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0441D93C86C006AE37E /* myOwnChecked.png */; };
 		27B5B04A1D93C86C006AE37E /* myOwnPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0451D93C86C006AE37E /* myOwnPhone.png */; };
 		27B5B04B1D93C86C006AE37E /* myOwnPhoneChecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0461D93C86C006AE37E /* myOwnPhoneChecked.png */; };
@@ -1027,6 +1028,8 @@
 		278400FD1D913F0B00A46437 /* SecurityEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurityEditViewController.swift; sourceTree = "<group>"; };
 		278697991D77BACC00205ABF /* yunfumama.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = yunfumama.png; sourceTree = "<group>"; };
 		278697A21D77CAFF00205ABF /* ExtensionMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionMethod.swift; sourceTree = "<group>"; };
+		279F92C31DBF3B80004661DF /* P2PMonitorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = P2PMonitorController.h; sourceTree = "<group>"; };
+		279F92C41DBF3B80004661DF /* P2PMonitorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = P2PMonitorController.m; sourceTree = "<group>"; };
 		27B5B0441D93C86C006AE37E /* myOwnChecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnChecked.png; sourceTree = "<group>"; };
 		27B5B0451D93C86C006AE37E /* myOwnPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnPhone.png; sourceTree = "<group>"; };
 		27B5B0461D93C86C006AE37E /* myOwnPhoneChecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnPhoneChecked.png; sourceTree = "<group>"; };
@@ -2430,6 +2433,8 @@
 				27F666141D9BEBCC001F3BF6 /* BabyPushViewController.swift */,
 				27F6DBFA1D9ABB06001C63F5 /* BabyCheckViewController.swift */,
 				27830C1B1D9A19DA0036E2BC /* BabyVideoViewController.swift */,
+				279F92C31DBF3B80004661DF /* P2PMonitorController.h */,
+				279F92C41DBF3B80004661DF /* P2PMonitorController.m */,
 				27830C131D9921DA0036E2BC /* PlayMusicViewController.swift */,
 				27830C0A1D9921B60036E2BC /* BabySettingViewController.swift */,
 				27830C0B1D9921B60036E2BC /* HandleChildAccountViewController.swift */,
@@ -3125,6 +3130,7 @@
 				27020F9A1DB085AE00D3BDBE /* QNPHAssetResource.m in Sources */,
 				27F69D9B1D8CC9660035ADD2 /* LoginAgreementViewController.swift in Sources */,
 				2753E6E81D7B9B3200FDB8D0 /* XMLDictionary.m in Sources */,
+				279F92C51DBF3B80004661DF /* P2PMonitorController.m in Sources */,
 				27830C851D9A26E80036E2BC /* Utils.m in Sources */,
 				275BF5021DB9CDF100DD9BB3 /* DiaryDetailViewController.swift in Sources */,
 				27830C0D1D9921B60036E2BC /* AddChildAccountViewController.swift in Sources */,

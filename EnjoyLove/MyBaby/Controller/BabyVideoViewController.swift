@@ -10,7 +10,7 @@ import UIKit
 
 let BabyCancelClickNotification = "BabyCancelClickNotification"
 
-class BabyVideoViewController: BaseVideoViewController ,OpenGLViewDelegate{
+class BabyVideoViewController: BaseVideoViewController ,OpenGLViewDelegate,AVCaptureVideoDataOutputSampleBufferDelegate{
 
     var deviceContact:Contact!
     var baby:Baby!
@@ -27,7 +27,6 @@ class BabyVideoViewController: BaseVideoViewController ,OpenGLViewDelegate{
     private var lastValue:Int32 = 0
     private var lastTime:Int32 = 0
     
-    private var glView:VideoView!
     
 
     
@@ -38,12 +37,13 @@ class BabyVideoViewController: BaseVideoViewController ,OpenGLViewDelegate{
         
         self.initialize()
         if self.deviceContact != nil {
+            P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_CALLING
+            P2PClient.sharedClient().p2pCallType = P2PCALL_TYPE_MONITOR
             AppDelegate.sharedDefault().isDoorBellAlarm = false
             P2PClient.sharedClient().isBCalled = false
             P2PClient.sharedClient().callId = deviceContact.contactId
             P2PClient.sharedClient().callPassword = deviceContact.contactPassword
-            P2PClient.sharedClient().p2pCallType = P2PCALL_TYPE_MONITOR
-            P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_CALLING
+            
             
             let isBCalled = P2PClient.sharedClient().isBCalled
             let type = P2PClient.sharedClient().p2pCallType
@@ -344,31 +344,31 @@ class BabyVideoViewController: BaseVideoViewController ,OpenGLViewDelegate{
                 
             }
             self.isReject = false
-            NSThread.detachNewThreadSelector(#selector(self.renderView), toTarget: self, withObject: nil)
+            dispatch_queue_create("glRenderQueue", nil).queue {
+                self.isPlaying = true
+                var m_pAVFrame:UnsafeMutablePointer<GAVFrame> = nil
+                while self.isReject == false {
+                    if fgGetVideoFrameToDisplay(&m_pAVFrame) == 1 {
+                        if self.isOkRenderVideoFrame == false {
+                            self.isOkRenderVideoFrame = true
+                            self.isOkFirstRenderVideoFrame = true
+                        }
+                        if let babyVideo = self.babyVideoView {
+                            babyVideo.renderFrame(m_pAVFrame)
+                        }
+                    }
+                    usleep(10000)
+                }
+                self.isPlaying = false
+            }
             self.operationAfterRender()
         }
         
     }
     
     func renderView() -> Void {
-        self.isPlaying = true
-        dispatch_get_main_queue().queue { 
-            var m_pAVFrame:UnsafeMutablePointer<GAVFrame> = nil
-            while self.isReject == false {
-                if fgGetVideoFrameToDisplay(&m_pAVFrame) == 1 {
-                    if self.isOkRenderVideoFrame == false {
-                        self.isOkRenderVideoFrame = true
-                        self.isOkFirstRenderVideoFrame = true
-                    }
-                    if let babyVideo = self.babyVideoView {
-                        babyVideo.renderFrame(m_pAVFrame)
-                    }
-                }
-                usleep(10000)
-            }
-        }
         
-        self.isPlaying = false
+        
     }
     
     private func operationAfterRender(){

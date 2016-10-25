@@ -86,6 +86,9 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
         if self.navigationController?.viewControllers.count == 0 {
             return false
         }
+        if self.isKindOfClass(BabyVideoViewController) == true {
+            return false
+        }
         return true
     }
     

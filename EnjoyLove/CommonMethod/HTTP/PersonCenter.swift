@@ -625,7 +625,7 @@ extension ChildAccount{
      mobile		string		绑定用户手机(根据注册手机号绑定用户id)
      childName		string		子帐号用户名
      */
-    class func sendAsyncAddChildAccount(mobile:String, childName:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncAddChildAccount(mobile:String, childName:String, completionHandler:((errorCode:String?, msg:String?, idUserChildInfo:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(AddChildAccountUrl, parameters: ["mobile":mobile, "childName":childName], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
@@ -636,15 +636,18 @@ extension ChildAccount{
                     eqm.childName = childName
                     eqm.childMobile = mobile
                     ChildAccountBL.insert(eqm)
-
-                }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, idUserChildInfo: eqm.idUserChildInfo)
+                    }
+                }else{
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, idUserChildInfo: nil)
+                    }
                 }
             }
         }) { (dataTask, error) in
             if let handle = completionHandler{
-                handle(errorCode: nil, msg: error?.localizedDescription)
+                handle(errorCode: nil, msg: error?.localizedDescription, idUserChildInfo: nil)
             }
         }
     }

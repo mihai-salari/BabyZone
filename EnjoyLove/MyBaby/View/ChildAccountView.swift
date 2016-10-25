@@ -74,12 +74,15 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         let cellId = "childAccountListCellId"
         var cell = tableView.dequeueReusableCellWithIdentifier(cellId)
         if cell == nil {
-            cell = UITableViewCell.init(style: .Subtitle, reuseIdentifier: cellId)
+            cell = UITableViewCell.init(style: .Value1, reuseIdentifier: cellId)
         }
         if let resultCell = cell {
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
             resultCell.textLabel?.text = self.accountList[indexPath.section].account == nil ? "" : self.accountList[indexPath.section].account[indexPath.row].childName
+            resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(13)
+            resultCell.detailTextLabel?.text = "左滑删除"
+            resultCell.accessoryType = .DisclosureIndicator
         }
         return cell!
     }
@@ -194,9 +197,9 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         subModel.eqmAccount = "更名"
         detail.append(subModel)
         
-        var mainModel = AddChildAccount(title: "子账号设置", detail: detail)
+        let mainModel = AddChildAccount(title: "子账号设置", detail: detail)
         self.addAccountData.append(mainModel)
-        
+        /*
         detail = []
         if EquipmentsBL.findAll().count > 0 {
             detail.appendContentsOf(EquipmentsBL.findAll())
@@ -207,7 +210,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         }
         mainModel = AddChildAccount(title: "设备权限", detail: detail)
         self.addAccountData.append(mainModel)
-
+ */
         
         self.addAccountTable = UITableView.init(frame: CGRect(x: 0, y: 0, width: self.frame.width, height: ScreenHeight - navigationBarHeight), style: .Plain)
         self.addAccountTable.backgroundColor = UIColor.whiteColor()
@@ -252,27 +255,33 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(14)
             let modelData = self.addAccountData[indexPath.section].detail[indexPath.row]
             resultCell.textLabel?.text = modelData.eqmName
-            if indexPath.section == 0 {
+            
+            switch indexPath.section {
+            case 0:
                 resultCell.detailTextLabel?.text = modelData.eqmAccount
+            case 1:
+                if EquipmentsBL.findAll().count > 0 {
+                    let onSwitch = HMSwitch.init(frame: CGRect(x: self.frame.width - 90, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
+                    onSwitch.on = false
+                    onSwitch.onLabel.text = "打开"
+                    onSwitch.offLabel.text = "关闭"
+                    onSwitch.onLabel.textColor = UIColor.whiteColor()
+                    onSwitch.offLabel.textColor = UIColor.whiteColor()
+                    onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
+                    onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
+                    onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
+                    onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
+                    onSwitch.inactiveColor = UIColor.lightGrayColor()
+                    onSwitch.tag = indexPath.row + AddChildAccoutSwitchTag
+                    onSwitch.addTarget(self, action: #selector(self.equipmentOnOff(_:)), forControlEvents: .ValueChanged)
+                    resultCell.contentView.addSubview(onSwitch)
+                }else{
+                    resultCell.detailTextLabel?.text = nil
+                    resultCell.accessoryType = .None
+                }
+            default:
+                break
             }
-            
-            if indexPath.section == 1 {
-                let onSwitch = HMSwitch.init(frame: CGRect(x: self.frame.width - 90, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
-                onSwitch.on = false
-                onSwitch.onLabel.text = "打开"
-                onSwitch.offLabel.text = "关闭"
-                onSwitch.onLabel.textColor = UIColor.whiteColor()
-                onSwitch.offLabel.textColor = UIColor.whiteColor()
-                onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
-                onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
-                onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
-                onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
-                onSwitch.inactiveColor = UIColor.lightGrayColor()
-                onSwitch.tag = indexPath.row + AddChildAccoutSwitchTag
-                onSwitch.addTarget(self, action: #selector(self.equipmentOnOff(_:)), forControlEvents: .ValueChanged)
-                resultCell.contentView.addSubview(onSwitch)
-            }
-            
         }
         return cell!
     }
@@ -352,13 +361,14 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             return
         }
         HUD.showHud("正在提交...", onView: self)
-        ChildAccount.sendAsyncAddChildAccount(self.phone, childName: self.name) { [weak self](errorCode, msg) in
+        ChildAccount.sendAsyncAddChildAccount(self.phone, childName: self.name) { [weak self](errorCode, msg, userChildInfo) in
             if let weakSelf = self{
                 HUD.hideHud(weakSelf)
                 if let err = errorCode {
-                    if err == BabyZoneConfig.shared.passCode{
-                        dispatch_queue_create("refreshDataQeueu", nil).queue({ 
-//                            weakSelf.refreshData()
+                    if err == BabyZoneConfig.shared.passCode, let childInfo = userChildInfo{
+                        dispatch_queue_create("refreshDataQeueu", nil).queue({
+                            weakSelf.idUserChildInfo = childInfo
+                            weakSelf.refreshData()
                             dispatch_get_main_queue().queue({
                                 if let table = weakSelf.addAccountTable{
                                     table.reloadData()
@@ -369,13 +379,27 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
                             handle()
                         }
                     }else{
-                        HUD.showText("添加失败:\(msg)", onView: weakSelf)
+                        HUD.showText("添加失败:\(msg!)", onView: weakSelf)
                     }
                 }else{
-                    HUD.showText("添加失败:\(msg)", onView: weakSelf)
+                    HUD.showText("添加失败:\(msg!)", onView: weakSelf)
                 }
             }
         }
+    }
+    
+    private func refreshData(){
+        var detail:[Equipments] = []
+        if EquipmentsBL.findAll().count > 0 {
+            detail.appendContentsOf(EquipmentsBL.findAll())
+        }else{
+            let eqm = Equipments()
+            eqm.eqmName = "您未绑定设备"
+            eqm.eqmAccount = ""
+            detail.append(eqm)
+        }
+        let mainModel = AddChildAccount(title: "设备权限", detail: detail)
+        self.addAccountData.append(mainModel)
     }
     
 }

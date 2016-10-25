@@ -15,8 +15,10 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     var childEquipment:ChildEquipments!
     var equipment:Equipments!
     var indexPath:NSIndexPath!
-    var flag = 0
+    var flag = 0//0:编辑信息, 1:权限
     var isName:Bool = false
+    var isDetail:Bool = false
+    
     
     
     var changeResultHandler:((indexPath:NSIndexPath, result1:String?, result2: String?)->())?
@@ -30,7 +32,16 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(self, isImage: false, title: self.flag == 1 ? "设备权限" : self.equipment.eqmName, leftSel: nil, rightSel: self.flag == 0 ? #selector(self.confirmChange) : nil, rightTitle: self.flag == 0 ? "确定" : "")
+        
+        var title = "设备权限"
+        let selector = self.flag == 0 ? #selector(self.confirmChange) : nil
+        let rightItem = self.flag == 0 ? "确定" : ""
+        if isDetail == true {
+            title = self.flag == 0 ? self.childEquipment.eqmName : title
+        }else{
+            title = self.flag == 0 ? self.equipment.eqmName : title
+        }
+        self.navigationBarItem(self, isImage: false, title: title, leftSel: nil, rightSel: selector, rightTitle: rightItem)
     }
     
     override func viewDidLoad() {
@@ -53,7 +64,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             backgroundView.backgroundColor = UIColor.whiteColor()
             self.view.addSubview(backgroundView)
             
-            self.editTextField = UITextField.textField(CGRect.init(x: 10, y: 0, width: backgroundView.frame.width - 20, height: 45), title: self.equipment.eqmName, titleColor: UIColor.lightGrayColor(), seperatorColor: UIColor.clearColor(), holder: nil, clear: true)
+            self.editTextField = UITextField.textField(CGRect.init(x: 10, y: 0, width: backgroundView.frame.width - 20, height: 45), title: nil, titleColor: UIColor.lightGrayColor(), seperatorColor: UIColor.clearColor(), holder: self.isDetail == false ? self.equipment.eqmName : self.childEquipment.eqmName, clear: true)
             self.editTextField.delegate = self
             backgroundView.addSubview(self.editTextField)
             let line = UIView.init(frame: CGRect.init(x: 0, y: self.editTextField.frame.maxY, width: backgroundView.frame.width, height: 1))
@@ -96,7 +107,11 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             resultCell.textLabel?.text = self.permissionData[indexPath.row].mainItem
             
             let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 15 - 80, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 80, height: resultCell.contentView.frame.height * (2 / 3)))
-            onSwitch.on = false
+            if self.isDetail == false {
+                onSwitch.on = false
+            }else{
+                onSwitch.on = self.childEquipment.eqmStatus == "0" ? false : true
+            }
             onSwitch.onLabel.text = self.permissionData[indexPath.row].onTitle
             onSwitch.offLabel.text = self.permissionData[indexPath.row].offTitle
             onSwitch.tag = ChildPermissionSwitchTag + indexPath.row
@@ -118,6 +133,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
         textField.resignFirstResponder()
         return true
     }
+    
     
     func swithchChange(onSwitch:HMSwitch) -> Void {
         
@@ -141,8 +157,12 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             if let tf = self.editTextField {
                 tf.resignFirstResponder()
                 if let txt = tf.text {
+                    var resultText = txt
+                    if txt == "" {
+                        resultText = tf.placeholder!
+                    }
                     if self.indexPath.row == 0 && self.isName == false{
-                        if txt.isTelNumber() == false {
+                        if resultText.isTelNumber() == false {
                             HUD.showText("请输入正确的手机号", onView: self.view)
                             return
                         }

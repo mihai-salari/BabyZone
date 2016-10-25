@@ -256,7 +256,8 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
                             })
                         }
                     }
-                    permission.detail = model
+                    permission.childEquipment = model
+                    permission.isDetail = true
                     permission.indexPath = indexPath
                     if indexPath.section == 0 && indexPath.row == 0 {
                         permission.isName = true

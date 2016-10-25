@@ -288,7 +288,7 @@ class BabySettingView: UIView ,UITableViewDelegate,UITableViewDataSource{
             resultCell.textLabel?.font = UIFont.systemFontOfSize(14)
             
             if model.subItem == "0" || model.subItem == "1" {
-                let onSwitch = HMSwitch.init(frame: CGRectMake(resultCell.contentView.frame.width - 80, (CGRectGetHeight(resultCell.contentView.frame) - resultCell.contentView.frame.height * (2 / 3)) / 2, 70, resultCell.contentView.frame.height * (2 / 3)))
+                let onSwitch = HMSwitch.init(frame: CGRectMake(self.frame.width - 80, (CGRectGetHeight(resultCell.contentView.frame) - resultCell.contentView.frame.height * (2 / 3)) / 2, 70, resultCell.contentView.frame.height * (2 / 3)))
                 onSwitch.onLabel.textColor = UIColor.whiteColor()
                 onSwitch.offLabel.textColor = UIColor.whiteColor()
                 onSwitch.onLabel.font = UIFont.systemFontOfSize(8)

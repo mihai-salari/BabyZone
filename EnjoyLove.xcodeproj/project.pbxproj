@@ -2434,8 +2434,8 @@
 				27830C0A1D9921B60036E2BC /* BabySettingViewController.swift */,
 				27830C0B1D9921B60036E2BC /* HandleChildAccountViewController.swift */,
 				27830C061D9921B60036E2BC /* AddChildAccountViewController.swift */,
-				27830D4E1D9BACCA0036E2BC /* ChildPermissionViewController.swift */,
 				277E58641D9BB787002FE20C /* ChildDetailViewController.swift */,
+				27830D4E1D9BACCA0036E2BC /* ChildPermissionViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

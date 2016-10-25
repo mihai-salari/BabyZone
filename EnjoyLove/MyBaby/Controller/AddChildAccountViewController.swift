@@ -23,7 +23,7 @@ class AddChildAccountViewController: BaseViewController {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
         //#selector(self.addConfirmClick)
-        self.navigationBarItem(self, isImage: false, title: "添加", leftSel: nil, rightSel: #selector(self.addConfirmClick), rightTitle: "确定")
+        self.navigationBarItem(self, isImage: false, title: "添加子账号", leftSel: nil, rightSel: #selector(self.addConfirmClick), rightTitle: "添加")
     }
     
     
@@ -67,12 +67,15 @@ class AddChildAccountViewController: BaseViewController {
                     if let handle = weakSelf.addResultRefreshHandler{
                         handle()
                     }
-                    weakSelf.navigationController?.popViewControllerAnimated(true)
+                    weakSelf.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "确定", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(weakSelf.confirmBack))
                 }
             })
         }
     }
     
+    func confirmBack() -> Void {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
     
     /*
     // MARK: - Navigation

@@ -1257,274 +1257,292 @@
     CGFloat width = rect.size.width;
     CGFloat height = rect.size.height;
     
-    
-    
-    
-    
-}
-
--(void)initComponentForPortrait{
-    
-    //view的背景颜色
-    [self.view setBackgroundColor:UIColorFromRGB(0xf6f7f8)];
-    
-    
-    //显示状态栏
-    
-    
-    
-    //取得竖屏的rect
-    CGRect rect = [AppDelegate getScreenSizeHorizontal:NO];
-    CGFloat width = rect.size.width;
-    
-    CGFloat height = rect.size.height;
-    if(CURRENT_VERSION<7.0){
-        height +=20;
-    }
-    
-    
-    
-    //导航栏
-//    CustomTopBar *topBar = [[CustomTopBar alloc] initWithFrame:CGRectMake(0, 0, width, NAVIGATION_BAR_HEIGHT)];
-//    [topBar setBackgroundImageViewWith:[UIImage imageNamed:@"bg_navigation_bar.png"] withBackgroundColor:nil];
-//    //视频监控连接中的标题
-    NSString *deviceName = @"";
-    if ([[AppDelegate sharedDefault] dwApContactID] == 0) {
-        NSString *contactId = [[P2PClient sharedClient] callId];
-        deviceName = [NSString stringWithFormat:@"Cam%@",contactId];
-        
-        ContactDAO *contactDAO = [[ContactDAO alloc] init];
-        Contact *contact = [contactDAO isContact:contactId];
-        NSString *contactName = contact.contactName;
-//        [contactDAO release];
-        if (contactName) {
-            deviceName = contactName;
-        }
-    }else{
-        deviceName = [NSString stringWithFormat:@"Cam%d", [[AppDelegate sharedDefault] dwApContactID]];
-    }
-//    [topBar setTitle:deviceName];
-//    [topBar setBackButtonHidden:NO];
-//    [topBar setBackButtonIcon:[UIImage imageNamed:@"menuback.png"]];
-//    [topBar.backButton addTarget:self action:@selector(btnClickToBack:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:topBar];
-//    self.topBar = topBar;//全屏时，隐藏
-//    [topBar release];
-    
-    
-    //显示监控画面的载体canvasView
-    CGFloat canvasView_h = [UIScreen mainScreen].bounds.size.width * 9/16;
-    UIView *canvasView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, width, canvasView_h)];
-    canvasView.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:canvasView];
-    self.canvasView = canvasView;
-    self.canvasframe = canvasView.frame;
-//    [canvasView release];
+    self.canvasView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    self.canvasView.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:self.canvasView];
+    //    [canvasView release];
     //视频监控连接中的背景图片
     NSString *filePath = [Utils getHeaderFilePathWithId:[[P2PClient sharedClient] callId]];
     UIImage *headImg = [UIImage imageWithContentsOfFile:filePath];
     if(headImg==nil){
-        headImg = [UIImage imageNamed:@"ic_header.png"];
+        headImg = [UIImage imageNamed:@"babySleep.png"];
     }
     self.canvasView.layer.contents = (id)headImg.CGImage;
     
-    
-    //视频监控连接中或者连接失败的文字提示，以及旋转或者重连图片
-    UIButton *promptButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    promptButton.frame = CGRectMake(0.0, 0.0, self.canvasView.frame.size.width, self.canvasView.frame.size.height);
-    promptButton.backgroundColor = [UIColor clearColor];
-    promptButton.tag = PROMPT_BUTTON_TAG;
-    [promptButton addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [self.canvasView addSubview:promptButton];
-    self.promptButton = promptButton;
-    //文字frame
-    NSString *labelTipText = [NSString stringWithFormat:@"%@",NSLocalizedString(@"玩命加载中...", nil)];
-    CGSize size = [labelTipText sizeWithFont:XFontBold_16];
-    CGFloat labelTip_w = size.width+10.0;
-    CGFloat labelTip_h = size.height;
-    //图片frame
-    CGFloat progressView_wh = LOADINGPRESSVIEW_WIDTH_HEIGHT;
-    CGFloat progressView_y = (self.canvasView.frame.size.height-labelTip_h-progressView_wh)/2;
-    //旋转或者重连图片
-////    ProgressImageView *progressView = [[ProgressImageView alloc] initWithFrame:CGRectMake((width-progressView_wh)/2, progressView_y, progressView_wh, progressView_wh)];
-////    progressView.backgroundView.image = [UIImage imageNamed:@"monitor_press.png"];
-////    [self.promptButton addSubview:progressView];
-////    [progressView start];
-//    self.yProgressView = progressView;
-//    [progressView release];
-    //视频监控连接中或者连接失败的文字提示
-    UILabel* labelTip = [[UILabel alloc] initWithFrame:CGRectMake((width-labelTip_w)/2, progressView_y+progressView_wh, labelTip_w, labelTip_h)];
-    labelTip.backgroundColor = [UIColor clearColor];
-    labelTip.text = [NSString stringWithFormat:@"%@",NSLocalizedString(@"monitor_out_prompt", nil)];
-    labelTip.textAlignment = NSTextAlignmentCenter;
-    labelTip.font = XFontBold_16;
-    labelTip.textColor = XWhite;
-    [self.promptButton addSubview:labelTip];
-    self.labelTip = labelTip;
-//    [labelTip release];
-    
-    
-    
-    //显示监控的画布OpenGLView
-    OpenGLView *glView = [[OpenGLView alloc] init];
-    glView.frame = CGRectMake(0.0, 0.0, self.canvasView.frame.size.width, self.canvasView.frame.size.height);
-    self.remoteView = glView;
-    self.remoteView.delegate = self;
-    [self.remoteView.layer setMasksToBounds:YES];
-    [self.canvasView addSubview:self.remoteView];
-//    [glView release];
-    
-    //上划手势
-    UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
-    [swipeGestureUp setDirection:UISwipeGestureRecognizerDirectionUp];
-    [swipeGestureUp setCancelsTouchesInView:YES];
-    [swipeGestureUp setDelaysTouchesEnded:YES];
-    [_remoteView addGestureRecognizer:swipeGestureUp];
-    
-    //下划手势
-    UISwipeGestureRecognizer *swipeGestureDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown:)];
-    [swipeGestureDown setDirection:UISwipeGestureRecognizerDirectionDown];
-    
-    [swipeGestureDown setCancelsTouchesInView:YES];
-    [swipeGestureDown setDelaysTouchesEnded:YES];
-    [_remoteView addGestureRecognizer:swipeGestureDown];
-    
-    //左划手势
-    UISwipeGestureRecognizer *swipeGestureLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
-    [swipeGestureLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [swipeGestureLeft setCancelsTouchesInView:YES];
-    [swipeGestureLeft setDelaysTouchesEnded:YES];
-    [_remoteView addGestureRecognizer:swipeGestureLeft];
-    
-    //右划手势
-    UISwipeGestureRecognizer *swipeGestureRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
-    [swipeGestureRight setDirection:UISwipeGestureRecognizerDirectionRight];
-    [swipeGestureRight setCancelsTouchesInView:YES];
-    [swipeGestureRight setDelaysTouchesEnded:YES];
-    [_remoteView addGestureRecognizer:swipeGestureRight];
-    
-//    [swipeGestureUp release];
-//    [swipeGestureDown release];
-//    [swipeGestureLeft release];
-//    [swipeGestureRight release];
-    
-    //左边的按住说话弹出的声音图标
-    //进入横屏时，调整frame
-    //退出横屏时，也调整frame
-    UIView *pressView = [[UIView alloc] initWithFrame:CGRectMake(10, self.canvasframe.size.height+NAVIGATION_BAR_HEIGHT-PRESS_LAYOUT_WIDTH_AND_HEIGHT, PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, PRESS_LAYOUT_WIDTH_AND_HEIGHT)];
-    
-    UIImageView *pressLeftView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, PRESS_LAYOUT_WIDTH_AND_HEIGHT)];
-    pressLeftView.image = [UIImage imageNamed:@"ic_voice.png"];
-    [pressView addSubview:pressLeftView];
-//    [pressLeftView release];
-    
-    UIImageView *pressRightView = [[UIImageView alloc] initWithFrame:CGRectMake(PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, 0, PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, PRESS_LAYOUT_WIDTH_AND_HEIGHT)];
-    NSArray *imagesArray = [NSArray arrayWithObjects:[UIImage imageNamed:@"amp1.png"],[UIImage imageNamed:@"amp2.png"],[UIImage imageNamed:@"amp3.png"],[UIImage imageNamed:@"amp4.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp7.png"],[UIImage imageNamed:@"amp4.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp3.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp3.png"],[UIImage imageNamed:@"amp4.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp5.png"],nil];
-    pressRightView.animationImages = imagesArray;
-    pressRightView.animationDuration = ((CGFloat)[imagesArray count])*200.0f/1000.0f;
-    pressRightView.animationRepeatCount = 0;
-    [pressRightView startAnimating];
-    [pressView addSubview:pressRightView];
-//    [pressRightView release];
-    
-    [self.view addSubview:pressView];
-    [pressView setHidden:YES];
-    self.pressView = pressView;
-//    [pressView release];
-    
-    
-    
-    //声音、横屏工具栏
-    UIView *midToolHView = [[UIView alloc] initWithFrame:CGRectMake(0.0, CGRectGetMaxY(self.canvasView.frame), width, 79.0/SCREEN_SCALE)];
-    midToolHView.backgroundColor = XWhite;
-    [self.view addSubview:midToolHView];
-    self.midToolHView = midToolHView;//全屏时，隐藏
-//    [midToolHView release];
-    //2个像素点的线
-    UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0.0,self.midToolHView.frame.size.height-ONE_PIXEL_SIZE*2, width, ONE_PIXEL_SIZE*2)];
-    bottomLineView.backgroundColor = UIColorFromRGB(0x000000);
-    [bottomLineView setAlpha:0.2];
-    [self.midToolHView addSubview:bottomLineView];
-//    [bottomLineView release];
-    //声音按钮
-    UIButton *soundButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
-    soundButtonH.frame = CGRectMake(101.0/SCREEN_SCALE, (self.midToolHView.frame.size.height-22.0)/2, 22.0, 22.0);
-    soundButtonH.tag = SOUND_BUTTON_H_TAG;
-    [soundButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [self.midToolHView addSubview:soundButtonH];
-    //self.soundButtonH = soundButtonH;
-    //声音按钮图片
-    UIImage *soundImageH = [UIImage imageNamed:@"monitor_sound_on_h.png"];
-    UIImageView *soundImageViewH = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, (soundButtonH.frame.size.height-soundImageH.size.height/SCREEN_SCALE)/2, soundImageH.size.width/SCREEN_SCALE, soundImageH.size.height/SCREEN_SCALE)];
-    soundImageViewH.image = soundImageH;
-    [soundButtonH addSubview:soundImageViewH];
-//    [soundImageViewH release];
-    //横屏按钮
-    UIButton *switchScreenButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
-    switchScreenButtonH.frame = CGRectMake(self.midToolHView.frame.size.width-101.0/SCREEN_SCALE-22.0, (self.midToolHView.frame.size.height-22.0)/2, 22.0, 22.0);
-    switchScreenButtonH.tag = SWITCH_SCREEN_BUTTON_H_TAG;
-    [switchScreenButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [self.midToolHView addSubview:switchScreenButtonH];
-    //self.switchScreenButtonH = switchScreenButtonH;
-    //横屏按钮图片
-    UIImage *switchScreenImageH = [UIImage imageNamed:@"monitor_switch_screen_img_h.png"];
-    UIImageView *switchScreenImageViewH = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, (switchScreenButtonH.frame.size.height-switchScreenImageH.size.height/SCREEN_SCALE)/2, switchScreenImageH.size.width/SCREEN_SCALE, switchScreenImageH.size.height/SCREEN_SCALE)];
-    switchScreenImageViewH.image = switchScreenImageH;
-    [switchScreenButtonH addSubview:switchScreenImageViewH];
-//    [switchScreenImageViewH release];
-    
-    
-    //布防撤防、对讲、截图工具栏
-    UIView *bottomToolHView = [[UIView alloc] initWithFrame:CGRectMake(0.0, CGRectGetMaxY(self.midToolHView.frame), width, height-CGRectGetMaxY(self.midToolHView.frame))];
-    bottomToolHView.backgroundColor = UIColorFromRGB(0xf6f7f8);
-    [self.view addSubview:bottomToolHView];
-    self.bottomToolHView = bottomToolHView;//全屏时，隐藏
-//    [bottomToolHView release];
-    
-    //布防撤防、载图按钮宽高
-    CGFloat defenceScreenshotBtnH_wh = 70.0;
-    //对讲按钮的宽高
-    CGFloat talkBtnH_wh = 110.0;
-    //按钮之间的间隔
-    CGFloat spacing_btn_button = 20.0/SCREEN_SCALE;
-    //左右的边距
-    CGFloat left_right_margin = (width-defenceScreenshotBtnH_wh*2-talkBtnH_wh-spacing_btn_button*2)/2;
-    //布防撤防按钮
-    UIButton *defenceButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
-    defenceButtonH.frame = CGRectMake(left_right_margin, (self.bottomToolHView.frame.size.height-defenceScreenshotBtnH_wh)/2, defenceScreenshotBtnH_wh, defenceScreenshotBtnH_wh);
-    defenceButtonH.tag = DEFENCE_BUTTON_H_TAG;
-    [defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h.png"] forState:UIControlStateNormal];
-    [defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h_p.png"] forState:UIControlStateHighlighted];
-    //不可以点击，等到获取到布防状态，设置为可点且显示相应的图标
-    defenceButtonH.enabled = NO;
-    [defenceButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bottomToolHView addSubview:defenceButtonH];
-    self.defenceButtonH = defenceButtonH;
-    //对讲按钮
-    UIButton *talkButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
-    talkButtonH.frame = CGRectMake(left_right_margin+defenceScreenshotBtnH_wh+spacing_btn_button, (self.bottomToolHView.frame.size.height-talkBtnH_wh)/2, talkBtnH_wh, talkBtnH_wh);
-    talkButtonH.tag = TALK_BUTTON_H_TAG;
-    [talkButtonH setImage:[UIImage imageNamed:@"monitor_speak_img_h.png"] forState:UIControlStateNormal];
-    [talkButtonH setImage:[UIImage imageNamed:@"monitor_speak_img_h_p.png"] forState:UIControlStateHighlighted];
-    [talkButtonH setImage:[UIImage imageNamed:@"monitor_speak_img_h_p.png"] forState:UIControlStateSelected];
-    
-    [talkButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [talkButtonH addTarget:self action:@selector(onVerticalBtnTouchDown:) forControlEvents:UIControlEventTouchDown];
-    [talkButtonH addTarget:self action:@selector(onVerticalBtnTouchCancel:) forControlEvents:UIControlEventTouchCancel];
-    [talkButtonH addTarget:self action:@selector(onVerticalBtnTouchCancel:) forControlEvents:UIControlEventTouchDragExit];
-    [self.bottomToolHView addSubview:talkButtonH];
-    //载图按钮
-    UIButton *screenshotBtnH = [UIButton buttonWithType:UIButtonTypeCustom];
-    screenshotBtnH.frame = CGRectMake(CGRectGetMaxX(talkButtonH.frame)+spacing_btn_button, (self.bottomToolHView.frame.size.height-defenceScreenshotBtnH_wh)/2, defenceScreenshotBtnH_wh, defenceScreenshotBtnH_wh);
-    screenshotBtnH.tag = SCREENSHOT_BUTTON_H_TAG;
-    [screenshotBtnH setImage:[UIImage imageNamed:@"monitor_screenshot_h.png"] forState:UIControlStateNormal];
-    [screenshotBtnH setImage:[UIImage imageNamed:@"monitor_screenshot_h_p.png"] forState:UIControlStateHighlighted];
-    
-    [screenshotBtnH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
-    [self.bottomToolHView addSubview:screenshotBtnH];
+    self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.cancelButton.frame = CGRectMake(30, 30, 50, 50);
+    [self.cancelButton setImage:[UIImage imageWithName:@"baby_cancel.png"] forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self action:@selector(turnBackButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.canvasView addSubview:self.cancelButton];
 }
 
+//-(void)initComponentForPortrait{
+//    
+//    //view的背景颜色
+//    [self.view setBackgroundColor:UIColorFromRGB(0xf6f7f8)];
+//    
+//    
+//    //显示状态栏
+//    
+//    
+//    
+//    //取得竖屏的rect
+//    CGRect rect = [AppDelegate getScreenSizeHorizontal:NO];
+//    CGFloat width = rect.size.width;
+//    
+//    CGFloat height = rect.size.height;
+//    if(CURRENT_VERSION<7.0){
+//        height +=20;
+//    }
+//    
+//    
+//    
+//    //导航栏
+////    CustomTopBar *topBar = [[CustomTopBar alloc] initWithFrame:CGRectMake(0, 0, width, NAVIGATION_BAR_HEIGHT)];
+////    [topBar setBackgroundImageViewWith:[UIImage imageNamed:@"bg_navigation_bar.png"] withBackgroundColor:nil];
+////    //视频监控连接中的标题
+//    NSString *deviceName = @"";
+//    if ([[AppDelegate sharedDefault] dwApContactID] == 0) {
+//        NSString *contactId = [[P2PClient sharedClient] callId];
+//        deviceName = [NSString stringWithFormat:@"Cam%@",contactId];
+//        
+//        ContactDAO *contactDAO = [[ContactDAO alloc] init];
+//        Contact *contact = [contactDAO isContact:contactId];
+//        NSString *contactName = contact.contactName;
+////        [contactDAO release];
+//        if (contactName) {
+//            deviceName = contactName;
+//        }
+//    }else{
+//        deviceName = [NSString stringWithFormat:@"Cam%d", [[AppDelegate sharedDefault] dwApContactID]];
+//    }
+////    [topBar setTitle:deviceName];
+////    [topBar setBackButtonHidden:NO];
+////    [topBar setBackButtonIcon:[UIImage imageNamed:@"menuback.png"]];
+////    [topBar.backButton addTarget:self action:@selector(btnClickToBack:) forControlEvents:UIControlEventTouchUpInside];
+////    [self.view addSubview:topBar];
+////    self.topBar = topBar;//全屏时，隐藏
+////    [topBar release];
+//    
+//    
+//    //显示监控画面的载体canvasView
+//    CGFloat canvasView_h = [UIScreen mainScreen].bounds.size.width * 9/16;
+//    UIView *canvasView = [[UIView alloc] initWithFrame:CGRectMake(0, NAVIGATION_BAR_HEIGHT, width, canvasView_h)];
+//    canvasView.backgroundColor = [UIColor blackColor];
+//    [self.view addSubview:canvasView];
+//    self.canvasView = canvasView;
+//    self.canvasframe = canvasView.frame;
+////    [canvasView release];
+//    //视频监控连接中的背景图片
+//    NSString *filePath = [Utils getHeaderFilePathWithId:[[P2PClient sharedClient] callId]];
+//    UIImage *headImg = [UIImage imageWithContentsOfFile:filePath];
+//    if(headImg==nil){
+//        headImg = [UIImage imageNamed:@"ic_header.png"];
+//    }
+//    self.canvasView.layer.contents = (id)headImg.CGImage;
+//    
+//    
+//    //视频监控连接中或者连接失败的文字提示，以及旋转或者重连图片
+//    UIButton *promptButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    promptButton.frame = CGRectMake(0.0, 0.0, self.canvasView.frame.size.width, self.canvasView.frame.size.height);
+//    promptButton.backgroundColor = [UIColor clearColor];
+//    promptButton.tag = PROMPT_BUTTON_TAG;
+//    [promptButton addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.canvasView addSubview:promptButton];
+//    self.promptButton = promptButton;
+//    //文字frame
+//    NSString *labelTipText = [NSString stringWithFormat:@"%@",NSLocalizedString(@"玩命加载中...", nil)];
+//    CGSize size = [labelTipText sizeWithFont:XFontBold_16];
+//    CGFloat labelTip_w = size.width+10.0;
+//    CGFloat labelTip_h = size.height;
+//    //图片frame
+//    CGFloat progressView_wh = LOADINGPRESSVIEW_WIDTH_HEIGHT;
+//    CGFloat progressView_y = (self.canvasView.frame.size.height-labelTip_h-progressView_wh)/2;
+//    //旋转或者重连图片
+//////    ProgressImageView *progressView = [[ProgressImageView alloc] initWithFrame:CGRectMake((width-progressView_wh)/2, progressView_y, progressView_wh, progressView_wh)];
+//////    progressView.backgroundView.image = [UIImage imageNamed:@"monitor_press.png"];
+//////    [self.promptButton addSubview:progressView];
+//////    [progressView start];
+////    self.yProgressView = progressView;
+////    [progressView release];
+//    //视频监控连接中或者连接失败的文字提示
+//    UILabel* labelTip = [[UILabel alloc] initWithFrame:CGRectMake((width-labelTip_w)/2, progressView_y+progressView_wh, labelTip_w, labelTip_h)];
+//    labelTip.backgroundColor = [UIColor clearColor];
+//    labelTip.text = [NSString stringWithFormat:@"%@",NSLocalizedString(@"monitor_out_prompt", nil)];
+//    labelTip.textAlignment = NSTextAlignmentCenter;
+//    labelTip.font = XFontBold_16;
+//    labelTip.textColor = XWhite;
+//    [self.promptButton addSubview:labelTip];
+//    self.labelTip = labelTip;
+////    [labelTip release];
+//    
+//    
+//    
+//    //显示监控的画布OpenGLView
+//    OpenGLView *glView = [[OpenGLView alloc] init];
+//    glView.frame = CGRectMake(0.0, 0.0, self.canvasView.frame.size.width, self.canvasView.frame.size.height);
+//    self.remoteView = glView;
+//    self.remoteView.delegate = self;
+//    [self.remoteView.layer setMasksToBounds:YES];
+//    [self.canvasView addSubview:self.remoteView];
+////    [glView release];
+//    
+//    //上划手势
+//    UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
+//    [swipeGestureUp setDirection:UISwipeGestureRecognizerDirectionUp];
+//    [swipeGestureUp setCancelsTouchesInView:YES];
+//    [swipeGestureUp setDelaysTouchesEnded:YES];
+//    [_remoteView addGestureRecognizer:swipeGestureUp];
+//    
+//    //下划手势
+//    UISwipeGestureRecognizer *swipeGestureDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown:)];
+//    [swipeGestureDown setDirection:UISwipeGestureRecognizerDirectionDown];
+//    
+//    [swipeGestureDown setCancelsTouchesInView:YES];
+//    [swipeGestureDown setDelaysTouchesEnded:YES];
+//    [_remoteView addGestureRecognizer:swipeGestureDown];
+//    
+//    //左划手势
+//    UISwipeGestureRecognizer *swipeGestureLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
+//    [swipeGestureLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+//    [swipeGestureLeft setCancelsTouchesInView:YES];
+//    [swipeGestureLeft setDelaysTouchesEnded:YES];
+//    [_remoteView addGestureRecognizer:swipeGestureLeft];
+//    
+//    //右划手势
+//    UISwipeGestureRecognizer *swipeGestureRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+//    [swipeGestureRight setDirection:UISwipeGestureRecognizerDirectionRight];
+//    [swipeGestureRight setCancelsTouchesInView:YES];
+//    [swipeGestureRight setDelaysTouchesEnded:YES];
+//    [_remoteView addGestureRecognizer:swipeGestureRight];
+//    
+////    [swipeGestureUp release];
+////    [swipeGestureDown release];
+////    [swipeGestureLeft release];
+////    [swipeGestureRight release];
+//    
+//    //左边的按住说话弹出的声音图标
+//    //进入横屏时，调整frame
+//    //退出横屏时，也调整frame
+//    UIView *pressView = [[UIView alloc] initWithFrame:CGRectMake(10, self.canvasframe.size.height+NAVIGATION_BAR_HEIGHT-PRESS_LAYOUT_WIDTH_AND_HEIGHT, PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, PRESS_LAYOUT_WIDTH_AND_HEIGHT)];
+//    
+//    UIImageView *pressLeftView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, PRESS_LAYOUT_WIDTH_AND_HEIGHT)];
+//    pressLeftView.image = [UIImage imageNamed:@"ic_voice.png"];
+//    [pressView addSubview:pressLeftView];
+////    [pressLeftView release];
+//    
+//    UIImageView *pressRightView = [[UIImageView alloc] initWithFrame:CGRectMake(PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, 0, PRESS_LAYOUT_WIDTH_AND_HEIGHT/2, PRESS_LAYOUT_WIDTH_AND_HEIGHT)];
+//    NSArray *imagesArray = [NSArray arrayWithObjects:[UIImage imageNamed:@"amp1.png"],[UIImage imageNamed:@"amp2.png"],[UIImage imageNamed:@"amp3.png"],[UIImage imageNamed:@"amp4.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp7.png"],[UIImage imageNamed:@"amp4.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp3.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp6.png"],[UIImage imageNamed:@"amp3.png"],[UIImage imageNamed:@"amp4.png"],[UIImage imageNamed:@"amp5.png"],[UIImage imageNamed:@"amp5.png"],nil];
+//    pressRightView.animationImages = imagesArray;
+//    pressRightView.animationDuration = ((CGFloat)[imagesArray count])*200.0f/1000.0f;
+//    pressRightView.animationRepeatCount = 0;
+//    [pressRightView startAnimating];
+//    [pressView addSubview:pressRightView];
+////    [pressRightView release];
+//    
+//    [self.view addSubview:pressView];
+//    [pressView setHidden:YES];
+//    self.pressView = pressView;
+////    [pressView release];
+//    
+//    
+//    
+//    //声音、横屏工具栏
+//    UIView *midToolHView = [[UIView alloc] initWithFrame:CGRectMake(0.0, CGRectGetMaxY(self.canvasView.frame), width, 79.0/SCREEN_SCALE)];
+//    midToolHView.backgroundColor = XWhite;
+//    [self.view addSubview:midToolHView];
+//    self.midToolHView = midToolHView;//全屏时，隐藏
+////    [midToolHView release];
+//    //2个像素点的线
+//    UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0.0,self.midToolHView.frame.size.height-ONE_PIXEL_SIZE*2, width, ONE_PIXEL_SIZE*2)];
+//    bottomLineView.backgroundColor = UIColorFromRGB(0x000000);
+//    [bottomLineView setAlpha:0.2];
+//    [self.midToolHView addSubview:bottomLineView];
+////    [bottomLineView release];
+//    //声音按钮
+//    UIButton *soundButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
+//    soundButtonH.frame = CGRectMake(101.0/SCREEN_SCALE, (self.midToolHView.frame.size.height-22.0)/2, 22.0, 22.0);
+//    soundButtonH.tag = SOUND_BUTTON_H_TAG;
+//    [soundButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.midToolHView addSubview:soundButtonH];
+//    //self.soundButtonH = soundButtonH;
+//    //声音按钮图片
+//    UIImage *soundImageH = [UIImage imageNamed:@"monitor_sound_on_h.png"];
+//    UIImageView *soundImageViewH = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, (soundButtonH.frame.size.height-soundImageH.size.height/SCREEN_SCALE)/2, soundImageH.size.width/SCREEN_SCALE, soundImageH.size.height/SCREEN_SCALE)];
+//    soundImageViewH.image = soundImageH;
+//    [soundButtonH addSubview:soundImageViewH];
+////    [soundImageViewH release];
+//    //横屏按钮
+//    UIButton *switchScreenButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
+//    switchScreenButtonH.frame = CGRectMake(self.midToolHView.frame.size.width-101.0/SCREEN_SCALE-22.0, (self.midToolHView.frame.size.height-22.0)/2, 22.0, 22.0);
+//    switchScreenButtonH.tag = SWITCH_SCREEN_BUTTON_H_TAG;
+//    [switchScreenButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.midToolHView addSubview:switchScreenButtonH];
+//    //self.switchScreenButtonH = switchScreenButtonH;
+//    //横屏按钮图片
+//    UIImage *switchScreenImageH = [UIImage imageNamed:@"monitor_switch_screen_img_h.png"];
+//    UIImageView *switchScreenImageViewH = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, (switchScreenButtonH.frame.size.height-switchScreenImageH.size.height/SCREEN_SCALE)/2, switchScreenImageH.size.width/SCREEN_SCALE, switchScreenImageH.size.height/SCREEN_SCALE)];
+//    switchScreenImageViewH.image = switchScreenImageH;
+//    [switchScreenButtonH addSubview:switchScreenImageViewH];
+////    [switchScreenImageViewH release];
+//    
+//    
+//    //布防撤防、对讲、截图工具栏
+//    UIView *bottomToolHView = [[UIView alloc] initWithFrame:CGRectMake(0.0, CGRectGetMaxY(self.midToolHView.frame), width, height-CGRectGetMaxY(self.midToolHView.frame))];
+//    bottomToolHView.backgroundColor = UIColorFromRGB(0xf6f7f8);
+//    [self.view addSubview:bottomToolHView];
+//    self.bottomToolHView = bottomToolHView;//全屏时，隐藏
+////    [bottomToolHView release];
+//    
+//    //布防撤防、载图按钮宽高
+//    CGFloat defenceScreenshotBtnH_wh = 70.0;
+//    //对讲按钮的宽高
+//    CGFloat talkBtnH_wh = 110.0;
+//    //按钮之间的间隔
+//    CGFloat spacing_btn_button = 20.0/SCREEN_SCALE;
+//    //左右的边距
+//    CGFloat left_right_margin = (width-defenceScreenshotBtnH_wh*2-talkBtnH_wh-spacing_btn_button*2)/2;
+//    //布防撤防按钮
+//    UIButton *defenceButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
+//    defenceButtonH.frame = CGRectMake(left_right_margin, (self.bottomToolHView.frame.size.height-defenceScreenshotBtnH_wh)/2, defenceScreenshotBtnH_wh, defenceScreenshotBtnH_wh);
+//    defenceButtonH.tag = DEFENCE_BUTTON_H_TAG;
+//    [defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h.png"] forState:UIControlStateNormal];
+//    [defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h_p.png"] forState:UIControlStateHighlighted];
+//    //不可以点击，等到获取到布防状态，设置为可点且显示相应的图标
+//    defenceButtonH.enabled = NO;
+//    [defenceButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.bottomToolHView addSubview:defenceButtonH];
+//    self.defenceButtonH = defenceButtonH;
+//    //对讲按钮
+//    UIButton *talkButtonH = [UIButton buttonWithType:UIButtonTypeCustom];
+//    talkButtonH.frame = CGRectMake(left_right_margin+defenceScreenshotBtnH_wh+spacing_btn_button, (self.bottomToolHView.frame.size.height-talkBtnH_wh)/2, talkBtnH_wh, talkBtnH_wh);
+//    talkButtonH.tag = TALK_BUTTON_H_TAG;
+//    [talkButtonH setImage:[UIImage imageNamed:@"monitor_speak_img_h.png"] forState:UIControlStateNormal];
+//    [talkButtonH setImage:[UIImage imageNamed:@"monitor_speak_img_h_p.png"] forState:UIControlStateHighlighted];
+//    [talkButtonH setImage:[UIImage imageNamed:@"monitor_speak_img_h_p.png"] forState:UIControlStateSelected];
+//    
+//    [talkButtonH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+//    [talkButtonH addTarget:self action:@selector(onVerticalBtnTouchDown:) forControlEvents:UIControlEventTouchDown];
+//    [talkButtonH addTarget:self action:@selector(onVerticalBtnTouchCancel:) forControlEvents:UIControlEventTouchCancel];
+//    [talkButtonH addTarget:self action:@selector(onVerticalBtnTouchCancel:) forControlEvents:UIControlEventTouchDragExit];
+//    [self.bottomToolHView addSubview:talkButtonH];
+//    //载图按钮
+//    UIButton *screenshotBtnH = [UIButton buttonWithType:UIButtonTypeCustom];
+//    screenshotBtnH.frame = CGRectMake(CGRectGetMaxX(talkButtonH.frame)+spacing_btn_button, (self.bottomToolHView.frame.size.height-defenceScreenshotBtnH_wh)/2, defenceScreenshotBtnH_wh, defenceScreenshotBtnH_wh);
+//    screenshotBtnH.tag = SCREENSHOT_BUTTON_H_TAG;
+//    [screenshotBtnH setImage:[UIImage imageNamed:@"monitor_screenshot_h.png"] forState:UIControlStateNormal];
+//    [screenshotBtnH setImage:[UIImage imageNamed:@"monitor_screenshot_h_p.png"] forState:UIControlStateHighlighted];
+//    
+//    [screenshotBtnH addTarget:self action:@selector(onVerticalBtnPress:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.bottomToolHView addSubview:screenshotBtnH];
+//}
+
 #pragma mark 按下按钮时，响应
+
+- (void)turnBackButtonClick{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 -(void)onVerticalBtnTouchCancel:(UIButton *)button{
     switch(button.tag){
         case SOUND_BUTTON_H_TAG://声音
@@ -2510,33 +2528,18 @@
 
 #pragma mark 屏幕支持的旋转方向
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interface {
-    return (interface == UIInterfaceOrientationPortrait || interface == UIInterfaceOrientationLandscapeRight);
+    return (interface == UIInterfaceOrientationLandscapeLeft || interface == UIInterfaceOrientationLandscapeRight);
 }
 
-#ifdef IOS6
-
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationLandscapeRight;
-}
-
-- (BOOL)shouldAutorotate {
-    return NO;
-}
-
-- (NSUInteger)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscapeRight;
-}
-#endif
 
 #pragma mark 支持哪些方向
 -(UIInterfaceOrientationMask)supportedInterfaceOrientations{
-    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscapeRight;
+    return UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskLandscapeRight;
 }
 
 #pragma mark 一开始希望的屏幕方向
 -(UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
-    return UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationLandscapeRight;
 }
 
 #pragma mark - 屏幕旋转

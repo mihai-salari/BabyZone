@@ -82,11 +82,10 @@ class BabyMainViewController: BaseVideoViewController {
             self.babyView.removeFromSuperview()
             self.babyView = nil
         }
-        self.view.frame = CGRect(x: 0, y: 0, width: ScreenWidth, height: ScreenHeight)
+        
         self.babyView = BabyView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: self.view.frame.height - navAndTabHeight), data: self.babyData, playCompletionHandler: { [weak self](baby) in
             if let weakSelf = self{
-                let babyVideo = BabyVideoViewController()
-                weakSelf.navigationController?.pushViewController(babyVideo, animated: true)
+                
             }
         }) { [weak self](baby) in
             if let weakSelf = self{

@@ -60,7 +60,6 @@
 @property (nonatomic) BOOL isScale;//监控界面缩放
 
 @property (strong, nonatomic) UIView *bottomView;//重新调整监控画面
-@property (strong, nonatomic) UIView *pressView;
 @property (nonatomic) BOOL isTalking;
 
 @property (strong, nonatomic) UIView *controllerRight;
@@ -456,9 +455,6 @@
     }
 }
 
-#define MESG_SET_GPIO_PERMISSION_DENIED 86
-#define MESG_GPIO_CTRL_QUEUE_IS_FULL 87
-#define MESG_SET_DEVICE_NOT_SUPPORT 255
 
 - (void)receiveRemoteMessage:(NSNotification *)notification{
     NSDictionary *parameter = [notification userInfo];
@@ -660,19 +656,10 @@
     //放在渲染之后
     if([AppDelegate sharedDefault].isDoorBellAlarm){//门铃推送,点按开关说话
         self.isTalking = YES;
-        [self.pressView setHidden:NO];
         [[PAIOUnit sharedUnit] setSpeckState:NO];
     }else{
         self.isTalking = NO;
-        [self.pressView setHidden:YES];
         [[PAIOUnit sharedUnit] setSpeckState:YES];
-    }
-    //竖屏对讲按钮
-    UIButton *talkButtonH = (UIButton *)[self.bottomToolHView viewWithTag:TALK_BUTTON_H_TAG];
-    if([AppDelegate sharedDefault].isDoorBellAlarm){//门铃推送
-        talkButtonH.selected = YES;
-    }else{
-        talkButtonH.selected = NO;
     }
     //非本地设备
 //    NSInteger deviceType1 = [AppDelegate sharedDefault].contact.contactType;

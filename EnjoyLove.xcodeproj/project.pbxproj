@@ -60,7 +60,6 @@
 		2702105A1DB8679100D3BDBE /* LocationCityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270210591DB8679100D3BDBE /* LocationCityViewController.swift */; };
 		270210611DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = 2702105E1DBD9CF300D3BDBE /* UIScrollView+SVInfiniteScrolling.m */; };
 		270210621DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = 270210601DBD9CF300D3BDBE /* UIScrollView+SVPullToRefresh.m */; };
-		270210631DBE12C700D3BDBE /* BabyVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27830C1B1D9A19DA0036E2BC /* BabyVideoViewController.swift */; };
 		270BC50A1D8F7FD400C3DCCE /* ProblemDetail.html in Resources */ = {isa = PBXBuildFile; fileRef = 270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */; };
 		270F6F621D7DA61F000DFEA0 /* audioRecord.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F5F1D7DA61F000DFEA0 /* audioRecord.png */; };
 		270F6F631D7DA61F000DFEA0 /* musicPlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F601D7DA61F000DFEA0 /* musicPlay.png */; };
@@ -296,7 +295,6 @@
 		27830C121D9921B60036E2BC /* HandleChildAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27830C0B1D9921B60036E2BC /* HandleChildAccountViewController.swift */; };
 		27830C141D9921DA0036E2BC /* PlayMusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27830C131D9921DA0036E2BC /* PlayMusicViewController.swift */; };
 		27830C191D9A07660036E2BC /* music_pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 27830C171D9A07660036E2BC /* music_pause.png */; };
-		27830C1C1D9A19DA0036E2BC /* BabyVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27830C1B1D9A19DA0036E2BC /* BabyVideoViewController.swift */; };
 		27830C781D9A24900036E2BC /* CameraManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830C221D9A24900036E2BC /* CameraManager.m */; };
 		27830C791D9A24900036E2BC /* des2.c in Sources */ = {isa = PBXBuildFile; fileRef = 27830C241D9A24900036E2BC /* des2.c */; };
 		27830C7A1D9A24900036E2BC /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830C281D9A24900036E2BC /* OpenGLView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -884,7 +882,6 @@
 		27830C0B1D9921B60036E2BC /* HandleChildAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandleChildAccountViewController.swift; sourceTree = "<group>"; };
 		27830C131D9921DA0036E2BC /* PlayMusicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayMusicViewController.swift; sourceTree = "<group>"; };
 		27830C171D9A07660036E2BC /* music_pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = music_pause.png; sourceTree = "<group>"; };
-		27830C1B1D9A19DA0036E2BC /* BabyVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyVideoViewController.swift; sourceTree = "<group>"; };
 		27830C211D9A24900036E2BC /* CameraManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraManager.h; sourceTree = "<group>"; };
 		27830C221D9A24900036E2BC /* CameraManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraManager.m; sourceTree = "<group>"; };
 		27830C231D9A24900036E2BC /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
@@ -2432,7 +2429,6 @@
 				27830C081D9921B60036E2BC /* BabyMainViewController.swift */,
 				27F666141D9BEBCC001F3BF6 /* BabyPushViewController.swift */,
 				27F6DBFA1D9ABB06001C63F5 /* BabyCheckViewController.swift */,
-				27830C1B1D9A19DA0036E2BC /* BabyVideoViewController.swift */,
 				279F92C31DBF3B80004661DF /* P2PMonitorController.h */,
 				279F92C41DBF3B80004661DF /* P2PMonitorController.m */,
 				27830C131D9921DA0036E2BC /* PlayMusicViewController.swift */,
@@ -3173,7 +3169,6 @@
 				275BF5011DB9CDF100DD9BB3 /* BabyStatusViewController.swift in Sources */,
 				27188E7A1D86AD2100797D41 /* CropOverlay.swift in Sources */,
 				27F47C131D96B2F400502AEE /* PinYinForObjc.m in Sources */,
-				27830C1C1D9A19DA0036E2BC /* BabyVideoViewController.swift in Sources */,
 				27020F8A1DB085AE00D3BDBE /* QNHosts.m in Sources */,
 				27F410CE1D8C071400722051 /* SelectDateView.m in Sources */,
 				2753E6EF1D7BB7FB00FDB8D0 /* CommonHTTP.swift in Sources */,
@@ -3403,7 +3398,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				270210631DBE12C700D3BDBE /* BabyVideoViewController.swift in Sources */,
 				27D002EE1D6D44D800B62A61 /* EnjoyLoveUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

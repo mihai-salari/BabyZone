@@ -24,12 +24,10 @@ class BabyCheckViewController: BaseViewController {
         // Do any additional setup after loading the view.
         self.babyCheckView = LookBabyVerifyView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: ScreenHeight - navigationBarHeight), completionHandler: { [weak self] in
             if let weakSelf = self{
-                let babyVideo = BabyVideoViewController()
-                weakSelf.navigationController?.pushViewController(babyVideo, animated: true)
+
             }
         })
         self.view.addSubview(self.babyCheckView)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.popNotification(_:)), name: BabyCancelClickNotification, object: nil)
     }
     
     override func viewDidDisappear(animated: Bool) {

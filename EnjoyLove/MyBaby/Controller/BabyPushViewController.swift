@@ -19,9 +19,7 @@ class BabyPushViewController: BaseViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.dismissNotification(_:)), name: BabyCancelClickNotification, object: nil)
-        
+                
         let pushView = BabyPushView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: ScreenWidth - 2 * viewOriginX, height: ScreenHeight - navigationBarHeight), verifyHandler: { [weak self] in
             if let weakSelf = self{
                 let babyCheck = BabyCheckViewController()

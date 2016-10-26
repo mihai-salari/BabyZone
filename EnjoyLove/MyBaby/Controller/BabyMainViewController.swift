@@ -71,17 +71,23 @@ class BabyMainViewController: BaseVideoViewController {
             self.babyData = nil
         }
         self.babyData = []
-        var baby = Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0")
-        self.babyData.append(baby)
-        baby = Baby(babyImage: "babySleep.png", babyRemindCount: "2", babyTemperature: "25", babyHumidity: "77")
-        self.babyData.append(baby)
-        baby = Baby(babyImage: "babySleep.png", babyRemindCount: "4", babyTemperature: "23", babyHumidity: "80")
-        self.babyData.append(baby)
+        
+        if EquipmentsBL.findAll().count > 0 {
+            for eqm in EquipmentsBL.findAll() {
+                let baby = Baby(babyImage: Utils.getHeaderFilePathWithId(eqm.eqmDid), babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0")
+                self.babyData.append(baby)
+            }
+        }else{
+            let baby = Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0")
+            self.babyData.append(baby)
+        }
         
         if self.babyView != nil {
             self.babyView.removeFromSuperview()
             self.babyView = nil
         }
+        
+        
         
         self.babyView = BabyView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: self.view.frame.height - navAndTabHeight), data: self.babyData, playCompletionHandler: { [weak self](baby) in
             if let weakSelf = self{

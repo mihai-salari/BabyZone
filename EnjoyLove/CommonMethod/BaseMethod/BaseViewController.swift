@@ -25,30 +25,13 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
         self.tabBarController?.tabBar.backgroundImage = image
         image = UIImage.imageFromColor(UIColor.clearColor(), size: CGSize(width: UIScreen.mainScreen().bounds.size.width, height: 1))
         self.tabBarController?.tabBar.shadowImage = image
-        
     
     }
     
     override func shouldAutorotate() -> Bool {
-        if self.isKindOfClass(BabyVideoViewController) == true {
-            return true
-        }
         return false
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if self.isKindOfClass(BabyVideoViewController) == true {
-            return .AllButUpsideDown
-        }
-        return .Portrait
-    }
-    
-    override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
-        if self.isKindOfClass(BabyVideoViewController) == false {
-            return .Portrait
-        }
-        return .LandscapeRight
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,9 +67,6 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
 
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
         if self.navigationController?.viewControllers.count == 0 {
-            return false
-        }
-        if self.isKindOfClass(BabyVideoViewController) == true {
             return false
         }
         return true

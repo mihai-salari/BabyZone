@@ -45,7 +45,8 @@
 
 @interface P2PMonitorController ()
 {
-    
+    BOOL _isOkFirstRenderVideoFrame;//YES表示第一次成功渲染图像
+    BOOL _isOkRenderVideoFrame;
     BOOL _isPlaying;
 }
 
@@ -78,27 +79,16 @@
 @property(nonatomic) int lastValue;
 @property(nonatomic) int *lastTime;
 
-@property(nonatomic, strong) UIButton *clickGPIO0_0Button;
-@property(nonatomic, strong) UIButton *clickGPIO0_1Button;
-@property(nonatomic, strong) UIButton *clickGPIO0_2Button;
-@property(nonatomic, strong) UIButton *clickGPIO0_3Button;
-@property(nonatomic, strong) UIButton *clickGPIO0_4Button;
-@property(nonatomic, strong) UIButton *clickGPIO2_6Button;
-
 @property(nonatomic, strong) UIButton *lightButton;
 @property (nonatomic) BOOL isLightSwitchOn;
 @property (strong, nonatomic) UIActivityIndicatorView *progressView;
 @property (nonatomic) BOOL isSupportLightSwitch;
 
 
-
 @property (strong, nonatomic) UIView *focalLengthView;
 @property (nonatomic) BOOL isSupportFocalLength;
 @property (strong, nonatomic) UIPinchGestureRecognizer *pinchGestureRecognizer;
 
-//判断当前监控处于横屏还是竖屏界面
-@property (assign,nonatomic) BOOL isFullScreen;
-@property (strong, nonatomic) UIView *fullScreenBgView;
 
 //竖屏控件
 @property (nonatomic,strong) UIView *canvasView;    //显示监控画面的载体
@@ -120,6 +110,8 @@
 @property (nonatomic, strong) UIButton *musicButton;
 @property (nonatomic, strong) UIButton *voiceButton;
 @property (nonatomic, strong) UIView *buttonContainerView;
+//YES表示图像渲染出来了
+@property (nonatomic, assign) BOOL isOkRenderVideoFrame;
 
 @end
 
@@ -216,11 +208,6 @@
     
     self.isReject = YES;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    if (self.isFullScreen){
-        if (self.scrollView){
-            [self.scrollView setZoomScale:1.0];
-        }
-    }
     [self.remoteView setCaptureFinishScreen:YES];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RECEIVE_REMOTE_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ACK_RECEIVE_REMOTE_MESSAGE object:nil];
@@ -319,6 +306,59 @@
     self.musicButton.userInteractionEnabled = NO;
     self.voiceButton.userInteractionEnabled = NO;
     
+    [self swipeGestures];
+}
+
+- (void)swipeGestures{
+    //上划手势
+    UISwipeGestureRecognizer *swipeGestureUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeUp:)];
+    [swipeGestureUp setDirection:UISwipeGestureRecognizerDirectionUp];
+    [swipeGestureUp setCancelsTouchesInView:YES];
+    [swipeGestureUp setDelaysTouchesEnded:YES];
+    [_remoteView addGestureRecognizer:swipeGestureUp];
+    
+    //下划手势
+    UISwipeGestureRecognizer *swipeGestureDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDown:)];
+    [swipeGestureDown setDirection:UISwipeGestureRecognizerDirectionDown];
+    
+    [swipeGestureDown setCancelsTouchesInView:YES];
+    [swipeGestureDown setDelaysTouchesEnded:YES];
+    [_remoteView addGestureRecognizer:swipeGestureDown];
+    
+    //左划手势
+    UISwipeGestureRecognizer *swipeGestureLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeft:)];
+    [swipeGestureLeft setDirection:UISwipeGestureRecognizerDirectionLeft];
+    [swipeGestureLeft setCancelsTouchesInView:YES];
+    [swipeGestureLeft setDelaysTouchesEnded:YES];
+    [_remoteView addGestureRecognizer:swipeGestureLeft];
+    
+    //右划手势
+    UISwipeGestureRecognizer *swipeGestureRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    [swipeGestureRight setDirection:UISwipeGestureRecognizerDirectionRight];
+    [swipeGestureRight setCancelsTouchesInView:YES];
+    [swipeGestureRight setDelaysTouchesEnded:YES];
+    [_remoteView addGestureRecognizer:swipeGestureRight];
+
+}
+
+- (void)swipeUp:(id)sender {
+    [[P2PClient sharedClient] sendCommandType:USR_CMD_PTZ_CTL
+                                    andOption:USR_CMD_OPTION_PTZ_TURN_DOWN];
+}
+
+- (void)swipeDown:(id)sender {
+    [[P2PClient sharedClient] sendCommandType:USR_CMD_PTZ_CTL
+                                    andOption:USR_CMD_OPTION_PTZ_TURN_UP];
+}
+
+- (void)swipeLeft:(id)sender {
+    [[P2PClient sharedClient] sendCommandType:USR_CMD_PTZ_CTL
+                                    andOption:USR_CMD_OPTION_PTZ_TURN_LEFT];
+}
+
+- (void)swipeRight:(id)sender {
+    [[P2PClient sharedClient] sendCommandType:USR_CMD_PTZ_CTL
+                                    andOption:USR_CMD_OPTION_PTZ_TURN_RIGHT];
 }
 
 //rtsp监控界面弹出修改
@@ -362,6 +402,10 @@
     {
         if(fgGetVideoFrameToDisplay(&m_pAVFrame))
         {
+            if (!self.isOkRenderVideoFrame) {
+                self.isOkRenderVideoFrame = YES;
+                _isOkFirstRenderVideoFrame = YES;
+            }
             [self.remoteView render:m_pAVFrame];
             vReleaseVideoFrame();
         }
@@ -373,188 +417,62 @@
 }
 
 
+-(void)onScreenShotted:(UIImage *)image{
+    UIImage *tempImage = [[UIImage alloc] initWithCGImage:image.CGImage];
+    NSData *imgData = [NSData dataWithData:UIImagePNGRepresentation(tempImage)];
+    [Utils saveScreenshotFile:imgData];
+}
+
+- (void)setIsOkRenderVideoFrame:(BOOL)aisOkRenderVideoFrame{
+    _isOkRenderVideoFrame = aisOkRenderVideoFrame;
+    if (aisOkRenderVideoFrame) {
+        self.videoButton.userInteractionEnabled = YES;
+        self.cameraButton.userInteractionEnabled = YES;
+        self.musicButton.userInteractionEnabled = YES;
+        self.voiceButton.userInteractionEnabled = YES;
+    }else{
+        self.videoButton.userInteractionEnabled = NO;
+        self.cameraButton.userInteractionEnabled = NO;
+        self.musicButton.userInteractionEnabled = NO;
+        self.voiceButton.userInteractionEnabled = NO;
+    }
+}
+
 #define MESG_SET_GPIO_PERMISSION_DENIED 86
 #define MESG_GPIO_CTRL_QUEUE_IS_FULL 87
 #define MESG_SET_DEVICE_NOT_SUPPORT 255
 
-#define GPIO0_0 10
-#define GPIO0_1 11
-#define GPIO0_2 12
-#define GPIO0_3 13
-#define GPIO0_4 14
-#define GPIO2_6 15
 - (void)receiveRemoteMessage:(NSNotification *)notification{
     NSDictionary *parameter = [notification userInfo];
     int key   = [[parameter valueForKey:@"key"] intValue];
     switch(key){
         case RET_GET_FOCUS_ZOOM:
         {
-            int value = [[parameter valueForKey:@"value"] intValue];
-           
-            if (value == 3) {//变倍变焦都有
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.isSupportFocalLength = YES;
-                    [self.pinchGestureRecognizer addTarget:self action:@selector(localLengthPinchToZoom:)];
-                });
-            }else if (value == 2){//只有变焦
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.isSupportFocalLength = YES;
-                });
-                
-            }else if (value == 1){//只有变倍
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.pinchGestureRecognizer addTarget:self action:@selector(localLengthPinchToZoom:)];
-                });
-            }
         }
             break;
         case RET_SET_GPIO_CTL:
         {
-            int result = [[parameter valueForKey:@"result"] intValue];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.clickGPIO0_0Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_1Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_2Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_3Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_4Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO2_6Button.backgroundColor = [UIColor clearColor];
-            });
-            if (result == 0) {
-                //设置成功
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.view makeToast:NSLocalizedString(@"operator_success", nil)];
-                });
-            }else if (result == MESG_SET_GPIO_PERMISSION_DENIED){
-                //该GPIO未开放
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.view makeToast:NSLocalizedString(@"not_open", nil)];
-                });
-            }else if (result == MESG_GPIO_CTRL_QUEUE_IS_FULL){
-                //操作过于频繁，之前的操作未执行完
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.view makeToast:NSLocalizedString(@"too_frequent", nil)];
-                });
-            }else if(result == MESG_SET_DEVICE_NOT_SUPPORT){
-                //设备不支持此操作
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [self.view makeToast:NSLocalizedString(@"not_support_operation", nil)];
-                });
-            }
         }
             break;
         case RET_GET_LIGHT_SWITCH_STATE:
         {
-            int result = [[parameter valueForKey:@"result"] intValue];
-            
-            if (result == 0) {
-                int state = [[parameter valueForKey:@"state"] intValue];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    self.isSupportLightSwitch = YES;
-                    if (state == 1) {//灯是开状态
-                        self.isLightSwitchOn = YES;
-                        [self.lightButton setBackgroundImage:[UIImage imageNamed:@"lighton.png"] forState:UIControlStateNormal];
-                    }else{
-                        self.isLightSwitchOn = NO;
-                        [self.lightButton setBackgroundImage:[UIImage imageNamed:@"lightoff.png"] forState:UIControlStateNormal];
-                    }
-                });
-            }
         }
             break;
         case RET_SET_LIGHT_SWITCH_STATE:
         {
-            int result = [[parameter valueForKey:@"result"] intValue];
-            
-            if (result == 0) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.lightButton setHidden:NO];
-                    [self.progressView setHidden:YES];
-                    [self.progressView stopAnimating];
-                    if (self.isLightSwitchOn) {//灯正开着
-                        self.isLightSwitchOn = NO;//关灯
-                        [self.lightButton setBackgroundImage:[UIImage imageNamed:@"lightoff.png"] forState:UIControlStateNormal];
-                    }else{//灯正关着
-                        self.isLightSwitchOn = YES;//开灯
-                        [self.lightButton setBackgroundImage:[UIImage imageNamed:@"lighton.png"] forState:UIControlStateNormal];
-                    }
-                });
-            }
         }
             break;
         case RET_DEVICE_NOT_SUPPORT:
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.clickGPIO0_0Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_1Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_2Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_3Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO0_4Button.backgroundColor = [UIColor clearColor];
-                self.clickGPIO2_6Button.backgroundColor = [UIColor clearColor];
-                
-                //[self.view makeToast:NSLocalizedString(@"device_not_support", nil)];
-            });
         }
             break;
         case RET_GET_NPCSETTINGS_REMOTE_DEFENCE:
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSInteger state = [[parameter valueForKey:@"state"] intValue];
-                if(state==SETTING_VALUE_REMOTE_DEFENCE_STATE_ON)
-                {
-                    //竖屏
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_on_h.png"] forState:UIControlStateNormal];
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_on_h_p.png"] forState:UIControlStateHighlighted];
-                    //获取到布防状态，设置为可点且显示相应的图标
-                    self.defenceButtonH.enabled = YES;
-                    
-                    
-                    self.isDefenceOn = YES;
-                    
-                }
-                else
-                {
-                    //竖屏
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h.png"] forState:UIControlStateNormal];
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h_p.png"] forState:UIControlStateHighlighted];
-                    //获取到布防状态，设置为可点且显示相应的图标
-                    self.defenceButtonH.enabled = YES;
-                    
-                    
-                    self.isDefenceOn = NO;
-                    
-                }
-
-            });
         }
             break;
             
         case RET_SET_NPCSETTINGS_REMOTE_DEFENCE:
         {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSInteger state = [[parameter valueForKey:@"state"] intValue];
-                if(state==SETTING_VALUE_REMOTE_DEFENCE_STATE_ON){
-                    //竖屏
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_on_h.png"] forState:UIControlStateNormal];
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_on_h_p.png"] forState:UIControlStateHighlighted];
-                    
-                    
-                    self.isDefenceOn = YES;
-                    
-                }else{
-                    //竖屏
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h.png"] forState:UIControlStateNormal];
-                    [self.defenceButtonH setImage:[UIImage imageNamed:@"monitor_defence_off_h_p.png"] forState:UIControlStateHighlighted];
-                    
-                    
-                    self.isDefenceOn = NO;
-                    
-                }
-            });
         }
             break;
     }
@@ -570,7 +488,6 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(result==1){
                     
-                    [self.view makeToast:NSLocalizedString(@"device_password_error", nil)];
                 }else if(result==2){
                     DLog(@"resend do device update");
                     NSString *contactId = [[P2PClient sharedClient] callId];
@@ -586,12 +503,10 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(result==1){
                     
-                    [self.view makeToast:NSLocalizedString(@"device_password_error", nil)];
                 }else if(result==2){
                     DLog(@"resend do device update");
                     NSString *contactId = [[P2PClient sharedClient] callId];
                     NSString *contactPassword = [[P2PClient sharedClient] callPassword];
-                    
                     [[P2PClient sharedClient] getLightStateWithDeviceId:contactId password:contactPassword];
                 }
             });
@@ -602,7 +517,6 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(result==1){
                     
-                    [self.view makeToast:NSLocalizedString(@"device_password_error", nil)];
                 }else if(result==2){
                     DLog(@"resend do device update");
                     NSString *contactId = [[P2PClient sharedClient] callId];
@@ -632,108 +546,12 @@
         {
             if (result == 2)
             {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.view makeToast:NSLocalizedString(@"net_exception", nil)];
-                });
             }
         }
             break;
     }
     
 }
-
-
--(NSString *)getCallErrorStringWith:(int)errorFlag{
-    switch(errorFlag)
-    {
-        case CALL_ERROR_NONE:
-        {
-            return NSLocalizedString(@"id_unknown_error", nil);
-            
-        }
-            break;
-        case CALL_ERROR_DESID_NOT_ENABLE:
-        {
-            return NSLocalizedString(@"id_disabled", nil);
-        }
-            break;
-        case CALL_ERROR_DESID_OVERDATE:
-        {
-            return NSLocalizedString(@"id_overdate", nil);
-        }
-            break;
-        case CALL_ERROR_DESID_NOT_ACTIVE:
-        {
-            return NSLocalizedString(@"id_inactived", nil);
-        }
-            break;
-        case CALL_ERROR_DESID_OFFLINE:
-        {
-            return NSLocalizedString(@"id_offline", nil);
-        }
-            break;
-        case CALL_ERROR_DESID_BUSY:
-        {
-            return NSLocalizedString(@"id_busy", nil);
-        }
-            break;
-        case CALL_ERROR_DESID_POWERDOWN:
-        {
-            return NSLocalizedString(@"id_powerdown", nil);
-        }
-            break;
-        case CALL_ERROR_NO_HELPER:
-        {
-            return NSLocalizedString(@"id_connect_failed", nil);
-        }
-            break;
-        case CALL_ERROR_HANGUP:
-        {
-            return NSLocalizedString(@"id_hangup", nil);
-            
-            break;
-        }
-        case CALL_ERROR_TIMEOUT:
-        {
-            return NSLocalizedString(@"id_timeout", nil);
-        }
-            break;
-        case CALL_ERROR_INTER_ERROR:
-        {
-            return NSLocalizedString(@"id_internal_error", nil);
-        }
-            break;
-        case CALL_ERROR_RING_TIMEOUT:
-        {
-            return NSLocalizedString(@"id_no_accept", nil);
-        }
-            break;
-        case CALL_ERROR_PW_WRONG:
-        {
-            return NSLocalizedString(@"id_password_error", nil);
-        }
-            break;
-        case CALL_ERROR_CONN_FAIL:
-        {
-            return NSLocalizedString(@"id_connect_failed", nil);
-        }
-            break;
-        case CALL_ERROR_NOT_SUPPORT:
-        {
-            return NSLocalizedString(@"id_not_support", nil);
-        }
-            break;
-        default:
-        {
-            return NSLocalizedString(@"id_unknown_error", nil);
-        }
-            break;
-    }
-}
-
-
-
-
 
 
 
@@ -780,56 +598,6 @@
     }
 }
 
-
-
-#pragma mark - 改变焦距
--(void)btnClickToChangeFocalLength:(id)sender{
-    UIView *view = (UIView *)sender;
-    if (view.tag == FocalLength_Elongation_btnTag) {
-        //焦距变长
-        BYTE cmdData[5] = {0};
-        cmdData[0] = 0x05;
-        fgSendUserData(9, 1, cmdData, sizeof(cmdData));
-    }else if (view.tag == FocalLength_Shorten_btnTag){
-        //焦距变短
-        BYTE cmdData[5] = {0};
-        cmdData[0] = 0x15;
-        fgSendUserData(9, 1, cmdData, sizeof(cmdData));
-    }else{
-        UISlider *focalLengthSlider = (UISlider *)view;
-        if (focalLengthSlider.value < 7.5) {
-            //焦距变长
-            BYTE cmdData[5] = {0};
-            cmdData[0] = 0x05;
-            fgSendUserData(9, 1, cmdData, sizeof(cmdData));
-        }else{
-            //焦距变短
-            BYTE cmdData[5] = {0};
-            cmdData[0] = 0x15;
-            fgSendUserData(9, 1, cmdData, sizeof(cmdData));
-        }
-        focalLengthSlider.value = 7.5;
-    }
-}
-
-#pragma mark - 焦距变倍
--(void)localLengthPinchToZoom:(id)sender {
-    if (!self.isFullScreen) {
-        return;
-    }
-    
-    if([(UIPinchGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
-        if ([(UIPinchGestureRecognizer*)sender scale] > 1.0) {
-            BYTE cmdData[5] = {0};
-            cmdData[0] = 0x05;
-            fgSendUserData(9, 2, cmdData, sizeof(cmdData));
-        }else{
-            BYTE cmdData[5] = {0};
-            cmdData[0] = 0x15;
-            fgSendUserData(9, 2, cmdData, sizeof(cmdData));
-        }
-    }
-}
 
 #pragma mark - 监控开始渲染后，此处执行相关操作
 -(void)doOperationsAfterMonitorStartRender{//rtsp监控界面弹出修改

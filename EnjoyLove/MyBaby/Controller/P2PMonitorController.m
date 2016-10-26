@@ -174,6 +174,8 @@
      */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(monitorStartRender:) name:MONITOR_START_RENDER_MESSAGE object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rejectNotification:) name:[[BabyZoneConfig shared] videoRejectNotification]object:nil];
+    
     NSString *contactId = [[P2PClient sharedClient] callId];
     NSString *contactPassword = [[P2PClient sharedClient] callPassword];
     if ([AppDelegate sharedDefault].isDoorBellAlarm) {//透传连接
@@ -213,6 +215,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ACK_RECEIVE_REMOTE_MESSAGE object:nil];
     //rtsp监控界面弹出修改
     [[NSNotificationCenter defaultCenter] removeObserver:self name:MONITOR_START_RENDER_MESSAGE object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[[BabyZoneConfig shared] videoRejectNotification] object:nil];
     
     if ([AppDelegate sharedDefault].isDoorBellAlarm) {//透传连接
         NSString *contactId = [[P2PClient sharedClient] callId];
@@ -273,8 +277,8 @@
     self.cameraButton.frame = CGRectMake(0, 0, BUTTON_WIDTH, BUTTON_WIDTH);
     self.cameraButton.tag = BUTTON_CAMERA_TAG;
     [self.cameraButton setImage:[UIImage imageWithName:@"baby_camera_normal.png"] forState:UIControlStateNormal];
-    [self.cameraButton setImage:[UIImage imageWithName:@"baby_camera_selected.png"] forState:UIControlStateSelected];
-    [self.cameraButton addTarget:self action:@selector(horizontalButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.cameraButton setImage:[UIImage imageWithName:@"baby_camera_selected.png"] forState:UIControlStateHighlighted];
+    [self.cameraButton addTarget:self action:@selector(horizontalButtonClick:) forControlEvents:UIControlEventTouchDown];
     [buttonContainerView addSubview:self.cameraButton];
     
     self.videoButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -416,11 +420,25 @@
     _isPlaying = NO;
 }
 
+- (void)rejectNotification:(NSNotification *)note{
+    if(!self.isReject){
+        self.isReject = !self.isReject;
+        while (_isPlaying) {
+            usleep(50*1000);
+        }
+    }
+    _isOkRenderVideoFrame = NO;
+    [self monitorP2PCall];
+}
 
 -(void)onScreenShotted:(UIImage *)image{
     UIImage *tempImage = [[UIImage alloc] initWithCGImage:image.CGImage];
     NSData *imgData = [NSData dataWithData:UIImagePNGRepresentation(tempImage)];
     [Utils saveScreenshotFile:imgData];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [HUD hideHud:self.view];
+        [HUD showText:@"截图成功" onView:self.view];
+    });
 }
 
 - (void)setIsOkRenderVideoFrame:(BOOL)aisOkRenderVideoFrame{
@@ -468,11 +486,34 @@
             break;
         case RET_GET_NPCSETTINGS_REMOTE_DEFENCE:
         {
+            NSInteger state = [[parameter valueForKey:@"state"] intValue];
+            if(state==SETTING_VALUE_REMOTE_DEFENCE_STATE_ON)
+            {
+                
+                self.isDefenceOn = YES;
+                
+            }
+            else
+            {
+                
+                
+                self.isDefenceOn = NO;
+                
+            }
         }
             break;
             
         case RET_SET_NPCSETTINGS_REMOTE_DEFENCE:
         {
+            NSInteger state = [[parameter valueForKey:@"state"] intValue];
+            if(state==SETTING_VALUE_REMOTE_DEFENCE_STATE_ON)
+            {
+                self.isDefenceOn = YES;
+            }
+            else
+            {
+                self.isDefenceOn = NO;
+            }
         }
             break;
     }
@@ -562,7 +603,8 @@
     switch (btn.tag) {
         case BUTTON_CAMERA_TAG:
         {
-            btn.selected = !btn.selected;
+            [HUD showHud:@"正在截图" onView:self.view];
+            [self.remoteView setIsScreenShotting:YES];
         }
             break;
         case BUTTON_VIDEO_TAG:
@@ -577,6 +619,11 @@
             break;
         case BUTTON_VOICE_TAG:
         {
+            if (btn.selected) {
+                [[PAIOUnit sharedUnit] setSpeckState:YES];
+            }else{
+                [[PAIOUnit sharedUnit] setSpeckState:NO];
+            }
             btn.selected = !btn.selected;
         }
             break;
@@ -589,6 +636,7 @@
                 }
                 
                 [[P2PClient sharedClient] p2pHungUp];
+                self.remoteView.isQuitMonitorInterface = YES;
             }
             [self.navigationController popViewControllerAnimated:YES];
         }
@@ -626,18 +674,15 @@
     }else{
         talkButtonH.selected = NO;
     }
-    //横屏对讲按钮
-//    TouchButton *controllerTalkBtn = (TouchButton *)[self.controllBar viewWithTag:CONTROLLER_BTN_TAG_PRESS_TALK];
     //非本地设备
-    NSInteger deviceType1 = [AppDelegate sharedDefault].contact.contactType;
-    //本地设备
-    NSInteger deviceType2 = [[FListManager sharedFList] getType:[[P2PClient sharedClient] callId]];
+//    NSInteger deviceType1 = [AppDelegate sharedDefault].contact.contactType;
+//    //本地设备
+//    NSInteger deviceType2 = [[FListManager sharedFList] getType:[[P2PClient sharedClient] callId]];
     
     
     NSString *callId = [[P2PClient sharedClient] callId];
     NSString *callPassword = [[P2PClient sharedClient] callPassword];
     [[P2PClient sharedClient]getDefenceState:callId password:callPassword];
-    
     
     //判断设备是否支持变倍变焦(38)
     [[P2PClient sharedClient] getNpcSettingsWithId:callId password:callPassword];

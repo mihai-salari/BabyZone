@@ -89,6 +89,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     
     func P2PClientReject(info: [NSObject : AnyObject]!) {
         print("reject info \(info)")
+        NSNotificationCenter.defaultCenter().postNotificationName(BabyZoneConfig.shared.videoRejectNotification, object: nil, userInfo: info)
         
     }
 

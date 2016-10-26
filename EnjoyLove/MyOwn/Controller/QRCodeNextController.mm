@@ -423,6 +423,7 @@ withFilterContext:(id)filterContext
                                 }else{
                                     contact.contactType = CONTACT_TYPE_PHONE;
                                 }
+                                contact.onLineState = 1;
                                 [(FListManager *)[FListManager sharedFList] insert: contact];
                                 
                                 [[P2PClient sharedClient] getContactsStates:[NSArray arrayWithObject:contact.contactId]];

@@ -61,16 +61,16 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         self.deviceListTable.delegate = self
         self.deviceListTable.dataSource = self
         self.deviceListTable.tableFooterView = UIView.init()
-        self.deviceListTable.addPullToRefreshWithActionHandler { 
-            var contactIds:[String] = []
-            for contact in self.devices{
-                contactIds.append(contact.eqmDid)
-                P2PClient.sharedClient().checkDeviceUpdateWithId(contact.eqmDid, password: contact.eqmPwd)
-            }
-            P2PClient.sharedClient().getContactsStates(contactIds)
-            FListManager.sharedFList().getDefenceStates()
-            NSNotificationCenter.defaultCenter().postNotificationName("refreshLocalDevices", object: nil)
-        }
+//        self.deviceListTable.addPullToRefreshWithActionHandler { 
+//            var contactIds:[String] = []
+//            for contact in self.devices{
+//                contactIds.append(contact.eqmDid)
+//                P2PClient.sharedClient().checkDeviceUpdateWithId(contact.eqmDid, password: contact.eqmPwd)
+//            }
+//            P2PClient.sharedClient().getContactsStates(contactIds)
+//            FListManager.sharedFList().getDefenceStates()
+//            NSNotificationCenter.defaultCenter().postNotificationName("refreshLocalDevices", object: nil)
+//        }
         backgroudView.addSubview(self.deviceListTable)
         
         if isDelete == false {
@@ -202,11 +202,11 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     }
     
     override func stopAnimating() {
-        self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
-        if let table = self.deviceListTable {
-            table.pullToRefreshView.stopAnimating()
-            table.reloadData()
-        }
+//        self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
+//        if let table = self.deviceListTable {
+//            table.pullToRefreshView.stopAnimating()
+//            table.reloadData()
+//        }
     }
     
     override func refreshLocalDevices() {
@@ -296,7 +296,10 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
 
     //MARK:___事件处理___
     func addNewDeviceClick() -> Void {
-        
+        if UDManager.isLogin() == true {
+            let next = QRCodeNextController()
+            self.navigationController?.pushViewController(next, animated: true)
+        }
     }
     
     func onSwichtOnOff(on:HMSwitch) -> Void {

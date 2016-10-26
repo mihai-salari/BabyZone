@@ -40,6 +40,7 @@ class BabyZoneConfig: NSObject {
     var scopeType:String!
     var personInfoChange:String!
     var CountruCodeTable:String!
+    var videoRejectNotification:String!
     
     
     
@@ -81,6 +82,7 @@ class BabyZoneConfig: NSObject {
                 self.scopeType = config.get(.scopeType)
                 self.personInfoChange = config.get(.personInfoChange)
                 self.CountruCodeTable = config.get(.CountruCodeTable)
+                self.videoRejectNotification = config.get(.videoRejectNotification)
             }
             
         }
@@ -141,6 +143,7 @@ extension Keys{
     static let scopeType                        = Key<String>("scopeType")
     static let personInfoChange                 = Key<String>("personInfoChange")
     static let CountruCodeTable                 = Key<String>("CountruCodeTable")
+    static let videoRejectNotification          = Key<String>("videoRejectNotification")
 }
 
 

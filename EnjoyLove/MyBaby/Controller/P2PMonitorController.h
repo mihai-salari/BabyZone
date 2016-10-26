@@ -10,12 +10,7 @@
 
 #import "P2PClient.h"
 #import <AVFoundation/AVFoundation.h>
-//#import "TouchButton.h"
 #import "OpenGLView.h"
-//#import "CustomBorderButton.h"
-//#import "CustomView.h"
-//#import "ProgressImageView.h"
-//#import "MainController.h"
 #import "AppDelegate.h"
 #define FocalLength_Elongation_btnTag 300
 #define FocalLength_Shorten_btnTag 301

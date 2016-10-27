@@ -16,11 +16,7 @@ class PregInfoViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        if BabyListBL.findAll().count > 0 {
-            self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
-        }else{
-            
-        }
+        self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
     }
     
     override func viewDidLoad() {

@@ -21,7 +21,7 @@ class InfoManagerViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBarHidden = true
+        self.navigationController?.navigationBarHidden = false
         if BabyListBL.findAll().count > 0 {
             if DiaryBL.findAll().count == 0 {
                 self.diaryRecordVC = DiaryRecordViewController()
@@ -33,6 +33,7 @@ class InfoManagerViewController: BaseViewController {
                 }
             }else{
                 self.pregInfoVC = PregInfoViewController()
+                self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
                 self.view.addSubview(self.pregInfoVC.view)
                 self.addChildViewController(self.pregInfoVC)
                 if self.diaryRecordVC != nil {

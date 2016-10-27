@@ -12,7 +12,6 @@ class DiaryRecordViewController: BaseViewController {
 
     private var recordView:DiaryRecordView!
     
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = false
@@ -27,6 +26,9 @@ class DiaryRecordViewController: BaseViewController {
 
         // Do any additional setup after loading the view.
         self.initializeSubviews()
+        let navBar = UINavigationBar.appearance()
+        navBar.backgroundColor = UIColor.greenColor()
+        
     }
 
     override func didReceiveMemoryWarning() {

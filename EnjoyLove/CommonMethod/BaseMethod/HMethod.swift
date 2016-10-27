@@ -19,22 +19,22 @@ let viewOriginY:CGFloat = 10
 let HMAppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 let HMTablBarController = HMAppDelegate.rootTabBarController
 
-let requestSign = "sign"
-let requestAppToken = "appToken"
-let requestSessionId = "sessionId"
-let HMTokenKey = "TOKENKEY"
-let AppTokenKey = "APPTOKENKEY"
-let SignKey = "SIGNKEY"
-let AllowOrientationKey = "ALLORIENTATIONS"
-let UserPhoneKey = "USERPHONEKEY"
-
-#if DEBUG
-let QiNiuScope = "baby"
-#else
-let QiNiuScope = "xiangai"
-#endif
-let QiNiuBabyImageUrl = "http://oco9loo2g.bkt.clouddn.com/"
-let QiNiuXiangAiImageUrl = "http://of0k04nl6.bkt.clouddn.com/"
+//let requestSign = "sign"
+//let requestAppToken = "appToken"
+//let requestSessionId = "sessionId"
+//let HMTokenKey = "TOKENKEY"
+//let AppTokenKey = "APPTOKENKEY"
+//let SignKey = "SIGNKEY"
+//let AllowOrientationKey = "ALLORIENTATIONS"
+//let UserPhoneKey = "USERPHONEKEY"
+//
+//#if DEBUG
+//let QiNiuScope = "baby"
+//#else
+//let QiNiuScope = "xiangai"
+//#endif
+//let QiNiuBabyImageUrl = "http://oco9loo2g.bkt.clouddn.com/"
+//let QiNiuXiangAiImageUrl = "http://of0k04nl6.bkt.clouddn.com/"
 
 
 
@@ -71,7 +71,7 @@ func personInformationChange() -> Bool {
 
 //MARK:___登录判断___
 func isLogin() -> Bool {
-    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
+    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
         if let info = LoginBL.find(nil, key: phone) {
             if info.sessionId != nil && info.sessionId != "" && info.sessionId != "0" {
                 return true

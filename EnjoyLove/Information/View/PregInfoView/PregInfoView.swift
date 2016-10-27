@@ -36,7 +36,7 @@ class PregInfoView: UIView {
         super.init(frame: frame)
         
         self.cirleView = HMCirclePercentView.init(frame: CGRectMake((CGRectGetWidth(self.frame) - pregInfoCircleWidth) / 2, CGRectGetHeight(self.frame) * (2 / 5.3) - pregInfoCircleWidth / 2, pregInfoCircleWidth, pregInfoCircleWidth), showText: false)
-        self.cirleView.drawCircleWithPercent(babyModel.pregProgress, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
+        self.cirleView.drawCircleWithPercent(80, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
         
         self.cirleView.startAnimation()
         self.addSubview(self.cirleView)
@@ -44,14 +44,14 @@ class PregInfoView: UIView {
         
         self.pregDaysLabel = UILabel.init(frame: CGRectMake(0, 0, ScreenWidth, CGRectGetMinY(self.cirleView.frame)))
         self.pregDaysLabel.font = UIFont.boldSystemFontOfSize(upRateHeight(22))
-        self.pregDaysLabel.text = babyModel.pregDate
+        self.pregDaysLabel.text = babyModel.day
         self.pregDaysLabel.textAlignment = .Center
         self.pregDaysLabel.textColor = UIColor.whiteColor()
         self.addSubview(self.pregDaysLabel)
         
         
         self.babyImageView = UIImageView.init(frame: CGRectMake((CGRectGetWidth(self.cirleView.frame) - pregBabyImageViewWidth) / 2, (CGRectGetHeight(self.cirleView.frame) - pregBabyImageViewHeight) / 2, pregBabyImageViewWidth, pregBabyImageViewHeight))
-        self.babyImageView.image = UIImage.imageWithName(babyModel.pregBabyImage)
+        self.babyImageView.image = UIImage.imageWithName(babyModel.babyHeadImage)
         self.babyImageView.layer.cornerRadius = 10
         self.babyImageView.layer.masksToBounds = true
         self.cirleView.addSubview(self.babyImageView)
@@ -63,7 +63,7 @@ class PregInfoView: UIView {
         
         self.weightLabel = UILabel.init(frame: CGRectMake(0, CGRectGetHeight(self.frame) * (3 / 4.7), CGRectGetWidth(self.frame) / 3, 15))
         self.weightLabel.textColor = UIColor.whiteColor()
-        self.weightLabel.text = babyModel.pregWeight
+        self.weightLabel.text = "\(babyModel.minWeight)~\(babyModel.maxWeight)"
         self.weightLabel.textAlignment = .Center
         self.weightLabel.font = UIFont.boldSystemFontOfSize(upRateWidth(18))
         self.addSubview(self.weightLabel)
@@ -76,7 +76,7 @@ class PregInfoView: UIView {
         self.addSubview(kgLabel)
         
         self.heightLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(self.weightLabel.frame), CGRectGetMinY(self.weightLabel.frame), CGRectGetWidth(self.weightLabel.frame), CGRectGetHeight(self.weightLabel.frame)))
-        self.heightLabel.text = babyModel.pregHeight
+        self.heightLabel.text = "\(babyModel.minHeight)~\(babyModel.maxHeight)"
         self.heightLabel.textColor = UIColor.whiteColor()
         self.heightLabel.textAlignment = .Center
         self.heightLabel.font = UIFont.boldSystemFontOfSize(upRateWidth(18))
@@ -90,7 +90,7 @@ class PregInfoView: UIView {
         self.addSubview(cmLabel)
         
         self.dueDatesLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(self.heightLabel.frame), CGRectGetMinY(self.heightLabel.frame), CGRectGetWidth(self.weightLabel.frame), CGRectGetHeight(self.weightLabel.frame)))
-        self.dueDatesLabel.text = babyModel.pregOutDay
+        self.dueDatesLabel.text = "\(babyModel.minHead)~\(babyModel.maxHead)"
         self.dueDatesLabel.textColor = UIColor.whiteColor()
         self.dueDatesLabel.textAlignment = .Center
         self.dueDatesLabel.font = UIFont.boldSystemFontOfSize(upRateWidth(18))
@@ -126,24 +126,24 @@ class PregInfoView: UIView {
         self.recordHandler = recordCompletionHandler
     }
     
-    func refreshViews(model:PregBabyInfo) -> Void {
+    func refreshViews(model:BabyBaseInfo) -> Void {
         if let daysLabel = self.pregDaysLabel {
-            daysLabel.text = model.pregDate
+            daysLabel.text = model.day
         }
         if let image = self.babyImageView {
-            image.image = UIImage.imageWithName(model.pregBabyImage)
+            image.image = UIImage.imageWithName(model.babyHeadImage)
         }
         if let weightL = self.weightLabel {
-            weightL.text = model.pregWeight
+            weightL.text = "\(model.minWeight)~\(model.maxWeight)"
         }
         if let heightL = self.heightLabel {
-            heightL.text = model.pregHeight
+            heightL.text = "\(model.minHeight)~\(model.maxHeight)"
         }
         if let dueLabel = self.dueDatesLabel {
-            dueLabel.text = model.pregOutDay
+            dueLabel.text = "\(model.minHead)~\(model.maxHeight)"
         }
         if let circleV = self.cirleView {
-            circleV.drawCircleWithPercent(model.pregProgress, duration: 2, trackWidth: 20, progressWidth: 8, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.colorFromRGB(214, g: 89, b: 105)!, progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.colorFromRGB(254, g: 255, b: 255), animatedColors: nil)
+            circleV.drawCircleWithPercent(90, duration: 2, trackWidth: 20, progressWidth: 8, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.colorFromRGB(214, g: 89, b: 105)!, progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.colorFromRGB(254, g: 255, b: 255), animatedColors: nil)
         }
     }
 

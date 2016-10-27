@@ -11,24 +11,30 @@ import UIKit
 class InfoManagerViewController: BaseViewController {
     
     private var pregInfoVC:PregInfoViewController!
-    private var diaryRecordVC:DiaryRecordViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-                
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBarHidden = false
-        
-        if BabyListBL.findAll().count > 0 {
-            self.pregInfoVC = PregInfoViewController()
-            self.navigationController?.pushViewController(self.pregInfoVC, animated: false)
-        }else{
-            
+        dispatch_queue_create("babyListQueue", nil).queue {
+            BabyList.sendAsyncBabyList({ [weak self](errorCode, msg) in
+                dispatch_get_main_queue().queue({
+                    if let weakSelf = self, let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            if BabyListBL.findAll().count > 0 {
+                                weakSelf.pregInfoVC = PregInfoViewController()
+                                weakSelf.navigationController?.pushViewController(weakSelf.pregInfoVC, animated: false)
+                            }else{
+                                
+                            }
+                        }
+                    }
+                })
+            })
         }
     }
 

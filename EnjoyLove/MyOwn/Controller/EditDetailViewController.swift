@@ -55,7 +55,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: "名字", leftSel: nil, rightSel: nil)
             let editNameView = EditNameView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: ScreenHeight - navigationBarHeight - 10), completionHandler: { [weak self](txt) in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
@@ -85,7 +85,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: "个性签名", leftSel: nil, rightSel: nil)
             let editSignView = EditSignView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), completionHandler: {[weak self] (txt) in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
@@ -116,7 +116,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: Int(self.personDetail.sex)!, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
                     
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
@@ -148,7 +148,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: "孕育状态", leftSel: nil, rightSel: nil)
             let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: Int(self.personDetail.breedStatus) == nil ? 1 : Int(self.personDetail.breedStatus)!, completionHandler: {[weak self] (status, statusId) in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
@@ -316,7 +316,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                     headerView.headImage = image
                 }
                 }, successHandler: { (url, fileName) in
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 person.headImg = fileName

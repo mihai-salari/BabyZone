@@ -50,7 +50,7 @@ class HTTPEngine: NSObject {
     func postAsyncWith(url:String, parameters:[String:NSObject]?, success:((dataTask:NSURLSessionDataTask, responseObject:NSDictionary?)->())?, failer:((dataTask:NSURLSessionDataTask?, error:NSError?)->())?) -> NSURLSessionDataTask? {
         
         var phone = ""
-        if let phoneKey = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
+        if let phoneKey = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
             phone = phoneKey
         }
         let info = LoginBL.find(nil, key: phone)
@@ -60,19 +60,19 @@ class HTTPEngine: NSObject {
                 resultParams[key] = value
             }
         }
-        if let sign = NSUserDefaults.standardUserDefaults().objectForKey(SignKey) as? String{
-            resultParams[requestSign] = sign
+        if let sign = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.signKey) as? String{
+            resultParams[BabyZoneConfig.shared.sign] = sign
         }
         
-        if let token = NSUserDefaults.standardUserDefaults().objectForKey(AppTokenKey) as? String{
-            resultParams[requestAppToken] = token
+        if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.appTokenKey) as? String{
+            resultParams[BabyZoneConfig.shared.appToken] = token
         }
         
         if let sessionId = info == nil ? "0" : info!.sessionId {
             if sessionId == "" {
-                resultParams[requestSessionId] = "0"
+                resultParams[BabyZoneConfig.shared.sessionId] = "0"
             }else{
-                resultParams[requestSessionId] = sessionId
+                resultParams[BabyZoneConfig.shared.sessionId] = sessionId
             }
         }
         

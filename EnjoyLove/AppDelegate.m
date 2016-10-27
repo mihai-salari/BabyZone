@@ -96,13 +96,12 @@
 }
 
 - (void)preLogin{
-    [[NSUserDefaults standardUserDefaults] setObject:SIGN forKey:SIGNKEY];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:ALLORIENTATIONSKEY];
-    if ([[NSUserDefaults standardUserDefaults] stringForKey:APPTOKENKEY] == nil) {
+    [[NSUserDefaults standardUserDefaults] setObject:[[BabyZoneConfig shared] sign] forKey:[[BabyZoneConfig shared] signKey]];
+    if ([[NSUserDefaults standardUserDefaults] stringForKey:[[BabyZoneConfig shared] appTokenKey]] == nil) {
         [AppToken sendAsyncAppToken:@"appstore" completionHandler:^(AppToken * _Null_unspecified token) {
             if (token) {
                 if (token.appToken && ![token.appToken isEqualToString:@""]) {
-                    [[NSUserDefaults standardUserDefaults] setObject:token.appToken forKey:APPTOKENKEY];
+                    [[NSUserDefaults standardUserDefaults] setObject:token.appToken forKey:[[BabyZoneConfig shared] appTokenKey]];
                 }
             }
         }];

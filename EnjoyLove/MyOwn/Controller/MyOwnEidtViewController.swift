@@ -216,7 +216,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             let cityPicker = LocationViewController()
             cityPicker.locationInfoHandler = { [weak self](province, city) in
                 if let weakSelf = self {
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let login = LoginBL.find(nil, key: phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)

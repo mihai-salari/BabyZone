@@ -312,7 +312,7 @@ class ModifyPasswordView: UIView ,UITextFieldDelegate{
                     alertController1.addAction(sureAction)
                     HMTablBarController.presentViewController(alertController1, animated: true, completion: nil)
                 }else{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let info = LoginBL.find(nil, key: phone){
                             if let password = info.md5Password, let psdText = passwordTF.text{
                                 if psdText.md5 != password{
@@ -367,7 +367,7 @@ class ModifyPasswordView: UIView ,UITextFieldDelegate{
                 return
             }
             
-            if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+            if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                 if let login = LoginBL.find(nil, key: phone) {
                     HUD.showHud("正在发送...", onView: self)
                     ModifyPassword.sendAsyncChangePassword(login.md5Password == nil ? "" : login.md5Password, newUserPwd: newText, completionHandler: { [weak self](pwd) in

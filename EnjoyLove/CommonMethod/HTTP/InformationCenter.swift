@@ -24,8 +24,8 @@ extension BabyBaseInfo{
      maxHead		double	是	最大头围（cm）
 
      */
-    class func sendAsyncBabyBaseInfo(completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(BabyBaseInfoUrl, parameters: nil, success: { (dataTask, responseObject) in
+    class func sendAsyncBabyBaseInfo(idUserBabyInfo: String = "", completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(BabyBaseInfoUrl, parameters: ["idUserBabyInfo":idUserBabyInfo], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])

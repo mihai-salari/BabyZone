@@ -16,6 +16,7 @@ class DiaryRecordViewController: BaseViewController {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = false
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
+        print("end of year \(NSDate.today().endOfYear)")
         self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
         if DiaryBL.findAll().count == 0 {
             self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)

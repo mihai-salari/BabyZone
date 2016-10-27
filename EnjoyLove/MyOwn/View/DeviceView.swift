@@ -39,7 +39,7 @@ class AddDeviceView: UIView, UITextFieldDelegate{
         
         self.phoneTF = UITextField.textField(CGRect(x: firstStepButton.frame.minX, y: line.frame.maxY, width: self.frame.width - 50, height: 40), title: nil, holder: nil, clear: true)
         self.phoneTF.delegate = self
-        if let userName = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
+        if let userName = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
             self.phoneTF.text = userName
         }
         self.phoneTF.textColor = UIColor.darkGrayColor()

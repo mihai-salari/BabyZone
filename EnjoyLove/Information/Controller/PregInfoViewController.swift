@@ -36,11 +36,23 @@ class PregInfoViewController: BaseViewController {
     private func initializeData(){
         dispatch_queue_create("diaryListQueue", nil).queue {
             
-            BabyBaseInfo.sendAsyncBabyBaseInfo({ [weak self](errorCode, msg) in
+            if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
+                if let login = LoginBL.find(nil, key: phone){
+                    if let personDetail = PersonDetailBL.find(nil, key: login.userId){
+                        
+                    }
+                }
+            }
+            
+            
+            
+            BabyBaseInfo.sendAsyncBabyBaseInfo("", completionHandler: { [weak self](errorCode, msg) in
                 if let weakSelf = self{
                     if let pregInfo = weakSelf.pregView{
                         if BabyBaseInfoBL.findAll().count > 0{
-                            pregInfo.refreshViews(<#T##model: PregBabyInfo##PregBabyInfo#>)
+                            dispatch_get_main_queue().queue({ 
+                                pregInfo.refreshViews(BabyBaseInfoBL.findAll()[0])
+                            })
                         }
                     }
                 }
@@ -54,7 +66,6 @@ class PregInfoViewController: BaseViewController {
         self.pregBabyData = []
         self.pregInfoStatusData = []
         
-//        var babyModel = PregBabyInfo(pregBabyDate: "36周宝宝", pregDate: "孕期46周+5天", pregProgress: 80, pregWeight: "4.1~7.7", pregHeight: "55.8~66.4", pregOutDay: "20", pregBabyImage: "pregBaby.png")
         var babyModel = BabyBaseInfo()
         babyModel.idComBabyBaseInfo = ""
         babyModel.infoType = "1"
@@ -84,7 +95,7 @@ class PregInfoViewController: BaseViewController {
             
             for itemModel in self.pregBabyData{
                 
-                let action = UIAlertAction.init(title: itemModel.pregBabyDate, style: .Default, handler: { (action:UIAlertAction) in
+                let action = UIAlertAction.init(title: "1", style: .Default, handler: { (action:UIAlertAction) in
                     
                 })
                 if action.valueForKey("titleTextColor") == nil{

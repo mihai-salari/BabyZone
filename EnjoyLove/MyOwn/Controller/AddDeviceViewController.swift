@@ -25,7 +25,7 @@ class AddDeviceViewController: BaseViewController {
         self.addDeviceView = AddDeviceView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: ScreenWidth - 20, height: ScreenHeight - navigationBarHeight), completionHandler: { [weak self] (isRegisted, phoneNum, validCode, country)in
             if let weakSelf = self{
                 if isRegisted == true{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                         if let info  = LoginBL.find(nil, key: phone){
                             if let psd = info.password {
                                 let userName = "+\(country)-\(phoneNum)"
@@ -39,7 +39,7 @@ class AddDeviceViewController: BaseViewController {
                         if let code = (codeNumber as? NSNumber)?.intValue {
                             switch code{
                             case NET_RET_VERIFY_PHONE_CODE_SUCCESS:
-                                if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String{
+                                if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                                     var password = ""
                                     if let info  = LoginBL.find(nil, key: phone){
                                         if let psd = info.password {
@@ -110,7 +110,7 @@ class AddDeviceViewController: BaseViewController {
     
     private func login(contacId:String, password:String){
         HUD.hideHud(self.view)
-        if let token = NSUserDefaults.standardUserDefaults().objectForKey(HMTokenKey) as? String {
+        if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String {
             NetManager.sharedManager().loginWithUserName(contacId, password: password, token: token, callBack: { [weak self](result) in
                 if let weakSelf = self{
                     HUD.hideHud(weakSelf.view)

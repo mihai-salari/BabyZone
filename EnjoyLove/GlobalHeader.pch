@@ -13,12 +13,11 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
 
-#define SIGNKEY                             @"SIGNKEY"
-#define SIGN                                @"xiangai"
-#define APPTOKENKEY                         @"APPTOKENKEY"
-#define HMTOKENKEY                          @"TOKENKEY"
-#define ALLORIENTATIONSKEY                  @"ALLORIENTATIONS"
-#define USERPHONEKEY                        @"USERPHONEKEY"
+//#define SIGNKEY                             @"SIGNKEY"
+//#define SIGN                                @"xiangai"
+//#define APPTOKENKEY                         @"APPTOKENKEY"
+//#define HMTOKENKEY                          @"TOKENKEY"
+//#define USERPHONEKEY                        @"USERPHONEKEY"
 
 #define HMLOG
 #ifdef HMLOG

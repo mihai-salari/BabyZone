@@ -51,7 +51,7 @@ class MyOwnCell: UITableViewCell {
     }
     
     func refreshHeaderCell(model:MyOwnHeader, completionHandler:(()->())?) -> Void {
-        if let phone = NSUserDefaults.standardUserDefaults().objectForKey(UserPhoneKey) as? String {
+        if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
             if let login = LoginBL.find(nil, key: phone){
                 if let person = PersonDetailBL.find(nil, key: login.userId) {
                     for subview in self.contentView.subviews {

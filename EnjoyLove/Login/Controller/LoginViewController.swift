@@ -18,7 +18,7 @@ class LoginViewController: BaseViewController {
         let loginView = LoginView.init(frame: self.view.bounds, commonLogin: { [weak self](phone, isPhone, password) in
             if let weakSelf = self{
                 HUD.showHud("正在登录...", onView: weakSelf.view)
-                NSUserDefaults.standardUserDefaults().setObject(phone, forKey: BabyZoneConfig.shared.UserPhoneKey)
+                BabyZoneConfig.shared.UserPhoneKey.setDefaultObject(phone)
                 Login.sendAsyncLogin(phone, userPwd: password, completionHandler: { (errorCode, msg, dataDict) in
                     if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
                         if let data = dataDict {
@@ -61,7 +61,7 @@ class LoginViewController: BaseViewController {
                                             login.md5Password = password.md5
                                             LoginBL.insert(login)
                                             PersonDetail.sendAsyncPersonDetail(nil)
-                                            NSUserDefaults.standardUserDefaults().setObject(login.userId, forKey: BabyZoneConfig.shared.currentUserId)
+                                            BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
                                             weakSelf.dismissViewControllerAnimated(true, completion: nil)
                                         }
                                     }

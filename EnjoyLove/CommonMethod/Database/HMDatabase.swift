@@ -201,7 +201,7 @@ private class LoginDAO:NSObject{
         for note in array {
             let phoneKey = detail == nil ? "" : note.userId
             let baseKey = key == "" ? phoneKey : key
-            if note.userPhone == baseKey {
+            if note.userId == baseKey {
                 note.userName = ""
                 note.sessionId = ""
                 note.contactId = ""

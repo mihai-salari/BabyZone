@@ -16,12 +16,11 @@ class PregInfoViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.hidden = false
-        self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
-        
-        
-        
-        
+        if BabyListBL.findAll().count > 0 {
+            self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
+        }else{
+            
+        }
     }
     
     override func viewDidLoad() {
@@ -93,7 +92,6 @@ class PregInfoViewController: BaseViewController {
                     let diary = DiaryRecordViewController()
                     weakSelf.navigationController?.pushViewController(diary, animated: true)
                 }
-                
         })
         self.view.addSubview(self.pregView)
         

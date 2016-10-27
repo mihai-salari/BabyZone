@@ -83,8 +83,8 @@
                   symbolName = "-[P2PMonitorController onScreenShotted:]"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-                  timestampString = "499243925.401875"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+                  timestampString = "499248573.315136"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
@@ -98,8 +98,8 @@
                   symbolName = "__40-[P2PMonitorController onScreenShotted:]_block_invoke"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-                  timestampString = "499243925.403547"
+                  urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+                  timestampString = "499248573.317513"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
@@ -138,6 +138,54 @@
             startingLineNumber = "406"
             endingLineNumber = "406"
             landmarkName = "-onScreenShotted:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/Information/Controller/InfoManagerViewController.swift"
+            timestampString = "499248572.746839"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "28"
+            endingLineNumber = "28"
+            landmarkName = "viewWillAppear(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/Information/Controller/InfoManagerViewController.swift"
+            timestampString = "499248572.746839"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "viewWillAppear(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/Information/Controller/DiaryRecordViewController.swift"
+            timestampString = "499248572.746839"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "viewWillAppear(animated:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -2141,9 +2141,9 @@ private class DiaryDAO: NSObject {
         return false
     }
     
-    func find(detail:Diary?, key:String = "") -> Diary {
+    func find(detail:Diary?, key:String = "") -> Diary? {
         let array = self.findAll()
-        var result = Diary()
+        var result:Diary?
         for note in array {
             let userId = detail == nil ? "" : note.idUserNoteInfo
             let baseKey = key == "" ? userId : key
@@ -2173,9 +2173,14 @@ class DiaryBL: NSObject {
         return DiaryDAO.shared.findAll()
     }
     
-    class func find(detail:Diary?, key:String = "") ->Diary{
+    class func find(detail:Diary?, key:String = "") ->Diary?{
         return DiaryDAO.shared.find(detail, key: key)
     }
+    
+    class func findAll() -> [Diary]{
+        return DiaryDAO.shared.findAll()
+    }
+    
 }
 //MARK:____Article____
 private let ArticleArchiveKey = "ArticleArchiveKey"

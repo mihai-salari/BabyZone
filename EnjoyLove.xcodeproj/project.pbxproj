@@ -152,6 +152,7 @@
 		2731E2B81D713D3400521318 /* mic.png in Resources */ = {isa = PBXBuildFile; fileRef = 2731E2B71D713D3400521318 /* mic.png */; };
 		2731E2D61D72E72000521318 /* HMSliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2731E2D31D72E72000521318 /* HMSliderView.m */; };
 		2731E2E01D730A9800521318 /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2731E2DF1D730A9800521318 /* Info.swift */; };
+		2736EC1D1DC1E26F00101E1D /* InfoManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2736EC1C1DC1E26F00101E1D /* InfoManagerViewController.swift */; };
 		27378CA41D75C87B0090A764 /* pregnantMama.png in Resources */ = {isa = PBXBuildFile; fileRef = 27378CA31D75C87B0090A764 /* pregnantMama.png */; };
 		274DD5731DA7534200BC8435 /* OCBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 274DD5721DA7534200BC8435 /* OCBaseViewController.m */; };
 		2753E6B11D7B931E00FDB8D0 /* HTTPEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2753E6B01D7B931E00FDB8D0 /* HTTPEngine.swift */; };
@@ -692,6 +693,7 @@
 		2731E2D21D72E72000521318 /* HMSliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSliderView.h; sourceTree = "<group>"; };
 		2731E2D31D72E72000521318 /* HMSliderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMSliderView.m; sourceTree = "<group>"; };
 		2731E2DF1D730A9800521318 /* Info.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
+		2736EC1C1DC1E26F00101E1D /* InfoManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoManagerViewController.swift; sourceTree = "<group>"; };
 		27378CA31D75C87B0090A764 /* pregnantMama.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pregnantMama.png; sourceTree = "<group>"; };
 		274DD5711DA7534200BC8435 /* OCBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBaseViewController.h; sourceTree = "<group>"; };
 		274DD5721DA7534200BC8435 /* OCBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBaseViewController.m; sourceTree = "<group>"; };
@@ -2446,6 +2448,7 @@
 		27D003241D6D930900B62A61 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				2736EC1C1DC1E26F00101E1D /* InfoManagerViewController.swift */,
 				275BF4FC1DB9CDF100DD9BB3 /* PregInfoViewController.swift */,
 				275BF4F91DB9CDF100DD9BB3 /* DiaryDetailViewController.swift */,
 				275BF4F81DB9CDF100DD9BB3 /* BabyStatusViewController.swift */,
@@ -3136,6 +3139,7 @@
 				2731E2E01D730A9800521318 /* Info.swift in Sources */,
 				275EBFB41D8CF7630008E085 /* MyOwnEidtViewController.swift in Sources */,
 				275EBFB81D8D492C0008E085 /* EditView.swift in Sources */,
+				2736EC1D1DC1E26F00101E1D /* InfoManagerViewController.swift in Sources */,
 				275C04D31D8270EB00A52ABC /* String+Timepiece.swift in Sources */,
 				27830CF71D9A33610036E2BC /* FMTokenizers.m in Sources */,
 				27830CFC1D9A33610036E2BC /* FMDatabaseAdditions.m in Sources */,

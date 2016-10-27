@@ -21,7 +21,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "P2PClient.h"
-#import "Toast+UIView.h"
 #import "AppDelegate.h"
 #import "PAIOUnit.h"
 #import "UDManager.h"
@@ -52,22 +51,9 @@
 
 @property (nonatomic, strong) OpenGLView *remoteView;
 @property (nonatomic) BOOL isReject;
-@property (nonatomic) BOOL isFullScreen4B3;
-@property (nonatomic) BOOL isShowControllerBar;
-@property (nonatomic) BOOL isVideoModeHD;
+@property (nonatomic, assign) BOOL isCancelClick;
 
-@property (nonatomic,strong) UIScrollView *scrollView;//监控界面缩放
-@property (nonatomic) BOOL isScale;//监控界面缩放
-
-@property (strong, nonatomic) UIView *bottomView;//重新调整监控画面
-@property (nonatomic) BOOL isTalking;
-
-@property (strong, nonatomic) UIView *controllerRight;
-@property (strong, nonatomic) UIView *controllerRightBg;//重新调整监控画面
-@property (strong, nonatomic) UIView *bottomBarView;//重新调整监控画面
-@property (strong, nonatomic) UIView *controllBar;
-
-@property (nonatomic) BOOL isAlreadyShowResolution;//重新调整监控画面
+@property (nonatomic, assign) BOOL isTalking;
 
 @property (nonatomic) BOOL isDefenceOn;//重新调整监控画面
 
@@ -78,27 +64,9 @@
 @property(nonatomic) int lastValue;
 @property(nonatomic) int *lastTime;
 
-@property(nonatomic, strong) UIButton *lightButton;
-@property (nonatomic) BOOL isLightSwitchOn;
-@property (strong, nonatomic) UIActivityIndicatorView *progressView;
-@property (nonatomic) BOOL isSupportLightSwitch;
-
-
-@property (strong, nonatomic) UIView *focalLengthView;
-@property (nonatomic) BOOL isSupportFocalLength;
-@property (strong, nonatomic) UIPinchGestureRecognizer *pinchGestureRecognizer;
-
 
 //竖屏控件
 @property (nonatomic,strong) UIView *canvasView;    //显示监控画面的载体
-@property (assign,nonatomic) CGRect canvasframe;
-@property (nonatomic,strong) UIButton *promptButton;
-@property (nonatomic,strong) UILabel *labelTip;
-//@property (strong, nonatomic) ProgressImageView *yProgressView;
-@property (nonatomic,strong) UIView *midToolHView;   //全屏时，隐藏
-@property (nonatomic,strong) UIView *bottomToolHView;   //全屏时，隐藏
-@property (nonatomic,strong) UIButton *defenceButtonH;   //布防撤防按钮
-
 //YES表示当前处于监控中，且接收到推送，点击观看监控
 @property (assign,nonatomic) BOOL isIntoMonitorFromMonitor;
 
@@ -112,10 +80,13 @@
 //YES表示图像渲染出来了
 @property (nonatomic, assign) BOOL isOkRenderVideoFrame;
 
+
 @end
 
 @implementation P2PMonitorController
 
+- (void)dealloc{
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -131,10 +102,8 @@
 {
     [super viewDidLoad];
     
-    
     if (self.deviceContact) {
-        self.isShowControllerBar = YES;
-        self.isVideoModeHD = NO;
+        self.isReject = NO;
         
         [AppDelegate sharedDefault].monitoredContactId = self.deviceContact.contactId;
         
@@ -201,15 +170,15 @@
     [appdelegate application:[UIApplication sharedApplication] supportedInterfaceOrientationsForWindow:self.view.window];
     [self interfaceOrientation:UIInterfaceOrientationPortrait];
     
-    
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     
     self.isReject = YES;
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [self.remoteView setCaptureFinishScreen:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RECEIVE_REMOTE_MESSAGE object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:ACK_RECEIVE_REMOTE_MESSAGE object:nil];
     //rtsp监控界面弹出修改
@@ -427,13 +396,18 @@
         }
     }
     _isOkRenderVideoFrame = NO;
-    [self monitorP2PCall];
+    if (!self.isCancelClick) {
+        [self monitorP2PCall];
+    }
 }
 
 -(void)onScreenShotted:(UIImage *)image{
     UIImage *tempImage = [[UIImage alloc] initWithCGImage:image.CGImage];
     NSData *imgData = [NSData dataWithData:UIImagePNGRepresentation(tempImage)];
     [Utils saveScreenshotFile:imgData];
+    if (self.monitorRefreshHandler && self.isCancelClick) {
+        self.monitorRefreshHandler(image);
+    }
     dispatch_async(dispatch_get_main_queue(), ^{
         [HUD hideHud:self.view];
         [HUD showText:@"截图成功" onView:self.view];
@@ -556,14 +530,14 @@
                     
                 }else if(result==2){
                     DLog(@"resend do device update");
-                    NSString *contactId = [[P2PClient sharedClient] callId];
-                    NSString *contactPassword = [[P2PClient sharedClient] callPassword];
+//                    NSString *contactId = [[P2PClient sharedClient] callId];
+//                    NSString *contactPassword = [[P2PClient sharedClient] callPassword];
                     
-                    if (self.isLightSwitchOn) {//灯正开着
-                        [[P2PClient sharedClient] setLightStateWithDeviceId:contactId password:contactPassword switchState:0];//关灯
-                    }else{
-                        [[P2PClient sharedClient] setLightStateWithDeviceId:contactId password:contactPassword switchState:1];//开灯
-                    }
+//                    if (self.isLightSwitchOn) {//灯正开着
+//                        [[P2PClient sharedClient] setLightStateWithDeviceId:contactId password:contactPassword switchState:0];//关灯
+//                    }else{
+//                        [[P2PClient sharedClient] setLightStateWithDeviceId:contactId password:contactPassword switchState:1];//开灯
+//                    }
                 }
             });
         }
@@ -630,11 +604,13 @@
                 while (_isPlaying) {
                     usleep(50*1000);
                 }
-                
+                [[PAIOUnit sharedUnit] setSpeckState:NO];
                 [[P2PClient sharedClient] p2pHungUp];
                 self.remoteView.isQuitMonitorInterface = YES;
+                [self.remoteView setIsScreenShotting:YES];
+                self.isCancelClick = YES;
+                [self.navigationController popViewControllerAnimated:YES];
             }
-            [self.navigationController popViewControllerAnimated:YES];
         }
             break;
         default:
@@ -701,6 +677,9 @@
     
 }
 
+- (BOOL)shouldAutorotate{
+    return YES;
+}
 
 
 

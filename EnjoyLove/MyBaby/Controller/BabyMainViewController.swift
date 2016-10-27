@@ -25,9 +25,6 @@ class BabyMainViewController: BaseVideoViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        for subview in self.view.subviews {
-            subview.removeFromSuperview()
-        }
         if isLogin() == false {
             let login = LoginViewController()
             self.presentViewController(login, animated: true, completion: nil)
@@ -36,7 +33,7 @@ class BabyMainViewController: BaseVideoViewController {
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
             self.navigationBarItem(self, title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
-            self.initialize()
+            print("view will appear" + NSStringFromCGRect(UIScreen.mainScreen().bounds))
         }
     }
     
@@ -46,12 +43,12 @@ class BabyMainViewController: BaseVideoViewController {
         super.viewDidLoad()
 
         // Do any additional setnkznkup after loading the view.
-//        self.performSelector(#selector(self.remoteNotification), withObject: nil, afterDelay: 1)
+        print("viewDidLoad" + NSStringFromCGRect(UIScreen.mainScreen().bounds))
         let personDetailQueue = dispatch_queue_create("personDetailQueue", nil)
         personDetailQueue.queue { 
             PersonDetail.sendAsyncPersonDetail(nil)
         }
-        
+        self.initialize()
     }
         
     
@@ -67,40 +64,43 @@ class BabyMainViewController: BaseVideoViewController {
     }
     
     private func initialize(){
-        if self.babyData != nil {
-            self.babyData = nil
-        }
         self.babyData = []
-        
-        if EquipmentsBL.findAll().count > 0 {
+        if self.contactData.count > 0 {
             for eqm in EquipmentsBL.findAll() {
-                let baby = Baby(babyImage: Utils.getHeaderFilePathWithId(eqm.eqmDid), babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0")
+                let baby = Baby(babyImage: Utils.getHeaderFilePathWithId(eqm.eqmDid), babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0", babyEquipment: eqm)
                 self.babyData.append(baby)
             }
         }else{
-            let baby = Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0")
+            let baby = Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0", babyEquipment: nil)
             self.babyData.append(baby)
         }
         
-        if self.babyView != nil {
-            self.babyView.removeFromSuperview()
-            self.babyView = nil
-        }
         
-        
-        
-        self.babyView = BabyView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: self.view.frame.height - navAndTabHeight), data: self.babyData, playCompletionHandler: { [weak self](baby) in
+        self.babyView = BabyView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: self.view.frame.height - navAndTabHeight), data: self.babyData, playCompletionHandler: { [weak self](baby, index) in
             if let weakSelf = self{
-                
+                if let babyEqm = baby.babyEquipment{
+                    let currentEqm = EquipmentsBL.contactFromEquipment(babyEqm)
+                    if currentEqm.onLineState == 1{
+                        let monitor = P2PMonitorController()
+                        monitor.deviceContact = currentEqm
+                        monitor.monitorRefreshHandler = { (image) in
+                            weakSelf.babyView.refreshAtCurrent(currentEqm, index: index, img: image)
+                        };
+                        weakSelf.navigationController?.pushViewController(monitor, animated: true)
+                    }else{
+                        HUD.showText("您的设备已离线，请重新添加更新", onView: weakSelf.view)
+                    }
+                }else{
+                    HUD.showText("您未绑定设备", onView: weakSelf.view)
+                }
             }
-        }) { [weak self](baby) in
+        }) { [weak self](baby, index) in
             if let weakSelf = self{
                 let music = PlayMusicViewController()
                 weakSelf.navigationController?.pushViewController(music, animated: true)
             }
         }
         self.view.addSubview(self.babyView)
-        
         
     }
     

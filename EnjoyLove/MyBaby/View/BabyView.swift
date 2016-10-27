@@ -8,7 +8,7 @@
 
 import UIKit
 
-
+private let babyBackgroundImageViewTag = 1000
 class BabyView: UIView,UIScrollViewDelegate{
 
     private var babyScrollView:UIScrollView!
@@ -17,8 +17,8 @@ class BabyView: UIView,UIScrollViewDelegate{
     private var humidityLabel:UILabel!
     private var remindLabel:UILabel!
     private var babyData:[Baby]!
-    private var playHandler:((baby:Baby!)->())?
-    private var musicHandler:((baby:Baby!)->())?
+    private var playHandler:((baby:Baby!, current:Int)->())?
+    private var musicHandler:((baby:Baby!, current:Int)->())?
     private var currentBaby:Int = 0{
         didSet{
             if let data = self.babyData {
@@ -37,7 +37,7 @@ class BabyView: UIView,UIScrollViewDelegate{
         }
     }
     
-    init(frame: CGRect,data:[Baby],playCompletionHandler:((baby:Baby!)->())?, musicCompletionHandler:((baby:Baby!)->())?) {
+    init(frame: CGRect,data:[Baby],playCompletionHandler:((baby:Baby!, current:Int)->())?, musicCompletionHandler:((baby:Baby!, current:Int)->())?) {
         super.init(frame: frame)
         self.babyData = data
         self.babyScrollView = UIScrollView.init(frame: self.bounds)
@@ -46,17 +46,18 @@ class BabyView: UIView,UIScrollViewDelegate{
         self.babyScrollView.showsHorizontalScrollIndicator = false
         self.babyScrollView.pagingEnabled = true
         self.babyScrollView.delegate = self
+        self.babyScrollView.backgroundColor = UIColor.blackColor()
         self.addSubview(self.babyScrollView)
         
         for i in 0 ..< data.count {
-            let babyImageView  = UIImageView.init(frame: CGRect(x: CGFloat(i) * self.babyScrollView.frame.width, y: 0, width: self.babyScrollView.frame.width, height: self.babyScrollView.frame.height))
-            babyImageView.image = UIImage.imageWithName(data[i].babyImage)
+            let babyImageView  = UIView.init(frame: CGRect(x: CGFloat(i) * self.babyScrollView.frame.width, y: 0, width: self.babyScrollView.frame.width, height: self.babyScrollView.frame.height))
+            if let fileImage = UIImage.init(contentsOfFile: data[i].babyImage) {
+                if let cgImg = fileImage.CGImage {
+                    babyImageView.layer.contents = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right).CGImage
+                }
+            }
+            babyImageView.tag = babyBackgroundImageViewTag + i
             self.babyScrollView.addSubview(babyImageView)
-            
-            let maskView = UIView.init(frame: babyImageView.frame)
-            maskView.backgroundColor = UIColor.colorFromRGB(0, g: 0, b: 0, a: 0.3)
-            self.babyScrollView.addSubview(maskView)
-            
         }
         
         
@@ -79,14 +80,14 @@ class BabyView: UIView,UIScrollViewDelegate{
         self.temperatureLabel = UILabel.init(frame: CGRect(x: 0, y: self.frame.height - 60, width: self.frame.width * (1 / 3), height: 15))
         self.temperatureLabel.text = data[0].babyTemperature
         self.temperatureLabel.textAlignment = .Center
-        self.temperatureLabel.textColor = UIColor.hexStringToColor("#ab1619")
+        self.temperatureLabel.textColor = UIColor.hexStringToColor("#DD656F")
         self.temperatureLabel.font = UIFont.boldSystemFontOfSize(10)
         self.addSubview(self.temperatureLabel)
         
         let tempDescLabel = UILabel.init(frame: CGRect(x: temperatureLabel.frame.minX, y: temperatureLabel.frame.maxY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
         tempDescLabel.text = "温度(°)"
         tempDescLabel.textAlignment = .Center
-        tempDescLabel.textColor = UIColor.hexStringToColor("#ab1619")
+        tempDescLabel.textColor = UIColor.hexStringToColor("#DD656F")
         tempDescLabel.font = UIFont.boldSystemFontOfSize(10)
         self.addSubview(tempDescLabel)
         
@@ -94,28 +95,28 @@ class BabyView: UIView,UIScrollViewDelegate{
         self.humidityLabel = UILabel.init(frame: CGRect(x: temperatureLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
         self.humidityLabel.text = data[0].babyHumidity
         self.humidityLabel.textAlignment = .Center
-        self.humidityLabel.textColor = UIColor.hexStringToColor("#dd6a6a")
+        self.humidityLabel.textColor = UIColor.hexStringToColor("#DD656F")
         self.humidityLabel.font = UIFont.boldSystemFontOfSize(10)
         self.addSubview(self.humidityLabel)
         
         let humidityDescLabel = UILabel.init(frame: CGRect(x: humidityLabel.frame.minX, y: humidityLabel.frame.maxY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
         humidityDescLabel.text = "湿度(%)"
         humidityDescLabel.textAlignment = .Center
-        humidityDescLabel.textColor = UIColor.hexStringToColor("#dd6a6a")
+        humidityDescLabel.textColor = UIColor.hexStringToColor("#DD656F")
         humidityDescLabel.font = UIFont.boldSystemFontOfSize(10)
         self.addSubview(humidityDescLabel)
         
         self.remindLabel = UILabel.init(frame: CGRect(x: humidityLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
         self.remindLabel.text = data[0].babyRemindCount
         self.remindLabel.textAlignment = .Center
-        self.remindLabel.textColor = UIColor.hexStringToColor("#dd6a6a")
+        self.remindLabel.textColor = UIColor.hexStringToColor("#DD656F")
         self.remindLabel.font = UIFont.boldSystemFontOfSize(10)
         self.addSubview(self.remindLabel)
         
         let remindDescLabel = UILabel.init(frame: CGRect(x: remindLabel.frame.minX, y: temperatureLabel.frame.maxY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
         remindDescLabel.text = "异常"
         remindDescLabel.textAlignment = .Center
-        remindDescLabel.textColor = UIColor.hexStringToColor("#dd6a6a")
+        remindDescLabel.textColor = UIColor.hexStringToColor("#DD656F")
         remindDescLabel.font = UIFont.boldSystemFontOfSize(10)
         self.addSubview(remindDescLabel)
         
@@ -123,8 +124,8 @@ class BabyView: UIView,UIScrollViewDelegate{
         self.babyPageControl = FilledPageControl(frame: CGRect(x: (self.frame.width - pageControlWidth) / 2, y: tempDescLabel.frame.maxY + 8, width: pageControlWidth, height: 10))
         self.babyPageControl.pageCount = data.count
         self.babyPageControl.indicatorPadding = 5
-        self.babyPageControl.tintColor = UIColor.hexStringToColor("#dd6a6a")
-        self.babyPageControl.borderColor = UIColor.hexStringToColor("#dd6a6a")
+        self.babyPageControl.tintColor = UIColor.hexStringToColor("#DD656F")
+        self.babyPageControl.borderColor = UIColor.hexStringToColor("#DD656F")
         self.addSubview(self.babyPageControl)
         
         
@@ -147,7 +148,7 @@ class BabyView: UIView,UIScrollViewDelegate{
         if let handle = self.playHandler {
             if let data = self.babyData {
                 if data.count > 0 {
-                    handle(baby: data[self.currentBaby])
+                    handle(baby: data[self.currentBaby], current: self.currentBaby)
                 }
             }
         }
@@ -158,7 +159,7 @@ class BabyView: UIView,UIScrollViewDelegate{
         if let handle = self.musicHandler {
             if let data = self.babyData {
                 if data.count > 0 {
-                    handle(baby: data[self.currentBaby])
+                    handle(baby: data[self.currentBaby], current: self.currentBaby)
                 }
             }
         }
@@ -166,6 +167,15 @@ class BabyView: UIView,UIScrollViewDelegate{
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func refreshAtCurrent(conact:Contact, index:Int, img:UIImage) -> Void {
+        if let babyImageView = self.babyScrollView.viewWithTag(index) {
+            babyImageView.layer.contents = img.CGImage
+        }
+        self.temperatureLabel.text = "0"
+        self.humidityLabel.text = "0"
+        self.remindLabel.text = "0"
     }
 
 }

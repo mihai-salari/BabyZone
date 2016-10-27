@@ -293,6 +293,10 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         }
     }
     
+    override func P2PClientReject(info: [NSObject : AnyObject]!) {
+        
+    }
+    
 
     //MARK:___事件处理___
     func addNewDeviceClick() -> Void {
@@ -305,7 +309,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     func onSwichtOnOff(on:HMSwitch) -> Void {
         let index = on.tag - deviceListSwitchTag
         let contact = self.devices[index]
-        var eqmId = ""
+//        var eqmId = ""
         
         
         if on.on == true {
@@ -341,7 +345,20 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         P2PClient.sharedClient().getBindAccountWithId(contactId, password: contactPassword)
     }
     
-    
+    private func monitorP2PCall(contact:Contact) ->Void{
+        P2PClient.sharedClient().p2pCallState = P2PCALL_STATUS_CALLING
+        let isBCalled = P2PClient.sharedClient().isBCalled
+        let type = P2PClient.sharedClient().p2pCallType
+        if isBCalled == false {
+            let isApMode = AppDelegate.sharedDefault().dwApContactID != 0
+            if isApMode == false {
+                P2PClient.sharedClient().p2pCallWithId(contact.contactId, password: contact.contactPassword, callType: type)
+            }else{
+                 P2PClient.sharedClient().p2pCallWithId("1", password: contact.contactPassword, callType: type)
+            }
+        }
+        
+    }
     
     /*
     // MARK: - Navigation

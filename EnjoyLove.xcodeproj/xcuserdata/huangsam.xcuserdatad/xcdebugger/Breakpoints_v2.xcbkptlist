@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/AppDelegate.m"
-            timestampString = "499100389.847135"
+            timestampString = "499242281.378569"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "860"
-            endingLineNumber = "860"
+            startingLineNumber = "854"
+            endingLineNumber = "854"
             landmarkName = "-onReceiveDoorbellAlarmMessage:"
             landmarkType = "7">
          </BreakpointContent>
@@ -36,7 +36,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/AppDelegate.m"
-            timestampString = "499100389.847135"
+            timestampString = "499242281.378569"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "455"
@@ -58,6 +58,86 @@
             startingLineNumber = "720"
             endingLineNumber = "720"
             landmarkName = "sendAsyncChildEquipmentsList(idUserChildInfo:completionHandler:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+            timestampString = "499243925.056056"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "411"
+            endingLineNumber = "411"
+            landmarkName = "-onScreenShotted:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[P2PMonitorController onScreenShotted:]"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+                  timestampString = "499243925.401875"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "411"
+                  endingLineNumber = "411"
+                  offsetFromSymbolStart = "488">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__40-[P2PMonitorController onScreenShotted:]_block_invoke"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+                  timestampString = "499243925.403547"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "411"
+                  endingLineNumber = "411"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/Controller/BabyMainViewController.swift"
+            timestampString = "499243660.235455"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "initialize()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+            timestampString = "499243925.056056"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
+            landmarkName = "-onScreenShotted:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

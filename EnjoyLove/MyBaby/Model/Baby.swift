@@ -18,6 +18,8 @@ struct Baby {
     
     var babyHumidity = ""
     
+    var babyEquipment:Equipments!
+    
     
 }
 

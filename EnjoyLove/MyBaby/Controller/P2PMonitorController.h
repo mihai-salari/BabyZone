@@ -16,5 +16,6 @@
 @interface P2PMonitorController : OCBaseViewController<AVCaptureVideoDataOutputSampleBufferDelegate,UIGestureRecognizerDelegate,OpenGLViewDelegate,UIScrollViewDelegate,UIAlertViewDelegate>//监控界面缩放
 @property (nonatomic, strong) Contact *deviceContact;
 
+@property (nonatomic, copy) void(^monitorRefreshHandler)(UIImage *currentImage);
 
 @end

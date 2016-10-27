@@ -28,7 +28,6 @@
 #import "ContactDAO.h"
 #import "GlobalThread.h"
 #import "Contact.h"
-#import "Toast+UIView.h"
 #import "UncaughtExceptionHandler.h"
 #import "Alarm.h"
 #import "AlarmDAO.h"
@@ -135,12 +134,13 @@
     // [3]:向个推服务器注册deviceToken
     [GeTuiSdk registerDeviceToken:token];
     
-    [[NSUserDefaults standardUserDefaults] setObject:token forKey:HMTOKENKEY];
+    [[NSUserDefaults standardUserDefaults] setObject:token forKey:[[BabyZoneConfig shared] pushTokenKey]];
 }
 
 /** 远程通知注册失败委托 */
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     NSLog(@"\n>>>[DeviceToken Error]:%@\n\n", error.description);
+    [[NSUserDefaults standardUserDefaults] setObject:@"e97cd50cf75c8440af42779deb7d944cd5f7e478f9f1525359e4e4aefdab2a35" forKey:[[BabyZoneConfig shared] pushTokenKey]];
 }
 
 #pragma mark - APP运行中接收到通知(推送)处理
@@ -548,7 +548,6 @@ UIBackgroundTaskIdentifier backgroundTask;
                     
                     [[FListManager sharedFList] setDefenceStateWithId:contactId type:DEFENCE_STATE_WARNING_PWD];
                     if([[FListManager sharedFList] getIsClickDefenceStateBtn:contactId]){
-                        [self.window makeToast:NSLocalizedString(@"device_password_error", nil)];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMessage"
@@ -558,7 +557,6 @@ UIBackgroundTaskIdentifier backgroundTask;
                 }else if(result==2){
                     [[FListManager sharedFList] setDefenceStateWithId:contactId type:DEFENCE_STATE_WARNING_NET];
                     if([[FListManager sharedFList] getIsClickDefenceStateBtn:contactId]){
-                        [self.window makeToast:NSLocalizedString(@"net_exception", nil)];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMessage"
@@ -568,7 +566,6 @@ UIBackgroundTaskIdentifier backgroundTask;
                 }else if (result==4){
                     [[FListManager sharedFList] setDefenceStateWithId:contactId type:DEFENCE_STATE_NO_PERMISSION];
                     if([[FListManager sharedFList] getIsClickDefenceStateBtn:contactId]){
-                        [self.window makeToast:NSLocalizedString(@"no_permission", nil)];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMessage"
@@ -591,7 +588,6 @@ UIBackgroundTaskIdentifier backgroundTask;
                     
                     [[FListManager sharedFList] setDefenceStateWithId:contactId type:DEFENCE_STATE_WARNING_PWD];
                     if([[FListManager sharedFList] getIsClickDefenceStateBtn:contactId]){
-                        [self.window makeToast:NSLocalizedString(@"device_password_error", nil)];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMessage"
@@ -601,7 +597,6 @@ UIBackgroundTaskIdentifier backgroundTask;
                 }else if(result==2){
                     [[FListManager sharedFList] setDefenceStateWithId:contactId type:DEFENCE_STATE_WARNING_NET];
                     if([[FListManager sharedFList] getIsClickDefenceStateBtn:contactId]){
-                        [self.window makeToast:NSLocalizedString(@"net_exception", nil)];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMessage"
@@ -611,7 +606,6 @@ UIBackgroundTaskIdentifier backgroundTask;
                 }else if (result==4){
                     [[FListManager sharedFList] setDefenceStateWithId:contactId type:DEFENCE_STATE_NO_PERMISSION];
                     if([[FListManager sharedFList] getIsClickDefenceStateBtn:contactId]){
-                        [self.window makeToast:NSLocalizedString(@"no_permission", nil)];
                     }
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshMessage"

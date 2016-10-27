@@ -64,7 +64,6 @@
 		270F6F621D7DA61F000DFEA0 /* audioRecord.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F5F1D7DA61F000DFEA0 /* audioRecord.png */; };
 		270F6F631D7DA61F000DFEA0 /* musicPlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F601D7DA61F000DFEA0 /* musicPlay.png */; };
 		270F6F641D7DA61F000DFEA0 /* videoRecord.png in Resources */ = {isa = PBXBuildFile; fileRef = 270F6F611D7DA61F000DFEA0 /* videoRecord.png */; };
-		270F6F661D7DA9E9000DFEA0 /* GreetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 270F6F651D7DA9E9000DFEA0 /* GreetView.swift */; };
 		271475241D7400CF003CFC5F /* pregBaby.png in Resources */ = {isa = PBXBuildFile; fileRef = 271475231D7400CF003CFC5F /* pregBaby.png */; };
 		271475AA1D7428EC003CFC5F /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271475A71D7428EC003CFC5F /* CustomView.swift */; };
 		271475AC1D7428EC003CFC5F /* HMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271475A91D7428EC003CFC5F /* HMethod.swift */; };
@@ -346,7 +345,6 @@
 		27830D081D9A33610036E2BC /* UDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CF11D9A33610036E2BC /* UDManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27830D0E1D9A35A50036E2BC /* libPwdEncrypt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27830D0C1D9A35A50036E2BC /* libPwdEncrypt.a */; };
 		27830D111D9A37050036E2BC /* NetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D101D9A37050036E2BC /* NetManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		27830D151D9A43560036E2BC /* Toast+UIView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D141D9A43560036E2BC /* Toast+UIView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27830D191D9A43E00036E2BC /* MPNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D181D9A43E00036E2BC /* MPNotificationView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27830D1D1D9A60CE0036E2BC /* OBGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D1C1D9A60CE0036E2BC /* OBGradientView.m */; };
 		27830D221D9A61E30036E2BC /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 27830D211D9A61E30036E2BC /* libicucore.tbd */; };
@@ -602,7 +600,6 @@
 		270F6F5F1D7DA61F000DFEA0 /* audioRecord.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioRecord.png; sourceTree = "<group>"; };
 		270F6F601D7DA61F000DFEA0 /* musicPlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = musicPlay.png; sourceTree = "<group>"; };
 		270F6F611D7DA61F000DFEA0 /* videoRecord.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = videoRecord.png; sourceTree = "<group>"; };
-		270F6F651D7DA9E9000DFEA0 /* GreetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GreetView.swift; sourceTree = "<group>"; };
 		271475231D7400CF003CFC5F /* pregBaby.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pregBaby.png; sourceTree = "<group>"; };
 		271475A71D7428EC003CFC5F /* CustomView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
 		271475A91D7428EC003CFC5F /* HMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMethod.swift; sourceTree = "<group>"; };
@@ -988,8 +985,6 @@
 		27830D0D1D9A35A50036E2BC /* libPwdEncrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libPwdEncrypt.h; sourceTree = "<group>"; };
 		27830D0F1D9A37050036E2BC /* NetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetManager.h; sourceTree = "<group>"; };
 		27830D101D9A37050036E2BC /* NetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetManager.m; sourceTree = "<group>"; };
-		27830D131D9A43560036E2BC /* Toast+UIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Toast+UIView.h"; sourceTree = "<group>"; };
-		27830D141D9A43560036E2BC /* Toast+UIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Toast+UIView.m"; sourceTree = "<group>"; };
 		27830D171D9A43E00036E2BC /* MPNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPNotificationView.h; sourceTree = "<group>"; };
 		27830D181D9A43E00036E2BC /* MPNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPNotificationView.m; sourceTree = "<group>"; };
 		27830D1B1D9A60CE0036E2BC /* OBGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBGradientView.h; sourceTree = "<group>"; };
@@ -1934,7 +1929,6 @@
 				27830D251D9A65390036E2BC /* Library */,
 				27830D1A1D9A60CE0036E2BC /* OBGradientView */,
 				27830D161D9A43E00036E2BC /* MPNotificationView */,
-				27830D121D9A43560036E2BC /* Toast */,
 				27830D0B1D9A35A50036E2BC /* libPwdEncrypt */,
 				27830CBF1D9A33610036E2BC /* Database */,
 				27830CA21D9A31AC0036E2BC /* md5 */,
@@ -2150,15 +2144,6 @@
 				27830D0D1D9A35A50036E2BC /* libPwdEncrypt.h */,
 			);
 			path = libPwdEncrypt;
-			sourceTree = "<group>";
-		};
-		27830D121D9A43560036E2BC /* Toast */ = {
-			isa = PBXGroup;
-			children = (
-				27830D131D9A43560036E2BC /* Toast+UIView.h */,
-				27830D141D9A43560036E2BC /* Toast+UIView.m */,
-			);
-			path = Toast;
 			sourceTree = "<group>";
 		};
 		27830D161D9A43E00036E2BC /* MPNotificationView */ = {
@@ -2454,7 +2439,6 @@
 			children = (
 				27D003221D6D92CD00B62A61 /* BabyView.swift */,
 				275C033F1D7E917400A52ABC /* ChildAccountView.swift */,
-				270F6F651D7DA9E9000DFEA0 /* GreetView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -3147,7 +3131,6 @@
 				27F28D511D73D369005E382D /* HMPercentLabel.m in Sources */,
 				27830CF41D9A33610036E2BC /* Contact.m in Sources */,
 				2753E6F11D7BE48500FDB8D0 /* PersonCenter.swift in Sources */,
-				270F6F661D7DA9E9000DFEA0 /* GreetView.swift in Sources */,
 				275C03401D7E917400A52ABC /* ChildAccountView.swift in Sources */,
 				27830CBE1D9A31AC0036E2BC /* RegisterResult.m in Sources */,
 				2731E2E01D730A9800521318 /* Info.swift in Sources */,
@@ -3283,7 +3266,6 @@
 				27020F9F1DB085AE00D3BDBE /* QNUserAgent.m in Sources */,
 				2753E6DB1D7B93D300FDB8D0 /* AFURLSessionManager.m in Sources */,
 				275C04841D8105B000A52ABC /* UIScrollView+MJExtension.m in Sources */,
-				27830D151D9A43560036E2BC /* Toast+UIView.m in Sources */,
 				27830C001D98FDD20036E2BC /* WIFI.swift in Sources */,
 				27830D071D9A33610036E2BC /* RecommendInfoDAO.m in Sources */,
 				27020F971DB085AE00D3BDBE /* QNEtag.m in Sources */,

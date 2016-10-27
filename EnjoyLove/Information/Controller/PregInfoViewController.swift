@@ -11,12 +11,13 @@ import UIKit
 class PregInfoViewController: BaseViewController {
 
     private var pregView:PregInfoView!
-    private var pregBabyData:[PregBabyInfo]!
+    private var pregBabyData:[BabyBaseInfo]!
     private var pregInfoStatusData:[PregInfoStatus]!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func viewDidLoad() {
@@ -33,19 +34,38 @@ class PregInfoViewController: BaseViewController {
     }
     
     private func initializeData(){
+        dispatch_queue_create("diaryListQueue", nil).queue {
+            
+            BabyBaseInfo.sendAsyncBabyBaseInfo({ [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let pregInfo = weakSelf.pregView{
+                        if BabyBaseInfoBL.findAll().count > 0{
+                            pregInfo.refreshViews(<#T##model: PregBabyInfo##PregBabyInfo#>)
+                        }
+                    }
+                }
+            })
+            
+            Diary.sendAsyncUserNoteList("1", year: "", month: "", completionHandler: nil)
+            NoteLabel.sendAsyncUserNoteLabel(nil)
+        }
+        
+        
         self.pregBabyData = []
         self.pregInfoStatusData = []
         
-        let babyData = BabyListBL.findAll()
-        if babyData.count > 0 {
-            
-        }else{
-            
-        }
-        
-        var babyModel = PregBabyInfo(pregBabyDate: "36周宝宝", pregDate: "孕期46周+5天", pregProgress: 80, pregWeight: "4.1~7.7", pregHeight: "55.8~66.4", pregOutDay: "20", pregBabyImage: "pregBaby.png")
-        self.pregBabyData.append(babyModel)
-        babyModel = PregBabyInfo(pregBabyDate: "56周宝宝", pregDate: "孕期56周+5天", pregProgress: 75, pregWeight: "4.1~7.7", pregHeight: "55.8~66.4", pregOutDay: "16", pregBabyImage: "pregBaby.png")
+//        var babyModel = PregBabyInfo(pregBabyDate: "36周宝宝", pregDate: "孕期46周+5天", pregProgress: 80, pregWeight: "4.1~7.7", pregHeight: "55.8~66.4", pregOutDay: "20", pregBabyImage: "pregBaby.png")
+        var babyModel = BabyBaseInfo()
+        babyModel.idComBabyBaseInfo = ""
+        babyModel.infoType = "1"
+        babyModel.day = "100"
+        babyModel.idUserBabyInfo = ""
+        babyModel.minWeight = "0"
+        babyModel.maxWeight = "0"
+        babyModel.minHeight = "0"
+        babyModel.maxHeight = "0"
+        babyModel.minHead = "0"
+        babyModel.maxHead = "0"
         self.pregBabyData.append(babyModel)
         
         var infoData:[InfoStatus] = []
@@ -57,7 +77,6 @@ class PregInfoViewController: BaseViewController {
         self.pregInfoStatusData.append(pregInfoStatus)
         
     }
-    
     
     private func initializeSubviews(){
         self.pregView = PregInfoView.init(frame: CGRectMake(0, navigationBarHeight, ScreenWidth, (ScreenHeight - navAndTabHeight) * (2 / 3)), babyModel: self.pregBabyData[0], switchCompletionHandler: {

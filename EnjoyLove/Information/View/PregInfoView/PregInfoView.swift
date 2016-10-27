@@ -32,7 +32,7 @@ class PregInfoView: UIView {
     private var recordHandler:(()->())?
     
     
-    init(frame: CGRect,babyModel:PregBabyInfo, switchCompletionHandler:(()->())?, recordCompletionHandler:(()->())?) {
+    init(frame: CGRect,babyModel:BabyBaseInfo, switchCompletionHandler:(()->())?, recordCompletionHandler:(()->())?) {
         super.init(frame: frame)
         
         self.cirleView = HMCirclePercentView.init(frame: CGRectMake((CGRectGetWidth(self.frame) - pregInfoCircleWidth) / 2, CGRectGetHeight(self.frame) * (2 / 5.3) - pregInfoCircleWidth / 2, pregInfoCircleWidth, pregInfoCircleWidth), showText: false)
@@ -163,6 +163,11 @@ class PregInfoView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func refreshPregInfoView(babyInfo:BabyBaseInfo) -> Void {
+        
+    }
+    
 }
 
 

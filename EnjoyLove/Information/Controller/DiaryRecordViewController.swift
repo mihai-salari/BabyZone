@@ -15,9 +15,14 @@ class DiaryRecordViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = false
-        self.tabBarController?.tabBar.hidden = true
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
         self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
+        if DiaryBL.findAll().count == 0 {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+            self.tabBarController?.tabBar.hidden = false
+        }else{
+            self.tabBarController?.tabBar.hidden = true
+        }
     }
     
     
@@ -26,8 +31,6 @@ class DiaryRecordViewController: BaseViewController {
 
         // Do any additional setup after loading the view.
         self.initializeSubviews()
-        let navBar = UINavigationBar.appearance()
-        navBar.backgroundColor = UIColor.greenColor()
         
     }
 

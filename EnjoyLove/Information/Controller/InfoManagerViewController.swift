@@ -17,35 +17,16 @@ class InfoManagerViewController: BaseViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+                
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = false
+        
         if BabyListBL.findAll().count > 0 {
-            if DiaryBL.findAll().count == 0 {
-                self.diaryRecordVC = DiaryRecordViewController()
-                self.view.addSubview(self.diaryRecordVC.view)
-                self.addChildViewController(self.diaryRecordVC)
-                if self.pregInfoVC != nil {
-                    self.pregInfoVC.removeFromParentViewController()
-                    self.pregInfoVC = nil
-                }
-            }else{
-                self.pregInfoVC = PregInfoViewController()
-                self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
-                self.view.addSubview(self.pregInfoVC.view)
-                self.addChildViewController(self.pregInfoVC)
-                if self.diaryRecordVC != nil {
-                    self.diaryRecordVC.removeFromParentViewController()
-                    self.diaryRecordVC = nil
-                }
-            }
-        }else{
-            
-        }
-        if BabyListBL.findAll().count > 0 {
-            
+            self.pregInfoVC = PregInfoViewController()
+            self.navigationController?.pushViewController(self.pregInfoVC, animated: false)
         }else{
             
         }

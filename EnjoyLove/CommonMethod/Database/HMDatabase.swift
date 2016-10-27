@@ -881,6 +881,7 @@ class BabyBaseInfo: NSObject,NSCoding {
 
     var idComBabyBaseInfo:String!
     var infoType:String!
+    var idUserBabyInfo:String!
     var day:String!
     var minWeight:String!
     var maxWeight:String!
@@ -888,10 +889,13 @@ class BabyBaseInfo: NSObject,NSCoding {
     var maxHeight:String!
     var minHead:String!
     var maxHead:String!
+    let babyHeadImage:String = "pregBaby.png"
+    
     
     override init() {
         self.idComBabyBaseInfo = ""
         self.infoType = ""
+        self.idUserBabyInfo = ""
         self.day = ""
         self.minWeight = ""
         self.maxWeight = ""
@@ -1090,6 +1094,10 @@ class BabyBaseInfoBL: NSObject {
     
     class func find(detail:BabyBaseInfo?, key:String = "") ->BabyBaseInfo?{
         return BabyBaseInfoDAO.shared.find(detail, key: key)
+    }
+    
+    class func findAll() ->[BabyBaseInfo]{
+        return BabyBaseInfoDAO.shared.findAll()
     }
     
 }
@@ -2027,7 +2035,6 @@ class Diary: NSObject,NSCoding {
         aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
     }
-
 }
 
 private class DiaryDAO: NSObject {
@@ -2182,6 +2189,7 @@ class DiaryBL: NSObject {
     }
     
 }
+
 //MARK:____Article____
 private let ArticleArchiveKey = "ArticleArchiveKey"
 private let ArticleArchiveFileName = "ArticleArchive.archive"

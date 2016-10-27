@@ -836,7 +836,7 @@ extension ChildEquipments{
 private let UserNoteLabelUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteLabel"
 extension NoteLabel{
     class func sendAsyncUserNoteLabel(completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ModifyChildEquipmentsPermissionUrl, parameters: nil, success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(UserNoteLabelUrl, parameters: nil, success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
@@ -867,8 +867,8 @@ private let UserNoteListUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteList"
 private let AddUserNoteUrl = baseEnjoyLoveUrl + "/api/user/addUserNote"
 private let DeleteUserNoteUrl = baseEnjoyLoveUrl + "/api/user/deleteUserNote"
 extension Diary{
-    class func sendAsyncUserNoteList(pageIndex: String, pageSize:String, year:String, month:String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":pageIndex, "pageSize":pageSize, "year":year, "month":month,], success: { (dataTask, responseObject) in
+    class func sendAsyncUserNoteList(pageIndex: String, year:String, month:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":pageIndex, "pageSize":"1", "year":year, "month":month,], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])

@@ -36,15 +36,15 @@ struct InfoStatus {
     var pregCellHeight:CGFloat = 0
 }
 
-struct PregBabyInfo {
-    var pregBabyDate = ""
-    var pregDate = ""
-    var pregProgress:CGFloat = 0
-    var pregWeight = ""
-    var pregHeight = ""
-    var pregOutDay = ""
-    var pregBabyImage = ""
-}
+//struct PregBabyInfo {
+//    var pregBabyDate = ""
+//    var pregDate = ""
+//    var pregProgress:CGFloat = 0
+//    var pregWeight = ""
+//    var pregHeight = ""
+//    var pregOutDay = ""
+//    var pregBabyImage = ""
+//}
 
 class PregDiary: NSObject {
     var image:String = ""

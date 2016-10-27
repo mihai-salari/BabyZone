@@ -31,14 +31,14 @@ let baseEnjoyLoveUrl = "http://123.56.133.212:8080/xiangai-api"
 private let QiNiuUrl = baseEnjoyLoveUrl + "/api/getQiniuToken"
 //MARK:________________________通用接口___________________________
 /// 七牛接口数据
-private let QiNiuDomainName = "QINIUDOMAINNAME"
 class QiNiu: NSObject {
     
     private class func sendAsyncQiNiu(completionHandler:((token:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(QiNiuUrl, parameters: nil, success: { (dataTask, responseObject) in
             if let response = responseObject{
                 if let data = response["data"] as? [String:NSObject]{
-                    NSUserDefaults.standardUserDefaults().setObject(format(data["qiNiuDomainName"]), forKey: QiNiuDomainName)
+                    BabyZoneConfig.shared.QiNiuDomainName.setDefaultObject(format(data["qiNiuDomainName"]))
+                    
                     if let handle = completionHandler{
                         handle(token: format(data["token"]))
                     }
@@ -57,7 +57,7 @@ class QiNiu: NSObject {
     }
     
     class func qiNiuDomain()->String{
-        if let obj = NSUserDefaults.standardUserDefaults().objectForKey(QiNiuDomainName) as? String {
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.QiNiuDomainName) as? String {
             return obj
         }
         return ""

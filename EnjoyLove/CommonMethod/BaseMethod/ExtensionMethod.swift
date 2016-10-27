@@ -189,6 +189,15 @@ extension String{
         return NSUserDefaults.standardUserDefaults().boolForKey(self)
     }
     
+    func setDefaultObject(val:AnyObject?) -> Void {
+        NSUserDefaults.standardUserDefaults().setObject(val, forKey: self)
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    func defaultObject() -> AnyObject? {
+        return NSUserDefaults.standardUserDefaults().objectForKey(self)
+    }
+    
 }
 
 

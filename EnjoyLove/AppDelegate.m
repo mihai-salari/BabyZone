@@ -96,7 +96,6 @@
 }
 
 - (void)preLogin{
-    [[NSUserDefaults standardUserDefaults] setObject:[[BabyZoneConfig shared] sign] forKey:[[BabyZoneConfig shared] signKey]];
     if ([[NSUserDefaults standardUserDefaults] stringForKey:[[BabyZoneConfig shared] appTokenKey]] == nil) {
         [AppToken sendAsyncAppToken:@"appstore" completionHandler:^(AppToken * _Null_unspecified token) {
             if (token) {

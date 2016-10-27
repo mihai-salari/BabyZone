@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>QiNiuDomainName</key>
+	<string>QINIUDOMAINNAME</string>
 	<key>currentUserId</key>
 	<string>CurrentUserId</string>
 	<key>videoRejectNotification</key>
@@ -23,7 +25,7 @@
 	<key>AllowOrientation</key>
 	<string>ALLORIENTATIONS</string>
 	<key>signKey</key>
-	<string>SIGNKEY</string>
+	<string>sign</string>
 	<key>appTokenKey</key>
 	<string>APPTOKENKEY</string>
 	<key>pushTokenKey</key>
@@ -31,7 +33,7 @@
 	<key>sessionId</key>
 	<string>sessionId</string>
 	<key>sign</key>
-	<string>sign</string>
+	<string>xiangai</string>
 	<key>appToken</key>
 	<string>appToken</string>
 	<key>passCode</key>

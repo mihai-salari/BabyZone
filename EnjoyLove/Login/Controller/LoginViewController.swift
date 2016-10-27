@@ -52,6 +52,7 @@ class LoginViewController: BaseViewController {
                                             login.sessionId = format(data["sessionId"])
                                             login.nickName = format(data["nickName"])
                                             login.userSign = format(data["userSign"])
+                                            login.userAccount = phone
                                             login.userName = phone
                                             login.userPhone = phone
                                             login.password = password
@@ -60,7 +61,7 @@ class LoginViewController: BaseViewController {
                                             login.md5Password = password.md5
                                             LoginBL.insert(login)
                                             PersonDetail.sendAsyncPersonDetail(nil)
-                                            NSUserDefaults.standardUserDefaults().setObject(phone, forKey: BabyZoneConfig.shared.currentUserId)
+                                            NSUserDefaults.standardUserDefaults().setObject(login.userId, forKey: BabyZoneConfig.shared.currentUserId)
                                             weakSelf.dismissViewControllerAnimated(true, completion: nil)
                                         }
                                     }

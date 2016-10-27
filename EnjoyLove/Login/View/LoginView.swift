@@ -43,7 +43,7 @@ class LoginView: UIView,UITextFieldDelegate {
         
         self.phoneTF = self.textField(CGRect(x: loginButton.frame.minX, y: loginButton.frame.minY - 100, width: loginButton.frame.width, height: loginButton.frame.height), title: "手机号:", holder: "输入您的手机号")
         self.phoneTF.textColor = UIColor.whiteColor()
-        if let userName = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
+        if let userName = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.UserPhoneKey) as? String {
             self.phoneTF.text = userName
         }
         self.addSubview(self.phoneTF)

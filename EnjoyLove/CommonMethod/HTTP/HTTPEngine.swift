@@ -24,8 +24,6 @@ import UIKit
  */
 
 
-let DEBUGMODE = false
-
 
 class HTTPEngine: NSObject {
     
@@ -60,10 +58,7 @@ class HTTPEngine: NSObject {
                 resultParams[key] = value
             }
         }
-        if let sign = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.signKey) as? String{
-            resultParams[BabyZoneConfig.shared.sign] = sign
-        }
-        
+        resultParams[BabyZoneConfig.shared.signKey] = BabyZoneConfig.shared.sign
         if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.appTokenKey) as? String{
             resultParams[BabyZoneConfig.shared.appToken] = token
         }
@@ -76,11 +71,6 @@ class HTTPEngine: NSObject {
             }
         }
         
-        if DEBUGMODE == true {
-            if let userId = info == nil ? "" : info!.userId {
-                resultParams["userId"] = userId
-            }
-        }
         
         print("url--->\(url) params\(resultParams)")
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true

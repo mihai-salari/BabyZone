@@ -42,6 +42,8 @@ class BabyZoneConfig: NSObject {
     var CountruCodeTable:String!
     var videoRejectNotification:String!
     var currentUserId:String!
+    var QiNiuDomainName:String!
+    
     
     
     
@@ -85,6 +87,7 @@ class BabyZoneConfig: NSObject {
                 self.CountruCodeTable = config.get(.CountruCodeTable)
                 self.videoRejectNotification = config.get(.videoRejectNotification)
                 self.currentUserId = config.get(.currentUserId)
+                self.QiNiuDomainName = config.get(.QiNiuDomainName)
             }
             
         }
@@ -147,6 +150,7 @@ extension Keys{
     static let CountruCodeTable                 = Key<String>("CountruCodeTable")
     static let videoRejectNotification          = Key<String>("videoRejectNotification")
     static let currentUserId                    = Key<String>("currentUserId")
+    static let QiNiuDomainName                  = Key<String>("QiNiuDomainName")
 }
 
 

@@ -123,8 +123,8 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
         if UDManager.isLogin() == true {
             return
         }else{
-            if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
-                if let base = LoginBL.find(nil, key: phone) {
+            if let userId = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
+                if let base = LoginBL.find(nil, key: userId) {
                     if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String {
                         var countryCode = "86"
                         let language = NSLocale.preferredLanguages()[0]
@@ -133,7 +133,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
                         }else{
                             countryCode = "1"
                         }
-                        let videoPhone = "+\(countryCode)-\(phone)"
+                        let videoPhone = "+\(countryCode)-\(base.userPhone)"
                         NetManager.sharedManager().loginWithUserName(videoPhone, password: base.password, token: token, callBack: { [weak self](result) in
                             if let weakSelf = self{
                                 var contact = ""
@@ -149,14 +149,12 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
                                         UDManager.setIsLogin(false)
                                     }
                                     
-                                    if let baseInfo = LoginBL.find(nil, key: phone){
-                                        baseInfo.userPhone = phone
-                                        baseInfo.userName = phone
+                                    if let baseInfo = LoginBL.find(nil, key: userId){
                                         baseInfo.isRegist = registNumer
                                         baseInfo.contactId = contact
                                         LoginBL.modify(baseInfo)
                                     }
-                                    NSUserDefaults.standardUserDefaults().setObject(phone, forKey: BabyZoneConfig.shared.currentUserId)
+                                    BabyZoneConfig.shared.currentUserId.setDefaultObject(userId)
                                 }
                             }
                             })

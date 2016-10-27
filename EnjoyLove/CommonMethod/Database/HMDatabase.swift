@@ -17,6 +17,7 @@ class Login: NSObject,NSCoding {
     var sessionId:String!
     var userName:String!
     var userPhone:String!
+    var userAccount:String!
     var contactId:String!
     var password:String!
     var md5Password:String!
@@ -31,6 +32,7 @@ class Login: NSObject,NSCoding {
         self.sessionId = ""
         self.userName = ""
         self.userPhone = ""
+        self.userAccount = ""
         self.contactId = ""
         self.password = ""
         self.md5Password = ""
@@ -52,6 +54,9 @@ class Login: NSObject,NSCoding {
         }
         if let obj = aDecoder.decodeObjectForKey("userPhone") as? String {
             self.userPhone = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("userAccount") as? String {
+            self.userAccount = obj
         }
         if let obj = aDecoder.decodeObjectForKey("password") as? String {
             self.password = obj
@@ -75,6 +80,7 @@ class Login: NSObject,NSCoding {
         aCoder.encodeObject(self.userName, forKey: "userName")
         aCoder.encodeObject(self.sessionId, forKey: "sessionId")
         aCoder.encodeObject(self.userPhone, forKey: "userPhone")
+        aCoder.encodeObject(self.userAccount, forKey: "userAccount")
         aCoder.encodeObject(self.password, forKey: "password")
         aCoder.encodeObject(self.md5Password, forKey: "md5Password")
         aCoder.encodeObject(self.isRegist, forKey: "isRegist")
@@ -193,7 +199,7 @@ private class LoginDAO:NSObject{
     func clear(detail:Login?, key:String = "") ->Bool{
         let array = self.findAll()
         for note in array {
-            let phoneKey = detail == nil ? "" : note.userPhone
+            let phoneKey = detail == nil ? "" : note.userId
             let baseKey = key == "" ? phoneKey : key
             if note.userPhone == baseKey {
                 note.userName = ""
@@ -216,9 +222,9 @@ private class LoginDAO:NSObject{
         let array = self.findAll()
         var result:Login?
         for note in array {
-            let phoneKey = detail == nil ? "" : note.userPhone
+            let phoneKey = detail == nil ? "" : note.userId
             let baseKey = key == "" ? phoneKey : key
-            if note.userPhone == baseKey {
+            if note.userId == baseKey {
                 result = note
             }
         }

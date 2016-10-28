@@ -12,12 +12,12 @@ private let pregdiaryTableViewCellId = "pregdiaryTableViewCellId"
 class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableViewDelegate {
 
     private var diaryTable:UITableView!
-    private var diaryData:[PregDiary]!
+    private var diaryData:[Diary]!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(self, isImage: true, title: "育婴日记", leftSel: #selector(PregDiaryViewController.menuClick), leftImage: "baby_menu.png", leftItemSize: CGSize(width: 20, height: 15), rightSel: nil)
+        self.navigationBarItem(self, isImage: true, title: "孕育日记", leftSel: #selector(PregDiaryViewController.menuClick), leftImage: "baby_menu.png", leftItemSize: CGSize(width: 20, height: 15), rightSel: nil)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .Add, target: self, action: #selector(PregDiaryViewController.createDiaryClick))
         
     }
@@ -26,8 +26,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.initializeData()
-        self.initializeSubviews()
+        self.initialize()
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,38 +34,27 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         // Dispose of any resources that can be recreated.
     }
     
-    private func initializeData(){
-        self.diaryData = []
-        for _ in 0 ..< 5 {
-            let model = PregDiary()
-            model.date1 = "2016.6.08 THU"
-            model.date2 = "宝宝第46周+5天"
-            model.image = "yunfumama.png"
-            model.imageEdge = "45"
-            model.face = "record_face.png"
-            model.desc = "每天早上第一件事就是不想起床，一刷牙就吐。那时候刚好公司隔壁搬来一间新公司。老公刚毕业，费电弄得我们转折了好几个城市，只能待在学校那个城市。"
-            model.weight = "第36周+28天"
-            model.tips = ["胎动","乳涨","腹胀","失眠","便秘","背痛"]
-            self.diaryData.append(model)
-        }
-    }
-
-    private func initializeSubviews(){
+    private func initialize() -> Void{
+        
+        self.diaryData = DiaryBL.findAll()
         
         let diaryNavView = DiaryListHeaderView.init(frame: CGRectMake(0, navigationBarHeight, CGRectGetWidth(self.view.frame), upRateHeight(40))) { (month, year,day) in
             print("year \(year) month \(month), day \(day)")
         }
         self.view.addSubview(diaryNavView)
         
-        
         self.diaryTable = UITableView.init(frame: CGRectMake(viewOriginX, CGRectGetMaxY(diaryNavView.frame) + viewOriginY, pregDiaryViewWidth, ScreenHeight - 3 * viewOriginY - tabBarHeight - CGRectGetHeight(diaryNavView.frame)), style: .Plain)
         self.diaryTable.delegate = self
         self.diaryTable.dataSource = self
+        self.diaryTable.separatorColor = UIColor.hexStringToColor("#de7a85")
+        self.diaryTable.separatorInset = UIEdgeInsetsZero
+        self.diaryTable.layoutMargins = UIEdgeInsetsZero
         self.diaryTable.showsVerticalScrollIndicator = false
         self.diaryTable.registerClass(DiaryListCell.self, forCellReuseIdentifier: pregdiaryTableViewCellId)
         self.diaryTable.separatorStyle = .None
         self.view.addSubview(self.diaryTable)
     }
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.diaryData.count
@@ -86,7 +74,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let model = self.diaryData[indexPath.row]
         let diaryVC = DiaryDetailViewController()
-        diaryVC.model = model
+//        diaryVC.model = model
         self.navigationController?.pushViewController(diaryVC, animated: true)
     }
     

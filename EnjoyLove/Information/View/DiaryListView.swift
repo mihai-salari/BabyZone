@@ -148,7 +148,7 @@ class DiaryListCell: UITableViewCell {
         
         // Configure the view for the selected state
     }
-    func refreshCell(model:PregDiary) -> Void {
+    func refreshCell(model:Diary) -> Void {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
@@ -156,18 +156,22 @@ class DiaryListCell: UITableViewCell {
         
         let imageHeight = CGRectGetHeight(self.contentView.frame) * (2 / 3)
         let imageView = UIImageView.init(frame: CGRectMake(10, (CGRectGetHeight(self.contentView.frame) - imageHeight) / 2, imageHeight, imageHeight))
-        imageView.image = UIImage.imageWithName(model.image)
+        if model.images.count > 0 {
+            imageView.setImageURL(model.images[0])
+        }else{
+            imageView.image = UIImage.imageWithName("pregnantMama.png")
+        }
         self.contentView.addSubview(imageView)
         
         let dateLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(imageView.frame) + 5, CGRectGetMinY(imageView.frame), CGRectGetWidth(self.frame) / 3.3, CGRectGetHeight(imageView.frame) / 4))
-        dateLabel.text = model.date1
+        dateLabel.text = model.createTime
         dateLabel.textColor = UIColor.darkGrayColor()
         dateLabel.adjustsFontSizeToFitWidth = true
         dateLabel.font = UIFont.systemFontOfSize(upRateWidth(15))
         self.contentView.addSubview(dateLabel)
         
         let faceHeight = DiaryButton.init(frame: CGRectMake(CGRectGetMinX(dateLabel.frame) + 3, CGRectGetMidY(imageView.frame) - CGRectGetHeight(imageView.frame) / 4, CGRectGetWidth(dateLabel.frame) - 5, CGRectGetHeight(imageView.frame) / 4))
-        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(12), upRateWidth(12)), image: model.face, title: model.weight, fontSize: upRateWidth(12))
+//        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(12), upRateWidth(12)), image: model.face, title: model.weight, fontSize: upRateWidth(12))
         faceHeight.enabled = false
         faceHeight.setCustomTitleColor(UIColor.darkGrayColor())
         self.contentView.addSubview(faceHeight)
@@ -176,7 +180,7 @@ class DiaryListCell: UITableViewCell {
         descLabel.adjustsFontSizeToFitWidth = true
         descLabel.minimumScaleFactor = 0.8
         descLabel.font = UIFont.systemFontOfSize(upRateWidth(12))
-        descLabel.text = model.desc
+//        descLabel.text = model.desc
         descLabel.numberOfLines = 0
         descLabel.textColor = UIColor.lightGrayColor()
         self.contentView.addSubview(descLabel)
@@ -184,24 +188,20 @@ class DiaryListCell: UITableViewCell {
         let tipWidth = CGRectGetWidth(self.contentView.frame) * (1 / 11)
         let tipHeight = CGRectGetHeight(dateLabel.frame) * (2 / 3)
         
-        for i in 0 ..< model.tips.count {
-            let columnIndex = i % pregDiaryTipsColumn
-            let rowIndex = i / pregDiaryTipsColumn
-            let itemLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(dateLabel.frame) + CGFloat(columnIndex) * (tipWidth + upRateWidth(2)), CGRectGetMidY(dateLabel.frame) + CGFloat(rowIndex) * (tipHeight + upRateHeight(3)) - tipHeight / 2, tipWidth, tipHeight))
-            itemLabel.layer.cornerRadius = upRateWidth(3)
-            itemLabel.layer.masksToBounds = true
-            itemLabel.layer.borderColor = UIColor.colorFromRGB(204, g: 100, b: 132)!.CGColor
-            itemLabel.layer.borderWidth = upRateWidth(1)
-            itemLabel.font = UIFont.systemFontOfSize(upRateWidth(10))
-            itemLabel.text = model.tips[i]
-            itemLabel.textAlignment = .Center
-            itemLabel.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)
-            self.contentView.addSubview(itemLabel)
-        }
-        
-        let line = UIView.init(frame: CGRectMake(0, pregDiaryRowHeight - 0.5, pregDiaryViewWidth, 0.5))
-        line.backgroundColor = UIColor.colorFromRGB(219, g: 183, b: 188)
-        self.contentView.addSubview(line)
+//        for i in 0 ..< model.tips.count {
+//            let columnIndex = i % pregDiaryTipsColumn
+//            let rowIndex = i / pregDiaryTipsColumn
+//            let itemLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(dateLabel.frame) + CGFloat(columnIndex) * (tipWidth + upRateWidth(2)), CGRectGetMidY(dateLabel.frame) + CGFloat(rowIndex) * (tipHeight + upRateHeight(3)) - tipHeight / 2, tipWidth, tipHeight))
+//            itemLabel.layer.cornerRadius = upRateWidth(3)
+//            itemLabel.layer.masksToBounds = true
+//            itemLabel.layer.borderColor = UIColor.colorFromRGB(204, g: 100, b: 132)!.CGColor
+//            itemLabel.layer.borderWidth = upRateWidth(1)
+//            itemLabel.font = UIFont.systemFontOfSize(upRateWidth(10))
+//            itemLabel.text = model.tips[i]
+//            itemLabel.textAlignment = .Center
+//            itemLabel.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)
+//            self.contentView.addSubview(itemLabel)
+//        }
     }
     
 }

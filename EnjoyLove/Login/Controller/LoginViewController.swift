@@ -35,35 +35,39 @@ class LoginViewController: BaseViewController {
                                     if let weakSelf = self{
                                         HUD.hideHud(weakSelf.view)
                                         var contact = ""
-                                        if let callback = result as? LoginResult{
-                                            var registNumer:NSNumber!
-                                            switch callback.error_code{
-                                            case NET_RET_LOGIN_SUCCESS:
-                                                contact = callback.contactId
-                                                weakSelf.loginSuccess(callback)
-                                                registNumer = NSNumber.init(bool: true)
-                                            default:
-                                                registNumer = NSNumber.init(bool: false)
-                                                UDManager.setIsLogin(false)
+                                        dispatch_queue_create("loginQueue", nil).queue({ 
+                                            if let callback = result as? LoginResult{
+                                                var registNumer:NSNumber!
+                                                switch callback.error_code{
+                                                case NET_RET_LOGIN_SUCCESS:
+                                                    contact = callback.contactId
+                                                    weakSelf.loginSuccess(callback)
+                                                    registNumer = NSNumber.init(bool: true)
+                                                default:
+                                                    registNumer = NSNumber.init(bool: false)
+                                                    UDManager.setIsLogin(false)
+                                                }
+                                                
+                                                let login = Login()
+                                                login.userId = format(data["userId"])
+                                                login.sessionId = format(data["sessionId"])
+                                                login.nickName = format(data["nickName"])
+                                                login.userSign = format(data["userSign"])
+                                                login.userAccount = phone
+                                                login.userName = phone
+                                                login.userPhone = phone
+                                                login.password = password
+                                                login.isRegist = registNumer
+                                                login.contactId = contact
+                                                login.md5Password = password.md5
+                                                LoginBL.insert(login)
+                                                BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
+                                                PersonDetail.sendAsyncPersonDetail(nil)
+                                                dispatch_get_main_queue().queue({ 
+                                                    weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                                                })
                                             }
-                                            
-                                            let login = Login()
-                                            login.userId = format(data["userId"])
-                                            login.sessionId = format(data["sessionId"])
-                                            login.nickName = format(data["nickName"])
-                                            login.userSign = format(data["userSign"])
-                                            login.userAccount = phone
-                                            login.userName = phone
-                                            login.userPhone = phone
-                                            login.password = password
-                                            login.isRegist = registNumer
-                                            login.contactId = contact
-                                            login.md5Password = password.md5
-                                            LoginBL.insert(login)
-                                            PersonDetail.sendAsyncPersonDetail(nil)
-                                            BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
-                                            weakSelf.dismissViewControllerAnimated(true, completion: nil)
-                                        }
+                                        })
                                     }
                                     })
                             }else{
@@ -79,7 +83,6 @@ class LoginViewController: BaseViewController {
                         HUD.showText("登录失败:\(msg)", onView: weakSelf.view)
                     }
                 })
-
             }
             }, wechatLogin: {
                 

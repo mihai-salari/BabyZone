@@ -33,7 +33,6 @@ class BabyMainViewController: BaseVideoViewController {
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
             self.navigationBarItem(self, title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
-            print("view will appear" + NSStringFromCGRect(UIScreen.mainScreen().bounds))
         }
     }
     
@@ -43,11 +42,6 @@ class BabyMainViewController: BaseVideoViewController {
         super.viewDidLoad()
 
         // Do any additional setnkznkup after loading the view.
-        print("viewDidLoad" + NSStringFromCGRect(UIScreen.mainScreen().bounds))
-        let personDetailQueue = dispatch_queue_create("personDetailQueue", nil)
-        personDetailQueue.queue { 
-            PersonDetail.sendAsyncPersonDetail(nil)
-        }
         self.initialize()
     }
         

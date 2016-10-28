@@ -51,6 +51,9 @@ class MyOwnCell: UITableViewCell {
     }
     
     func refreshHeaderCell(model:MyOwnHeader, completionHandler:(()->())?) -> Void {
+        for subview in self.contentView.subviews {
+            subview.removeFromSuperview()
+        }
         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
             if let login = LoginBL.find(nil, key: phone){
                 if let person = PersonDetailBL.find(nil, key: login.userId) {
@@ -87,7 +90,7 @@ class MyOwnCell: UITableViewCell {
                     self.contentView.addSubview(editButton)
                     
                     
-                    let postView = self.numberAndItem(CGRectMake(0, CGRectGetHeight(frame) / 2.5, CGRectGetWidth(frame) / 4, CGRectGetHeight(frame) / 2), num: model.postNum, item: "帖子")
+                    let postView = self.numberAndItem(CGRectMake(0, CGRectGetHeight(self.contentView.frame) / 2.5, CGRectGetWidth(self.contentView.frame) / 4, CGRectGetHeight(self.contentView.frame) / 2), num: model.postNum, item: "帖子")
                     self.addSubview(postView)
                     
                     let careView = self.numberAndItem(CGRectMake(CGRectGetMaxX(postView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: model.careNum, item: "关注")
@@ -102,9 +105,9 @@ class MyOwnCell: UITableViewCell {
                     let tailSeparatorLine = UIView.init(frame: CGRectMake(0, CGRectGetHeight(self.contentView.frame) - 0.5, CGRectGetWidth(self.contentView.frame), 0.5))
                     tailSeparatorLine.backgroundColor = UIColor.lightGrayColor()
                     self.contentView.addSubview(tailSeparatorLine)
-                    
                     self.editHandler = completionHandler
                 }
+
             }
         }
     }

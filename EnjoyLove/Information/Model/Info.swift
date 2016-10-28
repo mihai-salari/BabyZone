@@ -28,6 +28,20 @@ struct PregInfoStatus {
 }
 
 
+class PregDiary: NSObject {
+    var image:String = ""
+    var imageEdge:String = ""
+    var date1:String = ""
+    var tips:[String]!
+    var face:String = ""
+    var weight:String = ""
+    var desc:String = ""
+    var date2:String = ""
+    
+}
+
+
+
 struct DiaryDoubleSelect {
     var item = ""
     var Id = ""

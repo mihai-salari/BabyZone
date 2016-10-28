@@ -204,7 +204,7 @@ class DiaryListCell: UITableViewCell {
     }
     
     private func moodStatus(status:String) ->String{
-        var moodImage = ""
+        var moodImage = "1"
         switch status {
         case "1":
             moodImage = "very_happy.png"

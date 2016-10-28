@@ -61,7 +61,7 @@ class DiaryRecordViewController: BaseViewController {
         model.desc = "每天早上第一件事就是不想起床，一刷牙就吐。那时候刚好公司隔壁搬来一间新公司。老公刚毕业，费电弄得我们转折了好几个城市，只能待在学校那个城市。"
         model.weight = "第36周+28天"
         model.tips = ["胎动","乳涨","腹胀","失眠","便秘","背痛"]
-        detailConfirm.model = model
+        //detailConfirm.model = model
         self.navigationController?.pushViewController(detailConfirm, animated: true)
     }
     

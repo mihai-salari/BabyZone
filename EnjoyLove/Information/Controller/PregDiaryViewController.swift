@@ -53,6 +53,12 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         self.diaryTable.showsVerticalScrollIndicator = false
         self.diaryTable.registerClass(DiaryListCell.self, forCellReuseIdentifier: pregdiaryTableViewCellId)
         self.view.addSubview(self.diaryTable)
+        
+        let commemorateButton = DiaryRecordButton.init(frame: CGRect.init(x: 0, y: ScreenHeight - 50 + (50 - 35) / 2, width: self.view.frame.width, height: 35))
+        commemorateButton.setImageRect(CGRectMake(0, 0, 10, 16), image: "arrow_right.png", title: "印刷成纪念画册", fontSize: upRateWidth(16))
+        commemorateButton.setCustomTitleColor(UIColor.whiteColor())
+        commemorateButton.addCustomTarget(self, sel: #selector(self.commemorateClick))
+        self.view.addSubview(commemorateButton)
     }
     
     
@@ -83,6 +89,9 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         self.navigationController?.pushViewController(diaryVC, animated: true)
     }
     
+    func commemorateClick() -> Void {
+        HUD.showText("待开发", onView: self.view)
+    }
     
     func createDiaryClick() -> Void {
         let diaryRecord = DiaryRecordViewController()

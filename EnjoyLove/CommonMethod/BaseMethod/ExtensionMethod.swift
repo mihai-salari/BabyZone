@@ -44,20 +44,33 @@ extension NSObject{
         return result
     }
     
-    func actionQueue(label: UnsafePointer<Int8>, subQueueBlock: dispatch_block_t?, mainQueueBlock:dispatch_block_t?) -> Void {
-        let subQueue = dispatch_queue_create(label, nil)
-        subQueue.queue { 
-            if let subBlock = subQueueBlock{
-                subBlock()
-            }
-            if let mainQueue = mainQueueBlock{
-                dispatch_get_main_queue().queue({
-                    mainQueue()
-                })
-            }
+    
+    func moodStatus(status:String) ->String{
+        var moodImage = "very_happy.png"
+        switch status {
+        case "1":
+            moodImage = "very_happy.png"
+        case "2":
+            moodImage = "happy.png"
+        case "3":
+            moodImage = "normal.png"
+        case "4":
+            moodImage = "sad.png"
+        case "5":
+            moodImage = "very_sad.png"
+        default:
+            break
         }
-        
+        return moodImage
     }
+    
+    func weakAndDayFromNumber(numStr:String) -> (Int, Int) {
+        if let num = Int.init(numStr) {
+            return (num / 7, num % 7)
+        }
+        return (0, 0)
+    }
+    
 }
 
 

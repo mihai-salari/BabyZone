@@ -138,7 +138,6 @@ class PregInfoViewController: BaseViewController {
                                 }, shareCompletionHandler: { (model) in
                                     
                             })
-                            
                             weakSelf.view.addSubview(weakSelf.pregTableView)
                         })
                         

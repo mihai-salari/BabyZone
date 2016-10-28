@@ -172,15 +172,17 @@ class PregInfoView: UIView {
         case "1":
             if let day = Int.init(babyInfo.day) {
                 resultDay = "\(day % 365)"
+                resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
                 modeDay = CGFloat.init(ceil(fabs(remainderf(365, Float(day)) / 365 * 100)))
             }
-            resultDay = "怀孕 " + resultDay + " 天"
+            resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
         case "2":
             if let day = Int.init(babyInfo.day) {
                 resultDay = "\(day % 300)"
+                "第\(self.weakAndDayFromNumber(resultDay).0) 周 \(self.weakAndDayFromNumber(resultDay).1) 天"
                 modeDay = CGFloat.init(ceil(fabs(remainderf(300, Float(day)) / 300 * 100)))
             }
-            resultDay = "宝宝 " + resultDay + " 天"
+            resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
         default:
             break
         }
@@ -254,7 +256,6 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let mainModel = self.pregInfoData[indexPath.section]
-        print(CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight))
         return CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight) < 80 ? 80 : CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight)
     }
     

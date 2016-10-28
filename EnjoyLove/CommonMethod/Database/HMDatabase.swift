@@ -823,6 +823,21 @@ class NoteLabelDAO: NSObject {
         return DAO.dao!
     }
     
+    func findViaLabels(labels:[String]) -> [String] {
+        var resultLabels:[String] = []
+        let labelCount = labels.count
+        let noteNames = self.findAll()
+        let noteNameCount = noteNames.count
+        let loopCount = noteNameCount < labelCount ? noteNameCount : labelCount
+        
+        for i in 0 ..< loopCount {
+            let label = labels[i]
+            if label == "1" {
+                resultLabels.append(noteNames[i].labelName)
+            }
+        }
+        return resultLabels
+    }
     
     func findAll() -> [NoteLabel] {
         var listData = [NoteLabel]()
@@ -868,6 +883,9 @@ class NoteLabelBL: NSObject {
         return NoteLabelDAO.shared.findAll()
     }
     
+    class func findVia(labels:[String]) ->[String]{
+        return NoteLabelDAO.shared.findViaLabels(labels)
+    }
 }
 
 private let BabyBaseInfoArchiveKey = "BabyBaseInfoArchiveKey"
@@ -1996,6 +2014,8 @@ class Diary: NSObject,NSCoding {
     var idUserBabyInfo:String!
     var breedStatusDate:String!
     var createTime:String!
+    var createDate:String!
+    
     
     override init() {
         self.idUserNoteInfo = ""
@@ -2009,6 +2029,7 @@ class Diary: NSObject,NSCoding {
         self.idUserBabyInfo = ""
         self.breedStatusDate = ""
         self.createTime = ""
+        self.createDate = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -2047,6 +2068,9 @@ class Diary: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
             self.createTime = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("createDate") as? String {
+            self.createDate = obj
+        }
         
     }
     
@@ -2062,6 +2086,7 @@ class Diary: NSObject,NSCoding {
         aCoder.encodeObject(self.idUserBabyInfo, forKey: "idUserBabyInfo")
         aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
+        aCoder.encodeObject(self.createTime, forKey: "createDate")
     }
 }
 
@@ -2100,6 +2125,13 @@ private class DiaryDAO: NSObject {
                 }
             }
         }
+        let front = detail.createTime.componentsSeparatedByString(" ")
+        if front.count > 0 {
+            detail.createDate = front[0]
+        }else{
+            detail.createDate = detail.createTime
+        }
+        
         array.append(detail)
         
         let theData = NSMutableData.init()
@@ -2169,6 +2201,12 @@ private class DiaryDAO: NSObject {
                 }
                 if note.createTime != detail.createTime {
                     note.createTime = detail.createTime
+                    let front = detail.createTime.componentsSeparatedByString(" ")
+                    if front.count > 0 {
+                        note.createDate = front[0]
+                    }else{
+                        note.createDate = note.createTime
+                    }
                 }
                 
                 let theData = NSMutableData.init()

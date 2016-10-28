@@ -170,7 +170,7 @@ class DiaryListCell: UITableViewCell {
         self.contentView.addSubview(dateLabel)
         
         let faceHeight = DiaryButton.init(frame: CGRectMake(CGRectGetMinX(dateLabel.frame) + 3, CGRectGetMidY(imageView.frame) - CGRectGetHeight(imageView.frame) / 4, CGRectGetWidth(dateLabel.frame) - 5, CGRectGetHeight(imageView.frame) / 4))
-        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(15), upRateWidth(15)), image: self.moodStatus(model.moodStatus), title: "第 " + model.breedStatusDate + " 天", fontSize: upRateWidth(12))
+        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(15), upRateWidth(15)), image: self.moodStatus(model.moodStatus), title: "第\(self.weakAndDayFromNumber(model.breedStatusDate).0)周+\(self.weakAndDayFromNumber(model.breedStatusDate).1)天", fontSize: upRateWidth(12))
         faceHeight.enabled = false
         faceHeight.setCustomTitleColor(UIColor.darkGrayColor())
         self.contentView.addSubview(faceHeight)
@@ -186,40 +186,21 @@ class DiaryListCell: UITableViewCell {
         
         let tipWidth = CGRectGetWidth(self.contentView.frame) * (1 / 11)
         let tipHeight = CGRectGetHeight(dateLabel.frame) * (2 / 3)
-        
-//        for i in 0 ..< model.tips.count {
-//            let columnIndex = i % pregDiaryTipsColumn
-//            let rowIndex = i / pregDiaryTipsColumn
-//            let itemLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(dateLabel.frame) + CGFloat(columnIndex) * (tipWidth + upRateWidth(2)), CGRectGetMidY(dateLabel.frame) + CGFloat(rowIndex) * (tipHeight + upRateHeight(3)) - tipHeight / 2, tipWidth, tipHeight))
-//            itemLabel.layer.cornerRadius = upRateWidth(3)
-//            itemLabel.layer.masksToBounds = true
-//            itemLabel.layer.borderColor = UIColor.colorFromRGB(204, g: 100, b: 132)!.CGColor
-//            itemLabel.layer.borderWidth = upRateWidth(1)
-//            itemLabel.font = UIFont.systemFontOfSize(upRateWidth(10))
-//            itemLabel.text = model.tips[i]
-//            itemLabel.textAlignment = .Center
-//            itemLabel.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)
-//            self.contentView.addSubview(itemLabel)
-//        }
-    }
-    
-    private func moodStatus(status:String) ->String{
-        var moodImage = "very_happy.png"
-        switch status {
-        case "1":
-            moodImage = "very_happy.png"
-        case "2":
-            moodImage = "happy.png"
-        case "3":
-            moodImage = "normal.png"
-        case "4":
-            moodImage = "sad.png"
-        case "5":
-            moodImage = "very_sad.png"
-        default:
-            break
+        let labels = NoteLabelBL.findVia(model.noteLabels)
+        for i in 0 ..< labels.count {
+            let columnIndex = i % pregDiaryTipsColumn
+            let rowIndex = i / pregDiaryTipsColumn
+            let itemLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(dateLabel.frame) + CGFloat(columnIndex) * (tipWidth + upRateWidth(2)), CGRectGetMidY(dateLabel.frame) + CGFloat(rowIndex) * (tipHeight + upRateHeight(3)) - tipHeight / 2, tipWidth, tipHeight))
+            itemLabel.layer.cornerRadius = upRateWidth(3)
+            itemLabel.layer.masksToBounds = true
+            itemLabel.layer.borderColor = UIColor.colorFromRGB(204, g: 100, b: 132)!.CGColor
+            itemLabel.layer.borderWidth = upRateWidth(1)
+            itemLabel.font = UIFont.systemFontOfSize(upRateWidth(10))
+            itemLabel.text = labels[i]
+            itemLabel.textAlignment = .Center
+            itemLabel.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)
+            self.contentView.addSubview(itemLabel)
         }
-        return moodImage
     }
     
 }

@@ -153,7 +153,6 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
         
         self.statusCollection = UICollectionView.init(frame: CGRectMake(5, CGRectGetMaxY(imagePicker.frame) + 15, CGRectGetWidth(self.frame) - 10, CGRectGetHeight(self.frame) * (1 / 12) * 2.5), collectionViewLayout: statusLayout)
         self.statusCollection.backgroundColor = UIColor.clearColor()
-        self.statusCollection.scrollEnabled = false
         self.statusCollection.allowsMultipleSelection = true
         self.statusCollection.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: statusCollectionViewCellId)
         self.statusCollection.delegate = self

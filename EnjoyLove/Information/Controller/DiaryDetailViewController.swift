@@ -11,11 +11,11 @@ import UIKit
 class DiaryDetailViewController: BaseViewController {
 
     private var diaryDetailView:DiaryDetailView!
-    var model:PregDiary!
+    var model:Diary!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationBarItem(self, isImage: false, title: model.date1, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
+        self.navigationBarItem(self, isImage: false, title: model.createDate, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
     }
     
     override func viewDidLoad() {

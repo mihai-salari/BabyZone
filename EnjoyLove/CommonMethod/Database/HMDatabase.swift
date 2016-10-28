@@ -852,6 +852,7 @@ class NoteLabelDAO: NSObject {
         return listData
     }
     
+    
     func insert(detail:NoteLabel) -> Bool {
         var array = self.findAll()
         for base in array {

@@ -83,10 +83,10 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let model = self.diaryData[indexPath.row]
-        let diaryVC = DiaryDetailViewController()
+//        let model = self.diaryData[indexPath.row]
+//        let diaryVC = DiaryDetailViewController()
 //        diaryVC.model = model
-        self.navigationController?.pushViewController(diaryVC, animated: true)
+//        self.navigationController?.pushViewController(diaryVC, animated: true)
     }
     
     func commemorateClick() -> Void {

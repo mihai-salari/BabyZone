@@ -26,22 +26,6 @@ class RegisterViewController: BaseViewController {
                 }else{
                     HUD.showText("请输入正确的手机号", onView: weakSelf.view)
                 }
-//                if isPhone == true{
-//                    HUD.showHud("正在校验...", onView: weakSelf.view)
-//                    Register.sendAsyncRegist(phone, userPwd: password, validCode: code, completionHandler: { (regist) in
-//                        HUD.hideHud(weakSelf.view)
-//                        if let rgst = regist{
-//                            if rgst.userId != "" && rgst.sessionId != "" && rgst.errorCode == PASSCODE{
-//                                HUD.showText("校验成功", onView: weakSelf.view)
-//                                weakSelf.performSelector(#selector(RegisterViewController.nextController), withObject: nil, afterDelay: 1.0)
-//                            }else{
-//                                HUD.showText("校验失败:\(rgst.msg)", onView: weakSelf.view)
-//                            }
-//                        }else{
-//                            HUD.showText("校验失败:网络异常", onView: weakSelf.view)
-//                        }
-//                    })
-//                }
             }
             }, alreadyRegisterHandler: { [weak self] in
                 if let weakSelf = self{

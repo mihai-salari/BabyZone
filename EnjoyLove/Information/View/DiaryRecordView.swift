@@ -27,15 +27,13 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
     private var weightLabel:UILabel!
     private var textView:UITextView!
     private var keyboard:Keyboard!
-    private var detailModel:DiaryRecordResult!
+    private var resultDiary:Diary!
     
     private var recordModel:DiaryRecord!
     private var images:[String]!
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.initializeData()
-        self.initializeSubviews()
-        
+        self.initialize()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -52,8 +50,8 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
         self.keyboard = nil
     }
     
-    func fetchDiary() -> DiaryRecordResult? {
-        if let result = self.detailModel {
+    func fetchDiary() -> Diary? {
+        if let result = self.resultDiary {
             return result
         }
         return nil
@@ -63,23 +61,29 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
         self.endEditing(true)
     }
     
-    private func initializeData(){
-        self.detailModel = DiaryRecordResult()
+    private func initialize() -> Void{
+        self.resultDiary = Diary()
         let emotions = ["非常愉快", "愉快", "一般", "不开心", "好难过"]
         let emotionIds = ["1", "2", "3", "4", "5"]
         let emotionNormalImages = ["normal_face_1.png", "normal_face_2.png", "normal_face_3.png", "normal_face_4.png", "normal_face_5.png"]
         let emotionHighlightImages = ["selected_face_1.png", "selected_face_2.png", "selected_face_3.png", "selected_face_4.png", "selected_face_5.png"]
         
-        let grownStatus = ["会眨眼啦", "会眨眼了", "会叫妈妈", "能握拳了", "经常微笑", "学会走路"]
-        let grownStatusId = ["1", "2", "3", "4", "5"]
+        
+        var grownStatus:[String] = []
+        let noteLabels = NoteLabelBL.findAll()
+        if noteLabels.count > 0 {
+            for note in noteLabels {
+                grownStatus.append(note.labelName)
+            }
+        }else{
+            grownStatus.appendContentsOf(["会眨眼啦", "会眨眼了", "会叫妈妈", "能握拳了", "经常微笑", "学会走路"])
+        }
+        
+        let grownStatusId = ["1", "1", "1", "1", "1"]
         let grownStatusNormalImages = "uncheck.png"
         let grownStatusHighligheImages = "check.png"
         
-        
         self.recordModel = DiaryRecord(emotion: emotions, emotionId: emotionIds, emotionNormalImages: emotionNormalImages, emotionHighlightImages: emotionHighlightImages, grownStatus: grownStatus, grownStatusId: grownStatusId, grownStatusNormalImages: grownStatusNormalImages, grownStatusHighligheImages: grownStatusHighligheImages)
-    }
-    
-    private func initializeSubviews(){
         
         let emotionLabelHeight = CGRectGetHeight(self.frame) * (6 / 11) * (1 / 2) * (1 / 5)
         let emotionCollectionViewHeight = CGRectGetHeight(self.frame) * (6 / 11) * (1 / 2) * (4 / 5)
@@ -161,6 +165,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
         
     }
     
+    
 
     //MARK:___DELETEATE_AND_DATA_SOURCE__
     
@@ -176,7 +181,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
         if collectionView == self.emotionCollection {
             return 1
         }else if collectionView == self.statusCollection{
-            return 2
+            return 1
         }else{
             return 0
         }
@@ -280,6 +285,9 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
             
             let label = cell?.contentView.viewWithTag(emotionLabelTag + indexPath.item) as! UILabel
             label.font = UIFont.boldSystemFontOfSize(upRateWidth(12))
+            
+            self.resultDiary.moodStatus = self.recordModel.emotionId[indexPath.item]
+            
         }else{
             let normalImage = self.recordModel.emotionNormalImages[indexPath.item]
             let imageView = cell?.contentView.viewWithTag(emotionImageViewTag + indexPath.item) as! UIImageView

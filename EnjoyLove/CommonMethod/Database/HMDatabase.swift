@@ -1989,8 +1989,10 @@ class Diary: NSObject,NSCoding {
     var noteType:String!
     var moodStatus:String!
     var noteLabel:String!
+    var noteLabels:[String]!
     var content:String!
     var imgUrls:String!
+    var images:[String]!
     var idUserBabyInfo:String!
     var breedStatusDate:String!
     var createTime:String!
@@ -2000,8 +2002,10 @@ class Diary: NSObject,NSCoding {
         self.noteType = ""
         self.moodStatus = ""
         self.noteLabel = ""
+        self.noteLabels = []
         self.content = ""
         self.imgUrls = ""
+        self.images = []
         self.idUserBabyInfo = ""
         self.breedStatusDate = ""
         self.createTime = ""
@@ -2022,11 +2026,17 @@ class Diary: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("noteLabel") as? String {
             self.noteLabel = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("noteLabels") as? [String] {
+            self.noteLabels = obj
+        }
         if let obj = aDecoder.decodeObjectForKey("content") as? String {
             self.content = obj
         }
         if let obj = aDecoder.decodeObjectForKey("imgUrls") as? String {
             self.imgUrls = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("images") as? [String] {
+            self.images = obj
         }
         if let obj = aDecoder.decodeObjectForKey("idUserBabyInfo") as? String {
             self.idUserBabyInfo = obj
@@ -2045,8 +2055,10 @@ class Diary: NSObject,NSCoding {
         aCoder.encodeObject(self.noteType, forKey: "noteType")
         aCoder.encodeObject(self.moodStatus, forKey: "moodStatus")
         aCoder.encodeObject(self.noteLabel, forKey: "noteLabel")
+        aCoder.encodeObject(self.noteLabels, forKey: "noteLabels")
         aCoder.encodeObject(self.content, forKey: "content")
         aCoder.encodeObject(self.imgUrls, forKey: "imgUrls")
+        aCoder.encodeObject(self.images, forKey: "images")
         aCoder.encodeObject(self.idUserBabyInfo, forKey: "idUserBabyInfo")
         aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
@@ -2136,6 +2148,11 @@ private class DiaryDAO: NSObject {
                 
                 if note.noteLabel != detail.noteLabel {
                     note.noteLabel = detail.noteLabel
+                    note.noteLabels.removeAll()
+                    let labels = detail.noteLabel.componentsSeparatedByString(",")
+                    for label in labels {
+                        note.noteLabels.append(label)
+                    }
                 }
                 
                 if note.content != detail.content {

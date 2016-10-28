@@ -38,7 +38,7 @@ class PregInfoViewController: BaseViewController {
     
     private func initialize() -> Void{
         dispatch_queue_create("diaryListQueue", nil).queue {
-            Diary.sendAsyncUserNoteList("1", year: "", month: "", completionHandler: nil)
+            Diary.sendAsyncUserNoteList("15", year: "", month: "", completionHandler: nil)
             NoteLabel.sendAsyncUserNoteLabel(nil)
         }
         

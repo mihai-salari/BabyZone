@@ -43,15 +43,15 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         }
         self.view.addSubview(diaryNavView)
         
-        self.diaryTable = UITableView.init(frame: CGRectMake(viewOriginX, CGRectGetMaxY(diaryNavView.frame) + viewOriginY, pregDiaryViewWidth, ScreenHeight - 3 * viewOriginY - tabBarHeight - CGRectGetHeight(diaryNavView.frame)), style: .Plain)
+        self.diaryTable = UITableView.init(frame: CGRect.init(x: viewOriginX, y: diaryNavView.frame.maxY, width: ScreenWidth - 2 * viewOriginX, height: ScreenHeight - navigationBarHeight - diaryNavView.frame.height - 50), style: .Plain)
         self.diaryTable.delegate = self
         self.diaryTable.dataSource = self
         self.diaryTable.separatorColor = UIColor.hexStringToColor("#de7a85")
+        self.diaryTable.tableFooterView = UIView.init()
         self.diaryTable.separatorInset = UIEdgeInsetsZero
         self.diaryTable.layoutMargins = UIEdgeInsetsZero
         self.diaryTable.showsVerticalScrollIndicator = false
         self.diaryTable.registerClass(DiaryListCell.self, forCellReuseIdentifier: pregdiaryTableViewCellId)
-        self.diaryTable.separatorStyle = .None
         self.view.addSubview(self.diaryTable)
     }
     
@@ -62,8 +62,13 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(pregdiaryTableViewCellId) as? DiaryListCell
-        cell?.selectionStyle = .None
-        cell?.refreshCell(self.diaryData[indexPath.row])
+        if let resultCell = cell {
+            resultCell.selectionStyle = .None
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.refreshCell(self.diaryData[indexPath.row])
+        }
+        
         return cell!
     }
     

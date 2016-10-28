@@ -2149,7 +2149,7 @@ private class DiaryDAO: NSObject {
                 if note.noteLabel != detail.noteLabel {
                     note.noteLabel = detail.noteLabel
                     note.noteLabels.removeAll()
-                    let labels = detail.noteLabel.componentsSeparatedByString("、")
+                    let labels = detail.noteLabel.componentsSeparatedByString(",")
                     for label in labels {
                         note.noteLabels.append(label)
                     }

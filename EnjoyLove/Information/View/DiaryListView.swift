@@ -8,7 +8,6 @@
 
 import UIKit
 
-let pregDiaryViewWidth = ScreenWidth - 2 * viewOriginX
 let pregDiaryRowHeight:CGFloat = upRateHeight(120)
 
 
@@ -171,16 +170,16 @@ class DiaryListCell: UITableViewCell {
         self.contentView.addSubview(dateLabel)
         
         let faceHeight = DiaryButton.init(frame: CGRectMake(CGRectGetMinX(dateLabel.frame) + 3, CGRectGetMidY(imageView.frame) - CGRectGetHeight(imageView.frame) / 4, CGRectGetWidth(dateLabel.frame) - 5, CGRectGetHeight(imageView.frame) / 4))
-//        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(12), upRateWidth(12)), image: model.face, title: model.weight, fontSize: upRateWidth(12))
+        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(12), upRateWidth(12)), image: self.moodStatus(model.moodStatus), title: model.breedStatusDate + " 天", fontSize: upRateWidth(12))
         faceHeight.enabled = false
         faceHeight.setCustomTitleColor(UIColor.darkGrayColor())
         self.contentView.addSubview(faceHeight)
         
-        let descLabel = UILabel.init(frame: CGRectMake(CGRectGetMinX(dateLabel.frame), CGRectGetMidY(imageView.frame), pregDiaryViewWidth - CGRectGetMinX(dateLabel.frame) - 10, CGRectGetHeight(imageView.frame) / 2))
+        let descLabel = UILabel.init(frame: CGRectMake(CGRectGetMinX(dateLabel.frame), CGRectGetMidY(imageView.frame), ScreenWidth - 2 * viewOriginX - CGRectGetMinX(dateLabel.frame) - 10, CGRectGetHeight(imageView.frame) / 2))
         descLabel.adjustsFontSizeToFitWidth = true
         descLabel.minimumScaleFactor = 0.8
         descLabel.font = UIFont.systemFontOfSize(upRateWidth(12))
-//        descLabel.text = model.desc
+        descLabel.text = model.content
         descLabel.numberOfLines = 0
         descLabel.textColor = UIColor.lightGrayColor()
         self.contentView.addSubview(descLabel)
@@ -202,6 +201,25 @@ class DiaryListCell: UITableViewCell {
 //            itemLabel.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)
 //            self.contentView.addSubview(itemLabel)
 //        }
+    }
+    
+    private func moodStatus(status:String) ->String{
+        var moodImage = ""
+        switch status {
+        case "1":
+            moodImage = "very_happy.png"
+        case "2":
+            moodImage = "happy.png"
+        case "3":
+            moodImage = "normal.png"
+        case "4":
+            moodImage = "sad.png"
+        case "5":
+            moodImage = "very_sad.png"
+        default:
+            break
+        }
+        return moodImage
     }
     
 }

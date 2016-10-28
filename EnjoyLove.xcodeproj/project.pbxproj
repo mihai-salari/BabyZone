@@ -135,7 +135,6 @@
 		27188E7C1D86AD2100797D41 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27188E671D86AD2100797D41 /* PermissionsView.swift */; };
 		27188E7E1D87843900797D41 /* add_one.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188E7D1D87843900797D41 /* add_one.png */; };
 		27188E801D8785F300797D41 /* babyRemindHead.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188E7F1D8785F300797D41 /* babyRemindHead.png */; };
-		27188E821D87E64C00797D41 /* record_face.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188E811D87E64C00797D41 /* record_face.png */; };
 		27188E841D88E2C200797D41 /* HMSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27188E831D88E2C200797D41 /* HMSegment.swift */; };
 		2718BE031D819F57002BE29D /* BabyDetailStatus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2718BE011D819F57002BE29D /* BabyDetailStatus.png */; };
 		2718BE041D819F57002BE29D /* StatusContent.html in Resources */ = {isa = PBXBuildFile; fileRef = 2718BE021D819F57002BE29D /* StatusContent.html */; };
@@ -376,6 +375,11 @@
 		2788719E1DC328B9004D7A77 /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278871971DC328B9004D7A77 /* ImagePickerView.swift */; };
 		2788719F1DC328B9004D7A77 /* PregInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278871981DC328B9004D7A77 /* PregInfoView.swift */; };
 		278871A01DC328B9004D7A77 /* ProblemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 278871991DC328B9004D7A77 /* ProblemView.swift */; };
+		278871A61DC33201004D7A77 /* happy.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A11DC33201004D7A77 /* happy.png */; };
+		278871A71DC33201004D7A77 /* normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A21DC33201004D7A77 /* normal.png */; };
+		278871A81DC33201004D7A77 /* sad.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A31DC33201004D7A77 /* sad.png */; };
+		278871A91DC33201004D7A77 /* very_happy.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A41DC33201004D7A77 /* very_happy.png */; };
+		278871AA1DC33201004D7A77 /* very_sad.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A51DC33201004D7A77 /* very_sad.png */; };
 		279F92C51DBF3B80004661DF /* P2PMonitorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F92C41DBF3B80004661DF /* P2PMonitorController.m */; };
 		27B5B0491D93C86C006AE37E /* myOwnChecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0441D93C86C006AE37E /* myOwnChecked.png */; };
 		27B5B04A1D93C86C006AE37E /* myOwnPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0451D93C86C006AE37E /* myOwnPhone.png */; };
@@ -675,7 +679,6 @@
 		27188E671D86AD2100797D41 /* PermissionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		27188E7D1D87843900797D41 /* add_one.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_one.png; sourceTree = "<group>"; };
 		27188E7F1D8785F300797D41 /* babyRemindHead.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babyRemindHead.png; sourceTree = "<group>"; };
-		27188E811D87E64C00797D41 /* record_face.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = record_face.png; sourceTree = "<group>"; };
 		27188E831D88E2C200797D41 /* HMSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMSegment.swift; sourceTree = "<group>"; };
 		2718BE011D819F57002BE29D /* BabyDetailStatus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BabyDetailStatus.png; sourceTree = "<group>"; };
 		2718BE021D819F57002BE29D /* StatusContent.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = StatusContent.html; sourceTree = "<group>"; };
@@ -1022,6 +1025,11 @@
 		278871971DC328B9004D7A77 /* ImagePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		278871981DC328B9004D7A77 /* PregInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PregInfoView.swift; sourceTree = "<group>"; };
 		278871991DC328B9004D7A77 /* ProblemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProblemView.swift; sourceTree = "<group>"; };
+		278871A11DC33201004D7A77 /* happy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = happy.png; sourceTree = "<group>"; };
+		278871A21DC33201004D7A77 /* normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = normal.png; sourceTree = "<group>"; };
+		278871A31DC33201004D7A77 /* sad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sad.png; sourceTree = "<group>"; };
+		278871A41DC33201004D7A77 /* very_happy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = very_happy.png; sourceTree = "<group>"; };
+		278871A51DC33201004D7A77 /* very_sad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = very_sad.png; sourceTree = "<group>"; };
 		279F92C31DBF3B80004661DF /* P2PMonitorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = P2PMonitorController.h; sourceTree = "<group>"; };
 		279F92C41DBF3B80004661DF /* P2PMonitorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = P2PMonitorController.m; sourceTree = "<group>"; };
 		27B5B0441D93C86C006AE37E /* myOwnChecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnChecked.png; sourceTree = "<group>"; };
@@ -1455,8 +1463,12 @@
 		271475201D74007A003CFC5F /* InfoImage */ = {
 			isa = PBXGroup;
 			children = (
+				278871A11DC33201004D7A77 /* happy.png */,
+				278871A21DC33201004D7A77 /* normal.png */,
+				278871A31DC33201004D7A77 /* sad.png */,
+				278871A41DC33201004D7A77 /* very_happy.png */,
+				278871A51DC33201004D7A77 /* very_sad.png */,
 				27188E4D1D86751E00797D41 /* delete.png */,
-				27188E811D87E64C00797D41 /* record_face.png */,
 				27188DC91D86379B00797D41 /* normal_face_1.png */,
 				27188DCA1D86379B00797D41 /* normal_face_2.png */,
 				27188DCB1D86379B00797D41 /* normal_face_3.png */,
@@ -2920,6 +2932,7 @@
 				270F6F631D7DA61F000DFEA0 /* musicPlay.png in Resources */,
 				27188E801D8785F300797D41 /* babyRemindHead.png in Resources */,
 				27F28D381D6FF4ED005E382D /* tool_music.png in Resources */,
+				278871A91DC33201004D7A77 /* very_happy.png in Resources */,
 				2731E2741D70892100521318 /* up_arrow.png in Resources */,
 				275C04811D8105B000A52ABC /* MJRefresh.bundle in Resources */,
 				27830BFC1D98D4600036E2BC /* One_Number.png in Resources */,
@@ -2953,11 +2966,11 @@
 				275C00831D7D6F3900A52ABC /* user_off@2x.png in Resources */,
 				27F28D3C1D6FF4ED005E382D /* tool_sad.png in Resources */,
 				27F410CF1D8C071400722051 /* SelectDateView.xib in Resources */,
+				278871AA1DC33201004D7A77 /* very_sad.png in Resources */,
 				275C04C01D826B8400A52ABC /* baby_menu.png in Resources */,
 				27830D411D9B691F0036E2BC /* baby_video_normal.png in Resources */,
 				27188DDB1D86379B00797D41 /* selected_face_4.png in Resources */,
 				27F4106E1D8BA58400722051 /* login_baby_normal.png in Resources */,
-				27188E821D87E64C00797D41 /* record_face.png in Resources */,
 				275C00A81D7D717200A52ABC /* add_device_down.png in Resources */,
 				271475EA1D7522F3003CFC5F /* preStatus.png in Resources */,
 				2718BE031D819F57002BE29D /* BabyDetailStatus.png in Resources */,
@@ -2997,6 +3010,7 @@
 				275C009B1D7D704B00A52ABC /* myheader.png in Resources */,
 				2718BE041D819F57002BE29D /* StatusContent.html in Resources */,
 				27F410701D8BA58400722051 /* login_female_selected.png in Resources */,
+				278871A61DC33201004D7A77 /* happy.png in Resources */,
 				27830D431D9B69380036E2BC /* baby_camera_normal.png in Resources */,
 				27F28D3B1D6FF4ED005E382D /* tool_remain.png in Resources */,
 				27188E771D86AD2100797D41 /* ConfirmViewController.xib in Resources */,
@@ -3010,6 +3024,7 @@
 				275EBFB11D8CE9A10008E085 /* myOwnLoading.png in Resources */,
 				27830D311D9B65050036E2BC /* babyPlay.png in Resources */,
 				27188DD41D86379B00797D41 /* normal_face_2.png in Resources */,
+				278871A71DC33201004D7A77 /* normal.png in Resources */,
 				27830BF51D98C8880036E2BC /* tabbar_help@2x.png in Resources */,
 				27F28D251D6FF4A5005E382D /* myOwnArrow.png in Resources */,
 				275C04C21D826CD200A52ABC /* arrow_left.png in Resources */,
@@ -3017,6 +3032,7 @@
 				27188DDA1D86379B00797D41 /* selected_face_3.png in Resources */,
 				27F28D371D6FF4ED005E382D /* tool_mama.png in Resources */,
 				270210531DB732D000D3BDBE /* ZZXCity.db in Resources */,
+				278871A81DC33201004D7A77 /* sad.png in Resources */,
 				275C033A1D7E669E00A52ABC /* new_circle.png in Resources */,
 				275C00911D7D6F6E00A52ABC /* person_set_1.png in Resources */,
 				27F28D261D6FF4A5005E382D /* myOwnConfig.png in Resources */,

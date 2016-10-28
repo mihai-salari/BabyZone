@@ -26,10 +26,10 @@
             </objects>
             <point key="canvasLocation" x="1884" y="-985"/>
         </scene>
-        <!--Info Manager View Controller-->
+        <!--Preg Info View Controller-->
         <scene sceneID="RqM-yj-5se">
             <objects>
-                <viewController id="0BP-bv-KTG" customClass="InfoManagerViewController" customModule="EnjoyLove" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="0BP-bv-KTG" customClass="PregInfoViewController" customModule="EnjoyLove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Nnh-CJ-hao"/>
                         <viewControllerLayoutGuide type="bottom" id="bZi-b6-t6U"/>

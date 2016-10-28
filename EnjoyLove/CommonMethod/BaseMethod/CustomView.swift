@@ -856,8 +856,6 @@ class DiaryButton: UIButton {
         self.setTitle(title, forState: .Normal)
         self.setImage(UIImage.imageWithName(image), forState: .Normal)
         self.titleLabel?.font = UIFont.systemFontOfSize(fontSize)
-        self.layer.cornerRadius = 5
-        self.layer.masksToBounds = true
     }
         
     func addCustomTarget(target:AnyObject?, sel:Selector) -> Void {

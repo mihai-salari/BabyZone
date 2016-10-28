@@ -170,7 +170,7 @@ class DiaryListCell: UITableViewCell {
         self.contentView.addSubview(dateLabel)
         
         let faceHeight = DiaryButton.init(frame: CGRectMake(CGRectGetMinX(dateLabel.frame) + 3, CGRectGetMidY(imageView.frame) - CGRectGetHeight(imageView.frame) / 4, CGRectGetWidth(dateLabel.frame) - 5, CGRectGetHeight(imageView.frame) / 4))
-        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(12), upRateWidth(12)), image: self.moodStatus(model.moodStatus), title: model.breedStatusDate + " 天", fontSize: upRateWidth(12))
+        faceHeight.setImageRect(CGRectMake(0, 0, upRateWidth(15), upRateWidth(15)), image: self.moodStatus(model.moodStatus), title: "第 " + model.breedStatusDate + " 天", fontSize: upRateWidth(12))
         faceHeight.enabled = false
         faceHeight.setCustomTitleColor(UIColor.darkGrayColor())
         self.contentView.addSubview(faceHeight)
@@ -179,7 +179,7 @@ class DiaryListCell: UITableViewCell {
         descLabel.adjustsFontSizeToFitWidth = true
         descLabel.minimumScaleFactor = 0.8
         descLabel.font = UIFont.systemFontOfSize(upRateWidth(12))
-        descLabel.text = model.content
+        descLabel.text = model.content == "" ? "测试测试，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据" : model.content
         descLabel.numberOfLines = 0
         descLabel.textColor = UIColor.lightGrayColor()
         self.contentView.addSubview(descLabel)
@@ -204,7 +204,7 @@ class DiaryListCell: UITableViewCell {
     }
     
     private func moodStatus(status:String) ->String{
-        var moodImage = "1"
+        var moodImage = "very_happy.png"
         switch status {
         case "1":
             moodImage = "very_happy.png"

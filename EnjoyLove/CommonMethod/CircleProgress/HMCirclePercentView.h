@@ -43,6 +43,8 @@ typedef enum {
           progressStrokeColor:(UIColor *)progressStrokeColor
                animatedColors:(NSArray *)colors;
 
+- (void)updateCircleWithPercent:(CGFloat)percent;
+
 #if 0
 
 - (void)drawCircleWithPercent:(CGFloat)percent

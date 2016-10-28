@@ -52,7 +52,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/AppDelegate.m"
-                  timestampString = "499307271.443129"
+                  timestampString = "499326881.567888"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "455"
@@ -67,7 +67,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/AppDelegate.m"
-                  timestampString = "499307271.44584"
+                  timestampString = "499326881.569647"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "455"
@@ -116,7 +116,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-                  timestampString = "499307271.453622"
+                  timestampString = "499326881.574712"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
@@ -131,7 +131,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-                  timestampString = "499307271.45614"
+                  timestampString = "499326881.575985"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
@@ -171,6 +171,54 @@
             endingLineNumber = "406"
             landmarkName = "-onScreenShotted:"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
+            timestampString = "499326868.331472"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "875"
+            endingLineNumber = "875"
+            landmarkName = "sendAsyncUserNoteList(_:year:month:completionHandler:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static EnjoyLove.Diary.(sendAsyncUserNoteList (Swift.String, year : Swift.String, month : Swift.String, completionHandler : Swift.Optional&lt;(errorCode : Swift.Optional&lt;Swift.String&gt;, msg : Swift.Optional&lt;Swift.String&gt;) -&gt; ()&gt;) -&gt; ()).(closure #1)"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
+                  timestampString = "499326881.583995"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "875"
+                  endingLineNumber = "875"
+                  offsetFromSymbolStart = "547">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static EnjoyLove.Diary.(sendAsyncUserNoteList (Swift.String, year : Swift.String, month : Swift.String, completionHandler : Swift.Optional&lt;(errorCode : Swift.Optional&lt;Swift.String&gt;, msg : Swift.Optional&lt;Swift.String&gt;) -&gt; ()&gt;) -&gt; ()).(closure #1)"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
+                  timestampString = "499326881.585325"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "875"
+                  endingLineNumber = "875"
+                  offsetFromSymbolStart = "965">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

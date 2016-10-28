@@ -14,7 +14,6 @@ class DiaryRecordViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBarHidden = false
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
         print("end of year \(NSDate.today().endOfYear)")
         self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
@@ -43,9 +42,6 @@ class DiaryRecordViewController: BaseViewController {
 
     private func initializeSubviews(){
         self.recordView = DiaryRecordView.init(frame: CGRectMake(0, navigationBarHeight, ScreenWidth, ScreenHeight - navigationBarHeight))
-        
-        
-        
         self.view.addSubview(self.recordView)
     }
     

@@ -43,7 +43,7 @@ class BabyZoneConfig: NSObject {
     var videoRejectNotification:String!
     var currentUserId:String!
     var QiNiuDomainName:String!
-    
+    var baseUrl:String!
     
     
     
@@ -88,6 +88,7 @@ class BabyZoneConfig: NSObject {
                 self.videoRejectNotification = config.get(.videoRejectNotification)
                 self.currentUserId = config.get(.currentUserId)
                 self.QiNiuDomainName = config.get(.QiNiuDomainName)
+                self.baseUrl = config.get(.baseUrl)
             }
             
         }
@@ -151,6 +152,7 @@ extension Keys{
     static let videoRejectNotification          = Key<String>("videoRejectNotification")
     static let currentUserId                    = Key<String>("currentUserId")
     static let QiNiuDomainName                  = Key<String>("QiNiuDomainName")
+    static let baseUrl                          = Key<String>("baseUrl")
 }
 
 

@@ -25,10 +25,9 @@ private class QiNiuUploadHelper:NSObject{
     
 }
 
-let baseEnjoyLoveUrl = "http://123.56.133.212:8080/xiangai-api"
 
 /// 七牛请求接口
-private let QiNiuUrl = baseEnjoyLoveUrl + "/api/getQiniuToken"
+private let QiNiuUrl = BabyZoneConfig.shared.baseUrl + "/api/getQiniuToken"
 //MARK:________________________通用接口___________________________
 /// 七牛接口数据
 class QiNiu: NSObject {
@@ -181,7 +180,7 @@ class QiNiu: NSObject {
 /**
  *  3.3.	获取手机应用appToken
  */
-private let AppTokenUrl = baseEnjoyLoveUrl + "/api/getAppToken"
+private let AppTokenUrl = BabyZoneConfig.shared.baseUrl + "/api/getAppToken"
 class AppToken: NSObject {
     var appToken = ""
     var errorCode = ""
@@ -228,7 +227,7 @@ class AppToken: NSObject {
 }
 
 /// 上传pushToken
-private let PushTokenUrl = baseEnjoyLoveUrl + "/api/getAppToken"
+private let PushTokenUrl = BabyZoneConfig.shared.baseUrl + "/api/getAppToken"
 
 class PushToken: NSObject {
     var errorCode = ""
@@ -253,7 +252,7 @@ class PushToken: NSObject {
 }
 
 /// 查询最新版本
-private let CheckVersionUrl = baseEnjoyLoveUrl + ""
+private let CheckVersionUrl = BabyZoneConfig.shared.baseUrl + ""
 class CheckVersion: NSObject {
     var appVersionName = ""
     var appVersion = ""

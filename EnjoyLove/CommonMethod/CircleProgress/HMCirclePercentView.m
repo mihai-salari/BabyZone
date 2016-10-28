@@ -102,7 +102,7 @@
     
     [self setupBackgroundLayerWithFillColor:fillColor];
     [self setupCircleLayerWithStrokeColor:strokeColor];
-    [self setupPercentLabel];
+//    [self setupPercentLabel];
 #endif
 }
 
@@ -180,6 +180,11 @@
     if (self.showText) {
         [self setupPercentLabel];
     }
+}
+
+- (void)updateCircleWithPercent:(CGFloat)percent{
+    [self setupBackgroundLayerWithFillColor:self.trackFillColor];
+    [self setupCircleLayerWithStrokeColor:self.progressStrokeColor];
 }
 
 

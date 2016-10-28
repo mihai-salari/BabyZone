@@ -12,7 +12,7 @@ import UIKit
 //MARK:___________个人中心______________
 
 //MARK:____发送验证码____
-private let VerifyCodeUrl = baseEnjoyLoveUrl + "/api/user/getValidCode"
+private let VerifyCodeUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getValidCode"
 class VerifyCode: NSObject {
     var errorCode = ""
     var msg = ""
@@ -39,7 +39,7 @@ class VerifyCode: NSObject {
  *  注册
  */
 //MARK:___注册___
-private let RegisterUrl = baseEnjoyLoveUrl + "/api/user/register"
+private let RegisterUrl = BabyZoneConfig.shared.baseUrl + "/api/user/register"
 class Register: NSObject {
     var errorCode = ""
     var msg = ""
@@ -83,7 +83,7 @@ class Register: NSObject {
 }
 
 //MARK: 登陆
-private let LoginUrl = baseEnjoyLoveUrl + "/api/user/login"
+private let LoginUrl = BabyZoneConfig.shared.baseUrl + "/api/user/login"
 extension Login {
     
     class func sendAsyncLogin(userName:String,userPwd:String, completionHandler:((errorCode:String?, msg:String?, dataDict:[String:NSObject]?)->())?){
@@ -111,7 +111,7 @@ extension Login {
     }
 }
 //MARK: 退出
-private let LogoutUrl = baseEnjoyLoveUrl + "/api/user/loginOut"
+private let LogoutUrl = BabyZoneConfig.shared.baseUrl + "/api/user/loginOut"
 class Logout: NSObject {
     var errorCode = ""
     var msg = ""
@@ -157,8 +157,8 @@ class Logout: NSObject {
     }
 }
 //MARK: 个人详情
-private let PersonDetailUrl = baseEnjoyLoveUrl + "/api/user/details"
-private let ModifyPersonInfoUrl = baseEnjoyLoveUrl + "/api/user/updateUserInfo"
+private let PersonDetailUrl = BabyZoneConfig.shared.baseUrl + "/api/user/details"
+private let ModifyPersonInfoUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateUserInfo"
 extension PersonDetail {
     /*
      userId		int	是	用户id
@@ -274,7 +274,7 @@ extension PersonDetail {
 
 
 //MARK: 修改密码
-private let ModifyPasswordUrl = baseEnjoyLoveUrl + "/api/user/updatePwd"
+private let ModifyPasswordUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updatePwd"
 class ModifyPassword: NSObject {
     var errorCode = ""
     var msg = ""
@@ -299,7 +299,7 @@ class ModifyPassword: NSObject {
     }
 }
 //MARK: 重设密码
-private let ResetPasswordUrl = baseEnjoyLoveUrl + ""
+private let ResetPasswordUrl = BabyZoneConfig.shared.baseUrl + ""
 class ResetPassword: NSObject {
     var errorCode = ""
     var msg = ""
@@ -322,10 +322,10 @@ class ResetPassword: NSObject {
 }
 
 //MARK___宝宝___
-private let babyListUrl = baseEnjoyLoveUrl + "/api/user/babyList"
-private let addBabyUrl = baseEnjoyLoveUrl + "/api/user/addBaby"
-private let modifyBabyUrl = baseEnjoyLoveUrl + "/api/user/updateBaby"
-private let deleteBabyUrl = baseEnjoyLoveUrl + "/api/user/deleteBaby"
+private let babyListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/babyList"
+private let addBabyUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addBaby"
+private let modifyBabyUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateBaby"
+private let deleteBabyUrl = BabyZoneConfig.shared.baseUrl + "/api/user/deleteBaby"
 extension BabyList{
     
     /*
@@ -441,10 +441,10 @@ extension BabyList{
  *  添加设备
  */
 //MARK: 添加设备
-private let EquitementListUrl = baseEnjoyLoveUrl + "/api/user/eqmList"
-private let AddEquipmentUrl = baseEnjoyLoveUrl + "/api/user/addEqm"
-private let UpdateEquitmentUrl = baseEnjoyLoveUrl + "/api/user/updateEqm"
-private let DeleteEquipmentUrl = baseEnjoyLoveUrl + "/api/user/deleteEqm"
+private let EquitementListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/eqmList"
+private let AddEquipmentUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addEqm"
+private let UpdateEquitmentUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateEqm"
+private let DeleteEquipmentUrl = BabyZoneConfig.shared.baseUrl + "/api/user/deleteEqm"
 extension Equipments {
     
     /*
@@ -581,10 +581,10 @@ extension Equipments {
 }
 
 
-private let ChildAccountListUrl = baseEnjoyLoveUrl + "/api/user/childAccountList"
-private let AddChildAccountUrl = baseEnjoyLoveUrl + "/api/user/addChildAccount"
-private let ModifyChildAccountUrl = baseEnjoyLoveUrl + "/api/user/updateChildAccount"
-private let DeleteChildAccountUrl = baseEnjoyLoveUrl + "/api/user/deleteChildAccount"
+private let ChildAccountListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/childAccountList"
+private let AddChildAccountUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addChildAccount"
+private let ModifyChildAccountUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateChildAccount"
+private let DeleteChildAccountUrl = BabyZoneConfig.shared.baseUrl + "/api/user/deleteChildAccount"
 extension ChildAccount{
     /*
      idUserChildInfo	int	是	用户子帐号id
@@ -704,10 +704,10 @@ extension ChildAccount{
 }
 
 //MARK:___4.21.	子帐号设备列表___
-private let ChildEquipmentsListUrl = baseEnjoyLoveUrl + "/api/user/childAccountEqmList"
-private let ModifyChildEquipmentsStatusUrl = baseEnjoyLoveUrl + "/api/user/updateChildAccountEqmStatus"
-private let ChildEquipmentsPermissonDetailUrl = baseEnjoyLoveUrl + "/api/user/childAccountEqmPermissionDetails"
-private let ModifyChildEquipmentsPermissionUrl = baseEnjoyLoveUrl + "/api/user/updateChildAccountEqmPermission"
+private let ChildEquipmentsListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/childAccountEqmList"
+private let ModifyChildEquipmentsStatusUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateChildAccountEqmStatus"
+private let ChildEquipmentsPermissonDetailUrl = BabyZoneConfig.shared.baseUrl + "/api/user/childAccountEqmPermissionDetails"
+private let ModifyChildEquipmentsPermissionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateChildAccountEqmPermission"
 extension ChildEquipments{
     /*
         idUserChildInfo		int	是	用户子帐号id
@@ -833,7 +833,7 @@ extension ChildEquipments{
 }
 
 //MARK:___4.26.	获取心情日记标签___
-private let UserNoteLabelUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteLabel"
+private let UserNoteLabelUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getUserNoteLabel"
 extension NoteLabel{
     class func sendAsyncUserNoteLabel(completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(UserNoteLabelUrl, parameters: nil, success: { (dataTask, responseObject) in
@@ -863,9 +863,9 @@ extension NoteLabel{
 }
 
 //MARK:___Diary___
-private let UserNoteListUrl = baseEnjoyLoveUrl + "/api/user/getUserNoteList"
-private let AddUserNoteUrl = baseEnjoyLoveUrl + "/api/user/addUserNote"
-private let DeleteUserNoteUrl = baseEnjoyLoveUrl + "/api/user/deleteUserNote"
+private let UserNoteListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getUserNoteList"
+private let AddUserNoteUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addUserNote"
+private let DeleteUserNoteUrl = BabyZoneConfig.shared.baseUrl + "/api/user/deleteUserNote"
 extension Diary{
     class func sendAsyncUserNoteList(pageIndex: String, year:String, month:String, completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":pageIndex, "pageSize":"1", "year":year, "month":month,], success: { (dataTask, responseObject) in

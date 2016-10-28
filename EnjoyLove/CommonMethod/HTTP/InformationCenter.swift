@@ -10,7 +10,7 @@ import UIKit
 
 
 //MARK:_____咨讯中心接口_____
-private let BabyBaseInfoUrl = baseEnjoyLoveUrl + "/api/user/getBabyBaseInfo"
+private let BabyBaseInfoUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBabyBaseInfo"
 extension BabyBaseInfo{
     /*
      idComBabyBaseInfo		int	是	主键
@@ -24,7 +24,7 @@ extension BabyBaseInfo{
      maxHead		double	是	最大头围（cm）
 
      */
-    class func sendAsyncBabyBaseInfo(idUserBabyInfo: String = "", completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncBabyBaseInfo(idUserBabyInfo: String = "", completionHandler:((errorCode:String?, msg:String?, baseInfo:BabyBaseInfo?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(BabyBaseInfoUrl, parameters: ["idUserBabyInfo":idUserBabyInfo], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
@@ -34,6 +34,7 @@ extension BabyBaseInfo{
                     info.idComBabyBaseInfo = format(data["idComBabyBaseInfo"])
                     info.day = format(data["day"])
                     info.infoType = format(data["infoType"])
+                    info.idUserBabyInfo = format(data["idUserBabyInfo"])
                     info.minWeight = format(data["minWeight"])
                     info.maxWeight = format(data["maxWeight"])
                     info.minHeight = format(data["minHeight"])
@@ -41,25 +42,29 @@ extension BabyBaseInfo{
                     info.minHead = format(data["minHead"])
                     info.maxHead = format(data["maxHead"])
                     BabyBaseInfoBL.insert(info)
-                }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, baseInfo: info)
+                    }
+                }else{
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, baseInfo: nil)
+                    }
                 }
             }
         }) { (dataTask, error) in
             if let handle = completionHandler{
-                handle(errorCode: nil, msg: error?.localizedDescription)
+                handle(errorCode: nil, msg: error?.localizedDescription, baseInfo: nil)
             }
         }
     }
 }
 
-private let ArticleRecomment = baseEnjoyLoveUrl + "/api/user/getBbsRecomment"
+private let ArticleRecomment = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsRecomment"
 extension Article{
     /*
      newsType		int		资讯类型（1：怀孕 2：育儿）
      */
-    class func sendAsyncRecomment(newsType: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncRecomment(newsType: String, completionHandler:((errorCode:String?, msg:String?, info:Article?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(ArticleRecomment, parameters: ["newsType":newsType], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
@@ -73,20 +78,25 @@ extension Article{
                     info.content = format(data["content"])
                     info.createTime = format(data["createTime"])
                     ArticleBL.insert(info)
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, info: info)
+                    }
+                }else{
+                    if let handle = completionHandler{
+                        handle(errorCode: errorCode, msg: msg, info: nil)
+                    }
                 }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
-                }
+                
             }
         }) { (dataTask, error) in
             if let handle = completionHandler{
-                handle(errorCode: nil, msg: error?.localizedDescription)
+                handle(errorCode: nil, msg: error?.localizedDescription, info: nil)
             }
         }
     }
 }
 
-private let ArticleListUrl = baseEnjoyLoveUrl + "/api/user/getBbsList"
+private let ArticleListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsList"
 extension ArticleList{
     
     /*

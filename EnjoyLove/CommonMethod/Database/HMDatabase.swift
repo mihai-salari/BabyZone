@@ -284,6 +284,7 @@ class PersonDetail : NSObject ,NSCoding{
      lastLoginTime		string		最后登陆时间
      (yyyy-MM-dd HH:mm)
      
+     
      */
     
     var userId:String!
@@ -873,6 +874,9 @@ private let BabyBaseInfoArchiveKey = "BabyBaseInfoArchiveKey"
 private let BabyBaseInfoArchiveName = "BabyBaseInfoArchiveName.archive"
 class BabyBaseInfo: NSObject,NSCoding {
     /*
+     
+     idUserBabyInfo		int	否	宝宝id(如果为空，则获取当前用户孕育状态;如果不为空，则取当前宝宝id对应数据)
+     
      idComBabyBaseInfo		int	是	主键
      infoType		int	是	数据类型：1：怀孕2育儿
      day		int	是	天数 （根据当info_type 1=怀孕天数  2=育儿天数）
@@ -884,7 +888,6 @@ class BabyBaseInfo: NSObject,NSCoding {
      maxHead		double	是	最大头围（cm）
 
      */
-
     var idComBabyBaseInfo:String!
     var infoType:String!
     var idUserBabyInfo:String!
@@ -917,6 +920,9 @@ class BabyBaseInfo: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("idComBabyBaseInfo") as? String {
             self.idComBabyBaseInfo = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("idUserBabyInfo") as? String {
+            self.idUserBabyInfo = obj
+        }
         if let obj = aDecoder.decodeObjectForKey("infoType") as? String {
             self.infoType = obj
         }
@@ -946,6 +952,7 @@ class BabyBaseInfo: NSObject,NSCoding {
     
     func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(self.idComBabyBaseInfo, forKey: "idComBabyBaseInfo")
+        aCoder.encodeObject(self.idUserBabyInfo, forKey: "idUserBabyInfo")
         aCoder.encodeObject(self.infoType, forKey: "infoType")
         aCoder.encodeObject(self.day, forKey: "day")
         aCoder.encodeObject(self.minWeight, forKey: "minWeight")
@@ -1033,6 +1040,9 @@ private class BabyBaseInfoDAO: NSObject {
             if note.idComBabyBaseInfo == baseKey {
                 if note.infoType != detail.infoType {
                     note.infoType = detail.infoType
+                }
+                if note.idUserBabyInfo != detail.idUserBabyInfo {
+                    note.idUserBabyInfo = detail.idUserBabyInfo
                 }
                 if note.day != detail.day {
                     note.day = detail.day
@@ -2217,8 +2227,11 @@ class Article: NSObject {
     var newsType:String!
     var title:String!
     var imageUrl:String!
+    var images:[String]!
     var content:String!
     var createTime:String!
+    var contentTotalHeight:Float!
+    
     
     override init() {
         self.idBbsNewsInfo = ""
@@ -2227,6 +2240,8 @@ class Article: NSObject {
         self.imageUrl = ""
         self.content = ""
         self.createTime = ""
+        self.images = []
+        self.contentTotalHeight = 0
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -2244,12 +2259,16 @@ class Article: NSObject {
         if let obj = aDecoder.decodeObjectForKey("imageUrl") as? String {
             self.imageUrl = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("images") as? [String] {
+            self.images = obj
+        }
         if let obj = aDecoder.decodeObjectForKey("content") as? String {
             self.content = obj
         }
         if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
             self.createTime = obj
         }
+        self.contentTotalHeight = aDecoder.decodeFloatForKey("contentTotalHeight")
         
     }
     
@@ -2258,8 +2277,10 @@ class Article: NSObject {
         aCoder.encodeObject(self.newsType, forKey: "newsType")
         aCoder.encodeObject(self.title, forKey: "title")
         aCoder.encodeObject(self.imageUrl, forKey: "imageUrl")
+        aCoder.encodeObject(self.images, forKey: "images")
         aCoder.encodeObject(self.content, forKey: "content")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
+        aCoder.encodeFloat(self.contentTotalHeight, forKey: "contentTotalHeight")
     }
 }
 
@@ -2298,6 +2319,15 @@ private class ArticleDAO: NSObject {
                     array.removeAtIndex(currentIndex)
                 }
             }
+        }
+        var totalHeight = detail.content.size(UIFont.systemFontOfSize(14))
+        totalHeight.height += detail.title.size(UIFont.systemFontOfSize(14)).height
+        let imgArr = detail.imageUrl.componentsSeparatedByString(",")
+        totalHeight.height += CGFloat(imgArr.count * 60)
+        detail.contentTotalHeight = Float.init(totalHeight.height)
+        for img in imgArr {
+            let imageName = BabyZoneConfig.shared.baseUrl + img
+            detail.images.append(imageName)
         }
         array.append(detail)
         
@@ -2345,12 +2375,27 @@ private class ArticleDAO: NSObject {
                 }
                 if note.imageUrl != detail.imageUrl {
                     note.imageUrl = detail.imageUrl
+                    note.images.removeAll()
+                    let imgArr = detail.imageUrl.componentsSeparatedByString(",")
+                    for img in imgArr {
+                        note.images.append(BabyZoneConfig.shared.baseUrl + img)
+                    }
                 }
                 if note.content != detail.content {
                     note.content = detail.content
                 }
                 if note.createTime != detail.createTime {
                     note.createTime = detail.createTime
+                }
+                
+                var totalHeight = detail.content.size(UIFont.systemFontOfSize(14))
+                totalHeight.height += detail.title.size(UIFont.systemFontOfSize(14)).height
+                let imgArr = detail.imageUrl.componentsSeparatedByString(",")
+                totalHeight.height += CGFloat(imgArr.count * 60)
+                detail.contentTotalHeight = Float.init(totalHeight.height)
+                for img in imgArr {
+                    let imageName = BabyZoneConfig.shared.baseUrl + img
+                    detail.images.append(imageName)
                 }
                 
                 let theData = NSMutableData.init()

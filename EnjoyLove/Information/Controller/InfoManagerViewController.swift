@@ -20,20 +20,29 @@ class InfoManagerViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.hidden = false
         dispatch_queue_create("babyListQueue", nil).queue {
-            BabyList.sendAsyncBabyList({ [weak self](errorCode, msg) in
-                dispatch_get_main_queue().queue({
-                    if let weakSelf = self, let err = errorCode{
-                        if err == BabyZoneConfig.shared.passCode{
-                            if BabyListBL.findAll().count > 0 {
-                                weakSelf.pregInfoVC = PregInfoViewController()
-                                weakSelf.navigationController?.pushViewController(weakSelf.pregInfoVC, animated: false)
-                            }else{
-                                
+            var idUserBabyInfo = ""
+            let babyList = BabyListBL.findAll()
+            if babyList.count > 0{
+                idUserBabyInfo = babyList[0].idUserBabyInfo
+            }
+            BabyBaseInfo.sendAsyncBabyBaseInfo(idUserBabyInfo, completionHandler: { [weak self](errorCode, msg, baseInfo) in
+                if let weakSelf = self{
+                    weakSelf.pregInfoVC = PregInfoViewController()
+                    if let base  = baseInfo{
+                        weakSelf.pregInfoVC.babyInfo = base
+                        Article.sendAsyncRecomment(base.infoType, completionHandler: { (errorCode, msg, info) in
+                            if let recoment = info{
+                                weakSelf.pregInfoVC.recoment = recoment
                             }
-                        }
+                            dispatch_get_main_queue().queue({
+                                weakSelf.navigationController?.pushViewController(weakSelf.pregInfoVC, animated: false)
+                            })
+                        })
+
                     }
-                })
+                }
             })
         }
     }

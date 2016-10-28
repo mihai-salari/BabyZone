@@ -36,7 +36,8 @@ class PregInfoView: UIView {
         super.init(frame: frame)
         
         self.cirleView = HMCirclePercentView.init(frame: CGRectMake((CGRectGetWidth(self.frame) - pregInfoCircleWidth) / 2, CGRectGetHeight(self.frame) * (2 / 5.3) - pregInfoCircleWidth / 2, pregInfoCircleWidth, pregInfoCircleWidth), showText: false)
-        self.cirleView.drawCircleWithPercent(80, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
+        
+        self.cirleView.drawCircleWithPercent(self.resultDay(babyModel).1, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
         
         self.cirleView.startAnimation()
         self.addSubview(self.cirleView)
@@ -44,7 +45,7 @@ class PregInfoView: UIView {
         
         self.pregDaysLabel = UILabel.init(frame: CGRectMake(0, 0, ScreenWidth, CGRectGetMinY(self.cirleView.frame)))
         self.pregDaysLabel.font = UIFont.boldSystemFontOfSize(upRateHeight(22))
-        self.pregDaysLabel.text = babyModel.day
+        self.pregDaysLabel.text = self.resultDay(babyModel).0
         self.pregDaysLabel.textAlignment = .Center
         self.pregDaysLabel.textColor = UIColor.whiteColor()
         self.addSubview(self.pregDaysLabel)
@@ -119,7 +120,7 @@ class PregInfoView: UIView {
         diaryRecordButton.setCustomTitleColor(UIColor.whiteColor())
         diaryRecordButton.layer.cornerRadius = pregRecordViewHeight / 2
         diaryRecordButton.layer.masksToBounds = true
-        diaryRecordButton.addCustomTarget(self, sel: #selector(PregInfoView.recordDiaryClick))
+        diaryRecordButton.addCustomTarget(self, sel: #selector(self.recordDiaryClick))
         self.addSubview(diaryRecordButton)
         
         self.switchHandler = switchCompletionHandler
@@ -143,7 +144,7 @@ class PregInfoView: UIView {
             dueLabel.text = "\(model.minHead)~\(model.maxHeight)"
         }
         if let circleV = self.cirleView {
-            circleV.drawCircleWithPercent(90, duration: 2, trackWidth: 20, progressWidth: 8, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.colorFromRGB(214, g: 89, b: 105)!, progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.colorFromRGB(254, g: 255, b: 255), animatedColors: nil)
+            circleV.updateCircleWithPercent(self.resultDay(model).1)
         }
     }
 
@@ -164,8 +165,26 @@ class PregInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func refreshPregInfoView(babyInfo:BabyBaseInfo) -> Void {
-        
+    private func resultDay(babyInfo:BabyBaseInfo) ->(String, CGFloat){
+        var resultDay = babyInfo.day
+        var modeDay:CGFloat = 80
+        switch babyInfo.infoType {
+        case "1":
+            if let day = Int.init(babyInfo.day) {
+                resultDay = "\(day % 365)"
+                modeDay = CGFloat.init(ceil(fabs(remainderf(365, Float(day)) / 365 * 100)))
+            }
+            resultDay = "怀孕 " + resultDay + " 天"
+        case "2":
+            if let day = Int.init(babyInfo.day) {
+                resultDay = "\(day % 300)"
+                modeDay = CGFloat.init(ceil(fabs(remainderf(300, Float(day)) / 300 * 100)))
+            }
+            resultDay = "宝宝 " + resultDay + " 天"
+        default:
+            break
+        }
+        return (resultDay, modeDay)
     }
     
 }
@@ -175,22 +194,24 @@ private let pregMainImageWidth:CGFloat = upRateWidth(20)
 private let pregMainImageHeight:CGFloat = upRateWidth(40)
 private let pregInfoTableViewCellId = "PregStatusCellId"
 
-class PregTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
+class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     
+    private var pregTable:UITableView!
     private var pregInfoData:[PregInfoStatus]!
-    private var selectHandler:((model:InfoStatus, indexPath:NSIndexPath)->())?
-    private var menuHandler:((model:InfoStatus)->())?
-    private var shareHandler:((model:InfoStatus)->())?
+    private var selectHandler:((model:Article, indexPath:NSIndexPath)->())?
+    private var menuHandler:((model:Article)->())?
+    private var shareHandler:((model:Article)->())?
     
-    init(frame: CGRect, style: UITableViewStyle, dataSource:[PregInfoStatus], dataCompletionHandler:((model:InfoStatus, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:InfoStatus)->())?, shareCompletionHandler:((model:InfoStatus)->())?) {
-        super.init(frame: frame, style: style)
+    init(frame: CGRect, style: UITableViewStyle, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?) {
+        super.init(frame: frame)
         self.pregInfoData = dataSource
-        self.delegate = self
-        self.dataSource = self
-        self.separatorInset = UIEdgeInsetsZero
-        self.layoutMargins = UIEdgeInsetsZero
-        self.registerClass(PregStatusCell.self, forCellReuseIdentifier: pregInfoTableViewCellId)
-        
+        self.pregTable = UITableView.init(frame: self.bounds, style: style)
+        self.pregTable.delegate = self
+        self.pregTable.dataSource = self
+        self.pregTable.separatorInset = UIEdgeInsetsZero
+        self.pregTable.layoutMargins = UIEdgeInsetsZero
+        self.pregTable.registerClass(PregStatusCell.self, forCellReuseIdentifier: pregInfoTableViewCellId)
+        self.addSubview(self.pregTable)
         
         self.selectHandler = dataCompletionHandler
         self.menuHandler = moreMenuCompletionHandler
@@ -208,30 +229,33 @@ class PregTableView: UITableView,UITableViewDelegate,UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(pregInfoTableViewCellId) as? PregStatusCell
-        cell?.separatorInset = UIEdgeInsetsZero
-        cell?.layoutMargins = UIEdgeInsetsZero
-        cell?.selectionStyle = .None
-        let model = self.pregInfoData[indexPath.section]
-        let subModel = model.pregInfoData[indexPath.row]
-        cell?.refreshCell(subModel, menuCompletionHandler: { [weak self] in
-            if let weakSelf = self{
-                if let handle = weakSelf.menuHandler{
-                    handle(model: subModel)
-                }
-            }
-            }, shareCompletionHandler: { [weak self] in
+        if let resultCell = cell {
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.selectionStyle = .None
+            let model = self.pregInfoData[indexPath.section]
+            let subModel = model.pregInfoData[indexPath.row]
+            resultCell.refreshCell(subModel, menuCompletionHandler: { [weak self] in
                 if let weakSelf = self{
-                    if let handle = weakSelf.shareHandler{
+                    if let handle = weakSelf.menuHandler{
                         handle(model: subModel)
                     }
                 }
-        })
+                }, shareCompletionHandler: { [weak self] in
+                    if let weakSelf = self{
+                        if let handle = weakSelf.shareHandler{
+                            handle(model: subModel)
+                        }
+                    }
+                })
+        }
         return cell!
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let mainModel = self.pregInfoData[indexPath.section]
-        return mainModel.pregInfoData[indexPath.row].pregCellHeight
+        print(CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight))
+        return CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight) < 80 ? 80 : CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight)
     }
     
     func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -303,19 +327,19 @@ class PregStatusCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
-    func refreshCell(model:InfoStatus, menuCompletionHandler:(()->())?, shareCompletionHandler:(()->())?) -> Void {
+    func refreshCell(model:Article, menuCompletionHandler:(()->())?, shareCompletionHandler:(()->())?) -> Void {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
         
-        self.contentView.frame.size.height = model.pregCellHeight
+        self.contentView.frame.size.height = CGFloat(model.contentTotalHeight)
         self.contentView.frame.size.width = ScreenWidth - 2 * viewOriginX
         
         var mainLabelHeight:CGFloat = 0
         var subItemLabelHeight:CGFloat = 0
         var imageViewHeight:CGFloat = 0
         let shareViewHeight:CGFloat = 30
-        if model.pregMainImage == "" {
+        if model.imageUrl == "" {
             mainLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (1 / 4)
             subItemLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (3 / 4)
             imageViewHeight = 0
@@ -326,7 +350,7 @@ class PregStatusCell: UITableViewCell {
         }
         
         let mainLabel = UILabel.init(frame: CGRectMake(10, 10, CGRectGetWidth(self.contentView.frame) - 20, mainLabelHeight))
-        mainLabel.text = model.pregItem
+        mainLabel.text = model.title
         mainLabel.textColor = UIColor.darkGrayColor()
         mainLabel.font = UIFont.systemFontOfSize(upRateWidth(14))
         self.contentView.addSubview(mainLabel)
@@ -334,15 +358,15 @@ class PregStatusCell: UITableViewCell {
         let subItemLabel = UILabel.init(frame: CGRectMake(CGRectGetMinX(mainLabel.frame), CGRectGetMaxY(mainLabel.frame) + 5, CGRectGetWidth(mainLabel.frame), subItemLabelHeight))
         subItemLabel.font = UIFont.systemFontOfSize(upRateHeight(12))
         subItemLabel.textColor = UIColor.lightGrayColor()
-        subItemLabel.text = model.pregSubItem
+        subItemLabel.text = model.content
         subItemLabel.numberOfLines = 0
         subItemLabel.adjustsFontSizeToFitWidth = true
         subItemLabel.minimumScaleFactor = 0.8
         self.contentView.addSubview(subItemLabel)
         
-        if model.pregMainImage != "" {
-            let imageView = UIImageView.init(frame: CGRectMake(CGRectGetMinX(mainLabel.frame), CGRectGetMaxY(subItemLabel.frame), CGRectGetWidth(mainLabel.frame), imageViewHeight))
-            imageView.image = UIImage.imageWithName(model.pregMainImage)
+        for i in 0 ..< model.images.count {
+            let imageView = UIImageView.init(frame: CGRect.init(x: mainLabel.frame.minX, y: CGFloat(i) * subItemLabel.frame.maxY, width: mainLabel.frame.width, height: imageViewHeight))
+            imageView.setImageURL(model.images[i])
             self.contentView.addSubview(imageView)
         }
         
@@ -360,7 +384,7 @@ class PregStatusCell: UITableViewCell {
         
         let dateLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(button.frame), CGRectGetMinY(button.frame), CGRectGetWidth(self.contentView.frame) * (3 / 5) * (1 / 2), CGRectGetHeight(button.frame)))
         dateLabel.textAlignment = .Center
-        dateLabel.text = model.pregItemDate
+        dateLabel.text = model.createTime
         dateLabel.textColor = UIColor.lightGrayColor()
         dateLabel.font = UIFont.systemFontOfSize(12)
         self.contentView.addSubview(dateLabel)

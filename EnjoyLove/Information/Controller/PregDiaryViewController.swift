@@ -13,6 +13,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
 
     private var diaryTable:UITableView!
     private var diaryData:[Diary]!
+    var breedDate:String = ""
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -95,6 +96,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     
     func createDiaryClick() -> Void {
         let diaryRecord = DiaryRecordViewController()
+        diaryRecord.breedDate = self.breedDate
         self.navigationController?.pushViewController(diaryRecord, animated: true)
         
     }

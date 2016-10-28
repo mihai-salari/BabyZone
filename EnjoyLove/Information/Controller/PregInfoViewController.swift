@@ -53,8 +53,10 @@ class PregInfoViewController: BaseViewController {
             BabyBaseInfo.sendAsyncBabyBaseInfo(idUserBabyInfo, completionHandler: { [weak self](errorCode, msg, baseInfo) in
                 if let weakSelf = self{
                     var infoType = "1"
+                    var day = ""
                     if let base  = baseInfo {
                         infoType = base.infoType
+                        day = base.day
                         weakSelf.pregBabyData.append(base)
                     }else{
                         let babyModel = BabyBaseInfo()
@@ -104,9 +106,11 @@ class PregInfoViewController: BaseViewController {
                                     let recordList = DiaryBL.findAll()
                                     if recordList.count > 0{
                                         let diaryListVC = PregDiaryViewController()
+                                        diaryListVC.breedDate = day
                                         weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
                                     }else{
                                         let diary = DiaryRecordViewController()
+                                        diary.breedDate = day
                                         weakSelf.navigationController?.pushViewController(diary, animated: true)
                                     }
                                 }

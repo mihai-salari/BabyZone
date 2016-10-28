@@ -22,7 +22,7 @@ class DiaryDetailView: UIView {
         let imageView = UIImageView.init(frame: CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame) * (3 / 5)))
         imageView.image = model.images.count == 0 ? UIImage.imageWithName("yunfumama.png") : UIImage.imageWithName(model.images[0])
         self.addSubview(imageView)
-        let labels = NoteLabelBL.findVia(model.noteLabels)
+        let labels = model.noteLabels == nil ? NoteLabelBL.findVia(model.noteLabels) : model.noteLabels
         for i in 0 ..< labels.count {
             let columnIndex = i % pregDiaryTipsColumn
             let rowIndex = i / pregDiaryTipsColumn
@@ -37,14 +37,6 @@ class DiaryDetailView: UIView {
             self.addSubview(itemLabel)
         }
         
-//        let weightLabel = UILabel.init(frame: CGRectMake((3 / 4) * CGRectGetWidth(self.frame), upRateHeight(10) + diaryDetailTipsHeight / 2, CGRectGetWidth(self.frame) / 4, upRateHeight(25)))
-//        weightLabel.textAlignment = .Center
-//        let fullFont = FontAttribute.init(font: UIFont.systemFontOfSize(upRateWidth(25)), effectRange: NSMakeRange(0, model.weight.characters.count))
-//        let fullColor = ForegroundColorAttribute.init(color: UIColor.colorFromRGB(204, g: 100, b: 132)!, effectRange: NSMakeRange(0, model.weight.characters.count))
-//        let partFont = FontAttribute(font: UIFont.systemFontOfSize(upRateWidth(12)), effectRange: NSMakeRange(model.weight.characters.count - 2, 2))
-//        
-//        weightLabel.attributedText = model.weight.mutableAttributedStringWithStringAttributes([fullFont,partFont,fullColor])
-//        self.addSubview(weightLabel)
         
         let date2Label = UILabel.init(frame: CGRectMake(CGRectGetMidX(imageView.frame), CGRectGetMaxY(imageView.frame) - upRateHeight(25), CGRectGetWidth(imageView.frame) / 2 - 10, upRateHeight(25)))
         date2Label.text = "第 \(model.breedStatusDate) 天"

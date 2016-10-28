@@ -11,11 +11,12 @@ import UIKit
 class DiaryRecordViewController: BaseViewController {
 
     private var recordView:DiaryRecordView!
+    var breedDate:String = ""
+    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
-        print("end of year \(NSDate.today().endOfYear)")
         self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
         if DiaryBL.findAll().count == 0 {
             self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
@@ -51,18 +52,25 @@ class DiaryRecordViewController: BaseViewController {
     }
     
     func comfireClick() -> Void {
-        let detailConfirm = DiaryDetailViewController()
-        let model = PregDiary()
-        model.date1 = "2016.6.08 THU"
-        model.date2 = "宝宝第46周+5天"
-        model.image = "yunfumama.png"
-        model.imageEdge = "45"
-        model.face = "record_face.png"
-        model.desc = "每天早上第一件事就是不想起床，一刷牙就吐。那时候刚好公司隔壁搬来一间新公司。老公刚毕业，费电弄得我们转折了好几个城市，只能待在学校那个城市。"
-        model.weight = "第36周+28天"
-        model.tips = ["胎动","乳涨","腹胀","失眠","便秘","背痛"]
-        //detailConfirm.model = model
-        self.navigationController?.pushViewController(detailConfirm, animated: true)
+        if let record = self.recordView {
+            if let recordData = record.fetchDiary() {
+                let detailConfirm = DiaryDetailViewController()
+                detailConfirm.model = recordData
+                self.navigationController?.pushViewController(detailConfirm, animated: true)
+            }
+        }
+//        let detailConfirm = DiaryDetailViewController()
+//        let model = PregDiary()
+//        model.date1 = "2016.6.08 THU"
+//        model.date2 = "宝宝第46周+5天"
+//        model.image = "yunfumama.png"
+//        model.imageEdge = "45"
+//        model.face = "record_face.png"
+//        model.desc = "每天早上第一件事就是不想起床，一刷牙就吐。那时候刚好公司隔壁搬来一间新公司。老公刚毕业，费电弄得我们转折了好几个城市，只能待在学校那个城市。"
+//        model.weight = "第36周+28天"
+//        model.tips = ["胎动","乳涨","腹胀","失眠","便秘","背痛"]
+//        //detailConfirm.model = model
+//        self.navigationController?.pushViewController(detailConfirm, animated: true)
     }
     
     /*

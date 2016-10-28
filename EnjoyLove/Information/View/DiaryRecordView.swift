@@ -51,14 +51,14 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
     }
     
     func fetchDiary() -> Diary? {
+        self.endEditing(true)
+        self.resultDiary.content = self.textView.text
+        let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
+        self.resultDiary.createDate = today
         if let result = self.resultDiary {
             return result
         }
         return nil
-    }
-    
-    func endEidt() -> Void {
-        self.endEditing(true)
     }
     
     private func initialize() -> Void{
@@ -136,6 +136,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
                                 let paths = "\(imagePath)".componentsSeparatedByString("/")
                                 if let path = paths.last{
                                     weakSelf.images.append(path)
+                                    weakSelf.resultDiary.imgUrls = weakSelf.images.joinWithSeparator(",")
                                 }
                             }
                         }
@@ -275,7 +276,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
     }
     
     private func handleEmotionCellSelect(collectionView:UICollectionView, indexPath:NSIndexPath, selected:Bool){
-        
+        self.endEditing(true)
         let cell = collectionView.cellForItemAtIndexPath(indexPath)
         if selected {
             let selectedImage = self.recordModel.emotionHighlightImages[indexPath.item]
@@ -300,6 +301,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
     }
     
     private func handleStatusCellSelect(collectionView:UICollectionView, indexPath:NSIndexPath, selected:Bool){
+        self.endEditing(true)
         let cell = collectionView.cellForItemAtIndexPath(indexPath)
         if selected {
             cell?.contentView.backgroundColor = UIColor.hexStringToColor("#ffffff")
@@ -307,12 +309,19 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
             imageView.image = UIImage.imageWithName("check.png")
             let statusLabel = cell?.contentView.viewWithTag(statusLabelTag + indexPath.row) as! UILabel
             statusLabel.textColor = UIColor.darkGrayColor()
+            if self.resultDiary.noteLabels.contains(self.recordModel.grownStatus[indexPath.item]) == false {
+                self.resultDiary.noteLabels.append(self.recordModel.grownStatus[indexPath.item])
+            }
         }else{
             cell?.contentView.backgroundColor = UIColor.hexStringToColor("#df7781")
             let imageView = cell?.contentView.viewWithTag(statusImageViewTag + indexPath.row) as! UIImageView
             imageView.image = UIImage.imageWithName("uncheck.png")
             let statusLabel = cell?.contentView.viewWithTag(statusLabelTag + indexPath.row) as! UILabel
             statusLabel.textColor = UIColor.whiteColor()
+            
+            if let index = self.resultDiary.noteLabels.indexOf(self.recordModel.grownStatus[indexPath.item]) {
+                self.resultDiary.noteLabels.removeAtIndex(index)
+            }
         }
     }
 }

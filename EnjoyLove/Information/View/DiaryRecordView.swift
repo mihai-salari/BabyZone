@@ -52,6 +52,12 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
     
     func fetchDiary() -> Diary? {
         self.endEditing(true)
+        
+        if self.resultDiary.moodStatus == nil || self.resultDiary.moodStatus == "" {
+            HUD.showText("请选择心情状态", onView: self)
+            return nil
+        }
+        
         self.resultDiary.content = self.textView.text
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
         self.resultDiary.createDate = today
@@ -131,12 +137,14 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
                 weakSelf.images = []
                 for photo in imageArray{
                     DXPickerHelper.hm_fetchImageWithAsset(photo, targetSize: CGSizeMake(200, 200), needHighQuality: true, imageResultHandler: { (image, info) in
-                        if let imageInfo = info{
+                        if let imageInfo = info, let img = image{
                             if let imagePath = imageInfo["PHImageFileURLKey"]{
                                 let paths = "\(imagePath)".componentsSeparatedByString("/")
                                 if let path = paths.last{
                                     weakSelf.images.append(path)
                                     weakSelf.resultDiary.imgUrls = weakSelf.images.joinWithSeparator(",")
+                                    weakSelf.resultDiary.imageArr.append(img)
+                                    
                                 }
                             }
                         }
@@ -144,6 +152,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
                 }
                 if imageArray.count == 0{
                     weakSelf.images.removeAll()
+                    weakSelf.resultDiary.imageArr.removeAll()
                 }
             }
         }

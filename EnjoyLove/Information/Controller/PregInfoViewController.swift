@@ -53,10 +53,10 @@ class PregInfoViewController: BaseViewController {
             BabyBaseInfo.sendAsyncBabyBaseInfo(idUserBabyInfo, completionHandler: { [weak self](errorCode, msg, baseInfo) in
                 if let weakSelf = self{
                     var infoType = "1"
-                    var day = ""
+                    var inf:BabyBaseInfo!
                     if let base  = baseInfo {
                         infoType = base.infoType
-                        day = base.day
+                        inf = base
                         weakSelf.pregBabyData.append(base)
                     }else{
                         let babyModel = BabyBaseInfo()
@@ -71,6 +71,8 @@ class PregInfoViewController: BaseViewController {
                         babyModel.minHead = "0"
                         babyModel.maxHead = "0"
                         weakSelf.pregBabyData.append(babyModel)
+                        
+                        inf = babyModel
                     }
                     
                     dispatch_get_main_queue().queue({
@@ -106,11 +108,11 @@ class PregInfoViewController: BaseViewController {
                                     let recordList = DiaryBL.findAll()
                                     if recordList.count > 0{
                                         let diaryListVC = PregDiaryViewController()
-                                        diaryListVC.breedDate = day
+                                        diaryListVC.baseInfo = inf
                                         weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
                                     }else{
                                         let diary = DiaryRecordViewController()
-                                        diary.breedDate = day
+                                        diary.baseInfo = inf
                                         weakSelf.navigationController?.pushViewController(diary, animated: true)
                                     }
                                 }

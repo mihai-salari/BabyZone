@@ -14,14 +14,32 @@ private let diaryDetailTipsWidth = upRateWidth(40)
 private let diaryDetailTipsHeight = upRateHeight(15)
 
 class DiaryDetailView: UIView {
-    init(frame: CGRect,model:Diary) {
+    init(frame: CGRect,model:Diary, baseInfo:BabyBaseInfo) {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.whiteColor()
         
-        let imageView = UIImageView.init(frame: CGRectMake(0, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame) * (3 / 5)))
-        imageView.image = model.images.count == 0 ? UIImage.imageWithName("yunfumama.png") : UIImage.imageWithName(model.images[0])
-        self.addSubview(imageView)
+        let imageContainView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height:  self.frame.height * (3 / 5)))
+        self.addSubview(imageContainView)
+        if model.imageArr.count > 0 {
+            if model.imageArr.count == 1 {
+                imageContainView.layer.contents = model.imageArr[0].CGImage
+            }else{
+                let imageWidth = imageContainView.frame.width * (1 / 3) - 2 * 5
+                let imageHeight = imageContainView.frame.height * (1 / 2) - 5
+                for i in 0 ..< model.imageArr.count {
+                    let columnIndex = i % pregDiaryTipsColumn
+                    let rowIndex = i / pregDiaryTipsColumn
+                    
+                    let imageView = UIView.init(frame: CGRect.init(x: 5 + CGFloat(columnIndex) * (imageWidth + 5), y: 5 + CGFloat(rowIndex) * (imageHeight + 5), width: imageWidth, height: imageHeight))
+                    imageView.layer.contents = model.imageArr[i].CGImage
+                    imageContainView.addSubview(imageView)
+                }
+            }
+        }else{
+            imageContainView.layer.contents = UIImage.imageWithName("yunfumama.png")?.CGImage
+        }
+        
         let labels = model.noteLabels == nil ? NoteLabelBL.findVia(model.noteLabels) : model.noteLabels
         for i in 0 ..< labels.count {
             let columnIndex = i % pregDiaryTipsColumn
@@ -38,8 +56,8 @@ class DiaryDetailView: UIView {
         }
         
         
-        let date2Label = UILabel.init(frame: CGRectMake(CGRectGetMidX(imageView.frame), CGRectGetMaxY(imageView.frame) - upRateHeight(25), CGRectGetWidth(imageView.frame) / 2 - 10, upRateHeight(25)))
-        date2Label.text = "第 \(model.breedStatusDate) 天"
+        let date2Label = UILabel.init(frame: CGRectMake(CGRectGetMidX(imageContainView.frame), CGRectGetMaxY(imageContainView.frame) - upRateHeight(25), CGRectGetWidth(imageContainView.frame) / 2 - 10, upRateHeight(25)))
+        date2Label.text = self.resultDay(baseInfo)
         date2Label.textAlignment = .Right
         date2Label.font = UIFont.boldSystemFontOfSize(15)
         date2Label.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)
@@ -75,4 +93,27 @@ class DiaryDetailView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
+    private func resultDay(babyInfo:BabyBaseInfo) ->String{
+        var resultDay = babyInfo.day
+        switch babyInfo.infoType {
+        case "1":
+            if let day = Int.init(babyInfo.day) {
+                resultDay = "\(day % 365)"
+                resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
+            }
+            resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
+        case "2":
+            if let day = Int.init(babyInfo.day) {
+                resultDay = "\(day % 300)"
+                "第\(self.weakAndDayFromNumber(resultDay).0) 周 \(self.weakAndDayFromNumber(resultDay).1) 天"
+            }
+            resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
+        default:
+            break
+        }
+        return resultDay
+    }
+    
 }

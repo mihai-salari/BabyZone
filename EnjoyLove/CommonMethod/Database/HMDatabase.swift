@@ -2012,6 +2012,7 @@ class Diary: NSObject,NSCoding {
     var content:String!
     var imgUrls:String!
     var images:[String]!
+    var imageArr:[UIImage]!
     var idUserBabyInfo:String!
     var breedStatusDate:String!
     var createTime:String!
@@ -2027,6 +2028,7 @@ class Diary: NSObject,NSCoding {
         self.content = ""
         self.imgUrls = ""
         self.images = []
+        self.imageArr = []
         self.idUserBabyInfo = ""
         self.breedStatusDate = ""
         self.createTime = ""

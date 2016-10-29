@@ -13,7 +13,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
 
     private var diaryTable:UITableView!
     private var diaryData:[Diary]!
-    var breedDate:String = ""
+    var baseInfo:BabyBaseInfo!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -75,7 +75,6 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
             resultCell.layoutMargins = UIEdgeInsetsZero
             resultCell.refreshCell(self.diaryData[indexPath.row])
         }
-        
         return cell!
     }
     
@@ -96,7 +95,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     
     func createDiaryClick() -> Void {
         let diaryRecord = DiaryRecordViewController()
-        diaryRecord.breedDate = self.breedDate
+        diaryRecord.baseInfo = self.baseInfo
         self.navigationController?.pushViewController(diaryRecord, animated: true)
         
     }

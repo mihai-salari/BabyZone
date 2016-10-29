@@ -12,17 +12,18 @@ class DiaryDetailViewController: BaseViewController {
 
     private var diaryDetailView:DiaryDetailView!
     var model:Diary!
+    var baseInfo:BabyBaseInfo!
+    var isConfirm:Bool = false
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationBarItem(self, isImage: false, title: model.createDate, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
+        self.navigationBarItem(self, isImage: false, title: model.createDate, leftSel: nil, rightSel: self.isConfirm == true ? #selector(DiaryRecordViewController.comfireClick) : nil, rightTitle: self.isConfirm == true ? "OK" : "")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-//        self.initializeData()
         self.initializeSubviews()
     }
 
@@ -36,7 +37,7 @@ class DiaryDetailViewController: BaseViewController {
 //    }
     
     private func initializeSubviews(){
-        self.diaryDetailView = DiaryDetailView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * upRateWidth(10), CGRectGetHeight(self.view.frame) - 2 * viewOriginY - navigationBarHeight), model: model)
+        self.diaryDetailView = DiaryDetailView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * upRateWidth(10), CGRectGetHeight(self.view.frame) - 2 * viewOriginY - navigationBarHeight), model: self.model, baseInfo: self.baseInfo)
         self.view.addSubview(self.diaryDetailView)
     }
     

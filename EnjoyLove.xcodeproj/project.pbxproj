@@ -2428,10 +2428,10 @@
 				275BF4FB1DB9CDF100DD9BB3 /* PregDiaryViewController.swift */,
 				275BF4F91DB9CDF100DD9BB3 /* DiaryDetailViewController.swift */,
 				275BF4F81DB9CDF100DD9BB3 /* BabyStatusViewController.swift */,
+				275BF5001DB9CDF100DD9BB3 /* StatusDetailViewController.swift */,
 				275BF4FD1DB9CDF100DD9BB3 /* ProblemDetailListViewController.swift */,
 				275BF4FE1DB9CDF100DD9BB3 /* ProblemDetailViewController.swift */,
 				275BF4FF1DB9CDF100DD9BB3 /* ProblemViewController.swift */,
-				275BF5001DB9CDF100DD9BB3 /* StatusDetailViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

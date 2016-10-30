@@ -32,17 +32,17 @@ class BabyStatusCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func refreshCell(model:StatusDetail) -> Void {
+    func refreshCell(model:ArticleList) -> Void {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
         self.contentView.frame.size.height = upRateHeight(100)
         let imageView = UIImageView.init(frame: CGRectMake(10, (CGRectGetHeight(self.contentView.frame) - CGRectGetHeight(self.contentView.frame) * (2 / 3)) / 2, CGRectGetHeight(self.contentView.frame) * (2 / 3), CGRectGetHeight(self.contentView.frame) * (2 / 3)))
-        imageView.image = UIImage.imageWithName(model.detailImage)
+        imageView.image = UIImage.imageWithName("pregnantMama.png")
         self.contentView.addSubview(imageView)
         
         let mainItemLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(imageView.frame) + 5, CGRectGetMinY(imageView.frame), upRateWidth(185), CGRectGetHeight(imageView.frame) / 3))
-        mainItemLabel.text = model.detailMainItem
+        mainItemLabel.text = model.title
         mainItemLabel.font = UIFont.systemFontOfSize(upRateWidth(17))
         mainItemLabel.textColor = UIColor.hexStringToColor("#400a33")
         mainItemLabel.adjustsFontSizeToFitWidth = true
@@ -52,7 +52,7 @@ class BabyStatusCell: UITableViewCell {
         
         let contentLabel = UILabel.init(frame: CGRectMake(CGRectGetMinX(mainItemLabel.frame), CGRectGetMaxY(mainItemLabel.frame), CGRectGetWidth(mainItemLabel.frame), CGRectGetHeight(imageView.frame) * (2 / 3)))
         contentLabel.font = UIFont.systemFontOfSize(upRateWidth(12))
-        contentLabel.text = model.detailOutline
+        contentLabel.text = model.content
         contentLabel.numberOfLines = 0
         contentLabel.textColor = UIColor.lightGrayColor()
         self.contentView.addSubview(contentLabel)

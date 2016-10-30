@@ -101,8 +101,7 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.openArray.contains("\(section)") {
-            let mainModel = self.articleTypeListData[section]
-//            return mainModel.statusDetial.count
+            return self.articleTypeListData[section].articleList == nil ? 0 : self.articleTypeListData[section].articleList.count
         }
         return 0
     }
@@ -112,8 +111,7 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
         cell.separatorInset = UIEdgeInsetsZero
         cell.layoutMargins = UIEdgeInsetsZero
         cell.accessoryType = .DisclosureIndicator
-        let mainModel = self.articleTypeListData[indexPath.section]
-//        cell.refreshCell(mainModel.statusDetial[indexPath.row])
+        cell.refreshCell(self.articleTypeListData[indexPath.section].articleList[indexPath.row])
         return cell
     }
     
@@ -150,17 +148,48 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
     }
 
     func toggleListClick(btn:BabyStatusButton) -> Void {
-        btn.selected = !btn.selected
-        self.isOpen = btn.selected == true ? true : false
-        self.openStr = "\(btn.tag)"
-        if self.openArray.contains(self.openStr) {
-            if let index = self.openArray.indexOf(self.openStr) {
-                self.openArray.removeAtIndex(index)
-            }
-        }else{
-            self.openArray.append(self.openStr)
+        
+        HUD.showHud("正在加载...", onView: self.view)
+        dispatch_queue_create("articleListQueue", nil).queue {
+            let type = self.articleTypeListData[btn.tag]
+            ArticleList.sendAsyncArticleList("30", newsType: self.infoType, year: type.year, month: type.month, languageSign: Localize.currentLanguage(), completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    dispatch_get_main_queue().queue({ 
+                        HUD.hideHud(weakSelf.view)
+                    })
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            let list = ArticleListBL.findAll()
+                            if list.count > 0{
+                                btn.selected = !btn.selected
+                                weakSelf.isOpen = btn.selected == true ? true : false
+                                weakSelf.openStr = "\(btn.tag)"
+                                if weakSelf.openArray.contains(weakSelf.openStr) {
+                                    if let index = weakSelf.openArray.indexOf(weakSelf.openStr) {
+                                        weakSelf.openArray.removeAtIndex(index)
+                                    }
+                                }else{
+                                    weakSelf.openArray.append(weakSelf.openStr)
+                                }
+                                
+                                weakSelf.articleTypeListData[btn.tag].articleList = list
+                                dispatch_get_main_queue().queue({
+                                    if let table = weakSelf.babyStatusTable{
+                                        table.reloadSections(NSIndexSet.init(index: btn.tag), withRowAnimation: .Fade)
+                                    }
+                                })
+                            }else{
+                                HUD.showText("暂无数据", onView: weakSelf.view)
+                            }
+                        }else{
+                            HUD.showText("加载数据失败:\(msg!)", onView: weakSelf.view)
+                        }
+                    }else{
+                        HUD.showText("加载数据失败:\(msg!)", onView: weakSelf.view)
+                    }
+                }
+            })
         }
-        self.babyStatusTable.reloadSections(NSIndexSet.init(index: btn.tag), withRowAnimation: .Fade)
     }
     
     /*

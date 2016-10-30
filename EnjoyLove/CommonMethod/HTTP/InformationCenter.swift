@@ -97,6 +97,50 @@ extension Article{
     }
 }
 
+private let ArticleTypeListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsTypeList"
+
+extension ArticleTypeList{
+    /*
+     languageSign		string		语言
+     */
+    /*
+     pageIndex		int	是	当前页
+     pageSize		int	是	每页页数（最多30条）
+     newsType		int		资讯类型（1：怀孕 2：育儿）
+     year		int		年
+     month		int		月
+     languageSign		string		语言
+     
+     */
+    class func sendAsyncArticleList(languageSign: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ArticleTypeListUrl, parameters: ["languageSign":languageSign], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let data = response["data"] as? [String:NSObject]{
+                    if let list = data["list"] as? [[String:NSObject]]{
+                        for listDict in list {
+                            let info = ArticleTypeList()
+                            info.typeName = format(listDict["typeName"])
+                            info.year = format(listDict["year"])
+                            info.month = format(listDict["month"])
+                            ArticleTypeListBL.insert(info)
+                        }
+                    }
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+    
+}
+
 private let ArticleListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsList"
 extension ArticleList{
     
@@ -110,24 +154,29 @@ extension ArticleList{
 
      */
     class func sendAsyncArticleList(pageIndex: String,pageSize: String,newsType: String,year: String,month: String,languageSign: String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["newsType":newsType], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["newsType":newsType, "pageIndex":"1", "pageSize":pageSize, "year":year, "month":month, "languageSign":languageSign], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if let data = response["data"] as? [String:NSObject]{
-                    let info = ArticleList()
-                    info.idBbsNewsInfo = format(data["idBbsNewsInfo"])
-                    info.newsType = format(data["newsType"])
-                    info.babyAgeYear = format(data["babyAgeYear"])
-                    info.babyAgeMon = format(data["babyAgeMon"])
-                    info.title = format(data["title"])
-                    info.content = format(data["content"])
-                    info.imgList = format(data["imgList"])
-                    info.imgReplaceormat = format(data["imgReplaceormat"])
-                    info.videoUrl = format(data["videoUrl"])
-                    info.browseCount = format(data["browseCount"])
-                    info.create_time = format(data["create_time"])
-                    ArticleListBL.insert(info)
+                    if let list = data["list"] as? [[String:NSObject]]{
+                        for listDict in list {
+                            let info = ArticleList()
+                            info.idBbsNewsInfo = format(listDict["idBbsNewsInfo"])
+                            info.newsType = format(listDict["newsType"])
+                            info.babyAgeYear = format(listDict["babyAgeYear"])
+                            info.babyAgeMon = format(listDict["babyAgeMon"])
+                            info.title = format(listDict["title"])
+                            info.content = format(listDict["content"])
+                            info.imgList = format(listDict["imgList"])
+                            info.imgReplaceormat = format(listDict["imgReplaceormat"])
+                            info.videoUrl = format(listDict["videoUrl"])
+                            info.browseCount = format(listDict["browseCount"])
+                            info.createTime = format(listDict["createTime"])
+                            ArticleListBL.insert(info)
+                        }
+                    }
+                    
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)

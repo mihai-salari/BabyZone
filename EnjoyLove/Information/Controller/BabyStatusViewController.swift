@@ -39,6 +39,8 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
     
     
     private func initializeData(){
+        
+        
         self.openStr = ""
         self.openArray = []
         self.statusData = []

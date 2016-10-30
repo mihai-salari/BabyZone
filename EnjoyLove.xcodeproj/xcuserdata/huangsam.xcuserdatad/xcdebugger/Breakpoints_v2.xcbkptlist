@@ -52,7 +52,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/AppDelegate.m"
-                  timestampString = "499507801.333038"
+                  timestampString = "499511674.336441"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "455"
@@ -67,7 +67,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/AppDelegate.m"
-                  timestampString = "499507801.334855"
+                  timestampString = "499511674.338783"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "455"
@@ -116,7 +116,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-                  timestampString = "499507801.341552"
+                  timestampString = "499511674.346986"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
@@ -131,7 +131,7 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/Git/BabyZone/EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-                  timestampString = "499507801.345863"
+                  timestampString = "499511674.349884"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "411"
@@ -180,44 +180,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
-            timestampString = "499504938.847412"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "908"
-            endingLineNumber = "908"
-            landmarkName = "sendAsyncAddUserNote(moodStatus:noteLabel:content:imgUrls:completionHandler:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
             timestampString = "499502811.103688"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "108"
             endingLineNumber = "108"
             landmarkName = "sendAsyncLogin(userName:userPwd:completionHandler:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/Information/Controller/PregInfoViewController.swift"
-            timestampString = "499507462.127221"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
-            landmarkName = "refreshDataNetworkData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -234,38 +202,6 @@
             startingLineNumber = "132"
             endingLineNumber = "132"
             landmarkName = "refreshViews(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
-            timestampString = "499506349.720841"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "933"
-            endingLineNumber = "933"
-            landmarkName = "sendAsyncDeleteUserNote(idUserNoteInfo:completionHandler:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/Information/Controller/PregInfoViewController.swift"
-            timestampString = "499507323.612084"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "initialize()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

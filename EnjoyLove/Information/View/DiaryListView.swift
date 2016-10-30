@@ -179,7 +179,7 @@ class DiaryListCell: UITableViewCell {
         descLabel.adjustsFontSizeToFitWidth = true
         descLabel.minimumScaleFactor = 0.8
         descLabel.font = UIFont.systemFontOfSize(upRateWidth(12))
-        descLabel.text = model.content == "" ? "测试测试，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据，测试测试，测试数据" : model.content
+        descLabel.text = model.content
         descLabel.numberOfLines = 0
         descLabel.textColor = UIColor.lightGrayColor()
         self.contentView.addSubview(descLabel)

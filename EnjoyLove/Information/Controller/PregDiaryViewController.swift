@@ -18,7 +18,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
-        self.navigationBarItem(self, isImage: true, title: "孕育日记", leftSel: #selector(PregDiaryViewController.menuClick), leftImage: "baby_menu.png", leftItemSize: CGSize(width: 20, height: 15), rightSel: nil)
+        self.navigationBarItem(self, isImage: true, title: "孕育日记", leftSel: #selector(self.menuClick), leftImage: "baby_menu.png", leftItemSize: CGSize(width: 20, height: 15), rightSel: nil)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .Add, target: self, action: #selector(self.createDiaryClick))
         
     }
@@ -37,10 +37,24 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     
     private func initialize() -> Void{
         
+        dispatch_queue_create("refreshDataQueue", nil).queue({
+            Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let table = weakSelf.diaryTable{
+                        weakSelf.diaryData.removeAll()
+                        weakSelf.diaryData = DiaryBL.findAll()
+                        dispatch_get_main_queue().queue({
+                            table.reloadData()
+                            table.pullToRefreshView.stopAnimating()
+                        })
+                    }
+                }
+                })
+        })
+        
         self.diaryData = DiaryBL.findAll()
         
         let diaryNavView = DiaryListHeaderView.init(frame: CGRectMake(0, navigationBarHeight, CGRectGetWidth(self.view.frame), upRateHeight(40))) { (month, year,day) in
-            print("year \(year) month \(month), day \(day)")
         }
         self.view.addSubview(diaryNavView)
         
@@ -56,6 +70,10 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         self.view.addSubview(self.diaryTable)
         
         self.diaryTable.addPullToRefreshWithActionHandler({
+            self.pageIndex += 1
+            if self.pageIndex == 30{
+                self.pageIndex = 30
+            }
             dispatch_queue_create("refreshDataQueue", nil).queue({ 
                 Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg) in
                     if let weakSelf = self{
@@ -82,6 +100,9 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    func triggerTableView() -> Void {
         if let table = self.diaryTable {
             table.triggerPullToRefresh()
         }
@@ -131,7 +152,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                                     weakSelf.diaryData.removeAtIndex(index)
                                     DiaryBL.delete(nil, key: weakSelf.diaryData[indexPath.row].idUserNoteInfo)
                                     dispatch_get_main_queue().queue({
-                                        weakSelf.diaryTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                        weakSelf.diaryTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                                     })
                                 }
                             }

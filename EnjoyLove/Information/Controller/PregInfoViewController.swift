@@ -155,7 +155,20 @@ class PregInfoViewController: BaseViewController {
                             weakSelf.view.addSubview(weakSelf.pregView)
                             
                             weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: viewOriginX, y: weakSelf.pregView.frame.maxY, width: ScreenWidth - 2 * viewOriginX, height: (ScreenHeight - tabBarHeight) * (1 / 3) - 20), style: .Grouped, dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
-                                
+                                if let weakSelf = self{
+                                    switch indexPath.section{
+                                    case 0:
+                                        let babyStatus = BabyStatusViewController()
+                                        weakSelf.navigationController?.pushViewController(babyStatus, animated: true)
+                                    case 1:
+                                        break
+//                                        let babyProblem = ProblemViewController()
+//                                        weakSelf.navigationController?.pushViewController(babyProblem, animated: true)
+                                    default:
+                                        break
+                                    }
+                                }
+
                                 }, moreMenuCompletionHandler: { (model) in
                                     
                                 }, shareCompletionHandler: { (model) in

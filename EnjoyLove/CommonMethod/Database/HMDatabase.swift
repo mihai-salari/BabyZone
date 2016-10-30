@@ -760,8 +760,8 @@ private class BabyListDAO:NSObject{
 class BabyListBL: NSObject {
     
     class func insert(detail:BabyList) -> [BabyList]{
-        let result = BabyListDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        BabyListDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return BabyListDAO.shared.findAll()
     }
     
@@ -875,8 +875,8 @@ class NoteLabelDAO: NSObject {
 
 class NoteLabelBL: NSObject {
     class func insert(detail:NoteLabel) -> [NoteLabel]{
-        let result = NoteLabelDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        NoteLabelDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return NoteLabelDAO.shared.findAll()
     }
     
@@ -1112,8 +1112,8 @@ private class BabyBaseInfoDAO: NSObject {
 
 class BabyBaseInfoBL: NSObject {
     class func insert(detail:BabyBaseInfo) -> [BabyBaseInfo]{
-        let result = BabyBaseInfoDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        BabyBaseInfoDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return BabyBaseInfoDAO.shared.findAll()
     }
     
@@ -1363,8 +1363,8 @@ private class EquipmentsDAO:NSObject{
 
 class EquipmentsBL: NSObject {
     class func insert(detail:Equipments) -> [Equipments]{
-        let result = EquipmentsDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        EquipmentsDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return EquipmentsDAO.shared.findAll()
     }
     
@@ -1550,8 +1550,8 @@ private class ChildAccountDAO: NSObject {
 
 class ChildAccountBL: NSObject {
     class func insert(detail:ChildAccount) -> [ChildAccount]{
-        let result = ChildAccountDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        ChildAccountDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return ChildAccountDAO.shared.findAll()
     }
     
@@ -1764,8 +1764,8 @@ private class ChildEquipmentsDAO: NSObject {
 
 class ChildEquipmentsBL: NSObject {
     class func insert(detail:ChildEquipments) -> [ChildEquipments]{
-        let result = ChildEquipmentsDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        ChildEquipmentsDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return ChildEquipmentsDAO.shared.findAll()
     }
     
@@ -1960,8 +1960,8 @@ private class ChildEquipmentsPermissionDAO: NSObject {
 
 class ChildEquipmentsPermissionBL: NSObject {
     class func insert(detail:ChildEquipmentsPermission) -> [ChildEquipmentsPermission]{
-        let result = ChildEquipmentsPermissionDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        ChildEquipmentsPermissionDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return ChildEquipmentsPermissionDAO.shared.findAll()
     }
     
@@ -2239,8 +2239,8 @@ private class DiaryDAO: NSObject {
 
 class DiaryBL: NSObject {
     class func insert(detail:Diary) -> [Diary]{
-        let result = DiaryDAO.shared.insert(detail)
-        print("diary list result \(result)")
+        DiaryDAO.shared.insert(detail)
+//        print("diary list result \(result)")
         return DiaryDAO.shared.findAll()
     }
     
@@ -2483,8 +2483,8 @@ private class ArticleDAO: NSObject {
 
 class ArticleBL: NSObject {
     class func insert(detail:Article) -> [Article]{
-        let result = ArticleDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        ArticleDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return ArticleDAO.shared.findAll()
     }
     
@@ -2504,6 +2504,100 @@ class ArticleBL: NSObject {
 
 }
 
+//MARK:____ArticleTypeList_____
+private let ArticleTypeListKey = "ArticleTypeListKey"
+private let ArticleTypeListKeyName = "ArticleTypeListKeyName.archive"
+class ArticleTypeList: NSObject,NSCoding {
+    /*
+     typeName	String		分类名称
+     year	int		年
+     month	int		月
+     */
+    var typeName:String!
+    var year:String!
+    var month:String!
+    
+    override init() {
+        self.typeName = ""
+        self.year = ""
+        self.month = ""
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("typeName") as? String {
+            self.typeName = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("year") as? String {
+            self.year = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("month") as? String {
+            self.month = obj
+        }
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.typeName, forKey: "typeName")
+        aCoder.encodeObject(self.year, forKey: "year")
+        aCoder.encodeObject(self.month, forKey: "month")
+    }
+}
+
+
+private class ArticleTypeListDAO: NSObject {
+    static var shared:ArticleTypeListDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:ArticleTypeListDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = ArticleTypeListDAO()
+        }
+        return DAO.dao!
+    }
+    
+    
+    func findAll() -> [ArticleTypeList] {
+        var listData = [ArticleTypeList]()
+        if let theData = NSData.init(contentsOfFile: ArticleTypeListKeyName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arr = unArchive.decodeObjectForKey(ArticleTypeListKey) as? [ArticleTypeList]{
+                    listData = arr
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:ArticleTypeList) -> Bool {
+        var array = self.findAll()
+        array.append(detail)
+        
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: ArticleTypeListKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ArticleTypeListKeyName.filePath(), atomically: true)
+        
+    }
+}
+
+
+class ArticleTypeListBL: NSObject {
+    class func insert(detail:ArticleTypeList) -> [ArticleTypeList]{
+        ArticleTypeListDAO.shared.insert(detail)
+        //        print("baby list result \(result)")
+        return ArticleTypeListDAO.shared.findAll()
+    }
+    
+    class func findAll() ->[ArticleTypeList]{
+        return ArticleTypeListDAO.shared.findAll()
+    }
+}
+
 
 //MARK:____ArticleList____
 private let ArticleListArchiveKey = "ArticleListArchiveKey"
@@ -2511,17 +2605,18 @@ private let ArticleListArchiveFileName = "ArticleListArchive.archive"
 class ArticleList: NSObject {
     /*
      
-     idBbsNewsInfo		int		咨讯id
-     newsType		int		资讯类型（1：怀孕 2：育儿）
-     babyAgeYear		int		年
-     babyAgeMon		int		月
-     title		string		标题
-     content		string		内容
-     imgList		string		图片
-     imgReplaceormat		string		内容图片占位格式 【图片X】 X=第几张，替换X,然后替换content里的位置作为图片显示
-     videoUrl		string		视频地址
-     browseCount		int		浏览量
-     create_time		string		创建时间（yyyy-MM-dd HH:mm:ss）
+     idBbsNewsInfo	int		咨讯id
+     newsType	int		资讯类型（1：怀孕 2：育儿）
+     babyAgeYear	int		年
+     babyAgeMon	int		月
+     title	string		标题
+     content	string		内容
+     imgList	string		图片
+     imgReplaceormat	string		内容图片占位格式 【图片X】 X=第几张，替换X,然后替换content里的位置作为图片显示
+     videoUrl	string		视频地址
+     browseCount	int		浏览量
+     createTime	string		创建时间（yyyy-MM-dd HH:mm:ss）
+
 
      
      */
@@ -2536,7 +2631,7 @@ class ArticleList: NSObject {
     var imgReplaceormat:String!
     var videoUrl:String!
     var browseCount:String!
-    var create_time:String!
+    var createTime:String!
     
     override init() {
         self.idBbsNewsInfo = ""
@@ -2549,7 +2644,7 @@ class ArticleList: NSObject {
         self.imgReplaceormat = ""
         self.videoUrl = ""
         self.browseCount = ""
-        self.create_time = ""
+        self.createTime = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -2585,8 +2680,8 @@ class ArticleList: NSObject {
         if let obj = aDecoder.decodeObjectForKey("browseCount") as? String {
             self.browseCount = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("create_time") as? String {
-            self.create_time = obj
+        if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
+            self.createTime = obj
         }
     }
     
@@ -2601,7 +2696,7 @@ class ArticleList: NSObject {
         aCoder.encodeObject(self.videoUrl, forKey: "videoUrl")
         aCoder.encodeObject(self.browseCount, forKey: "browseCount")
         aCoder.encodeObject(self.imgList, forKey: "imgList")
-        aCoder.encodeObject(self.create_time, forKey: "create_time")
+        aCoder.encodeObject(self.createTime, forKey: "createTime")
     }
 }
 
@@ -2706,8 +2801,8 @@ private class ArticleListDAO: NSObject {
                 if note.browseCount != detail.browseCount {
                     note.browseCount = detail.browseCount
                 }
-                if note.create_time != detail.create_time {
-                    note.create_time = detail.create_time
+                if note.createTime != detail.createTime {
+                    note.createTime = detail.createTime
                 }
                 
                 let theData = NSMutableData.init()
@@ -2737,8 +2832,8 @@ private class ArticleListDAO: NSObject {
 
 class ArticleListBL: NSObject {
     class func insert(detail:ArticleList) -> [ArticleList]{
-        let result = ArticleListDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        ArticleListDAO.shared.insert(detail)
+//        print("baby list result \(result)")
         return ArticleListDAO.shared.findAll()
     }
     

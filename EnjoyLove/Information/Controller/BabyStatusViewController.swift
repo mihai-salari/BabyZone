@@ -125,7 +125,7 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
         let mainModel = self.articleTypeListData[section]
         let selectButton = BabyStatusButton(type: .Custom)
         selectButton.frame = CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 44)
-//        selectButton.setImageRect(CGSizeMake(20, 20), normaImage: "button_triangle_down.png", selectedImage: "button_triangle_up.png", normalTitle: mainModel.statusTime, fontSize: upRateWidth(16))
+        selectButton.setImageRect(CGSizeMake(20, 20), normaImage: "button_triangle_down.png", selectedImage: "button_triangle_up.png", normalTitle: mainModel.typeName, fontSize: upRateWidth(16))
         selectButton.setCustomTitleColor(UIColor.hexStringToColor("#400a33"))
         selectButton.backgroundColor = UIColor.whiteColor()
         if self.isOpen == true {

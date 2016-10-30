@@ -2240,7 +2240,7 @@ private class DiaryDAO: NSObject {
 class DiaryBL: NSObject {
     class func insert(detail:Diary) -> [Diary]{
         let result = DiaryDAO.shared.insert(detail)
-        print("baby list result \(result)")
+        print("diary list result \(result)")
         return DiaryDAO.shared.findAll()
     }
     

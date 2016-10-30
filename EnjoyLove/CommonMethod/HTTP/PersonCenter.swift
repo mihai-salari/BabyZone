@@ -868,15 +868,16 @@ private let AddUserNoteUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addUserN
 private let DeleteUserNoteUrl = BabyZoneConfig.shared.baseUrl + "/api/user/deleteUserNote"
 extension Diary{
     class func sendAsyncUserNoteList(pageIndex: String, year:String, month:String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":pageIndex, "pageSize":"1", "year":year, "month":month,], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":"1", "pageSize":pageIndex, "year":year, "month":month,], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
+                print("response === \(response)")
                 if let data = response["data"] as? [String: NSObject] {
                     if let list = data["list"] as? [[String : NSObject]]{
                         for listDict in list{
                             let diary = Diary()
-                            diary.idUserBabyInfo = format(listDict["idUserNoteInfo"])
+                            diary.idUserNoteInfo = format(listDict["idUserNoteInfo"])
                             diary.noteType = format(listDict["noteType"])
                             diary.moodStatus = format(listDict["moodStatus"])
                             diary.noteLabel = format(listDict["noteLabel"])

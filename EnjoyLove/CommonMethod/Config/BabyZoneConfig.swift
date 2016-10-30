@@ -44,7 +44,7 @@ class BabyZoneConfig: NSObject {
     var currentUserId:String!
     var QiNiuDomainName:String!
     var baseUrl:String!
-    
+    var BabyBaseInfoKey:String!
     
     
     static var shared:BabyZoneConfig{
@@ -89,6 +89,7 @@ class BabyZoneConfig: NSObject {
                 self.currentUserId = config.get(.currentUserId)
                 self.QiNiuDomainName = config.get(.QiNiuDomainName)
                 self.baseUrl = config.get(.baseUrl)
+                self.BabyBaseInfoKey = config.get(.BabyBaseInfoKey)
             }
             
         }
@@ -153,6 +154,7 @@ extension Keys{
     static let currentUserId                    = Key<String>("currentUserId")
     static let QiNiuDomainName                  = Key<String>("QiNiuDomainName")
     static let baseUrl                          = Key<String>("baseUrl")
+    static let BabyBaseInfoKey                  = Key<String>("BabyBaseInfoKey")
 }
 
 

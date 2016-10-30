@@ -157,37 +157,40 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if isDelete == true {
-            dispatch_queue_create("removeDataQueue", nil).queue({ 
-                let device = self.devices[indexPath.row]
-                Equipments.sendAsyncDeleteEquipment(device.idEqmInfo, eqmUserName: device.eqmName, eqmUserPwd: device.eqmPwd, completionHandler: { [weak self](errorCode, msg) in
-                    if let weakSelf = self{
-                        if let err = errorCode{
-                            if err == BabyZoneConfig.shared.passCode{
-                                let contact = EquipmentsBL.contactFromEquipment(device)
-                                let loginResult = UDManager.getLoginInfo()
-                                let key = "KEY\(loginResult.contactId)_\(contact.contactId)"
-                                key.setDefaultsForFlag(false)
-                                FListManager.sharedFList().delete(contact)
-                                if let index = weakSelf.devices.indexOf(device) {
-                                    weakSelf.devices.removeAtIndex(index)
+            if editingStyle == UITableViewCellEditingStyle.Delete {
+                dispatch_queue_create("removeDataQueue", nil).queue({
+                    let device = self.devices[indexPath.row]
+                    Equipments.sendAsyncDeleteEquipment(device.idEqmInfo, eqmUserName: device.eqmName, eqmUserPwd: device.eqmPwd, completionHandler: { [weak self](errorCode, msg) in
+                        if let weakSelf = self{
+                            if let err = errorCode{
+                                if err == BabyZoneConfig.shared.passCode{
+                                    let contact = EquipmentsBL.contactFromEquipment(device)
+                                    let loginResult = UDManager.getLoginInfo()
+                                    let key = "KEY\(loginResult.contactId)_\(contact.contactId)"
+                                    key.setDefaultsForFlag(false)
+                                    FListManager.sharedFList().delete(contact)
+                                    if let index = weakSelf.devices.indexOf(device) {
+                                        weakSelf.devices.removeAtIndex(index)
+                                    }
+                                    dispatch_get_main_queue().queue({
+                                        if let table = weakSelf.deviceListTable{
+                                            table.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                        }
+                                        if weakSelf.devices.count == 0{
+                                            weakSelf.navigationController?.popViewControllerAnimated(true)
+                                        }
+                                    })
+                                }else{
+                                    HUD.showText("删除失败\(msg!)", onView: weakSelf.view)
                                 }
-                                dispatch_get_main_queue().queue({
-                                    if let table = weakSelf.deviceListTable{
-                                        table.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                                    }
-                                    if weakSelf.devices.count == 0{
-                                        weakSelf.navigationController?.popViewControllerAnimated(true)
-                                    }
-                                })
                             }else{
                                 HUD.showText("删除失败\(msg!)", onView: weakSelf.view)
                             }
-                        }else{
-                            HUD.showText("删除失败\(msg!)", onView: weakSelf.view)
                         }
-                    }
+                        })
                 })
-            })
+
+            }
         }
     }
     /*

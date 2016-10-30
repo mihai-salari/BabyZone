@@ -13,13 +13,13 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
 
     private var diaryTable:UITableView!
     private var diaryData:[Diary]!
-    var baseInfo:BabyBaseInfo!
+    private var pageIndex:Int = 10
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
         self.navigationBarItem(self, isImage: true, title: "孕育日记", leftSel: #selector(PregDiaryViewController.menuClick), leftImage: "baby_menu.png", leftItemSize: CGSize(width: 20, height: 15), rightSel: nil)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .Add, target: self, action: #selector(PregDiaryViewController.createDiaryClick))
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .Add, target: self, action: #selector(self.createDiaryClick))
         
     }
     
@@ -55,6 +55,23 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         self.diaryTable.registerClass(DiaryListCell.self, forCellReuseIdentifier: pregdiaryTableViewCellId)
         self.view.addSubview(self.diaryTable)
         
+        self.diaryTable.addPullToRefreshWithActionHandler({
+            dispatch_queue_create("refreshDataQueue", nil).queue({ 
+                Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg) in
+                    if let weakSelf = self{
+                        if let table = weakSelf.diaryTable{
+                            weakSelf.diaryData.removeAll()
+                            weakSelf.diaryData = DiaryBL.findAll()
+                            dispatch_get_main_queue().queue({ 
+                                table.reloadData()
+                                table.pullToRefreshView.stopAnimating()
+                            })
+                        }
+                    }
+                })
+            })
+        })
+        
         let commemorateButton = DiaryRecordButton.init(frame: CGRect.init(x: 0, y: ScreenHeight - 50 + (50 - 35) / 2, width: self.view.frame.width, height: 35))
         commemorateButton.setImageRect(CGRectMake(0, 0, 10, 16), image: "arrow_right.png", title: "印刷成纪念画册", fontSize: upRateWidth(16))
         commemorateButton.setCustomTitleColor(UIColor.whiteColor())
@@ -62,6 +79,13 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
         self.view.addSubview(commemorateButton)
     }
     
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if let table = self.diaryTable {
+            table.triggerPullToRefresh()
+        }
+    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.diaryData.count
@@ -83,10 +107,38 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        let model = self.diaryData[indexPath.row]
-//        let diaryVC = DiaryDetailViewController()
-//        diaryVC.model = model
-//        self.navigationController?.pushViewController(diaryVC, animated: true)
+        let diaryVC = DiaryDetailViewController()
+        diaryVC.model = self.diaryData[indexPath.row]
+        self.navigationController?.pushViewController(diaryVC, animated: true)
+    }
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            HUD.showHud("正在提交...", onView: self.view)
+            dispatch_queue_create("deleteDataQueue", nil).queue({
+                Diary.sendAsyncDeleteUserNote(self.diaryData[indexPath.row].idUserNoteInfo, completionHandler: { [weak self](errorCode, msg) in
+                    if let weakSelf = self{
+                        dispatch_get_main_queue().queue({ 
+                            HUD.hideHud(weakSelf.view)
+                        })
+                        if let err = errorCode{
+                            if err == BabyZoneConfig.shared.passCode{
+                                if let index = weakSelf.diaryData.indexOf(weakSelf.diaryData[indexPath.row]){
+                                    weakSelf.diaryData.removeAtIndex(index)
+                                    dispatch_get_main_queue().queue({
+                                        weakSelf.diaryTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                    })
+                                }
+                            }
+                        }
+                    }
+                })
+            })
+        }
     }
     
     func commemorateClick() -> Void {
@@ -95,9 +147,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     
     func createDiaryClick() -> Void {
         let diaryRecord = DiaryRecordViewController()
-        diaryRecord.baseInfo = self.baseInfo
         self.navigationController?.pushViewController(diaryRecord, animated: true)
-        
     }
     
     func menuClick() -> Void {

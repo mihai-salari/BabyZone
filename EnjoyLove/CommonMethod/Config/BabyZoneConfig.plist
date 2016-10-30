@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BabyBaseInfoKey</key>
+	<string>BabyBaseInfoKey</string>
 	<key>baseUrl</key>
 	<string>http://123.56.133.212:8080/xiangai-api</string>
 	<key>QiNiuDomainName</key>

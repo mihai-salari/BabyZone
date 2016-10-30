@@ -76,11 +76,11 @@ class LoginViewController: BaseViewController {
                             }
                         }else{
                             HUD.hideHud(weakSelf.view)
-                            HUD.showText("登录失败:\(msg)", onView: weakSelf.view)
+                            HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
                         }
                     }else{
                         HUD.hideHud(weakSelf.view)
-                        HUD.showText("登录失败:\(msg)", onView: weakSelf.view)
+                        HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
                     }
                 })
             }

@@ -907,16 +907,12 @@ extension Diary{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if let data = response["data"] as? [String: NSObject] {
-                    if let list = data["list"] as? [[String : NSObject]]{
-                        for listDict in list{
-                            let diary = Diary()
-                            diary.idUserBabyInfo = format(listDict["idUserNoteInfo"])
-                            diary.moodStatus = moodStatus
-                            diary.content = content
-                            diary.imgUrls = imgUrls
-                            DiaryBL.modify(diary)
-                        }
-                    }
+                    let diary = Diary()
+                    diary.idUserNoteInfo = format(data["idUserNoteInfo"])
+                    diary.moodStatus = moodStatus
+                    diary.content = content
+                    diary.imgUrls = imgUrls
+                    DiaryBL.insert(diary)
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)

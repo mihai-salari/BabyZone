@@ -310,6 +310,13 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func reloadData(data:[PregInfoStatus]) -> Void {
+        self.pregInfoData = data
+        if let table = self.pregTable {
+            table.reloadData()
+        }
+    }
 }
 
 class PregStatusCell: UITableViewCell {

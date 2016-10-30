@@ -42,6 +42,7 @@ extension BabyBaseInfo{
                     info.minHead = format(data["minHead"])
                     info.maxHead = format(data["maxHead"])
                     BabyBaseInfoBL.insert(info)
+                    BabyZoneConfig.shared.BabyBaseInfoKey.setDefaultString(format(data["idComBabyBaseInfo"]))
                     if let handle = completionHandler{
                         handle(errorCode: errorCode, msg: msg, baseInfo: info)
                     }

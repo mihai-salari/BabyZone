@@ -11,14 +11,11 @@ import UIKit
 class DiaryRecordViewController: BaseViewController {
 
     private var recordView:DiaryRecordView!
-    var baseInfo:BabyBaseInfo!
-    
-    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
-        self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(DiaryRecordViewController.comfireClick), rightTitle: "OK")
+        self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(self.comfireClick), rightTitle: "OK")
         if DiaryBL.findAll().count == 0 {
             self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
             self.tabBarController?.tabBar.hidden = false
@@ -64,7 +61,6 @@ class DiaryRecordViewController: BaseViewController {
             if let recordData = record.fetchDiary() {
                 let detailConfirm = DiaryDetailViewController()
                 detailConfirm.model = recordData
-                detailConfirm.baseInfo = self.baseInfo
                 detailConfirm.isConfirm = true
                 self.navigationController?.pushViewController(detailConfirm, animated: true)
             }

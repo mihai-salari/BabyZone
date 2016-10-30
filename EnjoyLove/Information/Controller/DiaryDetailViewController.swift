@@ -12,7 +12,6 @@ class DiaryDetailViewController: BaseViewController {
 
     private var diaryDetailView:DiaryDetailView!
     var model:Diary!
-    var baseInfo:BabyBaseInfo!
     var isConfirm:Bool = false
     
     override func viewWillAppear(animated: Bool) {
@@ -37,14 +36,24 @@ class DiaryDetailViewController: BaseViewController {
 //    }
     
     private func initializeSubviews(){
-        self.diaryDetailView = DiaryDetailView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * upRateWidth(10), CGRectGetHeight(self.view.frame) - 2 * viewOriginY - navigationBarHeight), model: self.model, baseInfo: self.baseInfo)
+        self.diaryDetailView = DiaryDetailView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * upRateWidth(10), CGRectGetHeight(self.view.frame) - 2 * viewOriginY - navigationBarHeight), model: self.model)
         self.view.addSubview(self.diaryDetailView)
     }
     
     
     func comfireClick() -> Void {
-        let pregDiary = PregDiaryViewController()
-        self.navigationController?.pushViewController(pregDiary, animated: true)
+        HUD.showHud("正在提交...", onView: self.view)
+        Diary.sendAsyncAddUserNote(self.model.moodStatus, noteLabel: self.model.noteLabels.joinWithSeparator(","), content: self.model.content, imgUrls: self.model.imgUrls) { [weak self](errorCode, msg) in
+            if let weakSelf = self{
+                HUD.hideHud(weakSelf.view)
+                if let err = errorCode{
+                    if err == BabyZoneConfig.shared.passCode{
+                        let pregDiary = PregDiaryViewController()
+                        weakSelf.navigationController?.pushViewController(pregDiary, animated: true)
+                    }
+                }
+            }
+        }
     }
 
     /*

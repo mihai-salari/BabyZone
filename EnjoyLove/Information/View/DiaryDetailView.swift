@@ -14,14 +14,14 @@ private let diaryDetailTipsWidth = upRateWidth(40)
 private let diaryDetailTipsHeight = upRateHeight(15)
 
 class DiaryDetailView: UIView {
-    init(frame: CGRect,model:Diary, baseInfo:BabyBaseInfo) {
+    init(frame: CGRect,model:Diary) {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.whiteColor()
         
         let imageContainView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: self.frame.width, height:  self.frame.height * (3 / 5)))
         self.addSubview(imageContainView)
-        if model.imageArr.count > 0 {
+        if model.imageArr != nil && model.imageArr.count > 0 {
             if model.imageArr.count == 1 {
                 imageContainView.layer.contents = model.imageArr[0].CGImage
             }else{
@@ -57,7 +57,15 @@ class DiaryDetailView: UIView {
         
         
         let date2Label = UILabel.init(frame: CGRectMake(CGRectGetMidX(imageContainView.frame), CGRectGetMaxY(imageContainView.frame) - upRateHeight(25), CGRectGetWidth(imageContainView.frame) / 2 - 10, upRateHeight(25)))
-        date2Label.text = self.resultDay(baseInfo)
+        if let babyId = BabyZoneConfig.shared.BabyBaseInfoKey.defaultString() {
+            if let baseInfo = BabyBaseInfoBL.find(nil, key: babyId) {
+                date2Label.text = self.resultDay(baseInfo)
+            }else{
+                date2Label.text = "第0周第0天"
+            }
+        }else{
+            date2Label.text = "第0周第0天"
+        }
         date2Label.textAlignment = .Right
         date2Label.font = UIFont.boldSystemFontOfSize(15)
         date2Label.textColor = UIColor.colorFromRGB(204, g: 100, b: 132)

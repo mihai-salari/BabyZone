@@ -211,6 +211,18 @@ extension String{
         return NSUserDefaults.standardUserDefaults().objectForKey(self)
     }
     
+    func setDefaultString(val:String) -> Void {
+        NSUserDefaults.standardUserDefaults().setObject(val, forKey: self)
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    func defaultString() -> String? {
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey(self) as? String{
+            return obj
+        }
+        return ""
+    }
+    
 }
 
 

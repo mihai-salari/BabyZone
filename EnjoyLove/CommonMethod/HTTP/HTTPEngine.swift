@@ -30,6 +30,7 @@ class HTTPEngine: NSObject {
     private lazy var manager:AFHTTPSessionManager = {
         let httpManager = AFHTTPSessionManager()
         httpManager.requestSerializer = AFHTTPRequestSerializer()
+        httpManager.requestSerializer.timeoutInterval = 10
         httpManager.responseSerializer = AFHTTPResponseSerializer()
         return httpManager
     }()

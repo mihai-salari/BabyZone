@@ -2851,7 +2851,7 @@
 				TargetAttributes = {
 					27D002C41D6D44D700B62A61 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = LREATFY7GE;
+						DevelopmentTeam = MA75X9QV5V;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Push = {
@@ -3523,9 +3523,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = LREATFY7GE;
+				DEVELOPMENT_TEAM = MA75X9QV5V;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3545,10 +3545,10 @@
 					"$(PROJECT_DIR)/EnjoyLove/CommonMethod/Video/wifi",
 					"$(PROJECT_DIR)/EnjoyLove",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sunee.EnjoyLove;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
-				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
+				PROVISIONING_PROFILE = "b1d2e02a-70f2-48de-a030-d3f9821b8e49";
+				PROVISIONING_PROFILE_SPECIFIER = EnjoyFun;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 2.3;
@@ -3563,9 +3563,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
 				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = LREATFY7GE;
+				DEVELOPMENT_TEAM = MA75X9QV5V;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3585,10 +3585,10 @@
 					"$(PROJECT_DIR)/EnjoyLove/CommonMethod/Video/wifi",
 					"$(PROJECT_DIR)/EnjoyLove",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sunee.EnjoyLove;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
-				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
+				PROVISIONING_PROFILE = "b1d2e02a-70f2-48de-a030-d3f9821b8e49";
+				PROVISIONING_PROFILE_SPECIFIER = EnjoyFun;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = 1;

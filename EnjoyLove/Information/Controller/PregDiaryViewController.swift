@@ -38,7 +38,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     private func initialize() -> Void{
         
         dispatch_queue_create("refreshDataQueue", nil).queue({
-            Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg) in
+            Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg, note) in
                 if let weakSelf = self{
                     if let table = weakSelf.diaryTable{
                         weakSelf.diaryData.removeAll()
@@ -75,7 +75,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                 self.pageIndex = 30
             }
             dispatch_queue_create("refreshDataQueue", nil).queue({ 
-                Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg) in
+                Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg, note) in
                     if let weakSelf = self{
                         if let table = weakSelf.diaryTable{
                             weakSelf.diaryData.removeAll()
@@ -150,7 +150,6 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                             if err == BabyZoneConfig.shared.passCode{
                                 if let index = weakSelf.diaryData.indexOf(weakSelf.diaryData[indexPath.row]){
                                     weakSelf.diaryData.removeAtIndex(index)
-                                    DiaryBL.delete(nil, key: weakSelf.diaryData[indexPath.row].idUserNoteInfo)
                                     dispatch_get_main_queue().queue({
                                         weakSelf.diaryTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                                     })

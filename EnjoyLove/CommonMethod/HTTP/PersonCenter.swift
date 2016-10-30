@@ -867,13 +867,19 @@ private let UserNoteListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getUser
 private let AddUserNoteUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addUserNote"
 private let DeleteUserNoteUrl = BabyZoneConfig.shared.baseUrl + "/api/user/deleteUserNote"
 extension Diary{
-    class func sendAsyncUserNoteList(pageIndex: String, year:String, month:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncUserNoteList(pageIndex: String, year:String, month:String, store:Bool = true, completionHandler:((errorCode:String?, msg:String?, hasNote:Bool)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(UserNoteListUrl, parameters: ["pageIndex":"1", "pageSize":pageIndex, "year":year, "month":month,], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if let data = response["data"] as? [String: NSObject] {
+                if let data = response["data"] as? [String: NSObject]{
                     if let list = data["list"] as? [[String : NSObject]]{
+                        if store == false{
+                            if let handle = completionHandler{
+                                handle(errorCode: errorCode, msg: msg, hasNote: true)
+                            }
+                            return
+                        }
                         for listDict in list{
                             let diary = Diary()
                             diary.idUserNoteInfo = format(listDict["idUserNoteInfo"])
@@ -887,16 +893,19 @@ extension Diary{
                             diary.createTime = format(listDict["createTime"])
                             DiaryBL.insert(diary)
                         }
+                        if let handle = completionHandler{
+                            handle(errorCode: errorCode, msg: msg, hasNote: true)
+                        }
+                    }else{
+                        if let handle = completionHandler{
+                            handle(errorCode: errorCode, msg: msg, hasNote: false)
+                        }
                     }
-                }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
-                    
                 }
             }
         }) { (dataTask, error) in
             if let handle = completionHandler{
-                handle(errorCode: nil, msg: error?.localizedDescription)
+                handle(errorCode: nil, msg: error?.localizedDescription, hasNote: false)
             }
         }
     }

@@ -16,7 +16,7 @@ class PregInfoViewController: BaseViewController {
     private var pregTableView:PregTableView!
     private var pregBabyData:[BabyBaseInfo]!
     private var pregInfoStatusData:[PregInfoStatus]!
-    
+    private var hasNote:Bool = false
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -47,7 +47,11 @@ class PregInfoViewController: BaseViewController {
         HUD.showHud("正在加载...", onView: self.view)
         dispatch_queue_create("babyListQueue", nil).queue {
             
-            Diary.sendAsyncUserNoteList("1", year: "", month: "", completionHandler: nil)
+            Diary.sendAsyncUserNoteList("1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, note) in
+                if let weakSelf = self{
+                    weakSelf.hasNote = note
+                }
+            })
             NoteLabel.sendAsyncUserNoteLabel(nil)
             
             var idUserBabyInfo = ""
@@ -142,10 +146,14 @@ class PregInfoViewController: BaseViewController {
                                 }
                                 }, recordCompletionHandler: { [weak self] in
                                     if let weakSelf = self{
-                                        let recordList = DiaryBL.findAll()
-                                        if recordList.count > 0{
-                                            let diaryListVC = PregDiaryViewController()
-                                            weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
+                                        if weakSelf.hasNote == true{
+                                            if babyId != "-1"{
+                                                let diaryListVC = PregDiaryViewController()
+                                                weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
+                                            }else{
+                                                HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
+                                            }
+                                            
                                         }else{
                                             let diary = DiaryRecordViewController()
                                             weakSelf.navigationController?.pushViewController(diary, animated: true)

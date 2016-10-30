@@ -10,7 +10,9 @@ import UIKit
 
 class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableViewDataSource {
 
-    private var statusData:[BabyStatus]!
+//    private var statusData:[BabyStatus]!
+    var infoType:String = ""
+    private var articleTypeListData:[ArticleTypeList]!
     private var babyStatusTable:UITableView!
     private var openStr:String!
     private var openArray:[String]!
@@ -19,6 +21,7 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = true
+        self.automaticallyAdjustsScrollViewInsets = false
         self.navigationBarItem(self, title: "育儿资讯", leftSel:nil, rightSel: nil)
     }
     
@@ -27,8 +30,7 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
 
         // Do any additional setup after loading the view.
         self.automaticallyAdjustsScrollViewInsets = false
-        self.initializeData()
-        self.initializeSubviews()
+        self.initialize()
     }
 
     override func didReceiveMemoryWarning() {
@@ -37,30 +39,49 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
         
     }
     
-    
-    private func initializeData(){
+    private func initialize() -> Void{
         
-        
+        self.articleTypeListData = []
         self.openStr = ""
         self.openArray = []
-        self.statusData = []
         self.isOpen = false
-        var detailData = [StatusDetail]()
-        for _ in 0 ..< 5 {
-            let detail = StatusDetail(detailImage: "babyStatus.png", detailMainItem: "宝宝开始具备抓取物体的能力", detailOutline: "抓握是一项重要的宝宝发育里程碑，只有学会抓握，他才能开始玩耍。抓握也是宝宝自己吃饭、看书、写字、画画和照顾自己的第一步。")
-            detailData.append(detail)
+        HUD.showHud("正在加载...", onView: self.view)
+        dispatch_queue_create("loadTypeListQueue", nil).queue { 
+            ArticleTypeList.sendAsyncArticleList(Localize.currentLanguage()) { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    dispatch_get_main_queue().queue({
+                        HUD.hideHud(weakSelf.view)
+                    })
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            let typeList = ArticleTypeListBL.findAll()
+                            if typeList.count > 0{
+                                weakSelf.articleTypeListData.appendContentsOf(typeList)
+                                dispatch_get_main_queue().queue({ 
+                                    if let table = weakSelf.babyStatusTable{
+                                        table.reloadData()
+                                    }
+                                })
+                            }else{
+                                dispatch_get_main_queue().queue({ 
+                                    HUD.showText("暂无数据", onView: weakSelf.view)
+                                })
+                            }
+                        }else{
+                            dispatch_get_main_queue().queue({ 
+                                HUD.showText("网络出错:\(msg!)", onView: weakSelf.view)
+                            })
+                        }
+                    }else{
+                        dispatch_get_main_queue().queue({ 
+                            HUD.showText("网络出错:\(msg!)", onView: weakSelf.view)
+                        })
+                    }
+                }
+            }
         }
         
-        for i in 0 ..< 11 {
-            
-            let status = BabyStatus(statusTime: "2岁\(i + 1)个月", statusId: "\(i + 1)", statusDetial: detailData)
-            self.statusData.append(status)
-        }
-    }
-    
-    
-    private func initializeSubviews(){
-        self.babyStatusTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * viewOriginX, ScreenHeight - navigationBarHeight - 2 * viewOriginY), style: .Grouped)
+        self.babyStatusTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight , CGRectGetWidth(self.view.frame) - 2 * viewOriginX, ScreenHeight - navigationBarHeight), style: .Plain)
         self.babyStatusTable.layer.cornerRadius = 2
         self.babyStatusTable.layer.masksToBounds = true
         self.babyStatusTable.separatorColor = UIColor.colorFromRGB(225, g: 104, b: 108)
@@ -68,21 +89,20 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
         self.babyStatusTable.layoutMargins = UIEdgeInsetsZero
         self.babyStatusTable.dataSource = self
         self.babyStatusTable.delegate = self
-        self.babyStatusTable.tableHeaderView = UIView.init(frame: CGRectMake(0, 0, 0, 0.0001))
+        self.babyStatusTable.tableFooterView = UIView.init()
         self.babyStatusTable.rowHeight = upRateHeight(100)
         self.babyStatusTable.registerClass(BabyStatusCell.self, forCellReuseIdentifier: NSStringFromClass(BabyStatusCell))
         self.view.addSubview(self.babyStatusTable)
-        
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return self.statusData.count
+        return self.articleTypeListData.count
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.openArray.contains("\(section)") {
-            let mainModel = self.statusData[section]
-            return mainModel.statusDetial.count
+            let mainModel = self.articleTypeListData[section]
+//            return mainModel.statusDetial.count
         }
         return 0
     }
@@ -92,13 +112,9 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
         cell.separatorInset = UIEdgeInsetsZero
         cell.layoutMargins = UIEdgeInsetsZero
         cell.accessoryType = .DisclosureIndicator
-        let mainModel = self.statusData[indexPath.section]
-        cell.refreshCell(mainModel.statusDetial[indexPath.row])
+        let mainModel = self.articleTypeListData[indexPath.section]
+//        cell.refreshCell(mainModel.statusDetial[indexPath.row])
         return cell
-    }
-    
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.001
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -106,10 +122,10 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let mainModel = self.statusData[section]
+        let mainModel = self.articleTypeListData[section]
         let selectButton = BabyStatusButton(type: .Custom)
         selectButton.frame = CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 44)
-        selectButton.setImageRect(CGSizeMake(20, 20), normaImage: "button_triangle_down.png", selectedImage: "button_triangle_up.png", normalTitle: mainModel.statusTime, fontSize: upRateWidth(16))
+//        selectButton.setImageRect(CGSizeMake(20, 20), normaImage: "button_triangle_down.png", selectedImage: "button_triangle_up.png", normalTitle: mainModel.statusTime, fontSize: upRateWidth(16))
         selectButton.setCustomTitleColor(UIColor.hexStringToColor("#400a33"))
         selectButton.backgroundColor = UIColor.whiteColor()
         if self.isOpen == true {

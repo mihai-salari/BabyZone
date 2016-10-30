@@ -153,7 +153,7 @@ extension ArticleList{
      languageSign		string		语言
 
      */
-    class func sendAsyncArticleList(pageIndex: String,pageSize: String,newsType: String,year: String,month: String,languageSign: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    class func sendAsyncArticleList(pageSize: String,newsType: String,year: String,month: String,languageSign: String, completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["newsType":newsType, "pageIndex":"1", "pageSize":pageSize, "year":year, "month":month, "languageSign":languageSign], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])

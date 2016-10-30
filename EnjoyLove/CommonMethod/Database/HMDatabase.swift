@@ -2516,11 +2516,14 @@ class ArticleTypeList: NSObject,NSCoding {
     var typeName:String!
     var year:String!
     var month:String!
+    var articleList:[ArticleList]!
+    
     
     override init() {
         self.typeName = ""
         self.year = ""
         self.month = ""
+        self.articleList = []
     }
     
     required init?(coder aDecoder: NSCoder) {

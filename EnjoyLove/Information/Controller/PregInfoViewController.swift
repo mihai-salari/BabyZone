@@ -159,6 +159,7 @@ class PregInfoViewController: BaseViewController {
                                     switch indexPath.section{
                                     case 0:
                                         let babyStatus = BabyStatusViewController()
+                                        babyStatus.infoType = infoType
                                         weakSelf.navigationController?.pushViewController(babyStatus, animated: true)
                                     case 1:
                                         break

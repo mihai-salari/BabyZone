@@ -24,7 +24,7 @@ class PregInfoViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = false
-        self.navigationBarItem(self, title: self.infoType == "1" ? "孕育资讯" : "育儿资讯", leftSel:nil, rightSel: nil)
+        self.navigationBarItem(self, title: self.infoType == "1" ? "育儿资讯" : "孕育资讯", leftSel:nil, rightSel: nil)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.networkChangeNotification(_:)), name: kReachabilityChangedNotification, object: nil)
     }
@@ -60,6 +60,7 @@ class PregInfoViewController: BaseViewController {
                 if let weakSelf = self{
                     var infoType = "1"
                     var babyId = "-1"
+                    var babyErrorTip = ""
                     if let base  = baseInfo {
                         infoType = base.infoType
                         babyId = base.idComBabyBaseInfo
@@ -68,7 +69,7 @@ class PregInfoViewController: BaseViewController {
                         let babyModel = BabyBaseInfo()
                         babyModel.idComBabyBaseInfo = ""
                         babyModel.infoType = infoType
-                        babyModel.day = "100"
+                        babyModel.day = "0"
                         babyModel.idUserBabyInfo = ""
                         babyModel.minWeight = "0"
                         babyModel.maxWeight = "0"
@@ -77,32 +78,38 @@ class PregInfoViewController: BaseViewController {
                         babyModel.minHead = "0"
                         babyModel.maxHead = "0"
                         weakSelf.pregBabyData.append(babyModel)
+                        babyErrorTip = "暂无宝宝成长基本数据"
                         babyId = "-1"
                     }
                                         
                     Article.sendAsyncRecomment(infoType, completionHandler: { (errorCode, msg, info) in
                         var recoments:[Article] = []
                         var articleId = "-1"
+                        var articleErrorTip = ""
                         if let ifo = info{
                             articleId = ifo.idBbsNewsInfo
                             recoments.append(ifo)
                         }else{
                             let recoment = Article()
-                            recoment.title = "宝宝的玩具如何选择?"
-                            recoment.content = "玩具上松动的零件，毛绒玩具未粘牢的眼睛，鼻子，玩具上掉落的纽扣，这些小零件玩具上松动的零件，毛绒玩具未粘牢的眼睛，鼻子，玩具上掉落的纽扣"
+                            recoment.title = "暂无数据"
+                            recoment.content = "暂无数据"
                             recoment.idBbsNewsInfo = ""
-                            recoment.createTime = "2016.10.15"
+                            recoment.createTime = "0000.00.00"
                             recoment.contentTotalHeight = 80
                             recoments.append(recoment)
                             articleId = "-1"
+                            articleErrorTip = "暂无咨询数据"
                         }
                         let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: recoments, pregBabyId: "0", pregMoreImage: "pregMore.png")
                         weakSelf.pregInfoStatusData.append(pregInfoStatus)
                         
                         dispatch_get_main_queue().queue({
                             HUD.hideHud(weakSelf.view)
-                            if babyId == "-1" || articleId == "-1"{
-                                HUD.showText("网络错误", onView: weakSelf.view.window!)
+                            if babyId == "-1"{
+                                HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
+                            }
+                            if articleId == "-1"{
+                                HUD.showText(articleErrorTip, onView: weakSelf.view.window!)
                             }
                             
                             weakSelf.pregView = PregInfoView.init(frame: CGRectMake(0, navigationBarHeight, ScreenWidth, (ScreenHeight - navAndTabHeight) * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: {
@@ -207,7 +214,7 @@ class PregInfoViewController: BaseViewController {
                                 if let err = errorCode{
                                     if err == BabyZoneConfig.shared.passCode, let ifo = info, let pregTable = weakSelf.pregTableView{
                                         var statusData:[PregInfoStatus] = []
-                                        let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: [ifo], pregBabyId: "0", pregMoreImage: "pregMore.png")
+                                        let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "2" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: [ifo], pregBabyId: "0", pregMoreImage: "pregMore.png")
                                         statusData.append(pregInfoStatus)
                                         
                                         dispatch_get_main_queue().queue({

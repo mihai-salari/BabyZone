@@ -62,7 +62,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                         if let table = weakSelf.diaryTable{
                             weakSelf.diaryData.removeAll()
                             weakSelf.diaryData = DiaryBL.findAll()
-                            dispatch_get_main_queue().queue({ 
+                            dispatch_get_main_queue().queue({
                                 table.reloadData()
                                 table.pullToRefreshView.stopAnimating()
                             })
@@ -129,6 +129,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                             if err == BabyZoneConfig.shared.passCode{
                                 if let index = weakSelf.diaryData.indexOf(weakSelf.diaryData[indexPath.row]){
                                     weakSelf.diaryData.removeAtIndex(index)
+                                    DiaryBL.delete(nil, key: weakSelf.diaryData[indexPath.row].idUserNoteInfo)
                                     dispatch_get_main_queue().queue({
                                         weakSelf.diaryTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                                     })

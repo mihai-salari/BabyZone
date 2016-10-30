@@ -29,7 +29,6 @@ extension BabyBaseInfo{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                print("reponse + \(response)")
                 if let data = response["data"] as? [String:NSObject]{
                     let info = BabyBaseInfo()
                     info.idComBabyBaseInfo = format(data["idComBabyBaseInfo"])

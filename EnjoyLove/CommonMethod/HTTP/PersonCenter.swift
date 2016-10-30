@@ -872,7 +872,6 @@ extension Diary{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                print("response === \(response)")
                 if let data = response["data"] as? [String: NSObject] {
                     if let list = data["list"] as? [[String : NSObject]]{
                         for listDict in list{

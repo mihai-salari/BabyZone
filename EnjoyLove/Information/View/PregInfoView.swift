@@ -37,7 +37,7 @@ class PregInfoView: UIView {
         
         self.cirleView = HMCirclePercentView.init(frame: CGRectMake((CGRectGetWidth(self.frame) - pregInfoCircleWidth) / 2, CGRectGetHeight(self.frame) * (2 / 5.3) - pregInfoCircleWidth / 2, pregInfoCircleWidth, pregInfoCircleWidth), showText: false)
         
-        self.cirleView.drawCircleWithPercent(self.resultDay(babyModel).1, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
+        self.cirleView.drawCircleWithPercent(self.resultDay(babyModel).percent, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
         
         self.cirleView.startAnimation()
         self.addSubview(self.cirleView)
@@ -45,7 +45,7 @@ class PregInfoView: UIView {
         
         self.pregDaysLabel = UILabel.init(frame: CGRectMake(0, 0, ScreenWidth, CGRectGetMinY(self.cirleView.frame)))
         self.pregDaysLabel.font = UIFont.boldSystemFontOfSize(upRateHeight(22))
-        self.pregDaysLabel.text = self.resultDay(babyModel).0
+        self.pregDaysLabel.text = self.resultDay(babyModel).day
         self.pregDaysLabel.textAlignment = .Center
         self.pregDaysLabel.textColor = UIColor.whiteColor()
         self.addSubview(self.pregDaysLabel)
@@ -129,7 +129,7 @@ class PregInfoView: UIView {
     
     func refreshViews(model:BabyBaseInfo) -> Void {
         if let daysLabel = self.pregDaysLabel {
-            daysLabel.text = model.day
+            daysLabel.text = self.resultDay(model).day
         }
         if let image = self.babyImageView {
             image.image = UIImage.imageWithName(model.babyHeadImage)
@@ -144,7 +144,8 @@ class PregInfoView: UIView {
             dueLabel.text = "\(model.minHead)~\(model.maxHeight)"
         }
         if let circleV = self.cirleView {
-            circleV.updateCircleWithPercent(self.resultDay(model).1)
+            circleV.updateCircleWithPercent(self.resultDay(model).percent)
+            circleV.startAnimation()
         }
     }
 
@@ -165,24 +166,24 @@ class PregInfoView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func resultDay(babyInfo:BabyBaseInfo) ->(String, CGFloat){
+    
+    
+    private func resultDay(babyInfo:BabyBaseInfo) ->(day:String, percent:CGFloat){
         var resultDay = babyInfo.day
         var modeDay:CGFloat = 80
         switch babyInfo.infoType {
-        case "1":
-            if let day = Int.init(babyInfo.day) {
-                resultDay = "\(day % 365)"
-                resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
-                modeDay = CGFloat.init(ceil(fabs(remainderf(365, Float(day)) / 365 * 100)))
-            }
-            resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
         case "2":
             if let day = Int.init(babyInfo.day) {
+                resultDay = "\(day % 365)"
+                resultDay = "第\(self.weakAndDayFromNumber(resultDay).0)周+\(self.weakAndDayFromNumber(resultDay).1)天"
+                modeDay = CGFloat.init(ceil(fabs(remainderf(365, Float(day)) / 365 * 100)))
+            }
+        case "1":
+            if let day = Int.init(babyInfo.day) {
                 resultDay = "\(day % 300)"
-                "第\(self.weakAndDayFromNumber(resultDay).0) 周 \(self.weakAndDayFromNumber(resultDay).1) 天"
+                resultDay = "第\(self.weakAndDayFromNumber(resultDay).0)周\(self.weakAndDayFromNumber(resultDay).1)天"
                 modeDay = CGFloat.init(ceil(fabs(remainderf(300, Float(day)) / 300 * 100)))
             }
-            resultDay = "第\(self.weakAndDayFromNumber(resultDay).0) 周+\(self.weakAndDayFromNumber(resultDay).1)天"
         default:
             break
         }

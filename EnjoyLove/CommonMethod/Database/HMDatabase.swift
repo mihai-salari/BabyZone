@@ -1158,6 +1158,7 @@ class Equipments: NSObject,NSCoding {
     var eqmAccount:String!
     var eqmPwd:String!
     var eqmLevel:String!
+    
     var eqmStatus:Int32!
     var eqmMessageCount:Int32!
     var defenceState:Int32!
@@ -1205,6 +1206,7 @@ class Equipments: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("eqmLevel") as? String {
             self.eqmLevel = obj
         }
+        
         self.eqmStatus = aDecoder.decodeIntForKey("eqmStatus")
         self.eqmMessageCount = aDecoder.decodeIntForKey("eqmMessageCount")
         self.defenceState = aDecoder.decodeIntForKey("defenceState")
@@ -1322,6 +1324,8 @@ private class EquipmentsDAO:NSObject{
                 if note.eqmLevel != detail.eqmLevel {
                     note.eqmLevel = detail.eqmLevel
                 }
+                
+                
                 if note.eqmStatus != detail.eqmStatus {
                     note.eqmStatus = detail.eqmStatus
                 }

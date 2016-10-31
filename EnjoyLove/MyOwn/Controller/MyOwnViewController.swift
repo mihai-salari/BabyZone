@@ -42,8 +42,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        self.initializeDataSource()
-        self.initializeTableView()
+        self.initialize()
     }
 
     override func didReceiveMemoryWarning() {
@@ -55,54 +54,56 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         super.viewDidDisappear(animated)
     }
     
-    private func initializeTableView(){
+    private func initialize() {
         
-        self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
-        self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
-        self.myOwnTable.scrollEnabled = false
-        self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
-        self.myOwnTable.delegate = self
-        self.myOwnTable.dataSource = self
-        self.myOwnTable.separatorInset = UIEdgeInsetsZero
-        self.myOwnTable.layoutMargins = UIEdgeInsetsZero
-        self.myOwnTable.backgroundColor = UIColor.whiteColor()
-        self.view.addSubview(self.myOwnTable)
+        dispatch_queue_create("dataInitQueue", nil).queue {
+            Equipments.sendAsyncEqutementList(nil)
+            
+            self.section1Data = []
+            self.sectionTitleData = []
+            
+            let headerModel = MyOwnHeader()
+            self.section1Data.append(headerModel)
+            
+            var rowData:[MyOwnNormalRowData] = []
+            var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
+            rowData.append(model)
+            
+            model = MyOwnNormalRowData(mainItem: "语言", subItem: "各国语言设置")
+            rowData.append(model)
+            
+            model = MyOwnNormalRowData(mainItem: "其他", subItem: "功能介绍、投诉建议、关于享爱")
+            rowData.append(model)
+            
+            var sectionData = MyOwnSectionTitle(title: "账号设置", rowData: rowData)
+            self.sectionTitleData.append(sectionData)
+            
+            rowData = []
+            model = MyOwnNormalRowData(mainItem: "连接设备", subItem: "添加/连接设备")
+            rowData.append(model)
+            
+            model = MyOwnNormalRowData(mainItem: "解除设备", subItem: "解除/删除设备")
+            rowData.append(model)
+            
+            sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
+            self.sectionTitleData.append(sectionData)
+            
+            dispatch_get_main_queue().queue({ 
+                self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
+                self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
+                self.myOwnTable.scrollEnabled = false
+                self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
+                self.myOwnTable.delegate = self
+                self.myOwnTable.dataSource = self
+                self.myOwnTable.separatorInset = UIEdgeInsetsZero
+                self.myOwnTable.layoutMargins = UIEdgeInsetsZero
+                self.myOwnTable.backgroundColor = UIColor.whiteColor()
+                self.view.addSubview(self.myOwnTable)
+            })
+        }
     }
     
-    private func initializeDataSource(){
-        
-        self.section1Data = []
-        self.sectionTitleData = []
-        
-        let headerModel = MyOwnHeader()
-        self.section1Data.append(headerModel)
-                
-        var rowData:[MyOwnNormalRowData] = []
-        var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
-        rowData.append(model)
-        
-        model = MyOwnNormalRowData(mainItem: "语言", subItem: "各国语言设置")
-        rowData.append(model)
-        
-        model = MyOwnNormalRowData(mainItem: "其他", subItem: "功能介绍、投诉建议、关于享爱")
-        rowData.append(model)
-        
-        var sectionData = MyOwnSectionTitle(title: "账号设置", rowData: rowData)
-        self.sectionTitleData.append(sectionData)
-        
-        rowData = []
-        model = MyOwnNormalRowData(mainItem: "连接设备", subItem: "添加/连接设备")
-        rowData.append(model)
-        
-        model = MyOwnNormalRowData(mainItem: "解除设备", subItem: "解除/删除设备")
-        rowData.append(model)
-        
-        sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
-        self.sectionTitleData.append(sectionData)
-        
-        
-        
-    }
+    
     
     //MARK:____Table view delegate and data source____
     
@@ -245,6 +246,21 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             switch indexPath.row {
             case 0:
                 if UDManager.isLogin() {
+                    let devices = EquipmentsBL.findAll()
+                    if devices.count > 0 {
+                        for device in devices {
+                            let contact = Contact()
+                            contact.contactId = device.eqmDid
+                            contact.contactPassword = device.eqmPwd
+                            contact.contactName = device.eqmName
+                            if device.eqmDid.characters.first != "0" {
+                                contact.contactType = Int.init(CONTACT_TYPE_UNKNOWN)
+                            }else{
+                                contact.contactType = Int.init(CONTACT_TYPE_PHONE)
+                            }
+                            FListManager.sharedFList().insert(contact)
+                        }
+                    }
                     if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
                         if contacts.count > 0 {
                             let devices = DeviceListViewController()

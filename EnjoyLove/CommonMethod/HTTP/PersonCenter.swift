@@ -452,6 +452,10 @@ extension Equipments {
      eqmName	string	是	设备名称
      eqmType	int	是	设备类型（1：摄像头）
      eqmDid	string	是	设备DID
+     eqmAccount	string	是	设备帐号
+     eqmPwd	string	是	设备密码
+     eqmLevel	int	是	设备级别（1：主设备 2：子帐号设备（无权修改设备信息））
+
 
      */
     
@@ -468,6 +472,9 @@ extension Equipments {
                             eqm.eqmName = format(dataDict["eqmName"])
                             eqm.eqmType = format(dataDict["eqmType"])
                             eqm.eqmDid = format(dataDict["eqmDid"])
+                            eqm.eqmAccount = format(dataDict["eqmAccount"])
+                            eqm.eqmPwd = format(dataDict["eqmPwd"])
+                            eqm.eqmLevel = format(dataDict["eqmLevel"])
                             EquipmentsBL.insert(eqm)
                         }
                     }

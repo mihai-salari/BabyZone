@@ -216,7 +216,7 @@ extension String{
         NSUserDefaults.standardUserDefaults().synchronize()
     }
     
-    func defaultString() -> String? {
+    func defaultString() -> String {
         if let obj = NSUserDefaults.standardUserDefaults().objectForKey(self) as? String{
             return obj
         }

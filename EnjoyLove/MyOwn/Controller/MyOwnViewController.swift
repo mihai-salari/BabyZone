@@ -132,7 +132,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             cell.refreshHeaderCell(model, completionHandler: { [weak self] in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 let personInfoEdit = MyOwnEidtViewController()
                                 personInfoEdit.infoModel = model
@@ -295,7 +295,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                 if let log = logout{
                     if log.errorCode == BabyZoneConfig.shared.passCode{
                         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                            LoginBL.clear(nil, key: phone)
+                            LoginBL.clear(phone)
                             EquipmentsBL.clearAll()
                         }
                         

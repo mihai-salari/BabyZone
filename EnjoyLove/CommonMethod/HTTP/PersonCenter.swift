@@ -118,7 +118,7 @@ class Logout: NSObject {
     
     class func sendAsyncLogout(completionHandler:((logout:Logout!)->())?){
         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
-            if let info = LoginBL.find(nil, key: phone) {
+            if let info = LoginBL.find(phone) {
                 if info.sessionId != nil && info.sessionId != "" && info.sessionId != "0"{
                     HTTPEngine.sharedEngine().postAsyncWith(LogoutUrl, parameters: nil, success: { (dataTask, responseObject) in
                         if let response = responseObject{
@@ -238,7 +238,7 @@ extension PersonDetail {
                 let msg = format(response["msg"])
                 if errorCode == "0000"{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 setPersonInformationChange(true)
                                 person.nickName = nickName

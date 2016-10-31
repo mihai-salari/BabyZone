@@ -137,7 +137,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
             return
         }else{
             if let userId = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
-                if let base = LoginBL.find(nil, key: userId) {
+                if let base = LoginBL.find(userId) {
                     if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String {
                         var countryCode = "86"
                         let language = NSLocale.preferredLanguages()[0]
@@ -162,7 +162,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
                                         UDManager.setIsLogin(false)
                                     }
                                     
-                                    if let baseInfo = LoginBL.find(nil, key: userId){
+                                    if let baseInfo = LoginBL.find(userId){
                                         baseInfo.isRegist = registNumer
                                         baseInfo.contactId = contact
                                         LoginBL.modify(baseInfo)

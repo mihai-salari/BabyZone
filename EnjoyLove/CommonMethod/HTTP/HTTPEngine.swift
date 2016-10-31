@@ -52,7 +52,7 @@ class HTTPEngine: NSObject {
         if let phoneKey = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
             phone = phoneKey
         }
-        let info = LoginBL.find(nil, key: phone)
+        let info = LoginBL.find(phone)
         var resultParams:[String:NSObject] = [:]
         if let params = parameters {
             for (key, value) in params {

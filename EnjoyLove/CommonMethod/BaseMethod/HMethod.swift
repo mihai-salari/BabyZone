@@ -72,7 +72,7 @@ func personInformationChange() -> Bool {
 //MARK:___登录判断___
 func isLogin() -> Bool {
     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
-        if let info = LoginBL.find(nil, key: phone) {
+        if let info = LoginBL.find(phone) {
             if info.sessionId != nil && info.sessionId != "" && info.sessionId != "0" {
                 return true
             }

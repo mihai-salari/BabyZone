@@ -26,7 +26,7 @@ class AddDeviceViewController: BaseViewController {
             if let weakSelf = self{
                 if isRegisted == true{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let info  = LoginBL.find(nil, key: phone){
+                        if let info  = LoginBL.find(phone){
                             if let psd = info.password {
                                 let userName = "+\(country)-\(phoneNum)"
                                 weakSelf.login(userName, password: psd)
@@ -41,7 +41,7 @@ class AddDeviceViewController: BaseViewController {
                             case NET_RET_VERIFY_PHONE_CODE_SUCCESS:
                                 if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                                     var password = ""
-                                    if let info  = LoginBL.find(nil, key: phone){
+                                    if let info  = LoginBL.find(phone){
                                         if let psd = info.password {
                                             password = psd
                                         }

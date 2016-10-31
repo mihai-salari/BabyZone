@@ -56,7 +56,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             let editNameView = EditNameView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: ScreenHeight - navigationBarHeight - 10), completionHandler: { [weak self](txt) in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
                                 PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
@@ -86,7 +86,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             let editSignView = EditSignView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), completionHandler: {[weak self] (txt) in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
@@ -117,7 +117,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 if let weakSelf = self{
                     
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
@@ -149,7 +149,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: Int(self.personDetail.breedStatus) == nil ? 1 : Int(self.personDetail.breedStatus)!, completionHandler: {[weak self] (status, statusId) in
                 if let weakSelf = self{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
@@ -317,7 +317,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 }
                 }, successHandler: { (url, fileName) in
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 person.headImg = fileName
                                 if let modifyResult = PersonDetailBL.modify(person) {

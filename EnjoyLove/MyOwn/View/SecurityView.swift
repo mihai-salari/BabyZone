@@ -313,7 +313,7 @@ class ModifyPasswordView: UIView ,UITextFieldDelegate{
                     HMTablBarController.presentViewController(alertController1, animated: true, completion: nil)
                 }else{
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let info = LoginBL.find(nil, key: phone){
+                        if let info = LoginBL.find(phone){
                             if let password = info.md5Password, let psdText = passwordTF.text{
                                 if psdText.md5 != password{
                                     passwordTF.text = ""
@@ -368,7 +368,7 @@ class ModifyPasswordView: UIView ,UITextFieldDelegate{
             }
             
             if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                if let login = LoginBL.find(nil, key: phone) {
+                if let login = LoginBL.find(phone) {
                     HUD.showHud("正在发送...", onView: self)
                     ModifyPassword.sendAsyncChangePassword(login.md5Password == nil ? "" : login.md5Password, newUserPwd: newText, completionHandler: { [weak self](pwd) in
                         if let weakSelf = self{
@@ -388,7 +388,7 @@ class ModifyPasswordView: UIView ,UITextFieldDelegate{
                                                     }
                                                     UIApplication.sharedApplication().unregisterForRemoteNotifications()
                                                     
-                                                    LoginBL.clear(nil, key: phone)
+                                                    LoginBL.clear(phone)
                                                     if let handle = completionHandler{
                                                         handle(modify: true)
                                                     }

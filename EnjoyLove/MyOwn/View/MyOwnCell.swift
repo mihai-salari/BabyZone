@@ -55,7 +55,7 @@ class MyOwnCell: UITableViewCell {
             subview.removeFromSuperview()
         }
         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
-            if let login = LoginBL.find(nil, key: phone){
+            if let login = LoginBL.find(phone){
                 if let person = PersonDetailBL.find(nil, key: login.userId) {
                     for subview in self.contentView.subviews {
                         subview.removeFromSuperview()

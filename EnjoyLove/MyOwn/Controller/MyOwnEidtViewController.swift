@@ -217,7 +217,7 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             cityPicker.locationInfoHandler = { [weak self](province, city) in
                 if let weakSelf = self {
                     if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(nil, key: phone){
+                        if let login = LoginBL.find(phone){
                             if let person = PersonDetailBL.find(nil, key: login.userId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
                                 PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: province.codeAreaName, provinceCode: province.codeAreaCode, city: city.codeAreaName, cityCode: city.codeAreaCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in

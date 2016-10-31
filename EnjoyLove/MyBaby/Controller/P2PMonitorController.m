@@ -86,6 +86,12 @@
 @implementation P2PMonitorController
 
 - (void)dealloc{
+    self.cameraButton = nil;
+    self.videoButton = nil;
+    self.musicButton = nil;
+    self.voiceButton = nil;
+    self.buttonContainerView = nil;
+    self.remoteView = nil;
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -163,6 +169,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    
      //释放约束
     AppDelegate *appdelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
     appdelegate.isForcePortrait=NO;
@@ -235,6 +242,7 @@
     [cancelButton setImage:[UIImage imageWithName:@"baby_cancel.png"] forState:UIControlStateNormal];
     cancelButton.tag = BUTTON_CANCEL_TAG;
     [cancelButton addTarget:self action:@selector(horizontalButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    cancelButton.userInteractionEnabled = NO;
     [self.canvasView addSubview:cancelButton];
     
     CGFloat contanerViewHeight = BUTTON_PADDING * 3 + BUTTON_WIDTH * 4;
@@ -405,23 +413,26 @@
     UIImage *tempImage = [[UIImage alloc] initWithCGImage:image.CGImage];
     NSData *imgData = [NSData dataWithData:UIImagePNGRepresentation(tempImage)];
     [Utils saveScreenshotFile:imgData];
-    if (self.monitorRefreshHandler && self.isCancelClick) {
-        self.monitorRefreshHandler(image);
+    if (self.isCancelClick == false) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [HUD hideHud:self.view];
+            [HUD showText:@"截图成功" onView:self.view];
+        });
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [HUD hideHud:self.view];
-        [HUD showText:@"截图成功" onView:self.view];
-    });
 }
 
 - (void)setIsOkRenderVideoFrame:(BOOL)aisOkRenderVideoFrame{
     _isOkRenderVideoFrame = aisOkRenderVideoFrame;
     if (aisOkRenderVideoFrame) {
+        UIButton *cancelButton = [self.canvasView viewWithTag:BUTTON_CANCEL_TAG];
+        cancelButton.userInteractionEnabled = YES;
         self.videoButton.userInteractionEnabled = YES;
         self.cameraButton.userInteractionEnabled = YES;
         self.musicButton.userInteractionEnabled = YES;
         self.voiceButton.userInteractionEnabled = YES;
     }else{
+        UIButton *cancelButton = [self.canvasView viewWithTag:BUTTON_CANCEL_TAG];
+        cancelButton.userInteractionEnabled = YES;
         self.videoButton.userInteractionEnabled = NO;
         self.cameraButton.userInteractionEnabled = NO;
         self.musicButton.userInteractionEnabled = NO;
@@ -599,6 +610,7 @@
             break;
         case BUTTON_CANCEL_TAG:
         {
+            self.isCancelClick = YES;
             if(!self.isReject){
                 self.isReject = !self.isReject;
                 while (_isPlaying) {
@@ -607,9 +619,12 @@
                 [[PAIOUnit sharedUnit] setSpeckState:NO];
                 [[P2PClient sharedClient] p2pHungUp];
                 self.remoteView.isQuitMonitorInterface = YES;
-                [self.remoteView setIsScreenShotting:YES];
-                self.isCancelClick = YES;
-                [self.navigationController popViewControllerAnimated:YES];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (self.monitorRefreshHandler && self.isCancelClick && self.remoteView) {
+                        self.monitorRefreshHandler([self.remoteView glToUIImage]);
+                    }
+                    [self.navigationController popViewControllerAnimated:YES];
+                });
             }
         }
             break;

@@ -45,6 +45,10 @@ class BabyZoneConfig: NSObject {
     var QiNiuDomainName:String!
     var baseUrl:String!
     var BabyBaseInfoKey:String!
+    var DeleteDeviceNotificaiton:String!
+    var AddDeviceNotification:String!
+    
+    
     
     
     static var shared:BabyZoneConfig{
@@ -90,6 +94,8 @@ class BabyZoneConfig: NSObject {
                 self.QiNiuDomainName = config.get(.QiNiuDomainName)
                 self.baseUrl = config.get(.baseUrl)
                 self.BabyBaseInfoKey = config.get(.BabyBaseInfoKey)
+                self.DeleteDeviceNotificaiton = config.get(.DeleteDeviceNotificaiton)
+                self.AddDeviceNotification = config.get(.AddDeviceNotification)
             }
             
         }
@@ -155,6 +161,8 @@ extension Keys{
     static let QiNiuDomainName                  = Key<String>("QiNiuDomainName")
     static let baseUrl                          = Key<String>("baseUrl")
     static let BabyBaseInfoKey                  = Key<String>("BabyBaseInfoKey")
+    static let AddDeviceNotification            = Key<String>("AddDeviceNotification")
+    static let DeleteDeviceNotificaiton         = Key<String>("DeleteDeviceNotificaiton")
 }
 
 

@@ -17,20 +17,6 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     private var devices:[Equipments]!
     private var selectedContact:Equipments!
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.hidden = true
-        self.navigationController?.navigationBarHidden = false
-        self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(self, title: "设备列表", leftSel: nil, rightSel: nil)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -48,6 +34,25 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
         
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.hidden = true
+        self.navigationController?.navigationBarHidden = false
+        self.automaticallyAdjustsScrollViewInsets = false
+        self.navigationBarItem(self, title: "设备列表", leftSel: nil, rightSel: nil)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        P2PClient.sharedClient().delegate = self
     }
     
     private func initialize() ->Void{
@@ -135,17 +140,17 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) {
-            let contact = self.devices[indexPath.row]
-            if let aView = cell.viewWithTag(deviceListSwitchTag + indexPath.row) as? HMSwitch{
-                if aView.on == true {
-                    self.selectedContact = contact
-                    let video = P2PMonitorController()
-                    video.deviceContact = EquipmentsBL.contactFromEquipment(contact)
-                    self.navigationController?.pushViewController(video, animated: true)
-                }
-            }
-        }
+//        if let cell = tableView.cellForRowAtIndexPath(indexPath) {
+//            let contact = self.devices[indexPath.row]
+//            if let aView = cell.viewWithTag(deviceListSwitchTag + indexPath.row) as? HMSwitch{
+//                if aView.on == true {
+//                    self.selectedContact = contact
+//                    let video = P2PMonitorController()
+//                    video.deviceContact = EquipmentsBL.contactFromEquipment(contact)
+//                    self.navigationController?.pushViewController(video, animated: true)
+//                }
+//            }
+//        }
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -179,6 +184,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
                                         if weakSelf.devices.count == 0{
                                             weakSelf.navigationController?.popViewControllerAnimated(true)
                                         }
+                                        NSNotificationCenter.defaultCenter().postNotificationName(BabyZoneConfig.shared.DeleteDeviceNotificaiton, object: nil)
                                     })
                                 }else{
                                     HUD.showText("删除失败\(msg!)", onView: weakSelf.view)
@@ -198,16 +204,20 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
      */
     
     override func refreshContact() {
-        self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
-        if let table = self.deviceListTable {
-            table.reloadData()
+        if self.isDelete == false {
+            super.refreshContact()
+            self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
+            if let table = self.deviceListTable {
+                table.reloadData()
+            }
         }
     }
     
-    override func stopAnimating() {
+    
+    
+    override func updateContactState() {
 //        self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
 //        if let table = self.deviceListTable {
-//            table.pullToRefreshView.stopAnimating()
 //            table.reloadData()
 //        }
     }

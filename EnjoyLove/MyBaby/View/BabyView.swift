@@ -50,10 +50,10 @@ class BabyView: UIView,UIScrollViewDelegate{
         self.addSubview(self.babyScrollView)
         
         for i in 0 ..< data.count {
-            let babyImageView  = UIView.init(frame: CGRect(x: CGFloat(i) * self.babyScrollView.frame.width, y: 0, width: self.babyScrollView.frame.width, height: self.babyScrollView.frame.height))
+            let babyImageView  = UIImageView.init(frame: CGRect(x: CGFloat(i) * self.babyScrollView.frame.width, y: 0, width: self.babyScrollView.frame.width, height: self.babyScrollView.frame.height))
             if let fileImage = UIImage.init(contentsOfFile: data[i].babyImage) {
                 if let cgImg = fileImage.CGImage {
-                    babyImageView.layer.contents = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right).CGImage
+                    babyImageView.image = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right)
                 }
             }
             babyImageView.tag = babyBackgroundImageViewTag + i
@@ -170,9 +170,11 @@ class BabyView: UIView,UIScrollViewDelegate{
     }
     
     func refreshAtCurrent(conact:Contact, index:Int, img:UIImage) -> Void {
-        if let babyImageView = self.babyScrollView.viewWithTag(index) {
-            babyImageView.layer.contents = img.CGImage
-        }
+        if let cgImg = img.CGImage {
+            if let babyImageView = self.babyScrollView.viewWithTag(index + BabySettingSwitchTag) as? UIImageView{
+                 babyImageView.image = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right)
+            }
+         }
         self.temperatureLabel.text = "0"
         self.humidityLabel.text = "0"
         self.remindLabel.text = "0"

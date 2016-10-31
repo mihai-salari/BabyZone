@@ -382,7 +382,7 @@ static GLfloat modelviewProj[16];
                                                                     object:nil
                                                                   userInfo:nil];                
             }
-            //[image release];
+            [image release];
         }
     }
     

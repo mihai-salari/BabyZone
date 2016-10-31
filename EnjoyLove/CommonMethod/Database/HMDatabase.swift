@@ -1400,6 +1400,18 @@ class EquipmentsBL: NSObject {
         }
         return Contact()
     }
+    
+    class func equipmentFromContact(contact:Contact) ->Equipments{
+        let eqms = EquipmentsBL.findAll()
+        if eqms.count > 0 {
+            for eqm in eqms {
+                if eqm.eqmDid == contact.contactId {
+                    return eqm
+                }
+            }
+        }
+        return Equipments()
+    }
 }
 
 //MARK:____ChildAccount____

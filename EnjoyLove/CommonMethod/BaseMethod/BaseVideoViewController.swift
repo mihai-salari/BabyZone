@@ -33,6 +33,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
         P2PClient.sharedClient().delegate = self
         
         self.contactData = []
+        self.contactData.removeAll()
         if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
             for contact in contacts  {
                 contact.isGettingOnLineState = true
@@ -44,7 +45,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.onNetWorkChange(_:)), name: NET_WORK_CHANGE, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.stopAnimating), name: "updateContactState", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.updateContactState), name: "updateContactState", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshContact), name: "refreshMessage", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshLocalDevices), name: "refreshLocalDevices", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.receiveRemoteMessage(_:)), name: RECEIVE_REMOTE_MESSAGE, object: nil)
@@ -100,16 +101,20 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
         
     }
     
-    func stopAnimating() -> Void {
-        
+    func updateContactState() -> Void {
     }
     
     func refreshContact() -> Void {
+        let devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
+        for device in devices {
+            let contact = EquipmentsBL.contactFromEquipment(device)
+            device.eqmStatus = Int32.init(contact.onLineState)
+            EquipmentsBL.modify(device)
+        }
         
     }
     
     func refreshLocalDevices() -> Void {
-        
     }
     
     func receiveRemoteMessage(note:NSNotification) -> Void {

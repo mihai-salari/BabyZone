@@ -138,13 +138,13 @@ private class LoginDAO:NSObject{
         
     }
     
-    func deleteUser(detail:Login? = nil, userId:String = "") -> Bool {
+    func deleteUser(detail:Login? = nil, userId:String) -> Bool {
         var array = self.findAllUser()
         var detailUserId = ""
         if let person = detail {
             detailUserId = person.userId
         }
-        let baseKey = userId == "" ? detailUserId : userId
+        let baseKey = detail == nil ? userId : detailUserId
         for note in array {
             if note.userId == baseKey {
                 if let currentIndex = array.indexOf(note) {
@@ -203,15 +203,10 @@ private class LoginDAO:NSObject{
         return false
     }
     
-    func clearUser(detail:Login?, userId:String = "") ->Bool{
+    func clearUser(userId:String) ->Bool{
         let array = self.findAllUser()
-        var detailUserId = ""
-        if let person = detail {
-            detailUserId = person.userId
-        }
-        let baseKey = userId == "" ? detailUserId : userId
         for note in array {
-            if note.userId == baseKey {
+            if note.userId == userId {
                 note.userName = ""
                 note.sessionId = ""
                 note.contactId = ""
@@ -229,16 +224,11 @@ private class LoginDAO:NSObject{
         return theData.writeToFile(LoginArchiveFileName.filePath(), atomically: true)
     }
     
-    func findUser(detail:Login?, userId:String = "") -> Login? {
+    func findUser(userId:String) -> Login? {
         let array = self.findAllUser()
-        var detailUserId = ""
-        if let person = detail {
-            detailUserId = person.userId
-        }
-        let baseKey = userId == "" ? detailUserId : userId
         var result:Login?
         for note in array {
-            if note.userId == baseKey {
+            if note.userId == userId {
                 result = note
             }
         }
@@ -246,7 +236,7 @@ private class LoginDAO:NSObject{
     }
     
     //MARK:___设备相关___
-    func findAllEquipments(userId:String = "") -> [Equipments] {
+    func findAllEquipments(userId:String) -> [Equipments] {
         var eqms:[Equipments] = []
         if let user = self.findUser(nil, userId: userId) {
             eqms.appendContentsOf(user.equipments)
@@ -254,9 +244,9 @@ private class LoginDAO:NSObject{
         return eqms
     }
     
-    func findEquipment(userId:String = "", idEqmInfo:String) -> Equipments? {
+    func findEquipment(userId:String, idEqmInfo:String) -> Equipments? {
         var resultEqm:Equipments?
-        if let user = self.findUser(nil, key: key) {
+        if let user = self.findUser(nil, userId: userId) {
             for eqm in user.equipments {
                 if eqm.idEqmInfo == idEqmInfo {
                     resultEqm = eqm
@@ -266,17 +256,19 @@ private class LoginDAO:NSObject{
         return resultEqm
     }
     
-    
-    
-    func findContacts(key:String = "") -> [Contact] {
+    func findContacts(userId:String) -> [Contact] {
         var contacts:[Contact] = []
-        if let user = self.findUser(nil, key: key) {
+        if let user = self.findUser(nil, userId: userId) {
             contacts.appendContentsOf(self.contactsFromEquipments(user.equipments))
         }
         return contacts
     }
     
-    func contactsFromEquipments(eqms:[Equipments]) -> [Contact]{
+    func findContact(userId:String) -> <#return type#> {
+        <#function body#>
+    }
+    
+    private func contactsFromEquipments(eqms:[Equipments]) -> [Contact]{
         var contacts:[Contact] = []
         for eqm in eqms {
             contacts.append(self.contactFromEquipment(eqm))
@@ -284,7 +276,7 @@ private class LoginDAO:NSObject{
         return contacts
     }
     
-    func contactFromEquipment(eqm:Equipments) -> Contact{
+    private func contactFromEquipment(eqm:Equipments) -> Contact{
         if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
             for contact in contacts {
                 if contact.contactId == eqm.eqmDid {
@@ -295,7 +287,7 @@ private class LoginDAO:NSObject{
         return Contact()
     }
     
-    func equipmentsFromContacts(contacts:[Contact]) -> [Equipments]{
+    private func equipmentsFromContacts(contacts:[Contact]) -> [Equipments]{
         var eqms:[Equipments] = []
         for contact in contacts {
             eqms.append(self.equipmentFromContact(contact))
@@ -303,7 +295,7 @@ private class LoginDAO:NSObject{
         return eqms
     }
     
-    func equipmentFromContact(contact:Contact) ->Equipments{
+    private func equipmentFromContact(contact:Contact) ->Equipments{
         let eqms = EquipmentsBL.findAll()
         if eqms.count > 0 {
             for eqm in eqms {
@@ -315,54 +307,53 @@ private class LoginDAO:NSObject{
         return Equipments()
     }
     
-    func modifyEquipment(userId:String, idEqmInfo:String) -> Bool {
-        
-        let array = self.findAllUser()
-        let baseKey = key == "" ? detail.idEqmInfo : key
-        for note in array {
-            if note.idEqmInfo == baseKey {
-                if note.eqmName != detail.eqmName {
-                    note.eqmName = detail.eqmName
+    func modifyEquipment(userId:String, detail:Equipments) -> Bool {
+        if let user = self.findUser(nil, userId: userId) {
+            for note in user.equipments {
+                if note.idEqmInfo == detail.idEqmInfo {
+                    if note.eqmName != detail.eqmName {
+                        note.eqmName = detail.eqmName
+                    }
+                    if note.eqmType != detail.eqmType {
+                        note.eqmType = detail.eqmType
+                    }
+                    if note.eqmDid != detail.eqmDid {
+                        note.eqmDid = detail.eqmDid
+                    }
+                    
+                    if note.eqmAccount != detail.eqmAccount {
+                        note.eqmAccount = detail.eqmAccount
+                    }
+                    
+                    if note.eqmPwd != detail.eqmPwd {
+                        note.eqmPwd = detail.eqmPwd
+                    }
+                    if note.eqmLevel != detail.eqmLevel {
+                        note.eqmLevel = detail.eqmLevel
+                    }
+                    
+                    
+                    if note.eqmStatus != detail.eqmStatus {
+                        note.eqmStatus = detail.eqmStatus
+                    }
+                    if note.eqmMessageCount != detail.eqmMessageCount {
+                        note.eqmMessageCount = detail.eqmMessageCount
+                    }
+                    if note.defenceState != detail.defenceState {
+                        note.defenceState = detail.defenceState
+                    }
+                    if note.isClickDefenceStateBtn != detail.isClickDefenceStateBtn {
+                        note.isClickDefenceStateBtn = detail.isClickDefenceStateBtn
+                    }
+                    if note.isGettingOnLineState != detail.isGettingOnLineState {
+                        note.isGettingOnLineState = detail.isGettingOnLineState
+                    }
+                    let theData = NSMutableData.init()
+                    let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                    archiver.encodeObject(array, forKey: EquipmentsArchiveKey)
+                    archiver.finishEncoding()
+                    return theData.writeToFile(EquipmentsArchiveFileName.filePath(), atomically: true)
                 }
-                if note.eqmType != detail.eqmType {
-                    note.eqmType = detail.eqmType
-                }
-                if note.eqmDid != detail.eqmDid {
-                    note.eqmDid = detail.eqmDid
-                }
-                
-                if note.eqmAccount != detail.eqmAccount {
-                    note.eqmAccount = detail.eqmAccount
-                }
-                
-                if note.eqmPwd != detail.eqmPwd {
-                    note.eqmPwd = detail.eqmPwd
-                }
-                if note.eqmLevel != detail.eqmLevel {
-                    note.eqmLevel = detail.eqmLevel
-                }
-                
-                
-                if note.eqmStatus != detail.eqmStatus {
-                    note.eqmStatus = detail.eqmStatus
-                }
-                if note.eqmMessageCount != detail.eqmMessageCount {
-                    note.eqmMessageCount = detail.eqmMessageCount
-                }
-                if note.defenceState != detail.defenceState {
-                    note.defenceState = detail.defenceState
-                }
-                if note.isClickDefenceStateBtn != detail.isClickDefenceStateBtn {
-                    note.isClickDefenceStateBtn = detail.isClickDefenceStateBtn
-                }
-                if note.isGettingOnLineState != detail.isGettingOnLineState {
-                    note.isGettingOnLineState = detail.isGettingOnLineState
-                }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: EquipmentsArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(EquipmentsArchiveFileName.filePath(), atomically: true)
             }
         }
         return false

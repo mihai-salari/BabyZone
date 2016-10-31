@@ -9,60 +9,12 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
-            timestampString = "499578880.879341"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "572"
-            endingLineNumber = "572"
-            landmarkName = "sendAsyncDeleteEquipment(_:eqmUserName:eqmUserPwd:completionHandler:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static EnjoyLove.Equipments.(sendAsyncDeleteEquipment (Swift.String, eqmUserName : Swift.String, eqmUserPwd : Swift.String, completionHandler : Swift.Optional&lt;(errorCode : Swift.Optional&lt;Swift.String&gt;, msg : Swift.Optional&lt;Swift.String&gt;) -&gt; ()&gt;) -&gt; ()).(closure #1)"
-                  moduleName = "EnjoyLove"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
-                  timestampString = "499585644.522389"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "572"
-                  endingLineNumber = "572"
-                  offsetFromSymbolStart = "52">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static EnjoyLove.Equipments.(sendAsyncDeleteEquipment (Swift.String, eqmUserName : Swift.String, eqmUserPwd : Swift.String, completionHandler : Swift.Optional&lt;(errorCode : Swift.Optional&lt;Swift.String&gt;, msg : Swift.Optional&lt;Swift.String&gt;) -&gt; ()&gt;) -&gt; ()).(closure #1)"
-                  moduleName = "EnjoyLove"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/360%E4%BA%91%E7%9B%981/iOS/BabyZone/EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
-                  timestampString = "499585644.57877"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "572"
-                  endingLineNumber = "572"
-                  offsetFromSymbolStart = "116">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
-            timestampString = "499585171.775625"
+            timestampString = "499586002.127541"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "414"
-            endingLineNumber = "414"
+            startingLineNumber = "413"
+            endingLineNumber = "413"
             landmarkName = "-onScreenShotted:"
             landmarkType = "7">
          </BreakpointContent>

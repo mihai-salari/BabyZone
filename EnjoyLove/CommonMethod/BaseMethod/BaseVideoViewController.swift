@@ -18,6 +18,10 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
 
         // Do any additional setup after loading the view.
         
+        dispatch_queue_create("devicesLoadQueue", nil).queue { 
+            Equipments.sendAsyncEqutementList(nil)
+        }
+        
         var result = false
         if AppDelegate.sharedDefault().dwApContactID == 0 {
             if let loginResult = UDManager.getLoginInfo() {
@@ -30,8 +34,6 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
             print("p2p connect success")
         }
         
-        P2PClient.sharedClient().delegate = self
-        
         self.contactData = []
         self.contactData.removeAll()
         if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
@@ -40,6 +42,12 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
             }
             self.contactData.appendContentsOf(contacts)
         }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        P2PClient.sharedClient().delegate = nil
+        P2PClient.sharedClient().delegate = self
     }
     
     override func viewDidAppear(animated: Bool) {

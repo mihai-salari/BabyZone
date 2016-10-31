@@ -476,6 +476,7 @@ extension Equipments {
                             eqm.eqmPwd = format(dataDict["eqmPwd"])
                             eqm.eqmLevel = format(dataDict["eqmLevel"])
                             EquipmentsBL.insert(eqm)
+                            
                         }
                     }
                 }

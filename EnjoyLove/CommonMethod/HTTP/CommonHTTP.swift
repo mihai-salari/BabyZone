@@ -138,7 +138,7 @@ class QiNiu: NSObject {
         }
     }
     
-    class func uploadImages(images:[UIImage], progress:((progress:CGFloat)->())?, successHandler:((urls:[String], fileNames:[String])->())?, failureHandler:((error:String)->())?){
+    class func uploadImages(scope:String = "", images:[UIImage], progress:((progress:CGFloat)->())?, successHandler:((urls:[String], fileNames:[String])->())?, failureHandler:((error:String)->())?){
         var urlArray:[String] = []
         var fileNameArray:[String] = []
         
@@ -167,12 +167,12 @@ class QiNiu: NSObject {
                 return
             }else{
                 if currentIndex < images.count {
-                    QiNiu.uploadImage(image: images[currentIndex], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
+                    QiNiu.uploadImage(scope, image: images[currentIndex], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
                 }
             }
         }
         if images.count > 0 {
-            QiNiu.uploadImage(image: images[0], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
+            QiNiu.uploadImage(scope, image: images[0], progressHandler: nil, successHandler: QiNiuUploadHelper.shared.singleSuccessHandler, failureHandler: QiNiuUploadHelper.shared.singleFailureBlock)
         }
     }
 }

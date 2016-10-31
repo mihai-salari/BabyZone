@@ -242,7 +242,6 @@
     [cancelButton setImage:[UIImage imageWithName:@"baby_cancel.png"] forState:UIControlStateNormal];
     cancelButton.tag = BUTTON_CANCEL_TAG;
     [cancelButton addTarget:self action:@selector(horizontalButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    cancelButton.userInteractionEnabled = NO;
     [self.canvasView addSubview:cancelButton];
     
     CGFloat contanerViewHeight = BUTTON_PADDING * 3 + BUTTON_WIDTH * 4;
@@ -424,15 +423,11 @@
 - (void)setIsOkRenderVideoFrame:(BOOL)aisOkRenderVideoFrame{
     _isOkRenderVideoFrame = aisOkRenderVideoFrame;
     if (aisOkRenderVideoFrame) {
-        UIButton *cancelButton = [self.canvasView viewWithTag:BUTTON_CANCEL_TAG];
-        cancelButton.userInteractionEnabled = YES;
         self.videoButton.userInteractionEnabled = YES;
         self.cameraButton.userInteractionEnabled = YES;
         self.musicButton.userInteractionEnabled = YES;
         self.voiceButton.userInteractionEnabled = YES;
     }else{
-        UIButton *cancelButton = [self.canvasView viewWithTag:BUTTON_CANCEL_TAG];
-        cancelButton.userInteractionEnabled = YES;
         self.videoButton.userInteractionEnabled = NO;
         self.cameraButton.userInteractionEnabled = NO;
         self.musicButton.userInteractionEnabled = NO;

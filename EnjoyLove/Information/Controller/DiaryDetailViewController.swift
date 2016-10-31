@@ -43,6 +43,14 @@ class DiaryDetailViewController: BaseViewController {
     
     func comfireClick() -> Void {
         HUD.showHud("正在提交...", onView: self.view)
+        QiNiu.uploadImages("", images: self.model.imageArr, progress: { (progress) in
+            print("progress \(progress)")
+            }, successHandler: { (urls, fileNames) in
+                print("urls \(urls) and file names \(fileNames)")
+            }) { (error) in
+                print("upload error \(error)")
+        }
+        /*
         Diary.sendAsyncAddUserNote(self.model.moodStatus, noteLabel: self.model.noteLabels.joinWithSeparator(","), content: self.model.content, imgUrls: self.model.imgUrls) { [weak self](errorCode, msg) in
             if let weakSelf = self{
                 HUD.hideHud(weakSelf.view)
@@ -54,6 +62,7 @@ class DiaryDetailViewController: BaseViewController {
                 }
             }
         }
+ */
     }
 
     /*

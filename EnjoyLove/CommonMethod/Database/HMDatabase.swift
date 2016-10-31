@@ -24,8 +24,7 @@ class Login: NSObject,NSCoding {
     var isRegist:NSNumber!
     var nickName:String!
     var userSign:String!
-    
-    
+    var equipments:[Equipments]!
     
     override init() {
         self.userId = ""
@@ -39,6 +38,7 @@ class Login: NSObject,NSCoding {
         self.nickName = ""
         self.userSign = ""
         self.isRegist = NSNumber.init(bool: false)
+        self.equipments = []
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -73,6 +73,9 @@ class Login: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("userSign") as? NSNumber {
             self.isRegist = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("equipments") as? [Equipments] {
+            self.equipments = obj
+        }
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -86,6 +89,7 @@ class Login: NSObject,NSCoding {
         aCoder.encodeObject(self.isRegist, forKey: "isRegist")
         aCoder.encodeObject(self.isRegist, forKey: "nickName")
         aCoder.encodeObject(self.isRegist, forKey: "userSign")
+        aCoder.encodeObject(self.equipments, forKey: "equipments")
     }
     
 }
@@ -101,8 +105,8 @@ private class LoginDAO:NSObject{
         }
         return DAO.shared!
     }
-    
-    func findAll() -> [Login] {
+    //MARK:____账号相关___
+    func findAllUser() -> [Login] {
         var listData = [Login]()
         if let theData = NSData.init(contentsOfFile: LoginArchiveFileName.filePath()) {
             if theData.length > 0 {
@@ -115,8 +119,8 @@ private class LoginDAO:NSObject{
         return listData
     }
     
-    func insert(detail:Login) -> Bool {
-        var array = self.findAll()
+    func insertUser(detail:Login) -> Bool {
+        var array = self.findAllUser()
         for base in array {
             if base.userId == detail.userId {
                 if let currentIndex = array.indexOf(base) {
@@ -134,14 +138,14 @@ private class LoginDAO:NSObject{
         
     }
     
-    func delete(detail:Login?, key:String = "") -> Bool {
-        var array = self.findAll()
+    func deleteUser(detail:Login? = nil, userId:String = "") -> Bool {
+        var array = self.findAllUser()
+        var detailUserId = ""
+        if let person = detail {
+            detailUserId = person.userId
+        }
+        let baseKey = userId == "" ? detailUserId : userId
         for note in array {
-            var userId = ""
-            if let person = detail {
-                userId = person.userId
-            }
-            let baseKey = key == "" ? userId : key
             if note.userId == baseKey {
                 if let currentIndex = array.indexOf(note) {
                     array.removeAtIndex(currentIndex)
@@ -156,11 +160,10 @@ private class LoginDAO:NSObject{
         return false
     }
     
-    func modify(detail:Login, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.userId : key
+    func modifyUser(detail:Login) -> Bool {
+        let array = self.findAllUser()
         for note in array {
-            if note.userId == baseKey {
+            if note.userId == detail.userId {
                 if note.userName != detail.userName {
                     note.userName = detail.userName
                 }
@@ -186,6 +189,10 @@ private class LoginDAO:NSObject{
                     note.userSign = detail.userSign
                 }
                 
+                if note.equipments != detail.equipments {
+                    note.equipments = detail.equipments
+                }
+                
                 let theData = NSMutableData.init()
                 let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
                 archiver.encodeObject(array, forKey: LoginArchiveKey)
@@ -196,11 +203,14 @@ private class LoginDAO:NSObject{
         return false
     }
     
-    func clear(detail:Login?, key:String = "") ->Bool{
-        let array = self.findAll()
+    func clearUser(detail:Login?, userId:String = "") ->Bool{
+        let array = self.findAllUser()
+        var detailUserId = ""
+        if let person = detail {
+            detailUserId = person.userId
+        }
+        let baseKey = userId == "" ? detailUserId : userId
         for note in array {
-            let phoneKey = detail == nil ? "" : note.userId
-            let baseKey = key == "" ? phoneKey : key
             if note.userId == baseKey {
                 note.userName = ""
                 note.sessionId = ""
@@ -208,6 +218,7 @@ private class LoginDAO:NSObject{
                 note.password = ""
                 note.md5Password = ""
                 note.isRegist = NSNumber.init(bool: false)
+                note.equipments = []
                 break
             }
         }
@@ -218,17 +229,143 @@ private class LoginDAO:NSObject{
         return theData.writeToFile(LoginArchiveFileName.filePath(), atomically: true)
     }
     
-    func find(detail:Login?, key:String = "") -> Login? {
-        let array = self.findAll()
+    func findUser(detail:Login?, userId:String = "") -> Login? {
+        let array = self.findAllUser()
+        var detailUserId = ""
+        if let person = detail {
+            detailUserId = person.userId
+        }
+        let baseKey = userId == "" ? detailUserId : userId
         var result:Login?
         for note in array {
-            let phoneKey = detail == nil ? "" : note.userId
-            let baseKey = key == "" ? phoneKey : key
             if note.userId == baseKey {
                 result = note
             }
         }
         return result
+    }
+    
+    //MARK:___设备相关___
+    func findAllEquipments(userId:String = "") -> [Equipments] {
+        var eqms:[Equipments] = []
+        if let user = self.findUser(nil, userId: userId) {
+            eqms.appendContentsOf(user.equipments)
+        }
+        return eqms
+    }
+    
+    func findEquipment(userId:String = "", idEqmInfo:String) -> Equipments? {
+        var resultEqm:Equipments?
+        if let user = self.findUser(nil, key: key) {
+            for eqm in user.equipments {
+                if eqm.idEqmInfo == idEqmInfo {
+                    resultEqm = eqm
+                }
+            }
+        }
+        return resultEqm
+    }
+    
+    
+    
+    func findContacts(key:String = "") -> [Contact] {
+        var contacts:[Contact] = []
+        if let user = self.findUser(nil, key: key) {
+            contacts.appendContentsOf(self.contactsFromEquipments(user.equipments))
+        }
+        return contacts
+    }
+    
+    func contactsFromEquipments(eqms:[Equipments]) -> [Contact]{
+        var contacts:[Contact] = []
+        for eqm in eqms {
+            contacts.append(self.contactFromEquipment(eqm))
+        }
+        return contacts
+    }
+    
+    func contactFromEquipment(eqm:Equipments) -> Contact{
+        if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
+            for contact in contacts {
+                if contact.contactId == eqm.eqmDid {
+                    return contact
+                }
+            }
+        }
+        return Contact()
+    }
+    
+    func equipmentsFromContacts(contacts:[Contact]) -> [Equipments]{
+        var eqms:[Equipments] = []
+        for contact in contacts {
+            eqms.append(self.equipmentFromContact(contact))
+        }
+        return eqms
+    }
+    
+    func equipmentFromContact(contact:Contact) ->Equipments{
+        let eqms = EquipmentsBL.findAll()
+        if eqms.count > 0 {
+            for eqm in eqms {
+                if eqm.eqmDid == contact.contactId {
+                    return eqm
+                }
+            }
+        }
+        return Equipments()
+    }
+    
+    func modifyEquipment(userId:String, idEqmInfo:String) -> Bool {
+        
+        let array = self.findAllUser()
+        let baseKey = key == "" ? detail.idEqmInfo : key
+        for note in array {
+            if note.idEqmInfo == baseKey {
+                if note.eqmName != detail.eqmName {
+                    note.eqmName = detail.eqmName
+                }
+                if note.eqmType != detail.eqmType {
+                    note.eqmType = detail.eqmType
+                }
+                if note.eqmDid != detail.eqmDid {
+                    note.eqmDid = detail.eqmDid
+                }
+                
+                if note.eqmAccount != detail.eqmAccount {
+                    note.eqmAccount = detail.eqmAccount
+                }
+                
+                if note.eqmPwd != detail.eqmPwd {
+                    note.eqmPwd = detail.eqmPwd
+                }
+                if note.eqmLevel != detail.eqmLevel {
+                    note.eqmLevel = detail.eqmLevel
+                }
+                
+                
+                if note.eqmStatus != detail.eqmStatus {
+                    note.eqmStatus = detail.eqmStatus
+                }
+                if note.eqmMessageCount != detail.eqmMessageCount {
+                    note.eqmMessageCount = detail.eqmMessageCount
+                }
+                if note.defenceState != detail.defenceState {
+                    note.defenceState = detail.defenceState
+                }
+                if note.isClickDefenceStateBtn != detail.isClickDefenceStateBtn {
+                    note.isClickDefenceStateBtn = detail.isClickDefenceStateBtn
+                }
+                if note.isGettingOnLineState != detail.isGettingOnLineState {
+                    note.isGettingOnLineState = detail.isGettingOnLineState
+                }
+                let theData = NSMutableData.init()
+                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+                archiver.encodeObject(array, forKey: EquipmentsArchiveKey)
+                archiver.finishEncoding()
+                return theData.writeToFile(EquipmentsArchiveFileName.filePath(), atomically: true)
+            }
+        }
+        return false
     }
     
 }
@@ -1266,6 +1403,20 @@ private class EquipmentsDAO:NSObject{
                 }
             }
         }
+        
+        let contact = Contact()
+        contact.contactId = detail.eqmDid
+        contact.contactName = detail.eqmName
+        contact.contactPassword = detail.eqmPwd
+        if detail.eqmDid.characters.first != "0" {
+            contact.contactType = Int.init(CONTACT_TYPE_UNKNOWN)
+        }else{
+            contact.contactType = Int.init(CONTACT_TYPE_PHONE)
+        }
+        FListManager.sharedFList().insert(contact)
+        P2PClient.sharedClient().getContactsStates([contact.contactId])
+        P2PClient.sharedClient().getDefenceState(contact.contactId, password: contact.contactPassword)
+        
         array.append(detail)
         
         let theData = NSMutableData.init()
@@ -1363,6 +1514,13 @@ private class EquipmentsDAO:NSObject{
         }
         return result
     }
+    
+    func clearAll() -> Void {
+        let allEqms = self.findAll()
+        for eqm in allEqms {
+            self.delete(eqm)
+        }
+    }
 }
 
 class EquipmentsBL: NSObject {
@@ -1390,6 +1548,18 @@ class EquipmentsBL: NSObject {
         return EquipmentsDAO.shared.findAll()
     }
     
+    class func clearAll() -> Void{
+        EquipmentsDAO.shared.clearAll()
+    }
+    
+    class func contactsFromEquipments(eqms:[Equipments]) -> [Contact]{
+        var contacts:[Contact] = []
+        for eqm in eqms {
+            contacts.append(self.contactFromEquipment(eqm))
+        }
+        return contacts
+    }
+    
     class func contactFromEquipment(eqm:Equipments) -> Contact{
         if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
             for contact in contacts {
@@ -1411,6 +1581,14 @@ class EquipmentsBL: NSObject {
             }
         }
         return Equipments()
+    }
+    
+    class func equipmentsFromContacts(contacts:[Contact]) -> [Equipments]{
+        var eqms:[Equipments] = []
+        for contact in contacts {
+            eqms.append(self.equipmentFromContact(contact))
+        }
+        return eqms
     }
 }
 
@@ -2211,6 +2389,7 @@ private class DiaryDAO: NSObject {
                 }
                 if note.imgUrls != detail.imgUrls {
                     note.imgUrls = detail.imgUrls
+                    note.images = detail.imgUrls.componentsSeparatedByString(",")
                 }
                 if note.idUserBabyInfo != detail.idUserBabyInfo {
                     note.idUserBabyInfo = detail.idUserBabyInfo

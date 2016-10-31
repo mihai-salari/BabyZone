@@ -57,7 +57,6 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     private func initialize() {
         
         dispatch_queue_create("dataInitQueue", nil).queue {
-            Equipments.sendAsyncEqutementList(nil)
             
             self.section1Data = []
             self.sectionTitleData = []
@@ -297,6 +296,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                     if log.errorCode == BabyZoneConfig.shared.passCode{
                         if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
                             LoginBL.clear(nil, key: phone)
+                            EquipmentsBL.clearAll()
                         }
                         
                         if let loginResult = UDManager.getLoginInfo() {
@@ -306,12 +306,15 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                                     let error_code = Int32(logoutString)!
                                     print("code \(error_code)")
                                     switch error_code{
-                                    case NET_RET_LOGIN_SUCCESS:
+                                    case NET_RET_LOGOUT_SUCCESS:
                                         
                                         UDManager.setIsLogin(false)
                                         GlobalThread.sharedThread(false).kill()
                                         if let manager = FListManager.sharedFList(){
                                             manager.isReloadData = true
+                                        }
+                                        for contact in FListManager.sharedFList().getContacts() as! [Contact]{
+                                            FListManager.sharedFList().delete(contact)
                                         }
                                         HMTablBarController.selectedIndex = 0
                                         AppDelegate.sharedDefault().reRegisterForRemoteNotifications()

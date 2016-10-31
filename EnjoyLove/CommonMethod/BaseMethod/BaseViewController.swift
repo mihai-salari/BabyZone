@@ -37,6 +37,7 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height)
         gradientLayer.colors = [UIColor.hexStringToColor("#da5a7b").CGColor ,UIColor.hexStringToColor("#e27360").CGColor]

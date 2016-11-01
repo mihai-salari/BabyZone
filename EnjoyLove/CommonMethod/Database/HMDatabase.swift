@@ -2274,9 +2274,17 @@ private class ArticleDAO: NSObject {
         let imgArr = detail.imageUrl.componentsSeparatedByString(",")
         totalHeight.height += CGFloat(imgArr.count * 60)
         detail.contentTotalHeight = Float.init(totalHeight.height)
-        for img in imgArr {
-            let imageName = BabyZoneConfig.shared.baseUrl + img
-            detail.images.append(imageName)
+        do {
+            if let imageData = detail.imageUrl.dataUsingEncoding(NSUTF8StringEncoding) {
+                if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
+                    for img in dict.values {
+                        detail.images.append(img)
+                    }
+                    print(detail.images)
+                }
+            }
+        } catch  {
+            
         }
         
         let date = detail.createTime.componentsSeparatedByString(" ")

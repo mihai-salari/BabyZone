@@ -560,12 +560,14 @@ extension UIImageView{
     func setImageURL(url:String) -> Void {
         dispatch_async(dispatch_queue_create("imageDownloadQueue", nil)) { 
             do{
-                if let imageUrl = NSURL.init(string: url){
-                    let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
-                    if let resultImage = UIImage.init(data: imageData){
-                        dispatch_async(dispatch_get_main_queue(), { 
-                            self.image = resultImage
-                        })
+                if let urlStr = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()){
+                    if let imageUrl = NSURL.init(string: urlStr){
+                        let imageData = try NSData.init(contentsOfURL: imageUrl, options: .DataReadingMappedIfSafe)
+                        if let resultImage = UIImage.init(data: imageData){
+                            dispatch_async(dispatch_get_main_queue(), {
+                                self.image = resultImage
+                            })
+                        }
                     }
                 }
             }catch{

@@ -24,7 +24,8 @@ class PregInfoViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.hidden = false
-        self.navigationBarItem(self, title: self.infoType == "1" ? "育儿资讯" : "孕育资讯", leftSel:nil, rightSel: nil)
+        self.automaticallyAdjustsScrollViewInsets = false
+        self.navigationBarItem(self, title: self.infoType == "1" ? "孕育资讯" : "育儿资讯", leftSel:nil, rightSel: nil)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.networkChangeNotification(_:)), name: kReachabilityChangedNotification, object: nil)
     }
@@ -239,7 +240,7 @@ class PregInfoViewController: BaseViewController {
                                 if let err = errorCode{
                                     if err == BabyZoneConfig.shared.passCode, let ifo = info, let pregTable = weakSelf.pregTableView{
                                         var statusData:[PregInfoStatus] = []
-                                        let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "2" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: [ifo], pregBabyId: "0", pregMoreImage: "pregMore.png")
+                                        let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: [ifo], pregBabyId: "0", pregMoreImage: "pregMore.png")
                                         statusData.append(pregInfoStatus)
                                         
                                         dispatch_get_main_queue().queue({

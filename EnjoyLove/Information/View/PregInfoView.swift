@@ -50,7 +50,7 @@ class PregInfoView: UIView {
         self.pregDaysLabel.textColor = UIColor.whiteColor()
         self.addSubview(self.pregDaysLabel)
         
-        self.babyImageView = UIImageView.init(frame: CGRect.init(x: (self.cirleView.frame.width - (self.cirleView.frame.width * (1 / 2))) / 2, y: (self.cirleView.frame.height - (self.cirleView.frame.height * (1 / 2))) / 2 - 5, width: self.cirleView.frame.width * (1 / 2), height: self.cirleView.frame.width * (1 / 2) - 10))
+        self.babyImageView = UIImageView.init(frame: CGRect.init(x: (self.cirleView.frame.width - (self.cirleView.frame.width * (1 / 2))) / 2, y: (self.cirleView.frame.height - (self.cirleView.frame.height * (1 / 2))) / 2 + 5, width: self.cirleView.frame.width * (1 / 2), height: self.cirleView.frame.width * (1 / 2) - 10))
         self.babyImageView.image = UIImage.imageWithName(babyModel.babyHeadImage)
         self.babyImageView.layer.cornerRadius = 10
         self.babyImageView.layer.masksToBounds = true
@@ -347,14 +347,22 @@ class PregStatusCell: UITableViewCell {
         var subItemLabelHeight:CGFloat = 0
         var imageViewHeight:CGFloat = 0
         let shareViewHeight:CGFloat = 40
-        if model.imageUrl == "" {
+        if model.images.count == 0 {
             mainLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (1 / 4)
-            subItemLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (3 / 4)
+            if model.content != "" {
+                subItemLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (3 / 4)
+            }else{
+                subItemLabelHeight = 0
+            }
             imageViewHeight = 0
         }else{
-            mainLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10 - 10) * (2 / 7) * (1 / 3)
-            subItemLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10 - 10) * (2 / 7) * (2 / 3)
-            imageViewHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10 - 10) * (5 / 7)
+            mainLabelHeight = (self.contentView.frame.height - shareViewHeight - 10 - 10) * (2 / 7) * (1 / 3)
+            if model.content != "" {
+                subItemLabelHeight = (self.contentView.frame.height - shareViewHeight - 10 - 10) * (2 / 7) * (2 / 3)
+            }else{
+                subItemLabelHeight = 0
+            }
+            imageViewHeight = (self.contentView.frame.height - shareViewHeight - mainLabelHeight - subItemLabelHeight - 10) / CGFloat(model.images.count)
         }
         
         let mainLabel = UILabel.init(frame: CGRectMake(10, 10, CGRectGetWidth(self.contentView.frame) - 20, mainLabelHeight))
@@ -373,7 +381,7 @@ class PregStatusCell: UITableViewCell {
         self.contentView.addSubview(subItemLabel)
         
         for i in 0 ..< model.images.count {
-            let imageView = UIImageView.init(frame: CGRect.init(x: mainLabel.frame.minX, y: CGFloat(i) * subItemLabel.frame.maxY, width: mainLabel.frame.width, height: imageViewHeight))
+            let imageView = UIImageView.init(frame: CGRect.init(x: mainLabel.frame.minX, y: subItemLabel.frame.maxY + CGFloat(i) * imageViewHeight, width: mainLabel.frame.width, height: imageViewHeight))
             imageView.setImageURL(model.images[i])
             self.contentView.addSubview(imageView)
         }

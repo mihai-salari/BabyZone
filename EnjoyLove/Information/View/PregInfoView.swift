@@ -204,10 +204,10 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var menuHandler:((model:Article)->())?
     private var shareHandler:((model:Article)->())?
     
-    init(frame: CGRect, style: UITableViewStyle, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?) {
+    init(frame: CGRect, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?) {
         super.init(frame: frame)
         self.pregInfoData = dataSource
-        self.pregTable = UITableView.init(frame: self.bounds, style: style)
+        self.pregTable = UITableView.init(frame: self.bounds, style: .Plain)
         self.pregTable.delegate = self
         self.pregTable.dataSource = self
         self.pregTable.separatorInset = UIEdgeInsetsZero

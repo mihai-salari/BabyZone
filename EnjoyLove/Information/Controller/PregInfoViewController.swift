@@ -186,7 +186,7 @@ class PregInfoViewController: BaseViewController {
                             if weakSelf.pregTableView != nil{
                                 weakSelf.pregTableView.reloadData(weakSelf.pregInfoStatusData)
                             }else{
-                                weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: 0, y: weakSelf.pregView.frame.maxY, width: containView.frame.width, height: weakSelf.view.frame.height * (2 / 3)), style: .Plain, dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
+                                weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: 0, y: weakSelf.pregView.frame.maxY, width: containView.frame.width, height: weakSelf.view.frame.height * (2 / 3)), dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
                                     if let weakSelf = self{
                                         switch indexPath.section{
                                         case 0:

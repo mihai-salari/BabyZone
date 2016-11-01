@@ -2166,13 +2166,15 @@ class Article: NSObject {
     var idBbsNewsInfo:String!
     var newsType:String!
     var title:String!
+    var titleHeight:CGFloat!
     var imageUrl:String!
     var images:[String]!
+    var imageHeight:CGFloat!
+    var totalImageHeight:CGFloat!
     var content:String!
+    var contentHeight:CGFloat!
     var createTime:String!
     var createDate:String!
-    
-    var contentTotalHeight:Float!
     
     
     override init() {
@@ -2184,7 +2186,11 @@ class Article: NSObject {
         self.createTime = ""
         self.createDate = ""
         self.images = []
-        self.contentTotalHeight = 0
+        self.titleHeight = 0
+        self.contentHeight = 0
+        self.imageHeight = 0
+        self.totalImageHeight = 0
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -2214,8 +2220,10 @@ class Article: NSObject {
         if let obj = aDecoder.decodeObjectForKey("createDate") as? String {
             self.createDate = obj
         }
-        self.contentTotalHeight = aDecoder.decodeFloatForKey("contentTotalHeight")
-        
+        self.titleHeight = CGFloat.init(aDecoder.decodeFloatForKey("titleHeight"))
+        self.contentHeight = CGFloat.init(aDecoder.decodeFloatForKey("contentHeight"))
+        self.imageHeight = CGFloat.init(aDecoder.decodeFloatForKey("imageHeight"))
+        self.totalImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("totalImageHeight"))
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -2227,7 +2235,10 @@ class Article: NSObject {
         aCoder.encodeObject(self.content, forKey: "content")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
         aCoder.encodeObject(self.createDate, forKey: "createDate")
-        aCoder.encodeFloat(self.contentTotalHeight, forKey: "contentTotalHeight")
+        aCoder.encodeFloat(Float.init(self.titleHeight), forKey: "titleHeight")
+        aCoder.encodeFloat(Float.init(self.contentHeight), forKey: "contentHeight")
+        aCoder.encodeFloat(Float.init(self.imageHeight), forKey: "imageHeight")
+        aCoder.encodeFloat(Float.init(self.totalImageHeight), forKey: "totalImageHeight")
     }
 }
 
@@ -2269,11 +2280,8 @@ private class ArticleDAO: NSObject {
                 }
             }
         }
-        var totalHeight = detail.content.size(UIFont.systemFontOfSize(14))
-        totalHeight.height += detail.title.size(UIFont.systemFontOfSize(14)).height
-        let imgArr = detail.imageUrl.componentsSeparatedByString(",")
-        totalHeight.height += CGFloat(imgArr.count * 60)
-        detail.contentTotalHeight = Float.init(totalHeight.height)
+        detail.contentHeight = detail.content.size(UIFont.systemFontOfSize(17)).height
+        detail.titleHeight = detail.title.size(UIFont.systemFontOfSize(17)).height
         do {
             if let imageData = detail.imageUrl.dataUsingEncoding(NSUTF8StringEncoding) {
                 if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
@@ -2285,6 +2293,11 @@ private class ArticleDAO: NSObject {
             }
         } catch  {
             
+        }
+        
+        if detail.images.count > 0 {
+            detail.imageHeight = ScreenWidth
+            detail.totalImageHeight = CGFloat.init(detail.images.count) * ScreenWidth
         }
         
         let date = detail.createTime.componentsSeparatedByString(" ")

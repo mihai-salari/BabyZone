@@ -37,7 +37,7 @@ class BabyInfoEditViewController: BaseViewController{
             let editNameView = EditNameView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), completionHandler: { [weak self](txt) in
                 if let weakSelf = self{
                     if txt != ""{
-                        if let baby = BabyListBL.find(nil, key: weakSelf.babyModel.babyId){
+                        if let baby = BabyListBL.find(weakSelf.babyModel.babyId){
                             HUD.showHud("正在提交...", onView: weakSelf.view)
                             BabyList.sendAsyncModifyBaby(baby.idUserBabyInfo, babyName: txt, sex: baby.sex, birthday: baby.birthday, isCurr: baby.isCurr, completionHandler: { (errorCode, msg) in
                                 HUD.hideHud(weakSelf.view)
@@ -66,7 +66,7 @@ class BabyInfoEditViewController: BaseViewController{
                 if let weakSelf = self{
                     if let sId = Int(sexId){
                         if sId == 1 || sId == 2{
-                            if let baby = BabyListBL.find(nil, key: weakSelf.babyModel.babyId){
+                            if let baby = BabyListBL.find(weakSelf.babyModel.babyId){
                                 HUD.showHud("正在提交...", onView: weakSelf.view)
                                 BabyList.sendAsyncModifyBaby(baby.idUserBabyInfo, babyName: baby.babyName, sex: "\(sId)", birthday: baby.birthday, isCurr: baby.isCurr, completionHandler: { (errorCode, msg) in
                                     HUD.hideHud(weakSelf.view)

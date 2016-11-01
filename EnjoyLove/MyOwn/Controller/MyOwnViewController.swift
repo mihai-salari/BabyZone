@@ -58,8 +58,17 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         
         dispatch_queue_create("dataInitQueue", nil).queue {
             
-            self.section1Data = []
-            self.sectionTitleData = []
+            if self.section1Data == nil{
+                self.section1Data = []
+            }else{
+                self.section1Data.removeAll()
+            }
+            if self.sectionTitleData == nil{
+                self.sectionTitleData = []
+            }else{
+                self.sectionTitleData.removeAll()
+            }
+            
             
             let headerModel = MyOwnHeader()
             self.section1Data.append(headerModel)
@@ -88,16 +97,20 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             self.sectionTitleData.append(sectionData)
             
             dispatch_get_main_queue().queue({ 
-                self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
-                self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
-                self.myOwnTable.scrollEnabled = false
-                self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
-                self.myOwnTable.delegate = self
-                self.myOwnTable.dataSource = self
-                self.myOwnTable.separatorInset = UIEdgeInsetsZero
-                self.myOwnTable.layoutMargins = UIEdgeInsetsZero
-                self.myOwnTable.backgroundColor = UIColor.whiteColor()
-                self.view.addSubview(self.myOwnTable)
+                if self.myOwnTable == nil {
+                    self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
+                    self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
+                    self.myOwnTable.scrollEnabled = false
+                    self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
+                    self.myOwnTable.delegate = self
+                    self.myOwnTable.dataSource = self
+                    self.myOwnTable.separatorInset = UIEdgeInsetsZero
+                    self.myOwnTable.layoutMargins = UIEdgeInsetsZero
+                    self.myOwnTable.backgroundColor = UIColor.whiteColor()
+                    self.view.addSubview(self.myOwnTable)
+                }else{
+                    self.myOwnTable.reloadData()
+                }
             })
         }
     }
@@ -131,15 +144,11 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             let model = section1Data[indexPath.row]
             cell.refreshHeaderCell(model, completionHandler: { [weak self] in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                let personInfoEdit = MyOwnEidtViewController()
-                                personInfoEdit.infoModel = model
-                                personInfoEdit.personDetailModel = person
-                                weakSelf.navigationController?.pushViewController(personInfoEdit, animated: true)
-                            }
-                        }
+                    if let person = PersonDetailBL.find(){
+                        let personInfoEdit = MyOwnEidtViewController()
+                        personInfoEdit.infoModel = model
+                        personInfoEdit.personDetailModel = person
+                        weakSelf.navigationController?.pushViewController(personInfoEdit, animated: true)
                     }
                 }
             })
@@ -294,11 +303,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             if let weakSelf = self{
                 if let log = logout{
                     if log.errorCode == BabyZoneConfig.shared.passCode{
-                        if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                            LoginBL.clear(phone)
-                            EquipmentsBL.clearAll()
-                        }
-                        
+                        LoginBL.clear(BabyZoneConfig.shared.currentUserId.defaultString())
                         if let loginResult = UDManager.getLoginInfo() {
                             NetManager.sharedManager().logoutWithUserName(loginResult.contactId, sessionId: loginResult.sessionId, callBack: { (JSON) in
                                 HUD.hideHud(weakSelf.view)
@@ -356,7 +361,9 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         }
     }
     
-    
+    override func loginAndRegistSuccessRefresh() {
+        self.initialize()
+    }
     
     /*
     // MARK: - Navigation

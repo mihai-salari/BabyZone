@@ -65,6 +65,7 @@ class Register: NSObject {
                     regist.userId = format(data["userId"])
                     regist.sessionId = format(data["sessionId"])
                 }
+                NSNotificationCenter.defaultCenter().postNotificationName(LoginAndRegisterSuccessNotification, object: nil)
                 if let handle = completionHandler{
                     handle(regist: regist)
                 }
@@ -236,25 +237,21 @@ extension PersonDetail {
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if errorCode == "0000"{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                setPersonInformationChange(true)
-                                person.nickName = nickName
-                                person.sex = sex
-                                person.headImg = headImg
-                                person.breedStatus = breedStatus
-                                person.breedStatusDate = breedStatusDate
-                                person.breedBirthDate = breedBirthDate
-                                person.province = province
-                                person.provinceCode = provinceCode
-                                person.city = city
-                                person.cityCode = cityCode
-                                person.userSign = userSign
-                                PersonDetailBL.modify(person)
-                            }
-                        }
+                if errorCode == BabyZoneConfig.shared.passCode {
+                    if let person = PersonDetailBL.find(){
+                        setPersonInformationChange(true)
+                        person.nickName = nickName
+                        person.sex = sex
+                        person.headImg = headImg
+                        person.breedStatus = breedStatus
+                        person.breedStatusDate = breedStatusDate
+                        person.breedBirthDate = breedBirthDate
+                        person.province = province
+                        person.provinceCode = provinceCode
+                        person.city = city
+                        person.cityCode = cityCode
+                        person.userSign = userSign
+                        PersonDetailBL.modify(person)
                     }
                 }
                 if let handle = completionHandler{
@@ -419,9 +416,7 @@ extension BabyList{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
-                    if let babyInfo = BabyListBL.find(nil, key: idUserBabyInfo){
-                        BabyListBL.delete(babyInfo)
-                    }
+                    BabyListBL.delete(idUserBabyInfo)
                 }
                 
                 if let handle = completionHandler{
@@ -573,11 +568,11 @@ extension Equipments {
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
+                if errorCode == BabyZoneConfig.shared.passCode{
+                    EquipmentsBL.delete(idEqmInfo)
+                }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
-                }
-                if errorCode == BabyZoneConfig.shared.passCode{
-                    EquipmentsBL.delete(nil, key: idEqmInfo)
                 }
             }
         }) { (dataTask, error) in
@@ -671,8 +666,7 @@ extension ChildAccount{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
-                    let eqm = ChildAccountBL.find(nil, key: idUserChildInfo)
-                    eqm.idUserChildInfo = idUserChildInfo
+                    let eqm = ChildAccount()
                     eqm.childName = childName
                     ChildAccountBL.modify(eqm)
                 }
@@ -695,7 +689,7 @@ extension ChildAccount{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
-                    ChildAccountBL.delete(nil, key: idUserChildInfo)
+                    ChildAccountBL.delete(idUserChildInfo)
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
@@ -734,7 +728,7 @@ extension ChildEquipments{
                                 eqms.eqmName = format(dataDict["eqmName"])
                                 eqms.eqmStatus = format(dataDict["eqmStatus"])
                                 eqms.idUserChildEqmInfo = format(dataDict["idUserChildEqmInfo"])
-                                ChildEquipmentsBL.insert(eqms)
+                                ChildEquipmentsBL.insert(eqms, idUserChildInfo: idUserChildInfo)
                             }
                         }
                     }
@@ -767,7 +761,7 @@ extension ChildEquipments{
                         let eqms = ChildEquipments()
                         eqms.eqmStatus = eqmStatus
                         eqms.idUserChildEqmInfo = format(data["idUserChildEqmInfo"])
-                        ChildEquipmentsBL.modify(eqms)
+                        ChildEquipmentsBL.modify(eqms, idUserChildInfo: idUserChildInfo)
                         if let handle = completionHandler{
                             handle(errorCode: errorCode, msg: msg, idUserChildEqmInfo: eqms.idUserChildEqmInfo)
                         }
@@ -793,12 +787,12 @@ extension ChildEquipments{
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
                     if let data = response["data"] as? [String:NSObject]{
-                        let eqms = ChildEquipments()
-//                        eqms.idUserChildEqmPermission = format(data["idUserChildEqmPermission"])
-//                        eqms.idUserEqmInfo = format(data["idUserEqmInfo"])
-//                        eqms.voicePermission = format(data["voicePermission"])
-//                        eqms.imagePermission = format(data["imagePermission"])
-                        ChildEquipmentsBL.insert(eqms)
+                        let permission = ChildEquipmentsPermission()
+                        permission.idUserChildEqmPermission = format(data["idUserChildEqmPermission"])
+                        permission.idUserEqmInfo = format(data["idUserEqmInfo"])
+                        permission.voicePermission = format(data["voicePermission"])
+                        permission.imagePermission = format(data["imagePermission"])
+                        ChildEquipmentsPermissionBL.insert(permission, idUserChildEqmInfo: idUserChildEqmInfo)
                     }
                 }
                 if let handle = completionHandler{
@@ -820,12 +814,10 @@ extension ChildEquipments{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
-                    let eqms = ChildEquipments()
-//                    eqms.idUserChildEqmPermission = idUserChildEqmPermission
-//                    eqms.idUserChildEqmInfo = idUserChildEqmInfo //idUserChildEqmInfo
-//                    eqms.voicePermission = voicePermission
-//                    eqms.imagePermission = imagePermission
-                    ChildEquipmentsBL.modify(eqms)
+                    let permission = ChildEquipmentsPermission()
+                    permission.voicePermission = voicePermission
+                    permission.imagePermission = imagePermission
+                    ChildEquipmentsPermissionBL.modify(permission, idUserChildEqmInfo: idUserChildEqmInfo)
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
@@ -949,8 +941,7 @@ extension Diary{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
-                    let diary = DiaryBL.find(nil, key: idUserNoteInfo)
-                    DiaryBL.delete(diary)
+                    DiaryBL.delete(idUserNoteInfo)
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)

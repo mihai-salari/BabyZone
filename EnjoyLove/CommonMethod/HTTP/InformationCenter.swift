@@ -142,6 +142,7 @@ extension ArticleTypeList{
 }
 
 private let ArticleListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsList"
+private let updateBbsCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateBbsCollection"
 extension ArticleList{
     
     /*
@@ -173,6 +174,7 @@ extension ArticleList{
                             info.videoUrl = format(listDict["videoUrl"])
                             info.browseCount = format(listDict["browseCount"])
                             info.createTime = format(listDict["createTime"])
+                            info.operateType = "2"
                             ArticleListBL.insert(info)
                         }
                     }
@@ -188,6 +190,30 @@ extension ArticleList{
             }
         }
     }
+    
+    class func sendAsyncArticleCollection(idBbsNewsInfo: String,operateType: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["idBbsNewsInfo":idBbsNewsInfo, "operateType":operateType], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let data = response["data"] as? [String:NSObject]{
+                    if let articleList = ArticleListBL.find(idBbsNewsInfo) {
+                        articleList.operateType = operateType
+                        ArticleListBL.modify(articleList)
+                    }
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+    
+    
 }
 
 

@@ -216,30 +216,26 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
             let cityPicker = LocationViewController()
             cityPicker.locationInfoHandler = { [weak self](province, city) in
                 if let weakSelf = self {
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: province.codeAreaName, provinceCode: province.codeAreaCode, city: city.codeAreaName, cityCode: city.codeAreaCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
-                                    HUD.hideHud(weakSelf.view)
-                                    if let error = errorCode{
-                                        if error == BabyZoneConfig.shared.passCode{
-                                            person.province = province.codeAreaName
-                                            person.city = city.codeAreaName
-                                            PersonDetailBL.modify(person)
-                                            if weakSelf.personInfoData.count > 0 && weakSelf.personInfoData[0].detail.count > 0{
-                                                weakSelf.personInfoData[0].detail[4].subItem = "\(province.codeAreaName)  \(city.codeAreaName)"
-                                                tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                                            }
-                                        }else{
-                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
-                                        }
-                                    }else{
-                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
+                    if let person = PersonDetailBL.find(){
+                        HUD.showHud("正在提交...", onView: weakSelf.view)
+                        PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: province.codeAreaName, provinceCode: province.codeAreaCode, city: city.codeAreaName, cityCode: city.codeAreaCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                            HUD.hideHud(weakSelf.view)
+                            if let error = errorCode{
+                                if error == BabyZoneConfig.shared.passCode{
+                                    person.province = province.codeAreaName
+                                    person.city = city.codeAreaName
+                                    PersonDetailBL.modify(person)
+                                    if weakSelf.personInfoData.count > 0 && weakSelf.personInfoData[0].detail.count > 0{
+                                        weakSelf.personInfoData[0].detail[4].subItem = "\(province.codeAreaName)  \(city.codeAreaName)"
+                                        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                                     }
-                                })
+                                }else{
+                                    HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
+                                }
+                            }else{
+                                HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                             }
-                        }
+                        })
                     }
                 }
             }

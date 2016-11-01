@@ -55,28 +55,24 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: "名字", leftSel: nil, rightSel: nil)
             let editNameView = EditNameView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: ScreenHeight - navigationBarHeight - 10), completionHandler: { [weak self](txt) in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
-                                    HUD.hideHud(weakSelf.view)
-                                    if let error = errorCode{
-                                        if error == BabyZoneConfig.shared.passCode{
-                                            if let delegate = weakSelf.editDelegate{
-                                                weakSelf.editModel.subItem = txt
-                                                delegate.fetchPersonInfo(weakSelf.editModel)
-                                                weakSelf.navigationController?.popViewControllerAnimated(true)
-                                            }
-                                        }else{
-                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
-                                        }
-                                    }else{
-                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
+                    if let person = PersonDetailBL.find(){
+                        HUD.showHud("正在提交...", onView: weakSelf.view)
+                        PersonDetail.sendAsyncChangePersonInfo(txt, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                            HUD.hideHud(weakSelf.view)
+                            if let error = errorCode{
+                                if error == BabyZoneConfig.shared.passCode{
+                                    if let delegate = weakSelf.editDelegate{
+                                        weakSelf.editModel.subItem = txt
+                                        delegate.fetchPersonInfo(weakSelf.editModel)
+                                        weakSelf.navigationController?.popViewControllerAnimated(true)
                                     }
-                                })
+                                }else{
+                                    HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
+                                }
+                            }else{
+                                HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                             }
-                        }
+                        })
                     }
                 }
             })
@@ -85,28 +81,24 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: "个性签名", leftSel: nil, rightSel: nil)
             let editSignView = EditSignView.init(frame: CGRect(x: 10, y: navigationBarHeight, width: self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), completionHandler: {[weak self] (txt) in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
-                                    HUD.hideHud(weakSelf.view)
-                                    if let error = errorCode{
-                                        if error == BabyZoneConfig.shared.passCode{
-                                            if let delegate = weakSelf.editDelegate{
-                                                weakSelf.editModel.subItem = txt
-                                                delegate.fetchPersonInfo(weakSelf.editModel)
-                                                weakSelf.navigationController?.popViewControllerAnimated(true)
-                                            }
-                                        }else{
-                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
-                                        }
-                                    }else{
-                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
+                    if let person = PersonDetailBL.find(){
+                        HUD.showHud("正在提交...", onView: weakSelf.view)
+                        PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: txt, completionHandler: { (errorCode, msg) in
+                            HUD.hideHud(weakSelf.view)
+                            if let error = errorCode{
+                                if error == BabyZoneConfig.shared.passCode{
+                                    if let delegate = weakSelf.editDelegate{
+                                        weakSelf.editModel.subItem = txt
+                                        delegate.fetchPersonInfo(weakSelf.editModel)
+                                        weakSelf.navigationController?.popViewControllerAnimated(true)
                                     }
-                                })
+                                }else{
+                                    HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
+                                }
+                            }else{
+                                HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                             }
-                        }
+                        })
                     }
                 }
             })
@@ -116,28 +108,24 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             let editSexView = EditSexView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), isMale: Int(self.personDetail.sex)!, completionHandler: { [weak self](sex, sexId) in
                 if let weakSelf = self{
                     
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
-                                    HUD.hideHud(weakSelf.view)
-                                    if let error = errorCode{
-                                        if error == BabyZoneConfig.shared.passCode{
-                                            if let delegate = weakSelf.editDelegate{
-                                                weakSelf.editModel.subItem = sex
-                                                delegate.fetchPersonInfo(weakSelf.editModel)
-                                                weakSelf.navigationController?.popViewControllerAnimated(true)
-                                            }
-                                        }else{
-                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
-                                        }
-                                    }else{
-                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
+                    if let person = PersonDetailBL.find(){
+                        HUD.showHud("正在提交...", onView: weakSelf.view)
+                        PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: sexId, headImg: person.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                            HUD.hideHud(weakSelf.view)
+                            if let error = errorCode{
+                                if error == BabyZoneConfig.shared.passCode{
+                                    if let delegate = weakSelf.editDelegate{
+                                        weakSelf.editModel.subItem = sex
+                                        delegate.fetchPersonInfo(weakSelf.editModel)
+                                        weakSelf.navigationController?.popViewControllerAnimated(true)
                                     }
-                                })
+                                }else{
+                                    HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
+                                }
+                            }else{
+                                HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                             }
-                        }
+                        })
                     }
                 }
                 })
@@ -148,28 +136,24 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: "孕育状态", leftSel: nil, rightSel: nil)
             let editStatusView = EditPregStatusView.init(frame: CGRect(x: 10, y: navigationBarHeight, width:  self.view.frame.width - 20, height: self.view.frame.height - navigationBarHeight), status: Int(self.personDetail.breedStatus) == nil ? 1 : Int(self.personDetail.breedStatus)!, completionHandler: {[weak self] (status, statusId) in
                 if let weakSelf = self{
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                HUD.showHud("正在提交...", onView: weakSelf.view)
-                                PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
-                                    HUD.hideHud(weakSelf.view)
-                                    if let error = errorCode{
-                                        if error == BabyZoneConfig.shared.passCode{
-                                            if let delegate = weakSelf.editDelegate{
-                                                weakSelf.editModel.subItem = status
-                                                delegate.fetchPersonInfo(weakSelf.editModel)
-                                                weakSelf.navigationController?.popViewControllerAnimated(true)
-                                            }
-                                        }else{
-                                            HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
-                                        }
-                                    }else{
-                                        HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
+                    if let person = PersonDetailBL.find(){
+                        HUD.showHud("正在提交...", onView: weakSelf.view)
+                        PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: person.headImg, breedStatus: statusId, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate, province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { (errorCode, msg) in
+                            HUD.hideHud(weakSelf.view)
+                            if let error = errorCode{
+                                if error == BabyZoneConfig.shared.passCode{
+                                    if let delegate = weakSelf.editDelegate{
+                                        weakSelf.editModel.subItem = status
+                                        delegate.fetchPersonInfo(weakSelf.editModel)
+                                        weakSelf.navigationController?.popViewControllerAnimated(true)
                                     }
-                                })
+                                }else{
+                                    HUD.showText("修改失败:\(msg)", onView: weakSelf.view)
+                                }
+                            }else{
+                                HUD.showText("网络异常:\(msg)", onView: weakSelf.view)
                             }
-                        }
+                        })
                     }
                 }
             })
@@ -178,7 +162,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
             self.navigationBarItem(self, isImage: false, title: self.editModel.mainTitle, leftSel: nil, rightSel: nil)
             let babyId = self.editModel.babyId
             var babyModel = BabyList()
-            if let obj = BabyListBL.find(nil, key: babyId) {
+            if let obj = BabyListBL.find(babyId) {
                 babyModel = obj
             }
             var babyData:[BabyInfo] = []
@@ -316,32 +300,28 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                     headerView.headImage = image
                 }
                 }, successHandler: { (url, fileName) in
-                    if let phone = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String{
-                        if let login = LoginBL.find(phone){
-                            if let person = PersonDetailBL.find(nil, key: login.userId){
-                                person.headImg = fileName
-                                if let modifyResult = PersonDetailBL.modify(person) {
-                                    if modifyResult.headImg != ""{
-                                        let uploadQueue = dispatch_queue_create("uploadImageQueue", nil)
-                                        uploadQueue.queue({ 
-                                            PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: modifyResult.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate,  province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { [weak self](errorCode, msg) in
-                                                if let error = errorCode{
-                                                    if error == BabyZoneConfig.shared.passCode{
-                                                        dispatch_get_main_queue().queue({
-                                                            headerView.removeMask()
-                                                            if let weakSelf = self{
-                                                                if weakSelf.editDelegate != nil{
-                                                                    weakSelf.editModel.subItem = modifyResult.headImg
-                                                                    weakSelf.editDelegate.fetchPersonInfo(weakSelf.editModel)
-                                                                }
-                                                            }
-                                                        })
+                    if let person = PersonDetailBL.find(){
+                        person.headImg = fileName
+                        if let modifyResult = PersonDetailBL.modify(person) {
+                            if modifyResult.headImg != ""{
+                                let uploadQueue = dispatch_queue_create("uploadImageQueue", nil)
+                                uploadQueue.queue({
+                                    PersonDetail.sendAsyncChangePersonInfo(person.nickName, sex: person.sex, headImg: modifyResult.headImg, breedStatus: person.breedStatus, breedStatusDate: person.breedStatusDate, breedBirthDate: person.breedBirthDate,  province: person.province, provinceCode: person.provinceCode, city: person.city, cityCode: person.cityCode, userSign: person.userSign, completionHandler: { [weak self](errorCode, msg) in
+                                        if let error = errorCode{
+                                            if error == BabyZoneConfig.shared.passCode{
+                                                dispatch_get_main_queue().queue({
+                                                    headerView.removeMask()
+                                                    if let weakSelf = self{
+                                                        if weakSelf.editDelegate != nil{
+                                                            weakSelf.editModel.subItem = modifyResult.headImg
+                                                            weakSelf.editDelegate.fetchPersonInfo(weakSelf.editModel)
+                                                        }
                                                     }
-                                                }
-                                            })
+                                                })
+                                            }
+                                        }
                                         })
-                                    }
-                                }
+                                })
                             }
                         }
                     }
@@ -368,7 +348,7 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
     func datePickerReturn(dateString: String!) {
         self.babyInfo.subItem = dateString
         if let babyView = self.babyEditView {
-            if let baby = BabyListBL.find(nil, key: self.editModel.babyId) {
+            if let baby = BabyListBL.find(self.editModel.babyId) {
                 HUD.showHud("正在提交...", onView: self.view)
                 BabyList.sendAsyncModifyBaby(baby.idUserBabyInfo, babyName: baby.babyName, sex: baby.sex, birthday: dateString, isCurr: baby.isCurr, completionHandler: { (errorCode, msg) in
                     HUD.hideHud(self.view)

@@ -48,11 +48,6 @@ class HTTPEngine: NSObject {
     
     func postAsyncWith(url:String, parameters:[String:NSObject]?, success:((dataTask:NSURLSessionDataTask, responseObject:NSDictionary?)->())?, failer:((dataTask:NSURLSessionDataTask?, error:NSError?)->())?) -> NSURLSessionDataTask? {
         
-        var phone = ""
-        if let phoneKey = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.currentUserId) as? String {
-            phone = phoneKey
-        }
-        let info = LoginBL.find(phone)
         var resultParams:[String:NSObject] = [:]
         if let params = parameters {
             for (key, value) in params {
@@ -64,12 +59,14 @@ class HTTPEngine: NSObject {
             resultParams[BabyZoneConfig.shared.appToken] = token
         }
         
-        if let sessionId = info == nil ? "0" : info!.sessionId {
-            if sessionId == "" {
-                resultParams[BabyZoneConfig.shared.sessionId] = "0"
+        if LoginBL.isLogin() == true {
+            if let login = LoginBL.find(BabyZoneConfig.shared.currentUserId.defaultString()) {
+                resultParams[BabyZoneConfig.shared.sessionId] = login.sessionId
             }else{
-                resultParams[BabyZoneConfig.shared.sessionId] = sessionId
+                resultParams[BabyZoneConfig.shared.sessionId] = "0"
             }
+        }else{
+            resultParams[BabyZoneConfig.shared.sessionId] = "0"
         }
         
         

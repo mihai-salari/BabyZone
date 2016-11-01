@@ -102,13 +102,14 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
         self.childList.append(mainModel)
         
         modelData = []
-        if ChildEquipmentsBL.findAll().count > 0 {
-            if let device = ChildEquipmentsBL.find(nil, key: self.childAccount.itemId) {
+        let childEqms = ChildEquipmentsBL.findAll(self.childAccount.itemId)
+        if childEqms.count > 0 {
+            for childEqm in childEqms {
                 subModel = ChildEquipments()
-                subModel.eqmName = device.eqmName
+                subModel.eqmName = childEqm.eqmName
                 subModel.eqmSubItem = ""
-                subModel.eqmStatus = device.eqmStatus
-                subModel.idUserChildEqmInfo = device.idUserChildEqmInfo
+                subModel.eqmStatus = childEqm.eqmStatus
+                subModel.idUserChildEqmInfo = childEqm.idUserChildEqmInfo
                 modelData.append(subModel)
             }
             mainModel = AccountInfo(title: "设备权限", detail: modelData)

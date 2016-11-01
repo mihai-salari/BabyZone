@@ -38,7 +38,6 @@ class Login: NSObject,NSCoding {
         self.nickName = ""
         self.userSign = ""
         self.isRegist = NSNumber.init(bool: false)
-        self.equipments = []
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -67,14 +66,11 @@ class Login: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("isRegist") as? NSNumber {
             self.isRegist = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("nickName") as? NSNumber {
-            self.isRegist = obj
+        if let obj = aDecoder.decodeObjectForKey("nickName") as? String {
+            self.nickName = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("userSign") as? NSNumber {
-            self.isRegist = obj
-        }
-        if let obj = aDecoder.decodeObjectForKey("equipments") as? [Equipments] {
-            self.equipments = obj
+        if let obj = aDecoder.decodeObjectForKey("userSign") as? String {
+            self.userSign = obj
         }
     }
     
@@ -87,9 +83,8 @@ class Login: NSObject,NSCoding {
         aCoder.encodeObject(self.password, forKey: "password")
         aCoder.encodeObject(self.md5Password, forKey: "md5Password")
         aCoder.encodeObject(self.isRegist, forKey: "isRegist")
-        aCoder.encodeObject(self.isRegist, forKey: "nickName")
-        aCoder.encodeObject(self.isRegist, forKey: "userSign")
-        aCoder.encodeObject(self.equipments, forKey: "equipments")
+        aCoder.encodeObject(self.nickName, forKey: "nickName")
+        aCoder.encodeObject(self.userSign, forKey: "userSign")
     }
     
 }
@@ -111,7 +106,7 @@ private class LoginDAO:NSObject{
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
                 if let arr = unArchive.decodeObjectForKey(LoginArchiveKey) as? [Login]{
-                    listData = arr
+                    listData.appendContentsOf(arr)
                 }
             }
         }
@@ -144,14 +139,13 @@ private class LoginDAO:NSObject{
                 if let currentIndex = array.indexOf(note) {
                     array.removeAtIndex(currentIndex)
                 }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: LoginArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(LoginArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: LoginArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(LoginArchiveFileName.filePath(), atomically: true)
     }
     
     func modify(detail:Login) -> Bool {
@@ -182,21 +176,19 @@ private class LoginDAO:NSObject{
                 if note.userSign != detail.userSign {
                     note.userSign = detail.userSign
                 }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: LoginArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(LoginArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: LoginArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(LoginArchiveFileName.filePath(), atomically: true)
     }
     
-    func clear() ->Bool{
+    func clear(userId:String) ->Bool{
         let array = self.findAll()
         for note in array {
-            if note.userId == BabyZoneConfig.shared.currentUserId.defaultString() {
+            if note.userId == userId {
                 note.userName = ""
                 note.sessionId = ""
                 note.contactId = ""
@@ -216,17 +208,24 @@ private class LoginDAO:NSObject{
     
     func find(userId:String) -> Login? {
         let array = self.findAll()
-        var result:Login?
         for note in array {
             if note.userId == userId {
-                result = note
+                return note
             }
         }
-        return result
+        return nil
     }
 }
 
 class LoginBL: NSObject {
+    
+    class func isLogin(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Bool{
+        if let user = LoginDAO.shared.find(userId) {
+            return user.sessionId != "" && user.sessionId != nil && user.sessionId != "0"
+        }
+        return false
+    }
+    
     class func insert(detail:Login) -> [Login]{
         LoginDAO.shared.insert(detail)
         return LoginDAO.shared.findAll()
@@ -237,12 +236,12 @@ class LoginBL: NSObject {
         return LoginDAO.shared.findAll()
     }
     
-    class func clear() ->Bool{
-        return LoginDAO.shared.clear()
+    class func clear(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Bool{
+        return LoginDAO.shared.clear(userId)
     }
     
-    class func find(key:String = "") ->Login?{
-        return LoginDAO.shared.find(key)
+    class func find(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Login?{
+        return LoginDAO.shared.find(userId)
     }
     
     class func findAll() ->[Login]{
@@ -518,38 +517,37 @@ private class PersonDetailDAO: NSObject{
     
     func find(detailUserId:String, accountUserId:String) -> PersonDetail? {
         let array = self.findAll(accountUserId)
-        var result:PersonDetail?
         for note in array {
             if note.userId == detailUserId {
-                result = note
+                return note
             }
         }
-        return result
+        return nil
     }
 }
 
 class PersonDetailBL: NSObject {
-    class func insert(detail:PersonDetail,accountUserId:String) -> [PersonDetail]{
-        PersonDetailDAO.shared.insert(accountUserId, detail: detail)
-        return PersonDetailDAO.shared.findAll(accountUserId)
+    class func insert(detail:PersonDetail,userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [PersonDetail]{
+        PersonDetailDAO.shared.insert(userId, detail: detail)
+        return PersonDetailDAO.shared.findAll(userId)
     }
     
-    class func delete(accountUserId:String, detailUserId:String) ->[PersonDetail]{
-        PersonDetailDAO.shared.delete(accountUserId, detailUserId: detailUserId)
-        return PersonDetailDAO.shared.findAll(accountUserId)
+    class func delete(detailUserId:String = BabyZoneConfig.shared.currentUserId.defaultString(), userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[PersonDetail]{
+        PersonDetailDAO.shared.delete(userId, detailUserId: detailUserId)
+        return PersonDetailDAO.shared.findAll(userId)
     }
     
-    class func modify(detail:PersonDetail, accountUserId:String) ->PersonDetail?{
-        PersonDetailDAO.shared.modify(detail, accountUserId: accountUserId)
-        return PersonDetailDAO.shared.find(detail.userId, accountUserId: accountUserId)
+    class func modify(detail:PersonDetail, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->PersonDetail?{
+        PersonDetailDAO.shared.modify(detail, accountUserId: userId)
+        return PersonDetailDAO.shared.find(detail.userId, accountUserId: userId)
     }
     
-    class func find(detail:PersonDetail, accountUserId:String) ->PersonDetail?{
-        return PersonDetailDAO.shared.find(detail.userId, accountUserId: accountUserId)
+    class func find(detailUserId:String = BabyZoneConfig.shared.currentUserId.defaultString(), userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->PersonDetail?{
+        return PersonDetailDAO.shared.find(detailUserId, accountUserId: userId)
     }
     
-    class func findAll(accountUserId:String) ->[PersonDetail]{
-        return PersonDetailDAO.shared.findAll(accountUserId)
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[PersonDetail]{
+        return PersonDetailDAO.shared.findAll(userId)
     }
     
 }
@@ -674,7 +672,6 @@ private class BabyListDAO:NSObject{
                 if let currentIndex = array.indexOf(note) {
                     array.removeAtIndex(currentIndex)
                 }
-                
             }
         }
         var arrDict:[String:NSObject] = [:]
@@ -709,45 +706,44 @@ private class BabyListDAO:NSObject{
         arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: BabyListArchiveKey)
+        archiver.encodeObject(arrDict, forKey: BabyListArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(BabyListArchiveFileName.filePath(), atomically: true)
     }
     
     func find(userId:String, idUserBabyInfo:String) -> BabyList? {
         let array = self.findAll(userId)
-        var result:BabyList?
         for note in array {
             if note.idUserBabyInfo == idUserBabyInfo {
-                result = note
+                return note
             }
         }
-        return result
+        return nil
     }
 }
 
 class BabyListBL: NSObject {
     
-    class func insert(detail:BabyList, userId:String) -> [BabyList]{
+    class func insert(detail:BabyList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [BabyList]{
         BabyListDAO.shared.insert(detail, userId: userId)
         return BabyListDAO.shared.findAll(userId)
     }
     
-    class func delete(idUserBabyInfo:String, userId:String) ->[BabyList]{
+    class func delete(idUserBabyInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[BabyList]{
         BabyListDAO.shared.delete(idUserBabyInfo, userId: userId)
         return BabyListDAO.shared.findAll(userId)
     }
     
-    class func modify(detail:BabyList, userId:String = "") ->[BabyList]{
+    class func modify(detail:BabyList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[BabyList]{
         BabyListDAO.shared.modify(detail, userId: userId)
         return BabyListDAO.shared.findAll(userId)
     }
     
-    class func find(idUserBabyInfo:String, userId:String = "") ->BabyList?{
+    class func find(idUserBabyInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->BabyList?{
         return BabyListDAO.shared.find(userId, idUserBabyInfo: idUserBabyInfo)
     }
     
-    class func findAll(userId:String) ->[BabyList]{
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[BabyList]{
         return BabyListDAO.shared.findAll(userId)
     }
 }
@@ -843,16 +839,16 @@ class NoteLabelDAO: NSObject {
 }
 
 class NoteLabelBL: NSObject {
-    class func insert(detail:NoteLabel, userId:String) -> [NoteLabel]{
+    class func insert(detail:NoteLabel, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [NoteLabel]{
         NoteLabelDAO.shared.insert(detail, userId: userId)
         return NoteLabelDAO.shared.findAll(userId)
     }
     
-    class func findAll(userId:String) ->[NoteLabel]{
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[NoteLabel]{
         return NoteLabelDAO.shared.findAll(userId)
     }
     
-    class func findVia(labels:[String], userId:String) ->[String]{
+    class func findVia(labels:[String], userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[String]{
         return NoteLabelDAO.shared.findViaLabels(labels, userId: userId)
     }
 }
@@ -1063,38 +1059,37 @@ private class BabyBaseInfoDAO: NSObject {
     
     func find(idComBabyBaseInfo:String, userId:String) -> BabyBaseInfo? {
         let array = self.findAll(userId)
-        var result:BabyBaseInfo?
         for note in array {
             if note.idComBabyBaseInfo == idComBabyBaseInfo {
-                result = note
+                return note
             }
         }
-        return result
+        return nil
     }
 
 }
 
 class BabyBaseInfoBL: NSObject {
-    class func insert(detail:BabyBaseInfo, userId:String) -> [BabyBaseInfo]{
+    class func insert(detail:BabyBaseInfo, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [BabyBaseInfo]{
         BabyBaseInfoDAO.shared.insert(detail, userId: userId)
         return BabyBaseInfoDAO.shared.findAll(userId)
     }
     
-    class func delete(idComBabyBaseInfo:String, userId:String) ->[BabyBaseInfo]{
+    class func delete(idComBabyBaseInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[BabyBaseInfo]{
         BabyBaseInfoDAO.shared.delete(idComBabyBaseInfo, userId: userId)
         return BabyBaseInfoDAO.shared.findAll(userId)
     }
     
-    class func modify(detail:BabyBaseInfo, userId:String = "") ->[BabyBaseInfo]{
+    class func modify(detail:BabyBaseInfo, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[BabyBaseInfo]{
         BabyBaseInfoDAO.shared.modify(detail, userId: userId)
         return BabyBaseInfoDAO.shared.findAll(userId)
     }
     
-    class func find(idComBabyBaseInfo:String, userId:String) ->BabyBaseInfo?{
+    class func find(idComBabyBaseInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->BabyBaseInfo?{
         return BabyBaseInfoDAO.shared.find(idComBabyBaseInfo, userId: userId)
     }
     
-    class func findAll(userId: String) ->[BabyBaseInfo]{
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[BabyBaseInfo]{
         return BabyBaseInfoDAO.shared.findAll(userId)
     }
     
@@ -1261,6 +1256,7 @@ private class EquipmentsDAO:NSObject{
             if note.idEqmInfo == idEqmInfo {
                 if let currentIndex = array.indexOf(note) {
                     array.removeAtIndex(currentIndex)
+                    FListManager.sharedFList().delete(EquipmentsBL.contactFromEquipment(note))
                 }
             }
         }
@@ -1314,6 +1310,7 @@ private class EquipmentsDAO:NSObject{
                 if note.isGettingOnLineState != detail.isGettingOnLineState {
                     note.isGettingOnLineState = detail.isGettingOnLineState
                 }
+                FListManager.sharedFList().update(EquipmentsBL.contactFromEquipment(note))
             }
         }
         var arrDict:[String:NSObject] = [:]
@@ -1327,13 +1324,12 @@ private class EquipmentsDAO:NSObject{
     
     func find(idEqmInfo:String, userId:String) -> Equipments? {
         let array = self.findAll(userId)
-        var result:Equipments?
         for note in array {
             if note.idEqmInfo == idEqmInfo {
-                result = note
+                return note
             }
         }
-        return result
+        return nil
     }
     
     func deleteAll(userId:String) -> Bool {
@@ -1351,30 +1347,30 @@ private class EquipmentsDAO:NSObject{
 }
 
 class EquipmentsBL: NSObject {
-    class func insert(detail:Equipments, userId:String) -> [Equipments]{
+    class func insert(detail:Equipments, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [Equipments]{
         EquipmentsDAO.shared.insert(detail, userId: userId)
         return EquipmentsDAO.shared.findAll(userId)
     }
     
-    class func delete(idEqmInfo:String, userId:String) ->[Equipments]{
+    class func delete(idEqmInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[Equipments]{
         EquipmentsDAO.shared.delete(idEqmInfo, userId: userId)
         return EquipmentsDAO.shared.findAll(userId)
     }
     
-    class func modify(detail:Equipments, userId:String) ->[Equipments]{
+    class func modify(detail:Equipments, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[Equipments]{
         EquipmentsDAO.shared.modify(detail, userId: userId)
         return EquipmentsDAO.shared.findAll(userId)
     }
     
-    class func find(idEqmInfo:String, userId:String) ->Equipments?{
+    class func find(idEqmInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Equipments?{
         return EquipmentsDAO.shared.find(idEqmInfo, userId: userId)
     }
     
-    class func findAll(userId:String) ->[Equipments]{
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[Equipments]{
         return EquipmentsDAO.shared.findAll(userId)
     }
     
-    class func deleteAll(userId:String) -> Void{
+    class func deleteAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> Void{
         EquipmentsDAO.shared.deleteAll(userId)
     }
     
@@ -1473,21 +1469,23 @@ private class ChildAccountDAO: NSObject {
         return DAO.dao!
     }
     
-    func findAll() -> [ChildAccount] {
+    func findAll(userId:String) -> [ChildAccount] {
         var listData = [ChildAccount]()
         if let theData = NSData.init(contentsOfFile: ChildAccountArchiveFileName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(ChildAccountArchiveKey) as? [ChildAccount]{
-                    listData.appendContentsOf(arr)
+                if let arrDict = unArchive.decodeObjectForKey(ChildAccountArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [ChildAccount]  {
+                       listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:ChildAccount) -> Bool {
-        var array = self.findAll()
+    func insert(detail:ChildAccount, userId:String) -> Bool {
+        var array = self.findAll(userId)
         for base in array {
             if base.idUserChildInfo == detail.idUserChildInfo {
                 if let currentIndex = array.indexOf(base) {
@@ -1496,44 +1494,38 @@ private class ChildAccountDAO: NSObject {
             }
         }
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ChildAccountArchiveKey)
+        archiver.encodeObject(arrDict, forKey: ChildAccountArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(ChildAccountArchiveFileName.filePath(), atomically: true)
         
     }
     
-    func delete(detail:ChildAccount?, key:String = "") -> Bool {
-        var array = self.findAll()
+    func delete(idUserChildInfo:String, userId:String) -> Bool {
+        var array = self.findAll(userId)
         for note in array {
-            var idEqmInfo = ""
-            if let eqm = detail {
-                idEqmInfo = eqm.idUserChildInfo
-            }
-            
-            let baseKey = key == "" ? idEqmInfo : key
-            if note.idUserChildInfo == baseKey {
+            if note.idUserChildInfo == idUserChildInfo {
                 if let currentIndex = array.indexOf(note) {
                     array.removeAtIndex(currentIndex)
                 }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ChildAccountArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ChildAccountArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(array, forKey: ChildAccountArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ChildAccountArchiveFileName.filePath(), atomically: true)
     }
     
-    func modify(detail:ChildAccount, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.idUserChildInfo : key
+    func modify(detail:ChildAccount, userId:String) -> Bool {
+        let array = self.findAll(userId)
         for note in array {
-            
-            if note.idUserChildInfo == baseKey {
+            if note.idUserChildInfo == detail.idUserChildInfo {
                 if note.childName != detail.childName {
                     note.childName = detail.childName
                 }
@@ -1543,53 +1535,49 @@ private class ChildAccountDAO: NSObject {
                 if note.childMobile != detail.childMobile {
                     note.childMobile = detail.childMobile
                 }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ChildAccountArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ChildAccountArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: ChildAccountArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ChildAccountArchiveFileName.filePath(), atomically: true)
     }
     
-    func find(detail:ChildAccount?, key:String = "") -> ChildAccount {
-        let array = self.findAll()
-        var result = ChildAccount()
+    func find(idUserChildInfo:String, userId:String) -> ChildAccount? {
+        let array = self.findAll(userId)
         for note in array {
-            let userId = detail == nil ? "" : note.idUserChildInfo
-            let baseKey = key == "" ? userId : key
-            if note.idUserChildInfo == baseKey {
-                result = note
+            if note.idUserChildInfo == idUserChildInfo {
+                return note
             }
         }
-        return result
+        return nil
     }
 }
 
 class ChildAccountBL: NSObject {
-    class func insert(detail:ChildAccount) -> [ChildAccount]{
-        ChildAccountDAO.shared.insert(detail)
-//        print("baby list result \(result)")
-        return ChildAccountDAO.shared.findAll()
+    class func insert(detail:ChildAccount, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [ChildAccount]{
+        ChildAccountDAO.shared.insert(detail, userId: userId)
+        return ChildAccountDAO.shared.findAll(userId)
     }
     
-    class func delete(detail:ChildAccount?, key:String = "") ->[ChildAccount]{
-        ChildAccountDAO.shared.delete(detail, key: key)
-        return ChildAccountDAO.shared.findAll()
+    class func delete(idUserChildInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ChildAccount]{
+        ChildAccountDAO.shared.delete(idUserChildInfo, userId: userId)
+        return ChildAccountDAO.shared.findAll(userId)
     }
     
-    class func modify(detail:ChildAccount, key:String = "") ->[ChildAccount]{
-        ChildAccountDAO.shared.modify(detail, key: key)
-        return ChildAccountDAO.shared.findAll()
+    class func modify(detail:ChildAccount, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ChildAccount]{
+        ChildAccountDAO.shared.modify(detail, userId: userId)
+        return ChildAccountDAO.shared.findAll(userId)
     }
     
-    class func find(detail:ChildAccount?, key:String = "") ->ChildAccount{
-        return ChildAccountDAO.shared.find(detail, key: key)
+    class func find(idUserChildInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->ChildAccount?{
+        return ChildAccountDAO.shared.find(idUserChildInfo, userId: userId)
     }
-    class func findAll() ->[ChildAccount]{
-        return ChildAccountDAO.shared.findAll()
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ChildAccount]{
+        return ChildAccountDAO.shared.findAll(userId)
     }
 }
 
@@ -1608,7 +1596,6 @@ class ChildEquipments: NSObject,NSCoding {
      eqmPwd	string	是	设备密码
 
      */
-    var idUserChildInfo:String!
     var idEqmInfo:String!
     var eqmDid:String!
     var eqmName:String!
@@ -1616,9 +1603,6 @@ class ChildEquipments: NSObject,NSCoding {
     var idUserChildEqmInfo:String!
     var eqmAccount:String!
     var eqmPwd:String!
-    
-
-    
     
     var eqmSubItem = ""
     
@@ -1685,126 +1669,111 @@ private class ChildEquipmentsDAO: NSObject {
         return DAO.dao!
     }
     
-    func findAll() -> [ChildEquipments] {
+    func findAll(idUserChildInfo:String) -> [ChildEquipments] {
         var listData = [ChildEquipments]()
         if let theData = NSData.init(contentsOfFile: ChildEquipmentsArchiveFileName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(ChildEquipmentsArchiveKey) as? [ChildEquipments]{
-                    listData = arr
+                if let arrDict = unArchive.decodeObjectForKey(ChildEquipmentsArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[idUserChildInfo] as? [ChildEquipments]{
+                        listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:ChildEquipments) -> Bool {
-        var array = self.findAll()
+    func insert(detail:ChildEquipments, idUserChildInfo:String) -> Bool {
+        var array = self.findAll(idUserChildInfo)
         for base in array {
-            if base.idUserChildEqmInfo == detail.idUserChildEqmInfo {
+            if base.idEqmInfo == detail.idEqmInfo {
                 if let currentIndex = array.indexOf(base) {
                     array.removeAtIndex(currentIndex)
                 }
             }
         }
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[idUserChildInfo] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ChildEquipmentsArchiveKey)
+        archiver.encodeObject(arrDict, forKey: ChildEquipmentsArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(ChildEquipmentsArchiveFileName.filePath(), atomically: true)
         
     }
     
-    func delete(detail:ChildEquipments?, key:String = "") -> Bool {
-        var array = self.findAll()
+    func delete(idUserChildEqmInfo:String, idUserChildInfo:String) -> Bool {
+        var array = self.findAll(idUserChildInfo)
         for note in array {
-            var idEqmInfo = ""
-            if let eqm = detail {
-                idEqmInfo = eqm.idUserChildEqmInfo
-            }
-            
-            let baseKey = key == "" ? idEqmInfo : key
-            if note.idUserChildEqmInfo == baseKey {
+            if note.idUserChildEqmInfo == idUserChildEqmInfo {
                 if let currentIndex = array.indexOf(note) {
                     array.removeAtIndex(currentIndex)
                 }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ChildEquipmentsArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ChildEquipmentsArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
+        var arrDict:[String:NSObject] = [:]
+        arrDict[idUserChildInfo] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: ChildEquipmentsArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ChildEquipmentsArchiveFileName.filePath(), atomically: true)
     }
     
-    func modify(detail:ChildEquipments, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.idUserChildEqmInfo : key
+    func modify(detail:ChildEquipments, idUserChildInfo:String) -> Bool {
+        let array = self.findAll(idUserChildInfo)
         for note in array {
-            
-            if note.idUserChildEqmInfo == baseKey {
-                if note.idEqmInfo != detail.idEqmInfo {
-                    note.idEqmInfo = detail.idEqmInfo
+            if note.idEqmInfo == detail.idEqmInfo {
+                if note.idUserChildEqmInfo != detail.idUserChildEqmInfo {
+                    note.idUserChildEqmInfo = detail.idUserChildEqmInfo
                 }
-                if note.eqmName != detail.eqmName {
-                    note.eqmName = detail.eqmName
-                }
-                
-                if note.eqmStatus != detail.eqmStatus {
-                    note.eqmStatus = detail.eqmStatus
-                }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ChildEquipmentsArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ChildEquipmentsArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
+        var arrDict:[String:NSObject] = [:]
+        arrDict[idUserChildInfo] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: ChildEquipmentsArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ChildEquipmentsArchiveFileName.filePath(), atomically: true)
     }
     
-    func find(detail:ChildEquipments?, key:String = "") -> ChildEquipments? {
-        let array = self.findAll()
-        var result:ChildEquipments!
+    func find(idUserChildEqmInfo:String, idUserChildInfo:String) -> ChildEquipments? {
+        let array = self.findAll(idUserChildInfo)
         for note in array {
-            let userId = detail == nil ? "" : note.idUserChildEqmInfo
-            let baseKey = key == "" ? userId : key
-            if note.idUserChildEqmInfo == baseKey {
-                result = note
+            if note.idUserChildEqmInfo == idUserChildEqmInfo {
+                return note
             }
         }
-        return result
+        return nil
     }
 
 }
 
 class ChildEquipmentsBL: NSObject {
-    class func insert(detail:ChildEquipments) -> [ChildEquipments]{
-        ChildEquipmentsDAO.shared.insert(detail)
-//        print("baby list result \(result)")
-        return ChildEquipmentsDAO.shared.findAll()
+    class func insert(detail:ChildEquipments, idUserChildInfo:String) -> [ChildEquipments]{
+        ChildEquipmentsDAO.shared.insert(detail, idUserChildInfo: idUserChildInfo)
+        return ChildEquipmentsDAO.shared.findAll(idUserChildInfo)
     }
     
-    class func delete(detail:ChildEquipments?, key:String = "") ->[ChildEquipments]{
-        ChildEquipmentsDAO.shared.delete(detail, key: key)
-        return ChildEquipmentsDAO.shared.findAll()
+    class func delete(idUserChildEqmInfo: String, idUserChildInfo: String) ->[ChildEquipments]{
+        ChildEquipmentsDAO.shared.delete(idUserChildEqmInfo, idUserChildInfo: idUserChildInfo)
+        return ChildEquipmentsDAO.shared.findAll(idUserChildInfo)
     }
     
-    class func modify(detail:ChildEquipments, key:String = "") ->[ChildEquipments]{
-        ChildEquipmentsDAO.shared.modify(detail, key: key)
-        return ChildEquipmentsDAO.shared.findAll()
+    class func modify(detail:ChildEquipments, idUserChildInfo: String) ->[ChildEquipments]{
+        ChildEquipmentsDAO.shared.modify(detail, idUserChildInfo: idUserChildInfo)
+        return ChildEquipmentsDAO.shared.findAll(idUserChildInfo)
     }
     
-    class func find(detail:ChildEquipments?, key:String = "") ->ChildEquipments?{
-        return ChildEquipmentsDAO.shared.find(detail, key: key)
+    class func find(idUserChildEqmInfo: String, idUserChildInfo: String) ->ChildEquipments?{
+        return ChildEquipmentsDAO.shared.find(idUserChildEqmInfo, idUserChildInfo: idUserChildInfo)
     }
     
-    class func findAll() -> [ChildEquipments]{
-        return ChildEquipmentsDAO.shared.findAll()
+    class func findAll(idUserChildInfo: String) -> [ChildEquipments]{
+        return ChildEquipmentsDAO.shared.findAll(idUserChildInfo)
     }
 }
 
@@ -1814,14 +1783,12 @@ private let ChildEquipmentsPermissionKey = "ChildEquipmentsPermissionKey"
 private let ChildEquipmentsPermissionName = "ChildEquipmentsPermission.archive"
 class ChildEquipmentsPermission: NSObject,NSCoding {
     /*
-     idUserChildEqmInfo		int	是	用户设备id
      idUserChildEqmPermission		int	是	设备子帐号权限id
      idUserEqmInfo		int	是	用户设备id
      voicePermission		int	是	声音权限（1：有 2：无）
      imagePermission		int	是	图像权限（1：有 2：无）
      
      */
-    var idUserChildEqmInfo:String!
     var idUserChildEqmPermission:String!
     var idUserEqmInfo:String!
     var voicePermission:String!
@@ -1829,7 +1796,6 @@ class ChildEquipmentsPermission: NSObject,NSCoding {
     
     
     override init() {
-        self.idUserChildEqmInfo = ""
         self.idUserChildEqmPermission = ""
         self.idUserEqmInfo = ""
         self.voicePermission = ""
@@ -1838,9 +1804,6 @@ class ChildEquipmentsPermission: NSObject,NSCoding {
     
     required init?(coder aDecoder: NSCoder) {
         super.init()
-        if let obj = aDecoder.decodeObjectForKey("idUserChildEqmInfo") as? String {
-            self.idUserChildEqmInfo = obj
-        }
         if let obj = aDecoder.decodeObjectForKey("idUserChildEqmPermission") as? String {
             self.idUserChildEqmPermission = obj
         }
@@ -1857,7 +1820,6 @@ class ChildEquipmentsPermission: NSObject,NSCoding {
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(self.idUserChildEqmInfo, forKey: "idUserChildEqmInfo")
         aCoder.encodeObject(self.idUserChildEqmPermission, forKey: "idUserChildEqmPermission")
         aCoder.encodeObject(self.idUserEqmInfo, forKey: "idUserEqmInfo")
         aCoder.encodeObject(self.voicePermission, forKey: "voicePermission")
@@ -1879,128 +1841,92 @@ private class ChildEquipmentsPermissionDAO: NSObject {
         return DAO.dao!
     }
     
-    func findAll() -> [ChildEquipmentsPermission] {
+    func findAll(idUserChildEqmInfo:String) -> [ChildEquipmentsPermission] {
         var listData = [ChildEquipmentsPermission]()
         if let theData = NSData.init(contentsOfFile: ChildEquipmentsPermissionName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(ChildEquipmentsPermissionKey) as? [ChildEquipmentsPermission]{
-                    listData = arr
+                if let arrDict = unArchive.decodeObjectForKey(ChildEquipmentsPermissionKey) as? [String:NSObject]{
+                    if let list = arrDict[idUserChildEqmInfo] as? [ChildEquipmentsPermission] {
+                        listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:ChildEquipmentsPermission) -> Bool {
-        var array = self.findAll()
+    func insert(detail:ChildEquipmentsPermission, idUserChildEqmInfo:String) -> Bool {
+        var array = self.findAll(idUserChildEqmInfo)
         for base in array {
-            if base.idUserChildEqmInfo == detail.idUserChildEqmInfo {
+            if base.idUserChildEqmPermission == detail.idUserChildEqmPermission {
                 if let currentIndex = array.indexOf(base) {
                     array.removeAtIndex(currentIndex)
                 }
             }
         }
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[idUserChildEqmInfo] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ChildEquipmentsPermissionKey)
+        archiver.encodeObject(arrDict, forKey: ChildEquipmentsPermissionKey)
         archiver.finishEncoding()
         return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
         
     }
     
-    func delete(detail:ChildEquipmentsPermission?, key:String = "") -> Bool {
-        var array = self.findAll()
-        for note in array {
-            var idEqmInfo = ""
-            if let eqm = detail {
-                idEqmInfo = eqm.idUserChildEqmInfo
-            }
-            
-            let baseKey = key == "" ? idEqmInfo : key
-            if note.idUserChildEqmInfo == baseKey {
-                if let currentIndex = array.indexOf(note) {
-                    array.removeAtIndex(currentIndex)
-                }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ChildEquipmentsPermissionKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
-            }
-        }
-        return false
-    }
     
-    func modify(detail:ChildEquipmentsPermission, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.idUserChildEqmInfo : key
+    func modify(detail:ChildEquipmentsPermission, idUserChildEqmInfo:String) -> Bool {
+        let array = self.findAll(idUserChildEqmInfo)
         for note in array {
-            
-            if note.idUserChildEqmInfo == baseKey {
-                if note.idUserChildEqmPermission != detail.idUserChildEqmPermission {
-                    note.idUserChildEqmPermission = detail.idUserChildEqmPermission
-                }
-                if note.idUserEqmInfo != detail.idUserEqmInfo {
-                    note.idUserEqmInfo = detail.idUserEqmInfo
-                }
+            if note.idUserChildEqmPermission == detail.idUserChildEqmPermission {
                 if note.voicePermission != detail.voicePermission {
                     note.voicePermission = detail.voicePermission
                 }
                 if note.imagePermission != detail.imagePermission {
                     note.imagePermission = detail.imagePermission
                 }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ChildEquipmentsPermissionKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
             }
         }
-        return false
+        var arrDict:[String:NSObject] = [:]
+        arrDict[idUserChildEqmInfo] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: ChildEquipmentsPermissionKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ChildEquipmentsPermissionName.filePath(), atomically: true)
     }
     
-    func find(detail:ChildEquipmentsPermission?, key:String = "") -> ChildEquipmentsPermission? {
-        let array = self.findAll()
-        var result:ChildEquipmentsPermission!
+    func find(idUserChildEqmPermission:String, idUserChildEqmInfo:String) -> ChildEquipmentsPermission? {
+        let array = self.findAll(idUserChildEqmInfo)
         for note in array {
-            let userId = detail == nil ? "" : note.idUserChildEqmInfo
-            let baseKey = key == "" ? userId : key
-            if note.idUserChildEqmInfo == baseKey {
-                result = note
+            if note.idUserChildEqmPermission == idUserChildEqmPermission {
+                return note
             }
         }
-        return result
+        return nil
     }
     
 }
 
 class ChildEquipmentsPermissionBL: NSObject {
-    class func insert(detail:ChildEquipmentsPermission) -> [ChildEquipmentsPermission]{
-        ChildEquipmentsPermissionDAO.shared.insert(detail)
-//        print("baby list result \(result)")
-        return ChildEquipmentsPermissionDAO.shared.findAll()
+    class func insert(detail:ChildEquipmentsPermission, idUserChildEqmInfo:String) -> [ChildEquipmentsPermission]{
+        ChildEquipmentsPermissionDAO.shared.insert(detail, idUserChildEqmInfo: idUserChildEqmInfo)
+        return ChildEquipmentsPermissionDAO.shared.findAll(idUserChildEqmInfo)
     }
     
-    class func delete(detail:ChildEquipmentsPermission?, key:String = "") ->[ChildEquipmentsPermission]{
-        ChildEquipmentsPermissionDAO.shared.delete(detail, key: key)
-        return ChildEquipmentsPermissionDAO.shared.findAll()
+    class func modify(detail:ChildEquipmentsPermission, idUserChildEqmInfo:String) ->[ChildEquipmentsPermission]{
+        ChildEquipmentsPermissionDAO.shared.modify(detail, idUserChildEqmInfo: idUserChildEqmInfo)
+        return ChildEquipmentsPermissionDAO.shared.findAll(idUserChildEqmInfo)
     }
     
-    class func modify(detail:ChildEquipmentsPermission, key:String = "") ->[ChildEquipmentsPermission]{
-        ChildEquipmentsPermissionDAO.shared.modify(detail, key: key)
-        return ChildEquipmentsPermissionDAO.shared.findAll()
+    class func find(idUserChildEqmPermission:String, idUserChildEqmInfo:String) ->ChildEquipmentsPermission?{
+        return ChildEquipmentsPermissionDAO.shared.find(idUserChildEqmPermission, idUserChildEqmInfo: idUserChildEqmInfo)
     }
     
-    class func find(detail:ChildEquipmentsPermission?, key:String = "") ->ChildEquipmentsPermission?{
-        return ChildEquipmentsPermissionDAO.shared.find(detail, key: key)
-    }
-    
-    class func findAll() -> [ChildEquipmentsPermission]{
-        return ChildEquipmentsPermissionDAO.shared.findAll()
+    class func findAll(idUserChildEqmInfo:String) -> [ChildEquipmentsPermission]{
+        return ChildEquipmentsPermissionDAO.shared.findAll(idUserChildEqmInfo)
     }
 
 }
@@ -2126,21 +2052,23 @@ private class DiaryDAO: NSObject {
         return DAO.dao!
     }
     
-    func findAll() -> [Diary] {
+    func findAll(userId:String) -> [Diary] {
         var listData = [Diary]()
         if let theData = NSData.init(contentsOfFile: DiaryArchiveFileName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(DiaryArchiveKey) as? [Diary]{
-                    listData = arr
+                if let arrDict = unArchive.decodeObjectForKey(DiaryArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [Diary] {
+                        listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:Diary) -> Bool {
-        var array = self.findAll()
+    func insert(detail:Diary, userId:String) -> Bool {
+        var array = self.findAll(userId)
         for base in array {
             if base.idUserNoteInfo == detail.idUserNoteInfo {
                 if let currentIndex = array.indexOf(base) {
@@ -2156,131 +2084,64 @@ private class DiaryDAO: NSObject {
         }
         
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: DiaryArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
+    }
+    
+    func delete(idUserNoteInfo:String, userId:String) -> Bool {
+        var array = self.findAll(userId)
+        for note in array {
+            if note.idUserNoteInfo == idUserNoteInfo {
+                if let currentIndex = array.indexOf(note) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
         archiver.encodeObject(array, forKey: DiaryArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
-        
     }
     
-    func delete(detail:Diary?, key:String = "") -> Bool {
-        var array = self.findAll()
-        for note in array {
-            var idEqmInfo = ""
-            if let eqm = detail {
-                idEqmInfo = eqm.idUserNoteInfo
-            }
-            
-            let baseKey = key == "" ? idEqmInfo : key
-            if note.idUserNoteInfo == baseKey {
-                if let currentIndex = array.indexOf(note) {
-                    array.removeAtIndex(currentIndex)
-                }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: DiaryArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
-            }
-        }
-        return false
-    }
     
-    func modify(detail:Diary, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.idUserNoteInfo : key
-        for note in array {
-            
-            if note.idUserNoteInfo == baseKey {
-                if note.noteType != detail.noteType {
-                    note.noteType = detail.noteType
-                }
-                if note.moodStatus != detail.moodStatus {
-                    note.moodStatus = detail.moodStatus
-                }
-                
-                if note.noteLabel != detail.noteLabel {
-                    note.noteLabel = detail.noteLabel
-                    note.noteLabels.removeAll()
-                    let labels = detail.noteLabel.componentsSeparatedByString(",")
-                    for label in labels {
-                        note.noteLabels.append(label)
-                    }
-                }
-                
-                if note.content != detail.content {
-                    note.content = detail.content
-                }
-                if note.imgUrls != detail.imgUrls {
-                    note.imgUrls = detail.imgUrls
-                    note.images = detail.imgUrls.componentsSeparatedByString(",")
-                }
-                if note.idUserBabyInfo != detail.idUserBabyInfo {
-                    note.idUserBabyInfo = detail.idUserBabyInfo
-                }
-                if note.breedStatusDate != detail.breedStatusDate {
-                    note.breedStatusDate = detail.breedStatusDate
-                }
-                if note.createTime != detail.createTime {
-                    note.createTime = detail.createTime
-                    let front = detail.createTime.componentsSeparatedByString(" ")
-                    if front.count > 0 {
-                        note.createDate = front[0]
-                    }else{
-                        note.createDate = note.createTime
-                    }
-                }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: DiaryArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(DiaryArchiveFileName.filePath(), atomically: true)
-            }
-        }
-        return false
-    }
     
-    func find(detail:Diary?, key:String = "") -> Diary? {
-        let array = self.findAll()
-        var result:Diary?
+    func find(idUserNoteInfo:String, userId:String) -> Diary? {
+        let array = self.findAll(userId)
         for note in array {
-            let userId = detail == nil ? "" : note.idUserNoteInfo
-            let baseKey = key == "" ? userId : key
-            if note.idUserNoteInfo == baseKey {
-                result = note
+            if note.idUserNoteInfo == idUserNoteInfo {
+                return note
             }
         }
-        return result
+        return nil
     }
 
 }
 
 class DiaryBL: NSObject {
-    class func insert(detail:Diary) -> [Diary]{
-        DiaryDAO.shared.insert(detail)
-//        print("diary list result \(result)")
-        return DiaryDAO.shared.findAll()
+    class func insert(detail:Diary, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [Diary]{
+        DiaryDAO.shared.insert(detail, userId: userId)
+        return DiaryDAO.shared.findAll(userId)
     }
     
-    class func delete(detail:Diary?, key:String = "") ->[Diary]{
-        DiaryDAO.shared.delete(detail, key: key)
-        return DiaryDAO.shared.findAll()
+    class func delete(idUserNoteInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[Diary]{
+        DiaryDAO.shared.delete(idUserNoteInfo, userId: userId)
+        return DiaryDAO.shared.findAll(userId)
     }
     
-    class func modify(detail:Diary, key:String = "") ->[Diary]{
-        DiaryDAO.shared.modify(detail, key: key)
-        return DiaryDAO.shared.findAll()
+    class func find(idUserNoteInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Diary?{
+        return DiaryDAO.shared.find(idUserNoteInfo, userId: userId)
     }
     
-    class func find(detail:Diary?, key:String = "") ->Diary?{
-        return DiaryDAO.shared.find(detail, key: key)
-    }
-    
-    class func findAll() -> [Diary]{
-        return DiaryDAO.shared.findAll()
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [Diary]{
+        return DiaryDAO.shared.findAll(userId)
     }
     
 }
@@ -2309,6 +2170,8 @@ class Article: NSObject {
     var images:[String]!
     var content:String!
     var createTime:String!
+    var createDate:String!
+    
     var contentTotalHeight:Float!
     
     
@@ -2319,6 +2182,7 @@ class Article: NSObject {
         self.imageUrl = ""
         self.content = ""
         self.createTime = ""
+        self.createDate = ""
         self.images = []
         self.contentTotalHeight = 0
     }
@@ -2347,6 +2211,9 @@ class Article: NSObject {
         if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
             self.createTime = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("createDate") as? String {
+            self.createDate = obj
+        }
         self.contentTotalHeight = aDecoder.decodeFloatForKey("contentTotalHeight")
         
     }
@@ -2359,6 +2226,7 @@ class Article: NSObject {
         aCoder.encodeObject(self.images, forKey: "images")
         aCoder.encodeObject(self.content, forKey: "content")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
+        aCoder.encodeObject(self.createDate, forKey: "createDate")
         aCoder.encodeFloat(self.contentTotalHeight, forKey: "contentTotalHeight")
     }
 }
@@ -2377,21 +2245,23 @@ private class ArticleDAO: NSObject {
     }
     
     
-    func findAll() -> [Article] {
+    func findAll(userId:String) -> [Article] {
         var listData = [Article]()
         if let theData = NSData.init(contentsOfFile: ArticleArchiveFileName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(ArticleArchiveKey) as? [Article]{
-                    listData = arr
+                if let arrDict = unArchive.decodeObjectForKey(ArticleArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [Article] {
+                        listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:Article) -> Bool {
-        var array = self.findAll()
+    func insert(detail:Article, userId:String) -> Bool {
+        var array = self.findAll(userId)
         for base in array {
             if base.idBbsNewsInfo == detail.idBbsNewsInfo {
                 if let currentIndex = array.indexOf(base) {
@@ -2408,6 +2278,12 @@ private class ArticleDAO: NSObject {
             let imageName = BabyZoneConfig.shared.baseUrl + img
             detail.images.append(imageName)
         }
+        
+        let date = detail.createTime.componentsSeparatedByString(" ")
+        if let dateStr = date.first {
+            detail.createDate = dateStr
+        }
+        
         array.append(detail)
         
         let theData = NSMutableData.init()
@@ -2418,109 +2294,27 @@ private class ArticleDAO: NSObject {
         
     }
     
-    func delete(detail:Article?, key:String = "") -> Bool {
-        var array = self.findAll()
-        for note in array {
-            var babyId = ""
-            if let list = detail {
-                babyId = list.idBbsNewsInfo
-            }
-            let baseKey = key == "" ? babyId : key
-            if note.idBbsNewsInfo == baseKey {
-                if let currentIndex = array.indexOf(note) {
-                    array.removeAtIndex(currentIndex)
-                }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ArticleArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
-            }
-        }
-        return false
-    }
     
-    func modify(detail:Article, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.idBbsNewsInfo : key
+    func find(idBbsNewsInfo:String, userId:String) -> Article? {
+        let array = self.findAll(userId)
         for note in array {
-            
-            if note.idBbsNewsInfo == baseKey {
-                if note.newsType != detail.newsType {
-                    note.newsType = detail.newsType
-                }
-                if note.title != detail.title {
-                    note.title = detail.title
-                }
-                if note.imageUrl != detail.imageUrl {
-                    note.imageUrl = detail.imageUrl
-                    note.images.removeAll()
-                    let imgArr = detail.imageUrl.componentsSeparatedByString(",")
-                    for img in imgArr {
-                        note.images.append(BabyZoneConfig.shared.baseUrl + img)
-                    }
-                }
-                if note.content != detail.content {
-                    note.content = detail.content
-                }
-                if note.createTime != detail.createTime {
-                    note.createTime = detail.createTime
-                }
-                
-                var totalHeight = detail.content.size(UIFont.systemFontOfSize(14))
-                totalHeight.height += detail.title.size(UIFont.systemFontOfSize(14)).height
-                let imgArr = detail.imageUrl.componentsSeparatedByString(",")
-                totalHeight.height += CGFloat(imgArr.count * 60)
-                detail.contentTotalHeight = Float.init(totalHeight.height)
-                for img in imgArr {
-                    let imageName = BabyZoneConfig.shared.baseUrl + img
-                    detail.images.append(imageName)
-                }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ArticleArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
+            if note.idBbsNewsInfo == idBbsNewsInfo {
+                return note
             }
         }
-        return false
-    }
-    
-    func find(detail:Article?, key:String = "") -> Article? {
-        let array = self.findAll()
-        var result:Article?
-        for note in array {
-            let userId = detail == nil ? "" : note.idBbsNewsInfo
-            let baseKey = key == "" ? userId : key
-            if note.idBbsNewsInfo == baseKey {
-                result = note
-            }
-        }
-        return result
+        return nil
     }
 
 }
 
 class ArticleBL: NSObject {
-    class func insert(detail:Article) -> [Article]{
-        ArticleDAO.shared.insert(detail)
-//        print("baby list result \(result)")
-        return ArticleDAO.shared.findAll()
+    class func insert(detail:Article, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [Article]{
+        ArticleDAO.shared.insert(detail, userId: userId)
+        return ArticleDAO.shared.findAll(userId)
     }
     
-    class func delete(detail:Article, key:String = "") ->[Article]{
-        ArticleDAO.shared.delete(detail, key: key)
-        return ArticleDAO.shared.findAll()
-    }
-    
-    class func modify(detail:Article, key:String = "") ->[Article]{
-        ArticleDAO.shared.modify(detail, key: key)
-        return ArticleDAO.shared.findAll()
-    }
-    
-    class func find(detail:Article?, key:String = "") ->Article?{
-        return ArticleDAO.shared.find(detail, key: key)
+    class func find(idBbsNewsInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Article?{
+        return ArticleDAO.shared.find(idBbsNewsInfo, userId: userId)
     }
 
 }
@@ -2583,26 +2377,29 @@ private class ArticleTypeListDAO: NSObject {
     }
     
     
-    func findAll() -> [ArticleTypeList] {
+    func findAll(userId:String) -> [ArticleTypeList] {
         var listData = [ArticleTypeList]()
         if let theData = NSData.init(contentsOfFile: ArticleTypeListKeyName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(ArticleTypeListKey) as? [ArticleTypeList]{
-                    listData = arr
+                if let arrDict = unArchive.decodeObjectForKey(ArticleTypeListKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [ArticleTypeList] {
+                        listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:ArticleTypeList) -> Bool {
-        var array = self.findAll()
+    func insert(detail:ArticleTypeList, userId:String) -> Bool {
+        var array = self.findAll(userId)
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ArticleTypeListKey)
+        archiver.encodeObject(arrDict, forKey: ArticleTypeListKey)
         archiver.finishEncoding()
         return theData.writeToFile(ArticleTypeListKeyName.filePath(), atomically: true)
         
@@ -2611,14 +2408,13 @@ private class ArticleTypeListDAO: NSObject {
 
 
 class ArticleTypeListBL: NSObject {
-    class func insert(detail:ArticleTypeList) -> [ArticleTypeList]{
-        ArticleTypeListDAO.shared.insert(detail)
-        //        print("baby list result \(result)")
-        return ArticleTypeListDAO.shared.findAll()
+    class func insert(detail:ArticleTypeList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [ArticleTypeList]{
+        ArticleTypeListDAO.shared.insert(detail, userId: userId)
+        return ArticleTypeListDAO.shared.findAll(userId)
     }
     
-    class func findAll() ->[ArticleTypeList]{
-        return ArticleTypeListDAO.shared.findAll()
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ArticleTypeList]{
+        return ArticleTypeListDAO.shared.findAll(userId)
     }
 }
 
@@ -2640,8 +2436,8 @@ class ArticleList: NSObject {
      videoUrl	string		视频地址
      browseCount	int		浏览量
      createTime	string		创建时间（yyyy-MM-dd HH:mm:ss）
-
-
+     
+     operateType		int	是	操作类型  1：收藏  2：取消收藏
      
      */
     
@@ -2657,6 +2453,9 @@ class ArticleList: NSObject {
     var browseCount:String!
     var createTime:String!
     
+    var operateType:String!
+    
+    
     override init() {
         self.idBbsNewsInfo = ""
         self.newsType = ""
@@ -2669,6 +2468,8 @@ class ArticleList: NSObject {
         self.videoUrl = ""
         self.browseCount = ""
         self.createTime = ""
+        
+        self.operateType = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -2707,6 +2508,9 @@ class ArticleList: NSObject {
         if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
             self.createTime = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("operateType") as? String {
+            self.operateType = obj
+        }
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -2721,6 +2525,7 @@ class ArticleList: NSObject {
         aCoder.encodeObject(self.browseCount, forKey: "browseCount")
         aCoder.encodeObject(self.imgList, forKey: "imgList")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
+        aCoder.encodeObject(self.operateType, forKey: "operateType")
     }
 }
 
@@ -2738,21 +2543,23 @@ private class ArticleListDAO: NSObject {
     }
     
     
-    func findAll() -> [ArticleList] {
+    func findAll(userId:String) -> [ArticleList] {
         var listData = [ArticleList]()
         if let theData = NSData.init(contentsOfFile: ArticleListArchiveFileName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arr = unArchive.decodeObjectForKey(ArticleListArchiveKey) as? [ArticleList]{
-                    listData = arr
+                if let arrDict = unArchive.decodeObjectForKey(ArticleListArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [ArticleList] {
+                        listData.appendContentsOf(list)
+                    }
                 }
             }
         }
         return listData
     }
     
-    func insert(detail:ArticleList) -> Bool {
-        var array = self.findAll()
+    func insert(detail:ArticleList, userId:String) -> Bool {
+        var array = self.findAll(userId)
         for base in array {
             if base.idBbsNewsInfo == detail.idBbsNewsInfo {
                 if let currentIndex = array.indexOf(base) {
@@ -2761,124 +2568,67 @@ private class ArticleListDAO: NSObject {
             }
         }
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ArticleListArchiveKey)
+        archiver.encodeObject(arrDict, forKey: ArticleListArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
         
     }
     
-    func delete(detail:ArticleList?, key:String = "") -> Bool {
-        var array = self.findAll()
+    
+    func find(idBbsNewsInfo:String, userId:String) -> ArticleList? {
+        let array = self.findAll(userId)
         for note in array {
-            var babyId = ""
-            if let list = detail {
-                babyId = list.idBbsNewsInfo
-            }
-            let baseKey = key == "" ? babyId : key
-            if note.idBbsNewsInfo == baseKey {
-                if let currentIndex = array.indexOf(note) {
-                    array.removeAtIndex(currentIndex)
-                }
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ArticleListArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
+            if note.idBbsNewsInfo == idBbsNewsInfo {
+                return note
             }
         }
-        return false
+        return nil
     }
     
-    func modify(detail:ArticleList, key:String = "") -> Bool {
-        let array = self.findAll()
-        let baseKey = key == "" ? detail.idBbsNewsInfo : key
-        for note in array {
-            
-            if note.idBbsNewsInfo == baseKey {
-                if note.newsType != detail.newsType {
-                    note.newsType = detail.newsType
+    func modify(detail:ArticleList, userId:String) -> Bool {
+        let array = self.findAll(userId)
+        for base in array {
+            if base.idBbsNewsInfo == detail.idBbsNewsInfo {
+                if base.operateType != detail.operateType {
+                    base.operateType = detail.operateType
                 }
-                if note.babyAgeYear != detail.babyAgeYear {
-                    note.babyAgeYear = detail.babyAgeYear
-                }
-                if note.babyAgeMon != detail.babyAgeMon {
-                    note.babyAgeMon = detail.babyAgeMon
-                }
-                if note.title != detail.title {
-                    note.title = detail.title
-                }
-                if note.content != detail.content {
-                    note.content = detail.content
-                }
-                if note.imgList != detail.imgList {
-                    note.imgList = detail.imgList
-                }
-                if note.imgReplaceormat != detail.imgReplaceormat {
-                    note.imgReplaceormat = detail.imgReplaceormat
-                }
-                if note.videoUrl != detail.videoUrl {
-                    note.videoUrl = detail.videoUrl
-                }
-                if note.browseCount != detail.browseCount {
-                    note.browseCount = detail.browseCount
-                }
-                if note.createTime != detail.createTime {
-                    note.createTime = detail.createTime
-                }
-                
-                let theData = NSMutableData.init()
-                let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-                archiver.encodeObject(array, forKey: ArticleArchiveKey)
-                archiver.finishEncoding()
-                return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
             }
         }
-        return false
-    }
-    
-    func find(detail:ArticleList?, key:String = "") -> ArticleList? {
-        let array = self.findAll()
-        var result:ArticleList?
-        for note in array {
-            let userId = detail == nil ? "" : note.idBbsNewsInfo
-            let baseKey = key == "" ? userId : key
-            if note.idBbsNewsInfo == baseKey {
-                result = note
-            }
-        }
-        return result
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: ArticleListArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
     }
     
 }
 
 class ArticleListBL: NSObject {
-    class func insert(detail:ArticleList) -> [ArticleList]{
-        ArticleListDAO.shared.insert(detail)
-//        print("baby list result \(result)")
-        return ArticleListDAO.shared.findAll()
+    class func insert(detail:ArticleList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [ArticleList]{
+        ArticleListDAO.shared.insert(detail, userId: userId)
+        return ArticleListDAO.shared.findAll(userId)
     }
     
-    class func delete(detail:ArticleList, key:String = "") ->[ArticleList]{
-        ArticleListDAO.shared.delete(detail, key: key)
-        return ArticleListDAO.shared.findAll()
+    class func find(idBbsNewsInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->ArticleList?{
+        return ArticleListDAO.shared.find(idBbsNewsInfo, userId: userId)
     }
     
-    class func modify(detail:ArticleList, key:String = "") ->[ArticleList]{
-        ArticleListDAO.shared.modify(detail, key: key)
-        return ArticleListDAO.shared.findAll()
+    class func modify(detail:ArticleList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Bool{
+        return ArticleListDAO.shared.modify(detail, userId: userId)
     }
     
-    class func find(detail:ArticleList?, key:String = "") ->ArticleList?{
-        return ArticleListDAO.shared.find(detail, key: key)
-    }
-    
-    class func findAll() ->[ArticleList]{
-        return ArticleListDAO.shared.findAll()
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ArticleList]{
+        return ArticleListDAO.shared.findAll(userId)
     }
 }
+
+
 
 class CityCode: NSObject {
     var codeId = ""

@@ -339,6 +339,9 @@ class LoginBaseInfoView: UIView ,UICollectionViewDataSource, UICollectionViewDel
         self.registModel.phoneNum = phone
         self.registModel.password = password
         self.registModel.validCode = validCode
+        self.registModel.breedStatus = "3"
+        self.registModel.babySex = "1"
+        self.registModel.breedStatusDate = "2000-10-10"
         self.initialize()
         self.finishHandler = completionHandler
     }
@@ -350,10 +353,7 @@ class LoginBaseInfoView: UIView ,UICollectionViewDataSource, UICollectionViewDel
     
     private func initialize(){
         var detail:[ThirdLoginDetail] = []
-        var detailModel = ThirdLoginDetail(thirdNormalImage: "login_pregnancy_normal.png", thirdSelectedImage: "login_pregnancy_selected.png", thirdName: "备孕", thirdDetailId: "2")
-        detail.append(detailModel)
-        
-        detailModel = ThirdLoginDetail(thirdNormalImage: "login_pregnancy_normal.png", thirdSelectedImage: "login_pregnancy_selected.png", thirdName: "怀孕", thirdDetailId: "3")
+        var detailModel = ThirdLoginDetail(thirdNormalImage: "login_pregnancy_normal.png", thirdSelectedImage: "login_pregnancy_normal.png", thirdName: "备孕/怀孕", thirdDetailId: "3")
         detail.append(detailModel)
         
         detailModel = ThirdLoginDetail(thirdNormalImage: "login_baby_normal.png", thirdSelectedImage: "login_baby_selected.png", thirdName: "已有宝宝", thirdDetailId: "4")
@@ -374,7 +374,7 @@ class LoginBaseInfoView: UIView ,UICollectionViewDataSource, UICollectionViewDel
         flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 5, bottom: 5, right: 5)
         flowLayout.minimumInteritemSpacing = 5
         
-        self.statusCollectionView = UICollectionView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.frame.width, height: ((self.frame.height) / 2) / 2), collectionViewLayout: flowLayout)
+        self.statusCollectionView = UICollectionView.init(frame: CGRect(x: self.frame.width / 5.5, y: navigationBarHeight, width: self.frame.width - 2 * self.frame.width / 5.5, height: ((self.frame.height) / 2) / 2), collectionViewLayout: flowLayout)
         self.statusCollectionView.backgroundColor = UIColor.clearColor()
         self.statusCollectionView.delegate = self
         self.statusCollectionView.dataSource = self
@@ -474,7 +474,7 @@ class LoginBaseInfoView: UIView ,UICollectionViewDataSource, UICollectionViewDel
                 let detailModel = self.statusModel.loginThird[indexPath.item]
                 imageView.image = UIImage.imageWithName(detailModel.thirdSelectedImage)
             }
-            self.registModel.breedStatus = "\(indexPath.item + 1)"
+            self.registModel.breedStatus = "\(indexPath.item + 3)"
         }else if collectionView == self.sexCollectionView{
             if let view = cell?.contentView.viewWithTag(SexImageViewStartIndex + indexPath.item) {
                 let imageView = view as! UIImageView

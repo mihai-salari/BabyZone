@@ -57,8 +57,9 @@ class DiaryDetailView: UIView {
         
         
         let date2Label = UILabel.init(frame: CGRectMake(CGRectGetMidX(imageContainView.frame), CGRectGetMaxY(imageContainView.frame) - upRateHeight(25), CGRectGetWidth(imageContainView.frame) / 2 - 10, upRateHeight(25)))
-        if let babyId = BabyZoneConfig.shared.BabyBaseInfoKey.defaultString() {
-            if let baseInfo = BabyBaseInfoBL.find(nil, key: babyId) {
+        let babyId = BabyZoneConfig.shared.BabyBaseInfoKey.defaultString()
+        if babyId != "" {
+            if let baseInfo = BabyBaseInfoBL.find(babyId) {
                 date2Label.text = self.resultDay(baseInfo)
             }else{
                 date2Label.text = "第0周第0天"

@@ -17,11 +17,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
-        dispatch_queue_create("devicesLoadQueue", nil).queue { 
-            Equipments.sendAsyncEqutementList(nil)
-        }
-        
+                
         var result = false
         if AppDelegate.sharedDefault().dwApContactID == 0 {
             if let loginResult = UDManager.getLoginInfo() {

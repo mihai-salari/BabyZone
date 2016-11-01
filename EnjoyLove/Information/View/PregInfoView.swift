@@ -35,7 +35,7 @@ class PregInfoView: UIView {
     init(frame: CGRect,babyModel:BabyBaseInfo, switchCompletionHandler:(()->())?, recordCompletionHandler:(()->())?) {
         super.init(frame: frame)
         
-        self.cirleView = HMCirclePercentView.init(frame: CGRectMake((CGRectGetWidth(self.frame) - pregInfoCircleWidth) / 2, CGRectGetHeight(self.frame) * (2 / 5.3) - pregInfoCircleWidth / 2, pregInfoCircleWidth, pregInfoCircleWidth), showText: false)
+        self.cirleView = HMCirclePercentView.init(frame: CGRect.init(x: (self.frame.width - (self.frame.width * (1 / 2))) / 2, y: 40, width: (self.frame.width * (1 / 2)), height: (self.frame.width * (1 / 2))), showText: false)
         
         self.cirleView.drawCircleWithPercent(self.resultDay(babyModel).percent, duration: 2, trackWidth: 5, progressWidth: 5, clockwise: true, lineCap: kCALineCapRound, trackFillColor: UIColor.clearColor(), trackStrokeColor: UIColor.hexStringToColor("#e37580"), progressFillColor: UIColor.clearColor(), progressStrokeColor: UIColor.hexStringToColor("#ffffff"), animatedColors: nil)
         
@@ -50,8 +50,7 @@ class PregInfoView: UIView {
         self.pregDaysLabel.textColor = UIColor.whiteColor()
         self.addSubview(self.pregDaysLabel)
         
-        
-        self.babyImageView = UIImageView.init(frame: CGRectMake((CGRectGetWidth(self.cirleView.frame) - pregBabyImageViewWidth) / 2, (CGRectGetHeight(self.cirleView.frame) - pregBabyImageViewHeight) / 2, pregBabyImageViewWidth, pregBabyImageViewHeight))
+        self.babyImageView = UIImageView.init(frame: CGRect.init(x: (self.cirleView.frame.width - (self.cirleView.frame.width * (1 / 2))) / 2, y: (self.cirleView.frame.height - (self.cirleView.frame.height * (1 / 2))) / 2 - 5, width: self.cirleView.frame.width * (1 / 2), height: self.cirleView.frame.width * (1 / 2) - 10))
         self.babyImageView.image = UIImage.imageWithName(babyModel.babyHeadImage)
         self.babyImageView.layer.cornerRadius = 10
         self.babyImageView.layer.masksToBounds = true
@@ -62,7 +61,7 @@ class PregInfoView: UIView {
         babyButton.addTarget(self, action: #selector(PregInfoView.switchBabyClick), forControlEvents: .TouchUpInside)
         self.cirleView.addSubview(babyButton)
         
-        self.weightLabel = UILabel.init(frame: CGRectMake(0, CGRectGetHeight(self.frame) * (3 / 4.7), CGRectGetWidth(self.frame) / 3, 15))
+        self.weightLabel = UILabel.init(frame: CGRectMake(0, CGRectGetHeight(self.frame) * (3 / 4.3), CGRectGetWidth(self.frame) / 3, 15))
         self.weightLabel.textColor = UIColor.whiteColor()
         self.weightLabel.text = "\(babyModel.minWeight)~\(babyModel.maxWeight)"
         self.weightLabel.textAlignment = .Center
@@ -226,8 +225,7 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let model = self.pregInfoData[section]
-        return model.pregInfoData.count
+        return self.pregInfoData[section].pregInfoData.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -256,8 +254,9 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let mainModel = self.pregInfoData[indexPath.section]
-        return CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight) < 80 ? 80 : CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight)
+        var mainModel = self.pregInfoData[indexPath.section]
+        mainModel.pregInfoData[indexPath.row].contentTotalHeight = mainModel.pregInfoData[indexPath.row].contentTotalHeight < Float(tableView.frame.height - 10 - 40) ? Float(tableView.frame.height - 10 - 40): mainModel.pregInfoData[indexPath.row].contentTotalHeight
+        return CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight)
     }
     
     func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -273,7 +272,7 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let model = self.pregInfoData[section]
         
-        let headerView = UIView.init(frame: CGRectMake(0, 0, CGRectGetWidth(tableView.frame), CGRectGetHeight(self.frame) / 3))
+        let headerView = UIView.init(frame: CGRectMake(0, 0, CGRectGetWidth(tableView.frame), 45))
         headerView.backgroundColor = UIColor.whiteColor()
         
         let imageView = UIImageView.init(frame: CGRectMake(10, (CGRectGetHeight(headerView.frame) - CGRectGetHeight(headerView.frame) * (1 / 2)) / 2, CGRectGetHeight(headerView.frame) * (1 / 4), CGRectGetHeight(headerView.frame) * (1 / 2)))
@@ -296,7 +295,7 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGRectGetHeight(self.frame) / 3
+        return 45
     }
     
     
@@ -347,7 +346,7 @@ class PregStatusCell: UITableViewCell {
         var mainLabelHeight:CGFloat = 0
         var subItemLabelHeight:CGFloat = 0
         var imageViewHeight:CGFloat = 0
-        let shareViewHeight:CGFloat = 30
+        let shareViewHeight:CGFloat = 40
         if model.imageUrl == "" {
             mainLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (1 / 4)
             subItemLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (3 / 4)
@@ -380,7 +379,7 @@ class PregStatusCell: UITableViewCell {
         }
         
         var button = DiaryListButton(type: .Custom)
-        button.frame = CGRectMake(0, CGRectGetHeight(self.contentView.frame) - shareViewHeight, CGRectGetWidth(self.contentView.frame) * (3 / 5) * (1 / 2), shareViewHeight)
+        button.frame = CGRectMake(0, self.contentView.frame.height - shareViewHeight, CGRectGetWidth(self.contentView.frame) * (3 / 5) * (1 / 2), shareViewHeight)
         button.setImageRect(CGSizeMake(15, 10), normaImage: "gray_menu.png")
         button.addCustomTarget(self, sel: #selector(PregStatusCell.cellMoreMenuClick))
         self.contentView.addSubview(button)
@@ -393,7 +392,7 @@ class PregStatusCell: UITableViewCell {
         
         let dateLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(button.frame), CGRectGetMinY(button.frame), CGRectGetWidth(self.contentView.frame) * (3 / 5) * (1 / 2), CGRectGetHeight(button.frame)))
         dateLabel.textAlignment = .Center
-        dateLabel.text = model.createTime
+        dateLabel.text = model.createDate
         dateLabel.textColor = UIColor.lightGrayColor()
         dateLabel.font = UIFont.systemFontOfSize(12)
         self.contentView.addSubview(dateLabel)

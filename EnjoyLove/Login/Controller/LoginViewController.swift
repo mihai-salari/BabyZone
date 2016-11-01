@@ -9,6 +9,7 @@
 
 import UIKit
 
+let LoginAndRegisterSuccessNotification = "LoginAndRegisterSuccessNotification"
 class LoginViewController: BaseViewController {
 
     override func viewDidLoad() {
@@ -21,6 +22,7 @@ class LoginViewController: BaseViewController {
                 BabyZoneConfig.shared.UserPhoneKey.setDefaultObject(phone)
                 Login.sendAsyncLogin(phone, userPwd: password, completionHandler: { (errorCode, msg, dataDict) in
                     if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
+                        NSNotificationCenter.defaultCenter().postNotificationName(LoginAndRegisterSuccessNotification, object: nil)
                         if let data = dataDict {
                             if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String{
                                 var countryCode = "86"
@@ -49,7 +51,7 @@ class LoginViewController: BaseViewController {
                                                 }
                                                 
                                                 let login = Login()
-                                                login.userId = format(data["userId"])
+                                                login.userId = format(data["userId"])//userId = 7
                                                 login.sessionId = format(data["sessionId"])
                                                 login.nickName = format(data["nickName"])
                                                 login.userSign = format(data["userSign"])
@@ -63,6 +65,7 @@ class LoginViewController: BaseViewController {
                                                 LoginBL.insert(login)
                                                 BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
                                                 PersonDetail.sendAsyncPersonDetail(nil)
+                                                Equipments.sendAsyncEqutementList(nil)
                                                 dispatch_get_main_queue().queue({ 
                                                     weakSelf.dismissViewControllerAnimated(true, completion: nil)
                                                 })
@@ -100,6 +103,7 @@ class LoginViewController: BaseViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     
     private func loginSuccess(result:LoginResult){
         let settings = UIUserNotificationSettings.init(forTypes: [.Badge, .Sound, .Alert], categories: nil)

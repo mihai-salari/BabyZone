@@ -23,8 +23,7 @@ struct PregInfoStatus {
     var pregStatusDesc = ""
     var pregInfoData:[Article]!
     var pregBabyId = ""
-    var pregMoreImage = ""
-    
+    var pregMoreImage = ""    
 }
 
 

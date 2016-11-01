@@ -26,7 +26,7 @@ class BabyMainViewController: BaseVideoViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        if isLogin() == false {
+        if LoginBL.isLogin() == false {
             let login = LoginViewController()
             self.presentViewController(login, animated: true, completion: nil)
         }else{
@@ -128,6 +128,10 @@ class BabyMainViewController: BaseVideoViewController {
     }
     
     func deleteDevice() -> Void {
+        self.initialize()
+    }
+    
+    override func loginAndRegistSuccessRefresh() {
         self.initialize()
     }
     

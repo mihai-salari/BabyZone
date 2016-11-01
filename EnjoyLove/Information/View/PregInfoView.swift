@@ -58,7 +58,7 @@ class PregInfoView: UIView {
         
         let babyButton = UIButton.init(type: .Custom)
         babyButton.frame = self.cirleView.bounds
-        babyButton.addTarget(self, action: #selector(PregInfoView.switchBabyClick), forControlEvents: .TouchUpInside)
+        babyButton.addTarget(self, action: #selector(self.switchBabyClick), forControlEvents: .TouchUpInside)
         self.cirleView.addSubview(babyButton)
         
         self.weightLabel = UILabel.init(frame: CGRectMake(0, CGRectGetHeight(self.frame) * (3 / 4.3), CGRectGetWidth(self.frame) / 3, 15))
@@ -194,7 +194,6 @@ class PregInfoView: UIView {
 
 private let pregMainImageWidth:CGFloat = upRateWidth(20)
 private let pregMainImageHeight:CGFloat = upRateWidth(40)
-private let pregInfoTableViewCellId = "PregStatusCellId"
 
 class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     
@@ -207,12 +206,11 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     init(frame: CGRect, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?) {
         super.init(frame: frame)
         self.pregInfoData = dataSource
-        self.pregTable = UITableView.init(frame: self.bounds, style: .Plain)
+        self.pregTable = UITableView.init(frame: self.bounds, style: .Grouped)
         self.pregTable.delegate = self
         self.pregTable.dataSource = self
         self.pregTable.separatorInset = UIEdgeInsetsZero
         self.pregTable.layoutMargins = UIEdgeInsetsZero
-        self.pregTable.registerClass(PregStatusCell.self, forCellReuseIdentifier: pregInfoTableViewCellId)
         self.addSubview(self.pregTable)
         
         self.selectHandler = dataCompletionHandler
@@ -229,7 +227,11 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(pregInfoTableViewCellId) as? PregStatusCell
+        let cellId = "pregInfoTableViewCellId"
+        var cell = tableView.dequeueReusableCellWithIdentifier(cellId) as? PregStatusCell
+        if cell == nil {
+            cell = PregStatusCell.init(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
+        }
         if let resultCell = cell {
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
@@ -255,8 +257,7 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         var mainModel = self.pregInfoData[indexPath.section]
-        mainModel.pregInfoData[indexPath.row].contentTotalHeight = mainModel.pregInfoData[indexPath.row].contentTotalHeight < Float(tableView.frame.height - 10 - 40) ? Float(tableView.frame.height - 10 - 40): mainModel.pregInfoData[indexPath.row].contentTotalHeight
-        return CGFloat(mainModel.pregInfoData[indexPath.row].contentTotalHeight)
+        return mainModel.pregInfoData[indexPath.row].titleHeight + mainModel.pregInfoData[indexPath.row].contentHeight + mainModel.pregInfoData[indexPath.row].imageHeight  + 40
     }
     
     func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -339,50 +340,27 @@ class PregStatusCell: UITableViewCell {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
-        
-        self.contentView.frame.size.height = CGFloat(model.contentTotalHeight)
+        let shareViewHeight:CGFloat = 40
+        self.contentView.frame.size.height = model.titleHeight + model.contentHeight + model.imageHeight + shareViewHeight
         self.contentView.frame.size.width = ScreenWidth - 2 * viewOriginX
         
-        var mainLabelHeight:CGFloat = 0
-        var subItemLabelHeight:CGFloat = 0
-        var imageViewHeight:CGFloat = 0
-        let shareViewHeight:CGFloat = 40
-        if model.images.count == 0 {
-            mainLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (1 / 4)
-            if model.content != "" {
-                subItemLabelHeight = (CGRectGetHeight(self.contentView.frame) - shareViewHeight - 10) * (2 / 3) * (3 / 4)
-            }else{
-                subItemLabelHeight = 0
-            }
-            imageViewHeight = 0
-        }else{
-            mainLabelHeight = (self.contentView.frame.height - shareViewHeight - 10 - 10) * (2 / 7) * (1 / 3)
-            if model.content != "" {
-                subItemLabelHeight = (self.contentView.frame.height - shareViewHeight - 10 - 10) * (2 / 7) * (2 / 3)
-            }else{
-                subItemLabelHeight = 0
-            }
-            imageViewHeight = (self.contentView.frame.height - shareViewHeight - mainLabelHeight - subItemLabelHeight - 10) / CGFloat(model.images.count)
-        }
-        
-        let mainLabel = UILabel.init(frame: CGRectMake(10, 10, CGRectGetWidth(self.contentView.frame) - 20, mainLabelHeight))
+        let mainLabel = UILabel.init(frame: CGRectMake(10, 0, self.contentView.frame.width - 20, model.titleHeight))
         mainLabel.text = model.title
         mainLabel.textColor = UIColor.darkGrayColor()
-        mainLabel.font = UIFont.systemFontOfSize(upRateWidth(14))
+        mainLabel.font = UIFont.systemFontOfSize(14)
         self.contentView.addSubview(mainLabel)
         
-        let subItemLabel = UILabel.init(frame: CGRectMake(CGRectGetMinX(mainLabel.frame), CGRectGetMaxY(mainLabel.frame) + 5, CGRectGetWidth(mainLabel.frame), subItemLabelHeight))
-        subItemLabel.font = UIFont.systemFontOfSize(upRateHeight(12))
+        let subItemLabel = UILabel.init(frame: CGRectMake(CGRectGetMinX(mainLabel.frame), CGRectGetMaxY(mainLabel.frame), CGRectGetWidth(mainLabel.frame), model.contentHeight))
+        subItemLabel.font = UIFont.systemFontOfSize(12)
         subItemLabel.textColor = UIColor.lightGrayColor()
         subItemLabel.text = model.content
         subItemLabel.numberOfLines = 0
         subItemLabel.adjustsFontSizeToFitWidth = true
         subItemLabel.minimumScaleFactor = 0.8
         self.contentView.addSubview(subItemLabel)
-        
-        for i in 0 ..< model.images.count {
-            let imageView = UIImageView.init(frame: CGRect.init(x: mainLabel.frame.minX, y: subItemLabel.frame.maxY + CGFloat(i) * imageViewHeight, width: mainLabel.frame.width, height: imageViewHeight))
-            imageView.setImageURL(model.images[i])
+        if model.images.count > 0 {
+            let imageView = UIImageView.init(frame: CGRect.init(x: mainLabel.frame.minX, y: subItemLabel.frame.maxY, width: self.contentView.frame.width - 20, height: model.imageHeight))
+            imageView.setImageURL(model.images[0])
             self.contentView.addSubview(imageView)
         }
         

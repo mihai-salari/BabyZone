@@ -2280,15 +2280,14 @@ private class ArticleDAO: NSObject {
                 }
             }
         }
-        detail.contentHeight = detail.content.size(UIFont.systemFontOfSize(17)).height
-        detail.titleHeight = detail.title.size(UIFont.systemFontOfSize(17)).height
+        detail.contentHeight = detail.content.size(UIFont.systemFontOfSize(16)).height
+        detail.titleHeight = detail.title.size(UIFont.systemFontOfSize(14)).height
         do {
             if let imageData = detail.imageUrl.dataUsingEncoding(NSUTF8StringEncoding) {
                 if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
                     for img in dict.values {
                         detail.images.append(img)
                     }
-                    print(detail.images)
                 }
             }
         } catch  {
@@ -2306,10 +2305,11 @@ private class ArticleDAO: NSObject {
         }
         
         array.append(detail)
-        
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ArticleArchiveKey)
+        archiver.encodeObject(arrDict, forKey: ArticleArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(ArticleArchiveFileName.filePath(), atomically: true)
         
@@ -2649,6 +2649,105 @@ class ArticleListBL: NSObject {
     }
 }
 
+
+class AppBrowseCount: NSObject {
+    
+    
+    
+    /*
+     modelType		int	是	模块类型 （1：我的宝宝（监控） 2：异常提醒开关  3：本周宝宝状态4：育婴记录 ）
+     count		int	是	浏览次数
+
+     */
+    private var monitor = 0
+    private var remind = 0
+    private var babyStatus = 0
+    private var babyRecord = 0
+    
+    private var maxCount = 3
+    
+    private var monitorCount:Int64 = 0
+    private var remindCount:Int64 = 0
+    private var babyStatusCount:Int64 = 0
+    private var babyRecordCount:Int64 = 0
+    
+    static var shared:AppBrowseCount{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:AppBrowseCount? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = AppBrowseCount()
+        }
+        return DAO.dao!
+    }
+    
+    func modelTypeMonitor() -> Void {
+        "modelTypeMonitor".setDefaultString("\(self.monitorCount += 1)")
+        self.monitor += 1
+        if self.monitor == 5 {
+            self.sendAsyncupdateBbsCollection("1", count: "modelTypeMonitor".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            weakSelf.monitor = 0
+                        }
+                    }
+                }
+            })
+        }
+    }
+    
+    func modelTypeRemind() -> Void {
+        "modelTypeRemind".setDefaultString("\(self.remindCount += 1)")
+        self.remind += 1
+        if self.remind == 5 {
+            self.sendAsyncupdateBbsCollection("2", count: "modelTypeRemind".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            weakSelf.remind = 0
+                        }
+                    }
+                }
+                })
+        }
+    }
+    
+    func modelTypeBabyStatus() -> Void {
+        "modelTypeBabyStatus".setDefaultString("\(self.babyStatusCount += 1)")
+        self.babyStatus += 1
+        if self.babyStatus == 5 {
+            self.sendAsyncupdateBbsCollection("3", count: "modelTypeBabyStatus".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            weakSelf.babyStatus = 0
+                        }
+                    }
+                }
+                })
+        }
+    }
+    
+    func modelTypeBabyRecord() -> Void {
+        "modelTypeBabyRecord".setDefaultString("\(self.babyRecordCount += 1)")
+        self.babyRecord += 1
+        if self.babyRecord == 5 {
+            self.sendAsyncupdateBbsCollection("4", count: "modelTypeBabyRecord".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            weakSelf.babyRecord = 0
+                        }
+                    }
+                }
+                })
+        }
+    }
+    
+}
 
 
 class CityCode: NSObject {

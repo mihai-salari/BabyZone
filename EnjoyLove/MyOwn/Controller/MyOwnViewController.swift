@@ -58,16 +58,15 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         
         dispatch_queue_create("dataInitQueue", nil).queue {
             
-            if self.section1Data == nil{
-                self.section1Data = []
-            }else{
-                self.section1Data.removeAll()
+            if self.section1Data != nil{
+                self.section1Data = nil
             }
-            if self.sectionTitleData == nil{
-                self.sectionTitleData = []
-            }else{
-                self.sectionTitleData.removeAll()
+            self.section1Data = []
+            
+            if self.sectionTitleData != nil{
+                self.sectionTitleData = nil
             }
+            self.sectionTitleData = []
             
             
             let headerModel = MyOwnHeader()
@@ -97,20 +96,21 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             self.sectionTitleData.append(sectionData)
             
             dispatch_get_main_queue().queue({ 
-                if self.myOwnTable == nil {
-                    self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
-                    self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
-                    self.myOwnTable.scrollEnabled = false
-                    self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
-                    self.myOwnTable.delegate = self
-                    self.myOwnTable.dataSource = self
-                    self.myOwnTable.separatorInset = UIEdgeInsetsZero
-                    self.myOwnTable.layoutMargins = UIEdgeInsetsZero
-                    self.myOwnTable.backgroundColor = UIColor.whiteColor()
-                    self.view.addSubview(self.myOwnTable)
-                }else{
-                    self.myOwnTable.reloadData()
+                if self.myOwnTable != nil {
+                    self.myOwnTable.removeFromSuperview()
+                    self.myOwnTable = nil
                 }
+                self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
+                self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
+                self.myOwnTable.scrollEnabled = false
+                self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
+                self.myOwnTable.delegate = self
+                self.myOwnTable.dataSource = self
+                self.myOwnTable.separatorInset = UIEdgeInsetsZero
+                self.myOwnTable.layoutMargins = UIEdgeInsetsZero
+                self.myOwnTable.backgroundColor = UIColor.whiteColor()
+                self.view.addSubview(self.myOwnTable)
+
             })
         }
     }

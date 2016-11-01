@@ -142,7 +142,6 @@ extension ArticleTypeList{
 }
 
 private let ArticleListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsList"
-private let updateBbsCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateBbsCollection"
 extension ArticleList{
     
     /*
@@ -196,7 +195,7 @@ extension ArticleList{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
-                if let data = response["data"] as? [String:NSObject]{
+                if errorCode == BabyZoneConfig.shared.passCode{
                     if let articleList = ArticleListBL.find(idBbsNewsInfo) {
                         articleList.operateType = operateType
                         ArticleListBL.modify(articleList)
@@ -212,11 +211,27 @@ extension ArticleList{
             }
         }
     }
-    
-    
 }
 
-
+private let updateBbsCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateBbsCollection"
+extension AppBrowseCount{
+    
+    func sendAsyncupdateBbsCollection(modelType: String,count: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["modelType":modelType, "count":count], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+}
 
 
 

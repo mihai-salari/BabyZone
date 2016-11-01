@@ -82,6 +82,7 @@ class BabyMainViewController: BaseVideoViewController {
                 if let babyEqm = baby.babyEquipment{
                     let currentEqm = EquipmentsBL.contactFromEquipment(babyEqm)
                     if currentEqm.onLineState == 1{
+                        AppBrowseCount.shared.modelTypeMonitor()
                         let monitor = P2PMonitorController()
                         monitor.deviceContact = currentEqm
                         monitor.monitorRefreshHandler = { (image) in

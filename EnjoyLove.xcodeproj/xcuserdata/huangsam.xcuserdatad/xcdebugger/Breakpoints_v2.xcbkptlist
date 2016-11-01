@@ -41,13 +41,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/Information/View/PregInfoView.swift"
-            timestampString = "499681474.239922"
+            filePath = "EnjoyLove/Information/Controller/PregInfoViewController.swift"
+            timestampString = "499708897.64259"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "354"
-            endingLineNumber = "354"
-            landmarkName = "refreshCell(_:menuCompletionHandler:shareCompletionHandler:)"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "initialize()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

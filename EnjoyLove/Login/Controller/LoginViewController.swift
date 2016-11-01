@@ -22,7 +22,6 @@ class LoginViewController: BaseViewController {
                 BabyZoneConfig.shared.UserPhoneKey.setDefaultObject(phone)
                 Login.sendAsyncLogin(phone, userPwd: password, completionHandler: { (errorCode, msg, dataDict) in
                     if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
-                        NSNotificationCenter.defaultCenter().postNotificationName(LoginAndRegisterSuccessNotification, object: nil)
                         if let data = dataDict {
                             if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String{
                                 var countryCode = "86"
@@ -64,6 +63,7 @@ class LoginViewController: BaseViewController {
                                                 login.md5Password = password.md5
                                                 LoginBL.insert(login)
                                                 BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
+                                                NSNotificationCenter.defaultCenter().postNotificationName(LoginAndRegisterSuccessNotification, object: nil)
                                                 PersonDetail.sendAsyncPersonDetail(nil)
                                                 Equipments.sendAsyncEqutementList(nil)
                                                 dispatch_get_main_queue().queue({ 

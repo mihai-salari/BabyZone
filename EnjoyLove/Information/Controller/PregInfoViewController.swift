@@ -14,6 +14,7 @@ class PregInfoViewController: BaseViewController {
     private var currentBabyId = "-1"
     private var pregView:PregInfoView!
     private var pregTableView:PregTableView!
+    private var containView:UIScrollView!
     private var pregBabyData:[BabyBaseInfo]!
     private var pregInfoStatusData:[PregInfoStatus]!
     private var hasNote:Bool = false
@@ -43,17 +44,15 @@ class PregInfoViewController: BaseViewController {
     }
     
     private func initialize() -> Void{
-        if self.pregBabyData == nil {
-            self.pregBabyData = []
-        }else{
-            self.pregBabyData.removeAll()
+        if self.pregBabyData != nil {
+            self.pregBabyData = nil
         }
+        self.pregBabyData = []
         
-        if self.pregInfoStatusData == nil {
-            self.pregInfoStatusData = []
-        }else{
-            self.pregInfoStatusData.removeAll()
+        if self.pregInfoStatusData != nil {
+            self.pregInfoStatusData = nil
         }
+        self.pregInfoStatusData = []
         
         
         HUD.showHud("正在加载...", onView: self.view)
@@ -111,7 +110,9 @@ class PregInfoViewController: BaseViewController {
                             recoment.content = "暂无数据"
                             recoment.idBbsNewsInfo = ""
                             recoment.createTime = "2016.10.10"
-                            recoment.contentTotalHeight = 80
+                            recoment.titleHeight = 15
+                            recoment.contentHeight = 20
+                            recoment.imageHeight = 45
                             recoments.append(recoment)
                             articleId = "-1"
                             articleErrorTip = "暂无咨询数据"
@@ -120,13 +121,17 @@ class PregInfoViewController: BaseViewController {
                         weakSelf.pregInfoStatusData.append(pregInfoStatus)
                         
                         dispatch_get_main_queue().queue({
-                            
-                            let containView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: weakSelf.view.frame.width, height: weakSelf.view.frame.height - navAndTabHeight))
-                            containView.showsVerticalScrollIndicator = false
-                            containView.contentSize = CGSize.init(width: weakSelf.view.frame.width, height: 2 * (weakSelf.view.frame.height * (2 / 3)))
-                            weakSelf.view.addSubview(containView)
-                            
                             HUD.hideHud(weakSelf.view)
+                            if weakSelf.containView != nil{
+                                weakSelf.containView.removeFromSuperview()
+                                weakSelf.containView = nil
+                            }
+                            weakSelf.containView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: weakSelf.view.frame.width, height: weakSelf.view.frame.height - navAndTabHeight))
+                            weakSelf.containView.showsVerticalScrollIndicator = false
+                            weakSelf.containView.contentSize = CGSize.init(width: weakSelf.view.frame.width, height: 2 * (weakSelf.view.frame.height * (2 / 3)))
+                            weakSelf.view.addSubview(weakSelf.containView)
+                            
+                            
                             if babyId == "-1"{
                                 HUD.showText(babyErrorTip, onView: weakSelf.view.window == nil ? weakSelf.view : weakSelf.view.window)
                             }
@@ -135,83 +140,84 @@ class PregInfoViewController: BaseViewController {
                             }
                             
                             if weakSelf.pregView != nil{
-                                weakSelf.pregView.refreshViews(weakSelf.pregBabyData[0])
-                            }else{
-                                weakSelf.pregView = PregInfoView.init(frame: CGRectMake(0, 0, containView.frame.width, weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: {
-                                    let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .ActionSheet)
-                                    let babyList = BabyListBL.findAll()
-                                    if babyList.count > 0{
-                                        for itemModel in BabyListBL.findAll(){
-                                            let action = UIAlertAction.init(title: itemModel.babyName, style: .Default, handler: { (action:UIAlertAction) in
-                                                if itemModel.idUserBabyInfo == weakSelf.currentBabyId{
-                                                    return
-                                                }
-                                                weakSelf.reloadDataVia(itemModel.idUserBabyInfo)
-                                            })
-                                            if action.valueForKey("titleTextColor") == nil{
-                                                action.setValue(alertTextColor, forKey: "titleTextColor")
-                                            }
-                                            actionSheet.addAction(action)
-                                        }
-                                        
-                                        let cancelAction = UIAlertAction.init(title: "取消", style: .Cancel, handler: { (action:UIAlertAction) in
-                                            
-                                        })
-                                        if cancelAction.valueForKey("titleTextColor") == nil{
-                                            cancelAction.setValue(UIColor.darkGrayColor(), forKey: "titleTextColor")
-                                        }
-                                        actionSheet.addAction(cancelAction)
-                                        
-                                        weakSelf.presentViewController(actionSheet, animated: true, completion: nil)
-                                    }
-                                    }, recordCompletionHandler: { [weak self] in
-                                        if let weakSelf = self{
-                                            if weakSelf.hasNote == true{
-                                                if babyId != "-1"{
-                                                    let diaryListVC = PregDiaryViewController()
-                                                    weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
-                                                }else{
-                                                    HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
-                                                }
-                                                
-                                            }else{
-                                                let diary = DiaryRecordViewController()
-                                                weakSelf.navigationController?.pushViewController(diary, animated: true)
-                                            }
-                                        }
-                                    })
-                                containView.addSubview(weakSelf.pregView)
+                                weakSelf.pregView.removeFromSuperview()
+                                weakSelf.pregView = nil
                             }
                             
-                            if weakSelf.pregTableView != nil{
-                                weakSelf.pregTableView.reloadData(weakSelf.pregInfoStatusData)
-                            }else{
-                                weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: 0, y: weakSelf.pregView.frame.maxY, width: containView.frame.width, height: weakSelf.view.frame.height * (2 / 3)), dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
-                                    if let weakSelf = self{
-                                        switch indexPath.section{
-                                        case 0:
-                                            let babyStatus = BabyStatusViewController()
-                                            babyStatus.infoType = infoType
-                                            weakSelf.navigationController?.pushViewController(babyStatus, animated: true)
-                                        case 1:
-                                            break
-                                            //                                        let babyProblem = ProblemViewController()
-                                        //                                        weakSelf.navigationController?.pushViewController(babyProblem, animated: true)
-                                        default:
-                                            break
+                            weakSelf.pregView = PregInfoView.init(frame: CGRectMake(0, 0, weakSelf.containView.frame.width, weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: {
+                                let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .ActionSheet)
+                                let babyList = BabyListBL.findAll()
+                                if babyList.count > 0{
+                                    for itemModel in BabyListBL.findAll(){
+                                        let action = UIAlertAction.init(title: itemModel.babyName, style: .Default, handler: { (action:UIAlertAction) in
+                                            if itemModel.idUserBabyInfo == weakSelf.currentBabyId{
+                                                return
+                                            }
+                                            weakSelf.reloadDataVia(itemModel.idUserBabyInfo)
+                                        })
+                                        if action.valueForKey("titleTextColor") == nil{
+                                            action.setValue(alertTextColor, forKey: "titleTextColor")
                                         }
+                                        actionSheet.addAction(action)
                                     }
                                     
-                                    }, moreMenuCompletionHandler: { (model) in
+                                    let cancelAction = UIAlertAction.init(title: "取消", style: .Cancel, handler: { (action:UIAlertAction) in
                                         
-                                    }, shareCompletionHandler: { (model) in
-                                        
+                                    })
+                                    if cancelAction.valueForKey("titleTextColor") == nil{
+                                        cancelAction.setValue(UIColor.darkGrayColor(), forKey: "titleTextColor")
+                                    }
+                                    actionSheet.addAction(cancelAction)
+                                    
+                                    weakSelf.presentViewController(actionSheet, animated: true, completion: nil)
+                                }
+                                }, recordCompletionHandler: { [weak self] in
+                                    if let weakSelf = self{
+                                        if weakSelf.hasNote == true{
+                                            if babyId != "-1"{
+                                                let diaryListVC = PregDiaryViewController()
+                                                weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
+                                            }else{
+                                                HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
+                                            }
+                                            
+                                        }else{
+                                            let diary = DiaryRecordViewController()
+                                            weakSelf.navigationController?.pushViewController(diary, animated: true)
+                                        }
+                                    }
                                 })
-                                containView.addSubview(weakSelf.pregTableView)
-                            }
+                            weakSelf.containView.addSubview(weakSelf.pregView)
+
                             
+                            if weakSelf.pregTableView != nil{
+                                weakSelf.pregTableView.removeFromSuperview()
+                                weakSelf.pregTableView = nil
+                            }
+                            weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: viewOriginX, y: weakSelf.pregView.frame.maxY, width: weakSelf.containView.frame.width - 2 * viewOriginX, height: weakSelf.view.frame.height * (2 / 3)), dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
+                                switch indexPath.section{
+                                case 0:
+                                    let babyStatus = BabyStatusViewController()
+                                    babyStatus.infoType = infoType
+                                    weakSelf.navigationController?.pushViewController(babyStatus, animated: true)
+                                case 1:
+                                    break
+                                    //                                        let babyProblem = ProblemViewController()
+                                //                                        weakSelf.navigationController?.pushViewController(babyProblem, animated: true)
+                                default:
+                                    break
+                                }
+
+                                
+                                }, moreMenuCompletionHandler: { (model) in
+                                    
+                                }, shareCompletionHandler: { (model) in
+                                    
+                            })
+                            weakSelf.containView.addSubview(weakSelf.pregTableView)
+
                         })
-                                                
+                        
                     })
                 }
                 })

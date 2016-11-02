@@ -47,7 +47,6 @@ class DiaryDetailViewController: BaseViewController {
             QiNiu.uploadImages("", images: self.model.imageArr, progress: { (progress) in
 //                print("progress \(progress)")
                 }, successHandler: { (urls, fileNames) in
-                    print("urls \(urls.joinWithSeparator(",")) and file names \(fileNames)")
                     
                     Diary.sendAsyncAddUserNote(self.model.moodStatus, noteLabel: self.model.noteLabels.joinWithSeparator(","), content: self.model.content, imgUrls: urls.joinWithSeparator(",")) { [weak self](errorCode, msg) in
                         if let weakSelf = self{
@@ -58,8 +57,11 @@ class DiaryDetailViewController: BaseViewController {
                                         if navController.viewControllers.count > 0{
                                             if let diaryList = navController.viewControllers[1] as? PregDiaryViewController{
                                                 diaryList.triggerTableView()
+                                                navController.popToViewController(navController.viewControllers[1], animated: true)
+                                            }else{
+                                                let pregDiary = PregDiaryViewController()
+                                                navController.pushViewController(pregDiary, animated: true)
                                             }
-                                            navController.popToViewController(navController.viewControllers[1], animated: true)
                                         }
                                     }
                                 }
@@ -68,7 +70,6 @@ class DiaryDetailViewController: BaseViewController {
                     }
                     
             }) { (error) in
-//                print("upload error \(error)")
             }
         }else{
             Diary.sendAsyncAddUserNote(self.model.moodStatus, noteLabel: self.model.noteLabels.joinWithSeparator(","), content: self.model.content, imgUrls: self.model.imgUrls) { [weak self](errorCode, msg) in
@@ -80,8 +81,11 @@ class DiaryDetailViewController: BaseViewController {
                                 if navController.viewControllers.count > 0{
                                     if let diaryList = navController.viewControllers[1] as? PregDiaryViewController{
                                         diaryList.triggerTableView()
+                                        navController.popToViewController(navController.viewControllers[1], animated: true)
+                                    }else{
+                                        let pregDiary = PregDiaryViewController()
+                                        navController.pushViewController(pregDiary, animated: true)
                                     }
-                                    navController.popToViewController(navController.viewControllers[1], animated: true)
                                 }
                             }
                         }
@@ -89,20 +93,6 @@ class DiaryDetailViewController: BaseViewController {
                 }
             }
         }
-        
-        /*
-        Diary.sendAsyncAddUserNote(self.model.moodStatus, noteLabel: self.model.noteLabels.joinWithSeparator(","), content: self.model.content, imgUrls: self.model.imgUrls) { [weak self](errorCode, msg) in
-            if let weakSelf = self{
-                HUD.hideHud(weakSelf.view)
-                if let err = errorCode{
-                    if err == BabyZoneConfig.shared.passCode{
-                        let pregDiary = PregDiaryViewController()
-                        weakSelf.navigationController?.pushViewController(pregDiary, animated: true)
-                    }
-                }
-            }
-        }
- */
     }
 
     /*

@@ -57,8 +57,11 @@ class LoginViewController: BaseViewController {
                                                 login.sessionId = format(data["sessionId"])
                                                 login.nickName = format(data["nickName"])
                                                 login.userSign = format(data["userSign"])
+                                                login.headImage = format(data["headImg"])
+                                                login.isHasNote = format(data["isHasNote"])
+                                                login.bbsCollNum = format(data["bbsCollNum"])
+                                                login.userName = format(data["userName"])
                                                 login.userAccount = phone
-                                                login.userName = phone
                                                 login.userPhone = phone
                                                 login.password = password
                                                 login.isRegist = registNumer

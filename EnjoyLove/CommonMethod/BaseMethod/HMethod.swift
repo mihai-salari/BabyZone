@@ -204,12 +204,7 @@ func sourcePath(sourceName:String?) -> String? {
 }
 
 let weekDict = ["2":"MON","3":"TUES","4":"WED","5":"THUR","6":"FRI","7":"SAT","1":"SUN"]
-func week(weekday:String) -> String {
-    if let week = weekDict[weekday] {
-        return week
-    }
-    return ""
-}
+
 
 private let hudViewTag = 100000
 class HUD: NSObject {

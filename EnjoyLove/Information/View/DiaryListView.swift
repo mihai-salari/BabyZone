@@ -163,7 +163,7 @@ class DiaryListCell: UITableViewCell {
         self.contentView.addSubview(imageView)
         
         let dateLabel = UILabel.init(frame: CGRectMake(CGRectGetMaxX(imageView.frame) + 5, CGRectGetMinY(imageView.frame), CGRectGetWidth(self.frame) / 3.3, CGRectGetHeight(imageView.frame) / 4))
-        dateLabel.text = model.createTime
+        dateLabel.text = model.createDate
         dateLabel.textColor = UIColor.darkGrayColor()
         dateLabel.adjustsFontSizeToFitWidth = true
         dateLabel.font = UIFont.systemFontOfSize(upRateWidth(15))

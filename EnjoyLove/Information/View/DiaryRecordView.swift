@@ -59,7 +59,7 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
         }
         
         self.resultDiary.content = self.textView.text
-        let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
+        let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + "\(NSDate.today().weekday)".week()
         self.resultDiary.createDate = today
         if let result = self.resultDiary {
             return result

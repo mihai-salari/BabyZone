@@ -13,6 +13,18 @@ private let LoginArchiveKey = "LoginArchiveKey"
 private let LoginArchiveFileName = "LoginArchive.archive"
 
 class Login: NSObject,NSCoding {
+    /*
+     userId		int	是	用户id
+     nickName		string		昵称
+     userSign		string		用户个性签名
+     userName		string	是	用户名
+     
+     headImg		string		头像
+     sessionId		string	是	登陆会话
+     isHasNote		int	是	是否有日记（1：有 2：没有）
+     bbsCollNum		int	是	资讯收藏数
+
+     */
     var userId:String!
     var sessionId:String!
     var userName:String!
@@ -24,7 +36,9 @@ class Login: NSObject,NSCoding {
     var isRegist:NSNumber!
     var nickName:String!
     var userSign:String!
-    var equipments:[Equipments]!
+    var headImage:String!
+    var isHasNote:String!
+    var bbsCollNum:String!
     
     override init() {
         self.userId = ""
@@ -37,6 +51,9 @@ class Login: NSObject,NSCoding {
         self.md5Password = ""
         self.nickName = ""
         self.userSign = ""
+        self.headImage = ""
+        self.isHasNote = ""
+        self.bbsCollNum = ""
         self.isRegist = NSNumber.init(bool: false)
     }
     
@@ -72,6 +89,15 @@ class Login: NSObject,NSCoding {
         if let obj = aDecoder.decodeObjectForKey("userSign") as? String {
             self.userSign = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("headImage") as? String {
+            self.headImage = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("isHasNote") as? String {
+            self.isHasNote = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("bbsCollNum") as? String {
+            self.bbsCollNum = obj
+        }
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -85,6 +111,9 @@ class Login: NSObject,NSCoding {
         aCoder.encodeObject(self.isRegist, forKey: "isRegist")
         aCoder.encodeObject(self.nickName, forKey: "nickName")
         aCoder.encodeObject(self.userSign, forKey: "userSign")
+        aCoder.encodeObject(self.headImage, forKey: "headImage")
+        aCoder.encodeObject(self.isHasNote, forKey: "isHasNote")
+        aCoder.encodeObject(self.bbsCollNum, forKey: "bbsCollNum")
     }
     
 }
@@ -176,6 +205,15 @@ private class LoginDAO:NSObject{
                 if note.userSign != detail.userSign {
                     note.userSign = detail.userSign
                 }
+                if note.headImage != detail.headImage {
+                    note.headImage = detail.headImage
+                }
+                if note.isHasNote != detail.isHasNote {
+                    note.isHasNote = detail.isHasNote
+                }
+                if note.bbsCollNum != detail.bbsCollNum {
+                    note.bbsCollNum = detail.bbsCollNum
+                }
             }
         }
         let theData = NSMutableData.init()
@@ -194,8 +232,10 @@ private class LoginDAO:NSObject{
                 note.contactId = ""
                 note.password = ""
                 note.md5Password = ""
+                note.headImage = ""
+                note.isHasNote = ""
+                note.bbsCollNum = ""
                 note.isRegist = NSNumber.init(bool: false)
-                note.equipments = []
                 break
             }
         }
@@ -2035,7 +2075,7 @@ class Diary: NSObject,NSCoding {
         aCoder.encodeObject(self.idUserBabyInfo, forKey: "idUserBabyInfo")
         aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
-        aCoder.encodeObject(self.createTime, forKey: "createDate")
+        aCoder.encodeObject(self.createDate, forKey: "createDate")
     }
 }
 
@@ -2077,8 +2117,8 @@ private class DiaryDAO: NSObject {
             }
         }
         let front = detail.createTime.componentsSeparatedByString(" ")
-        if front.count > 0 {
-            detail.createDate = front[0]
+        if let firstDate = front.first {
+            detail.createDate = "\(firstDate) " + firstDate.toWeekday("-")
         }else{
             detail.createDate = detail.createTime
         }

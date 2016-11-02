@@ -223,6 +223,39 @@ extension String{
         return ""
     }
     
+    func week() -> String {
+        if let week = weekDict[self] {
+            return week
+        }
+        return ""
+    }
+    
+    func toWeekday(format:String) -> String {
+        let dates = self.componentsSeparatedByString(format)
+        var year = 0
+        var month = 0
+        var day = 0
+        switch dates.count {
+        case 1:
+            if let yearInt = Int.init(dates[0]) {
+                year = yearInt
+            }
+        case 2:
+            if let yearInt = Int.init(dates[0]), let monthInt = Int.init(dates[1]) {
+                year = yearInt
+                month = monthInt
+            }
+        case 3:
+            if let yearInt = Int.init(dates[0]), let monthInt = Int.init(dates[1]), let dayInt = Int.init(dates[2]) {
+                year = yearInt
+                month = monthInt
+                day = dayInt
+            }
+        default:
+            break
+        }
+        return "\(NSDate.date(year: year, month: month, day: day).weekday)".week()
+    }
 }
 
 
@@ -877,11 +910,11 @@ extension UIViewController{
     
 }
 
-extension Bool{
-    func setUserDefaults(key:String) -> Void {
-        
-    }
+extension NSDate{
+    
 }
+
+
 
 
 

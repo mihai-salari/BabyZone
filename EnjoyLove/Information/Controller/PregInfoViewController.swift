@@ -17,7 +17,8 @@ class PregInfoViewController: BaseViewController {
     private var containView:UIScrollView!
     private var pregBabyData:[BabyBaseInfo]!
     private var pregInfoStatusData:[PregInfoStatus]!
-    private var hasNote:Bool = false
+    private var isHasNote:Bool = false
+    
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -47,6 +48,14 @@ class PregInfoViewController: BaseViewController {
     
     private func initialize() -> Void{
         
+        dispatch_queue_create("loadDiaryQueue", nil).queue { 
+            Diary.sendAsyncUserNoteList("1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, hasNote) in
+                if let weakSelf = self{
+                    weakSelf.isHasNote = hasNote
+                }
+            })
+        }
+        
         for subview in self.view.subviews {
             subview.removeFromSuperview()
         }
@@ -60,11 +69,6 @@ class PregInfoViewController: BaseViewController {
         }
         self.pregInfoStatusData = []
         
-        Diary.sendAsyncUserNoteList("1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, note) in
-            if let weakSelf = self{
-                weakSelf.hasNote = note
-            }
-            })
         NoteLabel.sendAsyncUserNoteLabel(nil)
         
         var idUserBabyInfo = ""
@@ -173,17 +177,18 @@ class PregInfoViewController: BaseViewController {
                         }
                         }, recordCompletionHandler: { [weak self] in
                             if let weakSelf = self{
-                                if weakSelf.hasNote == true{
+                                if let _ = LoginBL.find(){
                                     if babyId != "-1"{
-                                        let diaryListVC = PregDiaryViewController()
-                                        weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
+                                        if weakSelf.isHasNote == true{
+                                            let diaryListVC = PregDiaryViewController()
+                                            weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
+                                        }else{
+                                            let diary = DiaryRecordViewController()
+                                            weakSelf.navigationController?.pushViewController(diary, animated: true)
+                                        }
                                     }else{
                                         HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
                                     }
-                                    
-                                }else{
-                                    let diary = DiaryRecordViewController()
-                                    weakSelf.navigationController?.pushViewController(diary, animated: true)
                                 }
                             }
                         })

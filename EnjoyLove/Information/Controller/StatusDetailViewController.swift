@@ -10,6 +10,9 @@ import UIKit
 
 class StatusDetailViewController: BaseViewController {
 
+    private var detailScrollView:UIScrollView!
+    var detailModel:Article!
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationBarItem(self, title: "详情", leftSel:nil, rightSel: nil)
@@ -21,25 +24,39 @@ class StatusDetailViewController: BaseViewController {
         // Do any additional setup after loading the view.
         self.automaticallyAdjustsScrollViewInsets = false
         
-        let webView = UIWebView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * viewOriginX, ScreenHeight - navigationBarHeight - 2 * viewOriginY - upRateHeight(50)))
-        webView.layer.cornerRadius = 2
-        webView.layer.masksToBounds = true
-        self.view.addSubview(webView)
+        self.detailScrollView = UIScrollView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - 50 - navigationBarHeight))
+        self.detailScrollView.contentSize = CGSize.init(width: self.detailScrollView.frame.width, height: self.detailModel == nil ? self.detailScrollView.frame.height : self.detailModel.titleHeight + self.detailModel.contentHeight + self.detailModel.totalImageHeight + 100)
+        self.detailScrollView.showsVerticalScrollIndicator = false
+        self.view.addSubview(self.detailScrollView)
         
-        let path = NSBundle.mainBundle().pathForResource("StatusContent", ofType: "html")
-        do{
-            if let webPath = path {
-                let htmlString = try String.init(contentsOfFile: webPath, encoding: NSUTF8StringEncoding)
-                webView.loadHTMLString(htmlString, baseURL: NSURL.init(string: webPath))
+        
+        let titleLabel = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: self.detailScrollView.frame.width, height: 50))
+        titleLabel.text = self.detailModel == nil ? "" : self.detailModel.title
+        titleLabel.font = UIFont.systemFontOfSize(20)
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .Center
+        titleLabel.textColor = UIColor.hexStringToColor("#DF5F76")
+        self.detailScrollView.addSubview(titleLabel)
+        
+        let line = UIView.init(frame: CGRect.init(x: 0, y: titleLabel.frame.maxY, width: self.detailScrollView.frame.width, height: 1))
+        line.backgroundColor = UIColor.hexStringToColor("#DF5F76")
+        self.detailScrollView.addSubview(line)
+        
+        if let model = self.detailModel {
+            for i in 0 ..< model.images.count {
+                let imageView = UIImageView.init(frame: CGRect.init(x: 15, y: 60 + CGFloat(i) * model.imageHeight * (2 / 3), width: self.detailScrollView.frame.width - 2 * 15, height: model.imageHeight * (2 / 3)))
+                imageView.setImageURL(model.images[i])
+                self.detailScrollView.addSubview(imageView)
             }
-        }catch{
-            print("error")
+            
+            let contentView = UILabel.init(frame: CGRect.init(x: 15, y: line.frame.maxY + , width: <#T##CGFloat#>, height: <#T##CGFloat#>))
+            
         }
         
         
         
         let moreButton = MoreArctileButton(type: .Custom)
-        moreButton.frame = CGRectMake(CGRectGetMinX(webView.frame), ScreenHeight - upRateHeight(50), CGRectGetWidth(webView.frame), upRateHeight(40))
+        moreButton.frame = CGRect.init(x: viewOriginX, y: ScreenHeight - upRateHeight(50), width: self.detailScrollView.frame.width, height: 40)
         moreButton.setImageRect(CGSizeMake(10, 15), normaImage: "arrow_right.png", normalTitle: "查看更多文章", fontSize: upRateWidth(16))
         moreButton.backgroundColor = UIColor.hexStringToColor("#f6a495")
         self.view.addSubview(moreButton)

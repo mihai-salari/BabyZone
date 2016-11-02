@@ -875,7 +875,7 @@ extension Diary{
                     if let list = data["list"] as? [[String : NSObject]]{
                         if store == false{
                             if let handle = completionHandler{
-                                handle(errorCode: errorCode, msg: msg, hasNote: true)
+                                handle(errorCode: errorCode, msg: msg, hasNote: list.count > 0)
                             }
                             return
                         }

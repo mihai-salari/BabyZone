@@ -14,14 +14,10 @@ class DiaryRecordViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        let today =  "\(NSDate.today().year)." + "\(NSDate.today().month)." + "\(NSDate.today().day) " + week("\(NSDate.today().weekday)")
+        let today =  "\(NSDate.today().year)-" + "\(NSDate.today().month)-" + "\(NSDate.today().day) " + "\(NSDate.today().weekday)".week()
         self.navigationBarItem(self, isImage: false, title: today, leftSel: nil, rightSel: #selector(self.comfireClick), rightTitle: "OK")
-        if DiaryBL.findAll().count == 0 {
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
-            self.tabBarController?.tabBar.hidden = false
-        }else{
-            self.tabBarController?.tabBar.hidden = true
-        }
+        self.tabBarController?.tabBar.hidden = true
+        
     }
     
     

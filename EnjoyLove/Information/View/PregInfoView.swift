@@ -202,8 +202,9 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var selectHandler:((model:Article, indexPath:NSIndexPath)->())?
     private var menuHandler:((model:Article)->())?
     private var shareHandler:((model:Article)->())?
+    private var listHandler:(()->())?
     
-    init(frame: CGRect, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?) {
+    init(frame: CGRect, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?, listCompletionHandler:(()->())?) {
         super.init(frame: frame)
         self.pregInfoData = dataSource
         self.pregTable = UITableView.init(frame: self.bounds, style: .Grouped)
@@ -216,6 +217,7 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
         self.selectHandler = dataCompletionHandler
         self.menuHandler = moreMenuCompletionHandler
         self.shareHandler = shareCompletionHandler
+        self.listHandler = listCompletionHandler
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -288,10 +290,11 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
         descLabel.font = UIFont.boldSystemFontOfSize(upRateWidth(15))
         headerView.addSubview(descLabel)
         
-        let moreImageView = UIImageView.init(frame: CGRectMake(CGRectGetWidth(headerView.frame) - 2 * CGRectGetHeight(headerView.frame) * (1 / 3), (CGRectGetHeight(headerView.frame) - CGRectGetHeight(headerView.frame) * (1 / 3)) / 2, CGRectGetHeight(headerView.frame) * (1 / 3), CGRectGetHeight(headerView.frame) * (1 / 3)))
-        moreImageView.image = UIImage.imageWithName(model.pregMoreImage)
-        headerView.addSubview(moreImageView)
-        
+        let moreButton = UIButton.init(type: .Custom)
+        moreButton.frame = CGRect.init(x: headerView.frame.width - 2 * headerView.frame.height * (1 / 3), y: (headerView.frame.height - headerView.frame.height * (1 / 3)) / 2, width: headerView.frame.height * (1 / 3), height: headerView.frame.height * (1 / 3))
+        moreButton.setImage(UIImage.imageWithName(model.pregMoreImage), forState: UIControlState.Normal)
+        moreButton.addTarget(self, action: #selector(self.listClick), forControlEvents: UIControlEvents.TouchUpInside)
+        headerView.addSubview(moreButton)
         return headerView
     }
     
@@ -316,6 +319,12 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
         self.pregInfoData = data
         if let table = self.pregTable {
             table.reloadData()
+        }
+    }
+    
+    func listClick() -> Void {
+        if let handle = self.listHandler {
+            handle()
         }
     }
 }

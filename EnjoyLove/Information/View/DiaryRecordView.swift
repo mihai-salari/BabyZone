@@ -142,7 +142,6 @@ class DiaryRecordView: UIView ,UICollectionViewDelegate,UICollectionViewDataSour
                                 let paths = "\(imagePath)".componentsSeparatedByString("/")
                                 if let path = paths.last{
                                     weakSelf.images.append(path)
-                                    weakSelf.resultDiary.imgUrls = weakSelf.images.joinWithSeparator(",")
                                     weakSelf.resultDiary.imageArr.append(img)
                                     
                                 }

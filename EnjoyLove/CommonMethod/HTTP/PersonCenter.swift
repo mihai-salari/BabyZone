@@ -65,7 +65,6 @@ class Register: NSObject {
                     regist.userId = format(data["userId"])
                     regist.sessionId = format(data["sessionId"])
                 }
-                NSNotificationCenter.defaultCenter().postNotificationName(LoginAndRegisterSuccessNotification, object: nil)
                 if let handle = completionHandler{
                     handle(regist: regist)
                 }

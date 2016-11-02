@@ -34,6 +34,7 @@ class BabyMainViewController: BaseVideoViewController {
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
             self.navigationBarItem(self, title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginEqutementListNotification, object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(addNewDevice), name: BabyZoneConfig.shared.AddDeviceNotification, object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deleteDevice), name: BabyZoneConfig.shared.DeleteDeviceNotificaiton, object: nil)
         }
@@ -61,10 +62,14 @@ class BabyMainViewController: BaseVideoViewController {
     }
     
     private func initialize(){
+        for subview in self.view.subviews {
+            subview.removeFromSuperview()
+        }
         self.babyData = []
         self.babyData.removeAll()
-        if self.contactData.count > 0 {
-            for eqm in EquipmentsBL.findAll() {
+        let devices = EquipmentsBL.findAll()
+        if devices.count > 0 {
+            for eqm in devices {
                 let baby = Baby(babyImage: Utils.getHeaderFilePathWithId(eqm.eqmDid), babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0", babyEquipment: eqm)
                 self.babyData.append(baby)
             }
@@ -73,10 +78,6 @@ class BabyMainViewController: BaseVideoViewController {
             self.babyData.append(baby)
         }
         
-        if self.babyView != nil {
-            self.babyView.removeFromSuperview()
-            self.babyView = nil
-        }
         self.babyView = BabyView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: self.view.frame.height - navAndTabHeight), data: self.babyData, playCompletionHandler: { [weak self](baby, index) in
             if let weakSelf = self{
                 if let babyEqm = baby.babyEquipment{
@@ -90,7 +91,7 @@ class BabyMainViewController: BaseVideoViewController {
                         };
                         weakSelf.navigationController?.pushViewController(monitor, animated: true)
                     }else{
-                        HUD.showText("此设备处于状态,请检查...", onView: weakSelf.view.window!)
+                        HUD.showText("此设备处于离线状态,请检查...", onView: weakSelf.view.window!)
                     }
                 }else{
                     HUD.showText("您未绑定设备", onView: weakSelf.view.window!)
@@ -132,7 +133,7 @@ class BabyMainViewController: BaseVideoViewController {
         self.initialize()
     }
     
-    override func loginAndRegistSuccessRefresh() {
+    func loginAndRegistSuccessRefresh() {
         self.initialize()
     }
     

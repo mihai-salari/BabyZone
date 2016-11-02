@@ -183,6 +183,7 @@
 }
 
 - (void)updateCircleWithPercent:(CGFloat)percent{
+    self.percent = percent;
     [self setupBackgroundLayerWithFillColor:self.trackFillColor];
     [self setupCircleLayerWithStrokeColor:self.progressStrokeColor];
 }

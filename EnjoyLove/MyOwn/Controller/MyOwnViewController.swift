@@ -28,6 +28,8 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginPersonDetailNotification, object: nil)
+        
         let personChange = personInformationChange()
         if personChange == true {
             if let table = self.myOwnTable {
@@ -44,75 +46,70 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         // Do any additional setup after loading the view.
         self.initialize()
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-    }
     
     private func initialize() {
-        
-        dispatch_queue_create("dataInitQueue", nil).queue {
-            
-            if self.section1Data != nil{
-                self.section1Data = nil
-            }
-            self.section1Data = []
-            
-            if self.sectionTitleData != nil{
-                self.sectionTitleData = nil
-            }
-            self.sectionTitleData = []
-            
-            
-            let headerModel = MyOwnHeader()
-            self.section1Data.append(headerModel)
-            
-            var rowData:[MyOwnNormalRowData] = []
-            var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
-            rowData.append(model)
-            
-            model = MyOwnNormalRowData(mainItem: "语言", subItem: "各国语言设置")
-            rowData.append(model)
-            
-            model = MyOwnNormalRowData(mainItem: "其他", subItem: "功能介绍、投诉建议、关于享爱")
-            rowData.append(model)
-            
-            var sectionData = MyOwnSectionTitle(title: "账号设置", rowData: rowData)
-            self.sectionTitleData.append(sectionData)
-            
-            rowData = []
-            model = MyOwnNormalRowData(mainItem: "连接设备", subItem: "添加/连接设备")
-            rowData.append(model)
-            
-            model = MyOwnNormalRowData(mainItem: "解除设备", subItem: "解除/删除设备")
-            rowData.append(model)
-            
-            sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
-            self.sectionTitleData.append(sectionData)
-            
-            dispatch_get_main_queue().queue({ 
-                if self.myOwnTable != nil {
-                    self.myOwnTable.removeFromSuperview()
-                    self.myOwnTable = nil
-                }
-                self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
-                self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
-                self.myOwnTable.scrollEnabled = false
-                self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
-                self.myOwnTable.delegate = self
-                self.myOwnTable.dataSource = self
-                self.myOwnTable.separatorInset = UIEdgeInsetsZero
-                self.myOwnTable.layoutMargins = UIEdgeInsetsZero
-                self.myOwnTable.backgroundColor = UIColor.whiteColor()
-                self.view.addSubview(self.myOwnTable)
-
-            })
+        for subview in self.view.subviews {
+            subview.removeFromSuperview()
         }
+        
+        if self.section1Data != nil{
+            self.section1Data = nil
+        }
+        self.section1Data = []
+        
+        if self.sectionTitleData != nil{
+            self.sectionTitleData = nil
+        }
+        self.sectionTitleData = []
+        
+        
+        let headerModel = MyOwnHeader()
+        self.section1Data.append(headerModel)
+        
+        var rowData:[MyOwnNormalRowData] = []
+        var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
+        rowData.append(model)
+        
+        model = MyOwnNormalRowData(mainItem: "语言", subItem: "各国语言设置")
+        rowData.append(model)
+        
+        model = MyOwnNormalRowData(mainItem: "其他", subItem: "功能介绍、投诉建议、关于享爱")
+        rowData.append(model)
+        
+        var sectionData = MyOwnSectionTitle(title: "账号设置", rowData: rowData)
+        self.sectionTitleData.append(sectionData)
+        
+        rowData = []
+        model = MyOwnNormalRowData(mainItem: "连接设备", subItem: "添加/连接设备")
+        rowData.append(model)
+        
+        model = MyOwnNormalRowData(mainItem: "解除设备", subItem: "解除/删除设备")
+        rowData.append(model)
+        
+        sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
+        self.sectionTitleData.append(sectionData)
+        
+        self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
+        self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
+        self.myOwnTable.scrollEnabled = false
+        self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
+        self.myOwnTable.delegate = self
+        self.myOwnTable.dataSource = self
+        self.myOwnTable.separatorInset = UIEdgeInsetsZero
+        self.myOwnTable.layoutMargins = UIEdgeInsetsZero
+        self.myOwnTable.backgroundColor = UIColor.whiteColor()
+        self.view.addSubview(self.myOwnTable)
     }
     
     
@@ -361,7 +358,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         }
     }
     
-    override func loginAndRegistSuccessRefresh() {
+    func loginAndRegistSuccessRefresh() {
         self.initialize()
     }
     

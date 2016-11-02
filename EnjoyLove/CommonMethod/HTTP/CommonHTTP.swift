@@ -72,12 +72,7 @@ class QiNiu: NSObject {
     class func uploadImage(scope:String = "", image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String,fileName:String)->())?, failureHandler:((error:String)->())?){
         QiNiu.sendAsyncQiNiu { (token) in
             if let tk = token{
-                let qnToken = QNUpToken.parse(tk)
-                if qnToken.bucket == "baby"{
-                    NSUserDefaults.standardUserDefaults().setInteger(1, forKey: BabyZoneConfig.shared.scopeType)
-                }else if qnToken.bucket == "xiangai"{
-                    NSUserDefaults.standardUserDefaults().setInteger(2, forKey: BabyZoneConfig.shared.scopeType)
-                }
+                
                 if let imageData = UIImageJPEGRepresentation(image, 0.01){
                     let fileName = "\(QiNiu.dateTimeString())_pic.png"
                     let opt = QNUploadOption.init(mime: nil, progressHandler: progressHandler, params: nil, checkCrc: false, cancellationSignal: nil)
@@ -97,6 +92,12 @@ class QiNiu: NSObject {
                             }
                         }else{
                             if scope != ""{
+                                let qnToken = QNUpToken.parse(tk)
+                                if qnToken.bucket == "baby"{
+                                    NSUserDefaults.standardUserDefaults().setInteger(1, forKey: BabyZoneConfig.shared.scopeType)
+                                }else if qnToken.bucket == "xiangai"{
+                                    NSUserDefaults.standardUserDefaults().setInteger(2, forKey: BabyZoneConfig.shared.scopeType)
+                                }
                                 let uploadToken = QiNiuExtensionToken.shared().makeTokenWithScope(scope)
                                 uploadManager.putData(imageData, key: fileName, token: uploadToken, complete: { (responseInfo:QNResponseInfo!, key:String!, resp:[NSObject : AnyObject]!) in
                                     if responseInfo.statusCode == 200 && resp != nil{

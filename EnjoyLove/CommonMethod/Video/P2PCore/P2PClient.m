@@ -862,7 +862,7 @@ void vP2PConnReady(void)
     for(int i=0;i<[contacts count];i++){
         
         NSString *contactId = [contacts objectAtIndex:i];
-        if([contactId characterAtIndex:0]=='0'){
+        if(![contactId isEqualToString:@""] && [contactId characterAtIndex:0]=='0'){
             tables[i] = contactId.intValue|0x80000000;
         }else{
             tables[i] = contactId.intValue;

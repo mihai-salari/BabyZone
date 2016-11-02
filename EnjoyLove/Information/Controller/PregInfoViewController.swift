@@ -28,6 +28,7 @@ class PregInfoViewController: BaseViewController {
         self.automaticallyAdjustsScrollViewInsets = false
         self.navigationBarItem(self, title: self.infoType == "1" ? "孕育资讯" : "育儿资讯", leftSel:nil, rightSel: nil)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginBabyListNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.networkChangeNotification(_:)), name: kReachabilityChangedNotification, object: nil)
     }
     
@@ -43,7 +44,12 @@ class PregInfoViewController: BaseViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
     private func initialize() -> Void{
+        
+        for subview in self.view.subviews {
+            subview.removeFromSuperview()
+        }
         if self.pregBabyData != nil {
             self.pregBabyData = nil
         }
@@ -54,175 +60,154 @@ class PregInfoViewController: BaseViewController {
         }
         self.pregInfoStatusData = []
         
-        
-        HUD.showHud("正在加载...", onView: self.view)
-        dispatch_queue_create("babyListQueue", nil).queue {
-            
-            Diary.sendAsyncUserNoteList("1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, note) in
-                if let weakSelf = self{
-                    weakSelf.hasNote = note
-                }
-            })
-            NoteLabel.sendAsyncUserNoteLabel(nil)
-            
-            var idUserBabyInfo = ""
-            let babyList = BabyListBL.findAll()
-            if babyList.count > 0{
-                idUserBabyInfo = babyList[0].idUserBabyInfo
+        Diary.sendAsyncUserNoteList("1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, note) in
+            if let weakSelf = self{
+                weakSelf.hasNote = note
             }
-            self.currentBabyId = idUserBabyInfo
-            BabyBaseInfo.sendAsyncBabyBaseInfo(idUserBabyInfo, completionHandler: { [weak self](errorCode, msg, baseInfo) in
-                if let weakSelf = self{
-                    var infoType = "1"
-                    var babyId = "-1"
-                    var babyErrorTip = ""
-                    if let base  = baseInfo {
-                        infoType = base.infoType
-                        babyId = base.idComBabyBaseInfo
-                        weakSelf.pregBabyData.append(base)
-                    }else{
-                        let babyModel = BabyBaseInfo()
-                        babyModel.idComBabyBaseInfo = ""
-                        babyModel.infoType = infoType
-                        babyModel.day = "0"
-                        babyModel.idUserBabyInfo = ""
-                        babyModel.minWeight = "0"
-                        babyModel.maxWeight = "0"
-                        babyModel.minHeight = "0"
-                        babyModel.maxHeight = "0"
-                        babyModel.minHead = "0"
-                        babyModel.maxHead = "0"
-                        weakSelf.pregBabyData.append(babyModel)
-                        babyErrorTip = "暂无宝宝成长基本数据"
-                        babyId = "-1"
-                    }
-                                        
-                    Article.sendAsyncRecomment(infoType, completionHandler: { (errorCode, msg, info) in
-                        var recoments:[Article] = []
-                        var articleId = "-1"
-                        var articleErrorTip = ""
-                        if let ifo = info{
-                            articleId = ifo.idBbsNewsInfo
-                            recoments.append(ifo)
-                        }else{
-                            let recoment = Article()
-                            recoment.title = "暂无数据"
-                            recoment.content = "暂无数据"
-                            recoment.idBbsNewsInfo = ""
-                            recoment.createTime = "2016.10.10"
-                            recoment.titleHeight = 15
-                            recoment.contentHeight = 20
-                            recoment.imageHeight = 45
-                            recoments.append(recoment)
-                            articleId = "-1"
-                            articleErrorTip = "暂无咨询数据"
-                        }
-                        let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: recoments, pregBabyId: "0", pregMoreImage: "pregMore.png")
-                        weakSelf.pregInfoStatusData.append(pregInfoStatus)
-                        
-                        dispatch_get_main_queue().queue({
-                            HUD.hideHud(weakSelf.view)
-                            if weakSelf.containView != nil{
-                                weakSelf.containView.removeFromSuperview()
-                                weakSelf.containView = nil
-                            }
-                            weakSelf.containView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: weakSelf.view.frame.width, height: weakSelf.view.frame.height - navAndTabHeight))
-                            weakSelf.containView.showsVerticalScrollIndicator = false
-                            weakSelf.containView.contentSize = CGSize.init(width: weakSelf.view.frame.width, height: 2 * (weakSelf.view.frame.height * (2 / 3)))
-                            weakSelf.view.addSubview(weakSelf.containView)
-                            
-                            
-                            if babyId == "-1"{
-                                HUD.showText(babyErrorTip, onView: weakSelf.view.window == nil ? weakSelf.view : weakSelf.view.window)
-                            }
-                            if articleId == "-1"{
-                                HUD.showText(articleErrorTip, onView: weakSelf.view.window == nil ? weakSelf.view : weakSelf.view.window)
-                            }
-                            
-                            if weakSelf.pregView != nil{
-                                weakSelf.pregView.removeFromSuperview()
-                                weakSelf.pregView = nil
-                            }
-                            
-                            weakSelf.pregView = PregInfoView.init(frame: CGRectMake(0, 0, weakSelf.containView.frame.width, weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: {
-                                let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .ActionSheet)
-                                let babyList = BabyListBL.findAll()
-                                if babyList.count > 0{
-                                    for itemModel in BabyListBL.findAll(){
-                                        let action = UIAlertAction.init(title: itemModel.babyName, style: .Default, handler: { (action:UIAlertAction) in
-                                            if itemModel.idUserBabyInfo == weakSelf.currentBabyId{
-                                                return
-                                            }
-                                            weakSelf.reloadDataVia(itemModel.idUserBabyInfo)
-                                        })
-                                        if action.valueForKey("titleTextColor") == nil{
-                                            action.setValue(alertTextColor, forKey: "titleTextColor")
-                                        }
-                                        actionSheet.addAction(action)
-                                    }
-                                    
-                                    let cancelAction = UIAlertAction.init(title: "取消", style: .Cancel, handler: { (action:UIAlertAction) in
-                                        
-                                    })
-                                    if cancelAction.valueForKey("titleTextColor") == nil{
-                                        cancelAction.setValue(UIColor.darkGrayColor(), forKey: "titleTextColor")
-                                    }
-                                    actionSheet.addAction(cancelAction)
-                                    
-                                    weakSelf.presentViewController(actionSheet, animated: true, completion: nil)
-                                }
-                                }, recordCompletionHandler: { [weak self] in
-                                    if let weakSelf = self{
-                                        if weakSelf.hasNote == true{
-                                            if babyId != "-1"{
-                                                let diaryListVC = PregDiaryViewController()
-                                                weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
-                                            }else{
-                                                HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
-                                            }
-                                            
-                                        }else{
-                                            let diary = DiaryRecordViewController()
-                                            weakSelf.navigationController?.pushViewController(diary, animated: true)
-                                        }
-                                    }
-                                })
-                            weakSelf.containView.addSubview(weakSelf.pregView)
-
-                            
-                            if weakSelf.pregTableView != nil{
-                                weakSelf.pregTableView.removeFromSuperview()
-                                weakSelf.pregTableView = nil
-                            }
-                            weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: viewOriginX, y: weakSelf.pregView.frame.maxY, width: weakSelf.containView.frame.width - 2 * viewOriginX, height: weakSelf.view.frame.height * (2 / 3)), dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
-                                switch indexPath.section{
-                                case 0:
-                                    let babyStatus = BabyStatusViewController()
-                                    babyStatus.infoType = infoType
-                                    weakSelf.navigationController?.pushViewController(babyStatus, animated: true)
-                                case 1:
-                                    break
-                                    //                                        let babyProblem = ProblemViewController()
-                                //                                        weakSelf.navigationController?.pushViewController(babyProblem, animated: true)
-                                default:
-                                    break
-                                }
-
-                                
-                                }, moreMenuCompletionHandler: { (model) in
-                                    
-                                }, shareCompletionHandler: { (model) in
-                                    
-                            })
-                            weakSelf.containView.addSubview(weakSelf.pregTableView)
-
-                        })
-                        
-                    })
-                }
-                })
-        }
+            })
+        NoteLabel.sendAsyncUserNoteLabel(nil)
         
+        var idUserBabyInfo = ""
+        let babyList = BabyListBL.findAll()
+        if babyList.count > 0{
+            idUserBabyInfo = babyList[0].idUserBabyInfo
+        }
+        self.currentBabyId = idUserBabyInfo
+        BabyBaseInfo.sendAsyncBabyBaseInfo(idUserBabyInfo, completionHandler: { [weak self](errorCode, msg, baseInfo) in
+            if let weakSelf = self{
+                var infoType = "1"
+                var babyId = "-1"
+                var babyErrorTip = ""
+                if let base  = baseInfo {
+                    infoType = base.infoType
+                    babyId = base.idComBabyBaseInfo
+                    weakSelf.pregBabyData.append(base)
+                }else{
+                    let babyModel = BabyBaseInfo()
+                    babyModel.idComBabyBaseInfo = ""
+                    babyModel.infoType = infoType
+                    babyModel.day = "0"
+                    babyModel.idUserBabyInfo = ""
+                    babyModel.minWeight = "0"
+                    babyModel.maxWeight = "0"
+                    babyModel.minHeight = "0"
+                    babyModel.maxHeight = "0"
+                    babyModel.minHead = "0"
+                    babyModel.maxHead = "0"
+                    weakSelf.pregBabyData.append(babyModel)
+                    babyErrorTip = "暂无宝宝成长基本数据"
+                    babyId = "-1"
+                }
+                
+                Article.sendAsyncRecomment(infoType, completionHandler: { (errorCode, msg, info) in
+                    var recoments:[Article] = []
+                    var articleId = "-1"
+                    var articleErrorTip = ""
+                    if let ifo = info{
+                        articleId = ifo.idBbsNewsInfo
+                        recoments.append(ifo)
+                    }else{
+                        let recoment = Article()
+                        recoment.title = "暂无数据"
+                        recoment.content = "暂无数据"
+                        recoment.idBbsNewsInfo = ""
+                        recoment.createTime = "2016.10.10"
+                        recoment.titleHeight = 15
+                        recoment.contentHeight = 20
+                        recoment.imageHeight = 45
+                        recoments.append(recoment)
+                        articleId = "-1"
+                        articleErrorTip = "暂无咨询数据"
+                    }
+                    let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: recoments, pregBabyId: "0", pregMoreImage: "pregMore.png")
+                    weakSelf.pregInfoStatusData.append(pregInfoStatus)
+                    
+                    if weakSelf.containView != nil{
+                        weakSelf.containView.removeFromSuperview()
+                        weakSelf.containView = nil
+                    }
+                    weakSelf.containView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: weakSelf.view.frame.width, height: weakSelf.view.frame.height - navAndTabHeight))
+                    weakSelf.containView.showsVerticalScrollIndicator = false
+                    weakSelf.containView.contentSize = CGSize.init(width: weakSelf.view.frame.width, height: 2 * (weakSelf.view.frame.height * (2 / 3)))
+                    weakSelf.view.addSubview(weakSelf.containView)
+                    
+                    
+                    if babyId == "-1"{
+                        HUD.showText(babyErrorTip, onView: weakSelf.view.window == nil ? weakSelf.view : weakSelf.view.window)
+                    }
+                    if articleId == "-1"{
+                        HUD.showText(articleErrorTip, onView: weakSelf.view.window == nil ? weakSelf.view : weakSelf.view.window)
+                    }
+                    
+                    if weakSelf.pregView != nil{
+                        weakSelf.pregView.removeFromSuperview()
+                        weakSelf.pregView = nil
+                    }
+                    
+                    weakSelf.pregView = PregInfoView.init(frame: CGRectMake(0, 0, weakSelf.containView.frame.width, weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: {
+                        let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .ActionSheet)
+                        let babyList = BabyListBL.findAll()
+                        if babyList.count > 0{
+                            for itemModel in BabyListBL.findAll(){
+                                let action = UIAlertAction.init(title: itemModel.babyName, style: .Default, handler: { (action:UIAlertAction) in
+                                    if itemModel.idUserBabyInfo == weakSelf.currentBabyId{
+                                        return
+                                    }
+                                    weakSelf.reloadDataVia(itemModel.idUserBabyInfo)
+                                })
+                                if action.valueForKey("titleTextColor") == nil{
+                                    action.setValue(alertTextColor, forKey: "titleTextColor")
+                                }
+                                actionSheet.addAction(action)
+                            }
+                            
+                            let cancelAction = UIAlertAction.init(title: "取消", style: .Cancel, handler: { (action:UIAlertAction) in
+                                
+                            })
+                            if cancelAction.valueForKey("titleTextColor") == nil{
+                                cancelAction.setValue(UIColor.darkGrayColor(), forKey: "titleTextColor")
+                            }
+                            actionSheet.addAction(cancelAction)
+                            
+                            weakSelf.presentViewController(actionSheet, animated: true, completion: nil)
+                        }
+                        }, recordCompletionHandler: { [weak self] in
+                            if let weakSelf = self{
+                                if weakSelf.hasNote == true{
+                                    if babyId != "-1"{
+                                        let diaryListVC = PregDiaryViewController()
+                                        weakSelf.navigationController?.pushViewController(diaryListVC, animated: true)
+                                    }else{
+                                        HUD.showText(babyErrorTip, onView: weakSelf.view.window!)
+                                    }
+                                    
+                                }else{
+                                    let diary = DiaryRecordViewController()
+                                    weakSelf.navigationController?.pushViewController(diary, animated: true)
+                                }
+                            }
+                        })
+                    weakSelf.containView.addSubview(weakSelf.pregView)
+                    
+                    
+                    weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: viewOriginX, y: weakSelf.pregView.frame.maxY, width: weakSelf.containView.frame.width - 2 * viewOriginX, height: weakSelf.view.frame.height * (2 / 3)), dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
+                        
+                        }, moreMenuCompletionHandler: { (model) in
+                            
+                        }, shareCompletionHandler: { (model) in
+                            
+                        }, listCompletionHandler: { 
+                            let babyStatus = BabyStatusViewController()
+                            babyStatus.infoType = infoType
+                            weakSelf.navigationController?.pushViewController(babyStatus, animated: true)
+                    })
+                    
+                   weakSelf.containView.addSubview(weakSelf.pregTableView)
+
+                    
+                })
+            }
+            })
     }
     
     func networkChangeNotification(note:NSNotification) -> Void {
@@ -289,7 +274,7 @@ class PregInfoViewController: BaseViewController {
         }
     }
     
-    override func loginAndRegistSuccessRefresh() {
+    func loginAndRegistSuccessRefresh() {
         self.initialize()
     }
 

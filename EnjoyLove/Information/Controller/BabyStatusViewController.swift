@@ -150,46 +150,43 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
     func toggleListClick(btn:BabyStatusButton) -> Void {
         
         HUD.showHud("正在加载...", onView: self.view)
-        dispatch_queue_create("articleListQueue", nil).queue {
-            let type = self.articleTypeListData[btn.tag]
-            ArticleList.sendAsyncArticleList("30", newsType: self.infoType, year: type.year, month: type.month, languageSign: Localize.currentLanguage(), completionHandler: { [weak self](errorCode, msg) in
-                if let weakSelf = self{
-                    dispatch_get_main_queue().queue({ 
-                        HUD.hideHud(weakSelf.view)
-                    })
-                    if let err = errorCode{
-                        if err == BabyZoneConfig.shared.passCode{
-                            let list = ArticleListBL.findAll()
-                            if list.count > 0{
-                                btn.selected = !btn.selected
-                                weakSelf.isOpen = btn.selected == true ? true : false
-                                weakSelf.openStr = "\(btn.tag)"
-                                if weakSelf.openArray.contains(weakSelf.openStr) {
-                                    if let index = weakSelf.openArray.indexOf(weakSelf.openStr) {
-                                        weakSelf.openArray.removeAtIndex(index)
-                                    }
-                                }else{
-                                    weakSelf.openArray.append(weakSelf.openStr)
+        let type = self.articleTypeListData[btn.tag]
+        ArticleList.sendAsyncArticleList("30", newsType: self.infoType, year: type.year, month: type.month, languageSign: Localize.currentLanguage(), completionHandler: { [weak self](errorCode, msg) in
+            if let weakSelf = self{
+                dispatch_get_main_queue().queue({
+                    HUD.hideHud(weakSelf.view)
+                })
+                if let err = errorCode{
+                    if err == BabyZoneConfig.shared.passCode{
+                        let list = ArticleListBL.findAll()
+                        if list.count > 0{
+                            btn.selected = !btn.selected
+                            weakSelf.isOpen = btn.selected == true ? true : false
+                            weakSelf.openStr = "\(btn.tag)"
+                            if weakSelf.openArray.contains(weakSelf.openStr) {
+                                if let index = weakSelf.openArray.indexOf(weakSelf.openStr) {
+                                    weakSelf.openArray.removeAtIndex(index)
                                 }
-                                
-                                weakSelf.articleTypeListData[btn.tag].articleList = list
-                                dispatch_get_main_queue().queue({
-                                    if let table = weakSelf.babyStatusTable{
-                                        table.reloadSections(NSIndexSet.init(index: btn.tag), withRowAnimation: .Fade)
-                                    }
-                                })
                             }else{
-                                HUD.showText("暂无数据", onView: weakSelf.view)
+                                weakSelf.openArray.append(weakSelf.openStr)
+                            }
+                            
+                            weakSelf.articleTypeListData[btn.tag].articleList = list
+                            if let table = weakSelf.babyStatusTable{
+                                table.reloadSections(NSIndexSet.init(index: btn.tag), withRowAnimation: .Fade)
                             }
                         }else{
-                            HUD.showText("加载数据失败:\(msg!)", onView: weakSelf.view)
+                            HUD.showText("暂无数据", onView: weakSelf.view)
                         }
                     }else{
                         HUD.showText("加载数据失败:\(msg!)", onView: weakSelf.view)
                     }
+                }else{
+                    HUD.showText("加载数据失败:\(msg!)", onView: weakSelf.view)
                 }
+            }
             })
-        }
+
     }
     
     /*

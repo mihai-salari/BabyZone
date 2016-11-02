@@ -16,7 +16,6 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginAndRegisterSuccessNotification, object: nil)
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.whiteColor()]
         var image = UIImage.imageFromColor(UIColor.clearColor(), size: CGSize(width: UIScreen.mainScreen().bounds.size.width, height: 64))
@@ -77,9 +76,6 @@ class BaseViewController: UIViewController,UIGestureRecognizerDelegate {
         return true
     }
     
-    func loginAndRegistSuccessRefresh() -> Void {
-        
-    }
 
     /*
     // MARK: - Navigation

@@ -9,7 +9,10 @@
 
 import UIKit
 
-let LoginAndRegisterSuccessNotification = "LoginAndRegisterSuccessNotification"
+let LoginPersonDetailNotification = "LoginPersonDetailNotification"
+let LoginEqutementListNotification = "LoginEqutementListNotification"
+let LoginBabyListNotification = "LoginBabyListNotification"
+
 class LoginViewController: BaseViewController {
 
     override func viewDidLoad() {
@@ -62,11 +65,19 @@ class LoginViewController: BaseViewController {
                                                 login.contactId = contact
                                                 login.md5Password = password.md5
                                                 LoginBL.insert(login)
-                                                BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
-                                                NSNotificationCenter.defaultCenter().postNotificationName(LoginAndRegisterSuccessNotification, object: nil)
-                                                PersonDetail.sendAsyncPersonDetail(nil)
-                                                Equipments.sendAsyncEqutementList(nil)
-                                                dispatch_get_main_queue().queue({ 
+                                                if BabyZoneConfig.shared.currentUserId.defaultString() != login.userId{
+                                                    BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
+                                                    PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
+                                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
+                                                    })
+                                                    Equipments.sendAsyncEqutementList({ (errorCode, msg) in
+                                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginEqutementListNotification, object: nil)
+                                                    })
+                                                    BabyList.sendAsyncBabyList({ (errorCode, msg) in
+                                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
+                                                    })
+                                                }
+                                                dispatch_get_main_queue().queue({
                                                     weakSelf.dismissViewControllerAnimated(true, completion: nil)
                                                 })
                                             }

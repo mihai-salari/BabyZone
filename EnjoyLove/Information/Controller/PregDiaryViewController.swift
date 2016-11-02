@@ -13,7 +13,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
 
     private var diaryTable:UITableView!
     private var diaryData:[Diary]!
-    private var pageIndex:Int = 10
+    private var pageIndex:Int = 5
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)

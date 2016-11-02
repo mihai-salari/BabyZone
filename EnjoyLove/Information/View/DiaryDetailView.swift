@@ -37,7 +37,11 @@ class DiaryDetailView: UIView {
                 }
             }
         }else{
-            imageContainView.layer.contents = UIImage.imageWithName("yunfumama.png")?.CGImage
+            let label = UILabel.init(frame: imageContainView.bounds)
+            label.text = "您未选择图片"
+            label.textColor = UIColor.hexStringToColor("#986273")
+            label.textAlignment = .Center
+            imageContainView.addSubview(label)
         }
         
         let labels = model.noteLabels == nil ? NoteLabelBL.findVia(model.noteLabels) : model.noteLabels

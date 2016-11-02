@@ -2083,6 +2083,10 @@ private class DiaryDAO: NSObject {
             detail.createDate = detail.createTime
         }
         
+        let imageArr = detail.imgUrls.componentsSeparatedByString(",")
+        for image in imageArr {
+            detail.images.append(image)
+        }
         array.append(detail)
         var arrDict:[String:NSObject] = [:]
         arrDict[userId] = array

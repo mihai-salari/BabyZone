@@ -180,7 +180,6 @@ class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableVi
         return cell!
     }
     
-    
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.001
     }

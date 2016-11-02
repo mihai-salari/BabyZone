@@ -380,6 +380,7 @@
 		278871A91DC33201004D7A77 /* very_happy.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A41DC33201004D7A77 /* very_happy.png */; };
 		278871AA1DC33201004D7A77 /* very_sad.png in Resources */ = {isa = PBXBuildFile; fileRef = 278871A51DC33201004D7A77 /* very_sad.png */; };
 		279F92C51DBF3B80004661DF /* P2PMonitorController.m in Sources */ = {isa = PBXBuildFile; fileRef = 279F92C41DBF3B80004661DF /* P2PMonitorController.m */; };
+		27AD118E1DCA474400B91131 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27AD118D1DCA474400B91131 /* CollectionViewController.swift */; };
 		27B5B0491D93C86C006AE37E /* myOwnChecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0441D93C86C006AE37E /* myOwnChecked.png */; };
 		27B5B04A1D93C86C006AE37E /* myOwnPhone.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0451D93C86C006AE37E /* myOwnPhone.png */; };
 		27B5B04B1D93C86C006AE37E /* myOwnPhoneChecked.png in Resources */ = {isa = PBXBuildFile; fileRef = 27B5B0461D93C86C006AE37E /* myOwnPhoneChecked.png */; };
@@ -1030,6 +1031,7 @@
 		278871A51DC33201004D7A77 /* very_sad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = very_sad.png; sourceTree = "<group>"; };
 		279F92C31DBF3B80004661DF /* P2PMonitorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = P2PMonitorController.h; sourceTree = "<group>"; };
 		279F92C41DBF3B80004661DF /* P2PMonitorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = P2PMonitorController.m; sourceTree = "<group>"; };
+		27AD118D1DCA474400B91131 /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		27B5B0441D93C86C006AE37E /* myOwnChecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnChecked.png; sourceTree = "<group>"; };
 		27B5B0451D93C86C006AE37E /* myOwnPhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnPhone.png; sourceTree = "<group>"; };
 		27B5B0461D93C86C006AE37E /* myOwnPhoneChecked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myOwnPhoneChecked.png; sourceTree = "<group>"; };
@@ -2429,6 +2431,7 @@
 				275BF4F91DB9CDF100DD9BB3 /* DiaryDetailViewController.swift */,
 				275BF4F81DB9CDF100DD9BB3 /* BabyStatusViewController.swift */,
 				275BF5001DB9CDF100DD9BB3 /* StatusDetailViewController.swift */,
+				27AD118D1DCA474400B91131 /* CollectionViewController.swift */,
 				275BF4FD1DB9CDF100DD9BB3 /* ProblemDetailListViewController.swift */,
 				275BF4FE1DB9CDF100DD9BB3 /* ProblemDetailViewController.swift */,
 				275BF4FF1DB9CDF100DD9BB3 /* ProblemViewController.swift */,
@@ -3269,6 +3272,7 @@
 				27188E711D86AD2100797D41 /* UIViewExtensions.swift in Sources */,
 				27607CDB1D84EF680056FCFC /* BaseViewController.swift in Sources */,
 				27830D011D9A33610036E2BC /* LocalDevice.m in Sources */,
+				27AD118E1DCA474400B91131 /* CollectionViewController.swift in Sources */,
 				27F410CA1D8C071400722051 /* MonthPickerView.m in Sources */,
 				27830D2B1D9A66720036E2BC /* AppDelegate.m in Sources */,
 				27830C9B1D9A31A20036E2BC /* GlobalThread.m in Sources */,

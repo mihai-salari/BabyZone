@@ -49,8 +49,12 @@ class StatusDetailViewController: BaseViewController {
                 self.detailScrollView.addSubview(imageView)
             }
             
-            let contentView = UILabel.init(frame: CGRect.init(x: 15, y: line.frame.maxY + , width: <#T##CGFloat#>, height: <#T##CGFloat#>))
-            
+            let contentView = UILabel.init(frame: CGRect.init(x: 15, y: line.frame.maxY + model.totalImageHeight + 15, width: self.detailScrollView.frame.width - 2 * 15, height: model.contentHeight))
+            contentView.textAlignment = .Center
+            contentView.textColor = UIColor.lightGrayColor()
+            contentView.font = UIFont.systemFontOfSize(14)
+            contentView.numberOfLines = 0
+            self.detailScrollView.addSubview(contentView)
         }
         
         

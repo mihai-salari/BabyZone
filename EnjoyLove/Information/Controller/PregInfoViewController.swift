@@ -196,7 +196,9 @@ class PregInfoViewController: BaseViewController {
                     
                     
                     weakSelf.pregTableView = PregTableView.init(frame: CGRect.init(x: viewOriginX, y: weakSelf.pregView.frame.maxY, width: weakSelf.containView.frame.width - 2 * viewOriginX, height: weakSelf.view.frame.height * (2 / 3)), dataSource: weakSelf.pregInfoStatusData, dataCompletionHandler: { (model, indexPath) in
-                        
+                        let detailStatus = StatusDetailViewController()
+                        detailStatus.detailModel = model
+                        weakSelf.navigationController?.pushViewController(detailStatus, animated: true)
                         }, moreMenuCompletionHandler: { (model) in
                             
                         }, shareCompletionHandler: { (model) in

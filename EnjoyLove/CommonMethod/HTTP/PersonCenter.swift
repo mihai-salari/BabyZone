@@ -192,9 +192,9 @@ extension PersonDetail {
                         detail.userName = format(data["userName"])
                         detail.nickName = format(data["nickName"])
                         detail.sex = format(data["sex"])
-                        detail.headImg = format(data["headImg"])
-                        let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: detail.headImg)
-                        detail.headImage = UIImage.setImageURL(imageUrl)
+                        if let imageStr = format(data["headImg"]).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()){
+                            detail.headImg = imageStr
+                        }
                         detail.mobile = format(data["mobile"])
                         detail.breedStatus = format(data["breedStatus"])
                         detail.breedStatusDate = format(data["breedStatusDate"])

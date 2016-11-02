@@ -369,7 +369,9 @@ class PregStatusCell: UITableViewCell {
         self.contentView.addSubview(subItemLabel)
         if model.images.count > 0 {
             let imageView = UIImageView.init(frame: CGRect.init(x: mainLabel.frame.minX, y: subItemLabel.frame.maxY, width: self.contentView.frame.width - 20, height: model.imageHeight))
-            imageView.setImageURL(model.images[0])
+            if let url = NSURL.init(string: model.images[0]) {
+                imageView.setImageWithURL(url)
+            }
             self.contentView.addSubview(imageView)
         }
         

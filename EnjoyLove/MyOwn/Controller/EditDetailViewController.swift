@@ -301,7 +301,9 @@ class EditDetailViewController: BaseViewController,DXPhotoPickerControllerDelega
                 }
                 }, successHandler: { (url, fileName) in
                     if let person = PersonDetailBL.find(){
-                        person.headImg = fileName
+                        if let imageUrl = url.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()){
+                            person.headImg = imageUrl
+                        }
                         if let modifyResult = PersonDetailBL.modify(person) {
                             if modifyResult.headImg != ""{
                                 let uploadQueue = dispatch_queue_create("uploadImageQueue", nil)

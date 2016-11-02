@@ -64,9 +64,9 @@ class MyOwnCell: UITableViewCell {
             if person.headImg == "" {
                 self.headerButton.image = UIImage.imageWithName("mamaHeader.png")
             }else{
-                let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: person.headImg)
-                self.headerButton.setImageURL(imageUrl)
-                
+                if let imageUrl = NSURL.init(string: person.headImg) {
+                    self.headerButton.setImageWithURL(imageUrl)
+                }                
             }
             
             self.contentView.addSubview(self.headerButton)
@@ -201,8 +201,9 @@ class PersonInfoCell: UITableViewCell {
             if model.subItem == "" {
                 imageView.image = UIImage.imageWithName("mamaHeader.png")
             }else{
-                let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: model.subItem)
-                imageView.setImageURL(imageUrl)
+                if let imageUrl = NSURL.init(string: model.subItem) {
+                    imageView.setImageWithURL(imageUrl)
+                }
             }
             imageView.layer.cornerRadius = imageViewWidth / 2
             imageView.layer.masksToBounds = true

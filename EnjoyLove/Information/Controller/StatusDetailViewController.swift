@@ -16,6 +16,7 @@ class StatusDetailViewController: BaseViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationBarItem(self, title: "详情", leftSel:nil, rightSel: nil)
+        self.tabBarController?.tabBar.hidden = true
     }
     
     override func viewDidLoad() {
@@ -24,8 +25,9 @@ class StatusDetailViewController: BaseViewController {
         // Do any additional setup after loading the view.
         self.automaticallyAdjustsScrollViewInsets = false
         
-        self.detailScrollView = UIScrollView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - 50 - navigationBarHeight))
-        self.detailScrollView.contentSize = CGSize.init(width: self.detailScrollView.frame.width, height: self.detailModel == nil ? self.detailScrollView.frame.height : self.detailModel.titleHeight + self.detailModel.contentHeight + self.detailModel.totalImageHeight + 100)
+        self.detailScrollView = UIScrollView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: self.view.frame.height - 60 - navigationBarHeight))
+        self.detailScrollView.contentSize = CGSize.init(width: self.detailScrollView.frame.width, height: self.detailModel == nil ? ScreenWidth : self.detailModel.totalImageHeight)
+        self.detailScrollView.backgroundColor = UIColor.whiteColor()
         self.detailScrollView.showsVerticalScrollIndicator = false
         self.view.addSubview(self.detailScrollView)
         
@@ -42,18 +44,21 @@ class StatusDetailViewController: BaseViewController {
         line.backgroundColor = UIColor.hexStringToColor("#DF5F76")
         self.detailScrollView.addSubview(line)
         
+        print("image count \(self.detailModel.images.count)")
         if let model = self.detailModel {
             for i in 0 ..< model.images.count {
-                let imageView = UIImageView.init(frame: CGRect.init(x: 15, y: 60 + CGFloat(i) * model.imageHeight * (2 / 3), width: self.detailScrollView.frame.width - 2 * 15, height: model.imageHeight * (2 / 3)))
-                imageView.setImageURL(model.images[i])
+                let imageView = UIImageView.init(frame: CGRect.init(x: 15, y: 60 + CGFloat(i) * (model.imageHeight * (2 / 3) + 5), width: self.detailScrollView.frame.width - 2 * 15, height: model.imageHeight * (2 / 3)))
+                if let imageUrl = NSURL.init(string: model.images[i]) {
+                    imageView.setImageWithURL(imageUrl)
+                }
                 self.detailScrollView.addSubview(imageView)
             }
             
-            let contentView = UILabel.init(frame: CGRect.init(x: 15, y: line.frame.maxY + model.totalImageHeight + 15, width: self.detailScrollView.frame.width - 2 * 15, height: model.contentHeight))
-            contentView.textAlignment = .Center
+            let contentView = UITextView.init(frame: CGRect.init(x: 15, y: line.frame.maxY + model.totalImageHeight * (2 / 3) * CGFloat(model.images.count) + 15, width: self.detailScrollView.frame.width - 2 * 15, height: model.contentHeight))
+            contentView.text = model.content
             contentView.textColor = UIColor.lightGrayColor()
             contentView.font = UIFont.systemFontOfSize(14)
-            contentView.numberOfLines = 0
+            contentView.userInteractionEnabled = false
             self.detailScrollView.addSubview(contentView)
         }
         

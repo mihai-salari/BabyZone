@@ -318,7 +318,6 @@ class PersonDetail : NSObject ,NSCoding{
     var nickName:String!
     var sex:String!
     var headImg:String!
-    var headImage:UIImage!
     var mobile:String!
     var breedStatus:String!//妈妈状态(1：正常2：备孕 3：怀孕 4：育儿)
     var breedStatusDate:String!//妈妈状态时间(yyyy-MM-dd)
@@ -336,7 +335,7 @@ class PersonDetail : NSObject ,NSCoding{
         self.nickName = ""
         self.sex = ""//1：男 2：女
         self.headImg = ""
-        self.headImage = UIImage.init()
+//        self.headImage = UIImage.init()
         self.mobile = ""
         self.breedStatus = ""
         self.breedStatusDate = ""
@@ -367,9 +366,6 @@ class PersonDetail : NSObject ,NSCoding{
         }
         if let obj = aDecoder.decodeObjectForKey("headImg") as? String {
             self.headImg = obj
-        }
-        if let obj = aDecoder.decodeObjectForKey("headImage") as? UIImage {
-            self.headImage = obj
         }
         if let obj = aDecoder.decodeObjectForKey("mobile") as? String {
             self.mobile = obj
@@ -410,7 +406,6 @@ class PersonDetail : NSObject ,NSCoding{
         aCoder.encodeObject(self.nickName, forKey: "nickName")
         aCoder.encodeObject(self.sex, forKey: "sex")
         aCoder.encodeObject(self.headImg, forKey: "headImg")
-        aCoder.encodeObject(self.headImage, forKey: "headImage")
         aCoder.encodeObject(self.mobile, forKey: "mobile")
         aCoder.encodeObject(self.breedStatus, forKey: "breedStatus")
         aCoder.encodeObject(self.breedStatusDate, forKey: "breedStatusDate")
@@ -512,9 +507,6 @@ private class PersonDetailDAO: NSObject{
                 }
                 if note.headImg != detail.headImg {
                     note.headImg = detail.headImg
-                }
-                if note.headImage != detail.headImage {
-                    note.headImage = detail.headImage
                 }
                 if note.breedStatus != detail.breedStatus {
                     note.breedStatus = detail.breedStatus
@@ -2330,7 +2322,9 @@ private class ArticleDAO: NSObject {
             if let imageData = detail.imageUrl.dataUsingEncoding(NSUTF8StringEncoding) {
                 if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
                     for img in dict.values {
-                        detail.images.append(img)
+                        if let imgStr = img.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()) {
+                            detail.images.append(imgStr)
+                        }
                     }
                 }
             }

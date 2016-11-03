@@ -25,10 +25,11 @@ class LoginViewController: BaseViewController {
                 BabyZoneConfig.shared.UserPhoneKey.setDefaultObject(phone)
                 Login.sendAsyncLogin(phone, userPwd: password, completionHandler: { (errorCode, msg, dataDict) in
                     if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
-                        if let data = dataDict {
-                            if let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String{
+                        HUD.hideHud(weakSelf.view)
+                        if UDManager.isLogin() == false , let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String  {
+                            if token != "" {
                                 var countryCode = "86"
-                                let language = NSLocale.preferredLanguages()[0]
+                                let language = Localize.currentLanguage()
                                 if language.hasPrefix("zh") {
                                     countryCode = "86"
                                 }else{
@@ -39,7 +40,7 @@ class LoginViewController: BaseViewController {
                                     if let weakSelf = self{
                                         HUD.hideHud(weakSelf.view)
                                         var contact = ""
-                                        dispatch_queue_create("loginQueue", nil).queue({ 
+                                        dispatch_queue_create("loginQueue", nil).queue({
                                             if let callback = result as? LoginResult{
                                                 var registNumer:NSNumber!
                                                 switch callback.error_code{
@@ -52,45 +53,21 @@ class LoginViewController: BaseViewController {
                                                     UDManager.setIsLogin(false)
                                                 }
                                                 
-                                                let login = Login()
-                                                login.userId = format(data["userId"])//userId = 7
-                                                login.sessionId = format(data["sessionId"])
-                                                login.nickName = format(data["nickName"])
-                                                login.userSign = format(data["userSign"])
-                                                login.headImage = format(data["headImg"])
-                                                login.isHasNote = format(data["isHasNote"])
-                                                login.bbsCollNum = format(data["bbsCollNum"])
-                                                login.userName = format(data["userName"])
-                                                login.userAccount = phone
-                                                login.userPhone = phone
-                                                login.password = password
-                                                login.isRegist = registNumer
-                                                login.contactId = contact
-                                                login.md5Password = password.md5
-                                                LoginBL.insert(login)
-                                                if BabyZoneConfig.shared.currentUserId.defaultString() != login.userId{
-                                                    BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
-                                                    PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
-                                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
-                                                    })
-                                                    Equipments.sendAsyncEqutementList({ (errorCode, msg) in
-                                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginEqutementListNotification, object: nil)
-                                                    })
-                                                    BabyList.sendAsyncBabyList({ (errorCode, msg) in
-                                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
-                                                    })
+                                                if let login = LoginBL.find() {
+                                                    login.contactId = contact
+                                                    login.isRegist = registNumer
+                                                    LoginBL.modify(login)
                                                 }
-                                                dispatch_get_main_queue().queue({
-                                                    weakSelf.dismissViewControllerAnimated(true, completion: nil)
-                                                })
                                             }
                                         })
                                     }
                                     })
-                            }else{
-                                HUD.hideHud(weakSelf.view)
-                                HUD.showText("登录失败:请允许APP远程通知", onView: weakSelf.view)
                             }
+                        }
+                        if dataDict != nil {
+                            dispatch_get_main_queue().queue({
+                                weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                            })
                         }else{
                             HUD.hideHud(weakSelf.view)
                             HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)

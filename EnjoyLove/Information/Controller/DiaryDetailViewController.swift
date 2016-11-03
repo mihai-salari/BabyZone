@@ -36,7 +36,7 @@ class DiaryDetailViewController: BaseViewController {
 //    }
     
     private func initializeSubviews(){
-        self.diaryDetailView = DiaryDetailView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * upRateWidth(10), CGRectGetHeight(self.view.frame) - 2 * viewOriginY - navigationBarHeight), model: self.model)
+        self.diaryDetailView = DiaryDetailView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, CGRectGetWidth(self.view.frame) - 2 * upRateWidth(10), CGRectGetHeight(self.view.frame) - 2 * viewOriginY - navigationBarHeight), model: self.model, isConfirm: self.isConfirm)
         self.view.addSubview(self.diaryDetailView)
     }
     

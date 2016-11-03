@@ -156,9 +156,10 @@ class DiaryListCell: UITableViewCell {
         let imageHeight = CGRectGetHeight(self.contentView.frame) * (2 / 3)
         let imageView = UIImageView.init(frame: CGRectMake(10, (CGRectGetHeight(self.contentView.frame) - imageHeight) / 2, imageHeight, imageHeight))
         if model.images.count > 0 {
+            imageView.image = UIImage.imageWithName("mamaHeader.png")
             imageView.setImageURL(model.images[0])
         }else{
-            imageView.image = UIImage.imageWithName("pregnantMama.png")
+            imageView.image = UIImage.imageWithName("mamaHeader.png")
         }
         self.contentView.addSubview(imageView)
         

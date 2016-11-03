@@ -14,7 +14,7 @@ private let diaryDetailTipsWidth = upRateWidth(40)
 private let diaryDetailTipsHeight = upRateHeight(15)
 
 class DiaryDetailView: UIView {
-    init(frame: CGRect,model:Diary) {
+    init(frame: CGRect,model:Diary, isConfirm:Bool = false) {
         super.init(frame: frame)
         
         self.backgroundColor = UIColor.whiteColor()
@@ -23,6 +23,7 @@ class DiaryDetailView: UIView {
         self.addSubview(imageContainView)
         if model.imageArr != nil && model.imageArr.count > 0 {
             if model.imageArr.count == 1 {
+                imageContainView.layer.contents = UIImage.imageWithName("mamaHeader.png")?.CGImage
                 imageContainView.layer.contents = model.imageArr[0].CGImage
             }else{
                 let imageWidth = imageContainView.frame.width * (1 / 3) - 2 * 5
@@ -32,16 +33,21 @@ class DiaryDetailView: UIView {
                     let rowIndex = i / pregDiaryTipsColumn
                     
                     let imageView = UIView.init(frame: CGRect.init(x: 5 + CGFloat(columnIndex) * (imageWidth + 5), y: 5 + CGFloat(rowIndex) * (imageHeight + 5), width: imageWidth, height: imageHeight))
+                    imageView.layer.contents = UIImage.imageWithName("mamaHeader.png")?.CGImage
                     imageView.layer.contents = model.imageArr[i].CGImage
                     imageContainView.addSubview(imageView)
                 }
             }
         }else{
-            let label = UILabel.init(frame: imageContainView.bounds)
-            label.text = "您未选择图片"
-            label.textColor = UIColor.hexStringToColor("#986273")
-            label.textAlignment = .Center
-            imageContainView.addSubview(label)
+            if isConfirm == true {
+                let label = UILabel.init(frame: imageContainView.bounds)
+                label.text = "您未选择图片"
+                label.textColor = UIColor.hexStringToColor("#986273")
+                label.textAlignment = .Center
+                imageContainView.addSubview(label)
+            }else{
+                imageContainView.layer.contents = UIImage.imageWithName("mamaHeader.png")?.CGImage
+            }
         }
         
         let labels = model.noteLabels == nil ? NoteLabelBL.findVia(model.noteLabels) : model.noteLabels

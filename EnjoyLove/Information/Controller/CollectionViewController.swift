@@ -50,9 +50,13 @@ class CollectionViewController: BaseViewController,UITableViewDelegate,UITableVi
                 if let weakSelf = self{
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode{
+                            weakSelf.collectionData.removeAll()
                             weakSelf.collectionData.appendContentsOf(ArticleListBL.findAll())
                             weakSelf.collectionTable.reloadData()
                             weakSelf.collectionTable.pullToRefreshView.stopAnimating()
+                            if weakSelf.collectionData.count == 0{
+                                HUD.showText("暂无数据", onView: weakSelf.view)
+                            }
                         }
                     }
                 }

@@ -65,6 +65,7 @@ class MyOwnCell: UITableViewCell {
                 self.headerButton.image = UIImage.imageWithName("mamaHeader.png")
             }else{
                 if let imageUrl = NSURL.init(string: person.headImg) {
+                    self.headerButton.image = UIImage.imageWithName("mamaHeader.png")
                     self.headerButton.setImageWithURL(imageUrl)
                 }                
             }
@@ -202,6 +203,7 @@ class PersonInfoCell: UITableViewCell {
                 imageView.image = UIImage.imageWithName("mamaHeader.png")
             }else{
                 if let imageUrl = NSURL.init(string: model.subItem) {
+                    imageView.image = UIImage.imageWithName("mamaHeader.png")
                     imageView.setImageWithURL(imageUrl)
                 }
             }

@@ -81,9 +81,9 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                 Diary.sendAsyncUserNoteList("\(self.pageSize)", pageIndex: "\(self.pageIndex)", year: self.year, month: self.month, completionHandler: { [weak self](errorCode, msg, note) in
                     if let weakSelf = self{
                         if let table = weakSelf.diaryTable{
-                            weakSelf.diaryData.removeAll()
-                            weakSelf.diaryData = DiaryBL.findAll()
                             dispatch_get_main_queue().queue({
+                                weakSelf.diaryData.removeAll()
+                                weakSelf.diaryData = DiaryBL.findAll()
                                 table.reloadData()
                                 table.pullToRefreshView.stopAnimating()
                             })

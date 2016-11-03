@@ -298,12 +298,13 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         HUD.showHud("正在退出...", onView: self.view)
         Logout.sendAsyncLogout { [weak self](logout) in
             if let weakSelf = self{
+                HUD.hideHud(weakSelf.view)
                 if let log = logout{
                     if log.errorCode == BabyZoneConfig.shared.passCode{
                         LoginBL.clear(BabyZoneConfig.shared.currentUserId.defaultString())
-                        if let loginResult = UDManager.getLoginInfo() {
+                        
+                        if UDManager.isLogin(), let loginResult = UDManager.getLoginInfo() {
                             NetManager.sharedManager().logoutWithUserName(loginResult.contactId, sessionId: loginResult.sessionId, callBack: { (JSON) in
-                                HUD.hideHud(weakSelf.view)
                                 if let logoutString = JSON as? String{
                                     let error_code = Int32(logoutString)!
                                     print("code \(error_code)")
@@ -334,7 +335,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                                             if let manager = FListManager.sharedFList(){
                                                 manager.isReloadData = true
                                             }
-                                            HMTablBarController.selectedIndex = 0
+                                            
                                             AppDelegate.sharedDefault().reRegisterForRemoteNotifications()
                                             let queue = dispatch_queue_create(nil, nil)
                                             dispatch_async(queue, {
@@ -347,10 +348,10 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                                 }
                             })
                         }
-                        
+                        HMTablBarController.selectedIndex = 0
                     }else{
                         HUD.hideHud(weakSelf.view)
-                        HUD.showText("退出登录失败:\n\(log.errorCode)\(log.msg)", onView: weakSelf.view)
+                        HUD.showText("退出失败:\n\(log.errorCode)\(log.msg)", onView: weakSelf.view)
                     }
                 }
 

@@ -151,7 +151,8 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
         
         HUD.showHud("正在加载...", onView: self.view)
         let type = self.articleTypeListData[btn.tag]
-        ArticleList.sendAsyncArticleList("30", newsType: self.infoType, year: type.year, month: type.month, languageSign: Localize.currentLanguage(), completionHandler: { [weak self](errorCode, msg) in
+        
+        ArticleList.sendAsyncArticleListOrCollectionList("30", pageIndex: "1", newsType: self.infoType, year: type.year, month: type.month, languageSign: Localize.currentLanguage()) { [weak self](errorCode, msg) in
             if let weakSelf = self{
                 dispatch_get_main_queue().queue({
                     HUD.hideHud(weakSelf.view)
@@ -185,8 +186,7 @@ class BabyStatusViewController: BaseViewController,UITableViewDelegate,UITableVi
                     HUD.showText("加载数据失败:\(msg!)", onView: weakSelf.view)
                 }
             }
-            })
-
+        }
     }
     
     /*

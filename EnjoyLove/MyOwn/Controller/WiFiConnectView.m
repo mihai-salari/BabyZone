@@ -89,13 +89,13 @@
 - (void)nextConnectStepClick{
     [self.passwordTF resignFirstResponder];
     if (_isWiFiAvalible == NO) {
-        [HUD showText:@"请您先连接WiFi" onView:self];
+        [HUD showText:@"请您先连接WiFi" onView:self delay:3.0];
         return;
     }
     
     NSString *ssidString = @"";
     if (self.wifiTF.text && [self.wifiTF.text isEqualToString:@""]) {
-        [HUD showText:@"获取WiFi连接失败\n请检查手机网络状态" onView:self];
+        [HUD showText:@"获取WiFi连接失败\n请检查手机网络状态" onView:self delay:3.0];
         return;
     }else{
         ssidString = self.wifiTF.text;
@@ -103,7 +103,7 @@
     
     NSString *psd = @"";
     if (self.passwordTF.text && [self.passwordTF.text isEqualToString:@""]) {
-        [HUD showText:@"请输入WiFi密码" onView:self];
+        [HUD showText:@"请输入WiFi密码" onView:self delay:3.0];
         return;
     }else{
         psd = self.passwordTF.text;
@@ -119,7 +119,7 @@
 
 - (void)passwordEditEvent:(UITextField *)textField{
     if (self.wifiTF.text && [self.wifiTF.text isEqualToString:@""]) {
-        [HUD showText:@"获取WiFi连接失败\n请检查手机网络状态" onView:self];
+        [HUD showText:@"获取WiFi连接失败\n请检查手机网络状态" onView:self delay:3.0];
         return;
     }
     if (self.startInputHandler) {

@@ -13,7 +13,10 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
 
     private var diaryTable:UITableView!
     private var diaryData:[Diary]!
-    private var pageIndex:Int = 5
+    private var pageIndex:Int = 1
+    private var pageSize:Int = 5
+    private var year:String = ""
+    private var month:String = ""
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -38,7 +41,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
     private func initialize() -> Void{
         
         dispatch_queue_create("refreshDataQueue", nil).queue({
-            Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg, note) in
+            Diary.sendAsyncUserNoteList("\(self.pageSize)", pageIndex: "\(self.pageIndex)", year: self.year, month: self.month, completionHandler: { [weak self](errorCode, msg, hasNote) in
                 if let weakSelf = self{
                     if let table = weakSelf.diaryTable{
                         weakSelf.diaryData.removeAll()
@@ -49,7 +52,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                         })
                     }
                 }
-                })
+            })
         })
         
         self.diaryData = DiaryBL.findAll()
@@ -75,7 +78,7 @@ class PregDiaryViewController: BaseViewController,UITableViewDataSource,UITableV
                 self.pageIndex = 30
             }
             dispatch_queue_create("refreshDataQueue", nil).queue({ 
-                Diary.sendAsyncUserNoteList("\(self.pageIndex)", year: "", month: "", completionHandler: { [weak self](errorCode, msg, note) in
+                Diary.sendAsyncUserNoteList("\(self.pageSize)", pageIndex: "\(self.pageIndex)", year: self.year, month: self.month, completionHandler: { [weak self](errorCode, msg, note) in
                     if let weakSelf = self{
                         if let table = weakSelf.diaryTable{
                             weakSelf.diaryData.removeAll()

@@ -415,7 +415,7 @@
     if (self.isCancelClick == false) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [HUD hideHud:self.view];
-            [HUD showText:@"截图成功" onView:self.view];
+            [HUD showText:@"截图成功" onView:self.view delay:3.0];
         });
     }
 }

@@ -49,7 +49,7 @@ class PregInfoViewController: BaseViewController {
     private func initialize() -> Void{
         
         dispatch_queue_create("loadDiaryQueue", nil).queue { 
-            Diary.sendAsyncUserNoteList("1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, hasNote) in
+            Diary.sendAsyncUserNoteList("1", pageIndex: "1", year: "", month: "", store: false, completionHandler: { [weak self](errorCode, msg, hasNote) in
                 if let weakSelf = self{
                     weakSelf.isHasNote = hasNote
                 }
@@ -77,6 +77,7 @@ class PregInfoViewController: BaseViewController {
             idUserBabyInfo = babyList[0].idUserBabyInfo
         }
         self.currentBabyId = idUserBabyInfo
+        HUD.showText("正在加载....", onView: UIApplication.sharedApplication().keyWindow!, delay: 3.0)
         BabyBaseInfo.sendAsyncBabyBaseInfo(idUserBabyInfo, completionHandler: { [weak self](errorCode, msg, baseInfo) in
             if let weakSelf = self{
                 var infoType = "1"
@@ -200,7 +201,8 @@ class PregInfoViewController: BaseViewController {
                         detailStatus.detailModel = model
                         weakSelf.navigationController?.pushViewController(detailStatus, animated: true)
                         }, moreMenuCompletionHandler: { (model) in
-                            
+                            let collectioin = CollectionViewController()
+                            weakSelf.navigationController?.pushViewController(collectioin, animated: true)
                         }, shareCompletionHandler: { (model) in
                             
                         }, listCompletionHandler: { 

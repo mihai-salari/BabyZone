@@ -2115,9 +2115,18 @@ private class DiaryDAO: NSObject {
             detail.createDate = detail.createTime
         }
         
-        let imageArr = detail.imgUrls.componentsSeparatedByString(",")
-        for image in imageArr {
-            detail.images.append(image)
+        do {
+            if let imageData = detail.imgUrls.dataUsingEncoding(NSUTF8StringEncoding) {
+                if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
+                    for img in dict.values {
+                        if let imgStr = img.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()) {
+                            detail.images.append(imgStr)
+                        }
+                    }
+                }
+            }
+        } catch  {
+            
         }
         array.append(detail)
         var arrDict:[String:NSObject] = [:]
@@ -2507,10 +2516,18 @@ class ArticleList: NSObject {
     var title:String!
     var content:String!
     var imgList:String!
+    var images:[String]!
     var imgReplaceormat:String!
     var videoUrl:String!
+    var videos:[String]!
     var browseCount:String!
     var createTime:String!
+    var createDate:String!
+    var totalPage:String!
+    var titleHeight:CGFloat!
+    var contentHeight:CGFloat!
+    var minImageHeight:CGFloat!
+    var totalImageHeight:CGFloat!
     
     var operateType:String!
     
@@ -2523,12 +2540,18 @@ class ArticleList: NSObject {
         self.title = ""
         self.content = ""
         self.imgList = ""
+        self.images = []
         self.imgReplaceormat = ""
         self.videoUrl = ""
+        self.videos = []
         self.browseCount = ""
         self.createTime = ""
+        self.createDate = ""
+        self.totalPage = ""
         
         self.operateType = ""
+        
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -2555,11 +2578,17 @@ class ArticleList: NSObject {
         if let obj = aDecoder.decodeObjectForKey("imgList") as? String {
             self.imgList = obj
         }
+        if let obj = aDecoder.decodeObjectForKey("images") as? [String] {
+            self.images = obj
+        }
         if let obj = aDecoder.decodeObjectForKey("imgReplaceormat") as? String {
             self.imgReplaceormat = obj
         }
         if let obj = aDecoder.decodeObjectForKey("videoUrl") as? String {
             self.videoUrl = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("videos") as? [String] {
+            self.videos = obj
         }
         if let obj = aDecoder.decodeObjectForKey("browseCount") as? String {
             self.browseCount = obj
@@ -2570,6 +2599,14 @@ class ArticleList: NSObject {
         if let obj = aDecoder.decodeObjectForKey("operateType") as? String {
             self.operateType = obj
         }
+        
+        if let obj = aDecoder.decodeObjectForKey("totalPage") as? String {
+            self.totalPage = obj
+        }
+        self.titleHeight = CGFloat.init(aDecoder.decodeFloatForKey("titleHeight"))
+        self.contentHeight = CGFloat.init(aDecoder.decodeFloatForKey("contentHeight"))
+        self.minImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("minImageHeight"))
+        self.totalImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("totalImageHeight"))
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -2581,10 +2618,17 @@ class ArticleList: NSObject {
         aCoder.encodeObject(self.content, forKey: "content")
         aCoder.encodeObject(self.imgReplaceormat, forKey: "imgReplaceormat")
         aCoder.encodeObject(self.videoUrl, forKey: "videoUrl")
+        aCoder.encodeObject(self.videos, forKey: "videos")
         aCoder.encodeObject(self.browseCount, forKey: "browseCount")
         aCoder.encodeObject(self.imgList, forKey: "imgList")
+        aCoder.encodeObject(self.images, forKey: "images")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
         aCoder.encodeObject(self.operateType, forKey: "operateType")
+        aCoder.encodeObject(self.totalPage, forKey: "totalPage")
+        aCoder.encodeFloat(Float.init(self.titleHeight), forKey: "titleHeight")
+        aCoder.encodeFloat(Float.init(self.contentHeight), forKey: "contentHeight")
+        aCoder.encodeFloat(Float.init(self.minImageHeight), forKey: "minImageHeight")
+        aCoder.encodeFloat(Float.init(self.totalImageHeight), forKey: "totalImageHeight")
     }
 }
 
@@ -2626,6 +2670,33 @@ private class ArticleListDAO: NSObject {
                 }
             }
         }
+        
+        detail.contentHeight = detail.content.size(UIFont.systemFontOfSize(16)).height
+        detail.titleHeight = detail.title.size(UIFont.systemFontOfSize(14)).height
+        do {
+            if let imageData = detail.imgList.dataUsingEncoding(NSUTF8StringEncoding) {
+                if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
+                    for img in dict.values {
+                        if let imgStr = img.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()) {
+                            detail.images.append(imgStr)
+                        }
+                    }
+                }
+            }
+        } catch  {
+            
+        }
+        
+        if detail.images.count > 0 {
+            detail.minImageHeight = 80
+            detail.totalImageHeight = CGFloat.init(detail.images.count) * ScreenWidth
+        }
+        
+        let date = detail.createTime.componentsSeparatedByString(" ")
+        if let dateStr = date.first {
+            detail.createDate = dateStr
+        }
+        
         array.append(detail)
         var arrDict:[String:NSObject] = [:]
         arrDict[userId] = array
@@ -2784,9 +2855,7 @@ class AppBrowseCount: NSObject {
                 })
         }
     }
-    
 }
-
 
 class CityCode: NSObject {
     var codeId = ""

@@ -228,7 +228,7 @@ class HUD: NSObject {
         }
     }
     
-    class func showText(tip:String, onView:UIView) ->Void{
+    class func showText(tip:String, onView:UIView, delay:NSTimeInterval = 3.0) ->Void{
         onMain { 
             let hud = MBProgressHUD.showHUDAddedTo(onView, animated: true)
             hud.mode = MBProgressHUDMode.Text
@@ -236,7 +236,7 @@ class HUD: NSObject {
             hud.square = true
             hud.label.text = tip
             hud.label.numberOfLines = 0
-            hud.hideAnimated(true, afterDelay: 3.0)
+            hud.hideAnimated(true, afterDelay: delay)
         }
     }
         

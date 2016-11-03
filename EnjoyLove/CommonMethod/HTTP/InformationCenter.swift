@@ -142,6 +142,7 @@ extension ArticleTypeList{
 }
 
 private let ArticleListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsList"
+private let ArticleCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getCollectionBbsList"
 extension ArticleList{
     
     /*
@@ -153,11 +154,12 @@ extension ArticleList{
      languageSign		string		语言
 
      */
-    class func sendAsyncArticleList(pageSize: String,newsType: String,year: String,month: String,languageSign: String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["newsType":newsType, "pageIndex":"1", "pageSize":pageSize, "year":year, "month":month, "languageSign":languageSign], success: { (dataTask, responseObject) in
+    class func sendAsyncArticleListOrCollectionList(pageSize: String, pageIndex: String, newsType: String,year: String,month: String,languageSign: String, isCollection:Bool = false, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(isCollection == false ? ArticleListUrl : ArticleCollectionUrl, parameters: isCollection == false ?  ["newsType":newsType, "pageIndex":pageIndex, "pageSize":pageSize, "year":year, "month":month, "languageSign":languageSign] : ["pageSize":pageSize, "pageIndex":pageIndex], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
+                let totalPage = format(response["totalPages"])
                 if let data = response["data"] as? [String:NSObject]{
                     if let list = data["list"] as? [[String:NSObject]]{
                         for listDict in list {
@@ -173,11 +175,11 @@ extension ArticleList{
                             info.videoUrl = format(listDict["videoUrl"])
                             info.browseCount = format(listDict["browseCount"])
                             info.createTime = format(listDict["createTime"])
-                            info.operateType = "2"
+                            info.totalPage = totalPage
+                            info.operateType = isCollection == false ?  "2" : "1"
                             ArticleListBL.insert(info)
                         }
                     }
-                    
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)

@@ -26,7 +26,7 @@ class LoginAgreementViewController: BaseViewController {
         webView.layer.masksToBounds = true
         self.view.addSubview(webView)
         
-        let path = NSBundle.mainBundle().pathForResource("Agreement", ofType: "html")
+        let path = NSBundle.mainBundle().pathForResource("BabyZone", ofType: "html")
         do{
             if let webPath = path {
                 let htmlString = try String.init(contentsOfFile: webPath, encoding: NSUTF8StringEncoding)

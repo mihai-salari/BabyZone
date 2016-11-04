@@ -30,18 +30,33 @@ class LoginView: UIView,UITextFieldDelegate {
     
     private func initializeSubviews(){
         
-        let loginButton = UIButton.init(type: .Custom)
+        var loginButton = UIButton.init(type: .Custom)
         loginButton.frame = CGRect(x: 20, y: self.frame.midY, width: self.frame.width - 40, height: 40)
+        loginButton.tag = 10
         loginButton.layer.cornerRadius = 20
         loginButton.layer.masksToBounds = true
         loginButton.backgroundColor = UIColor.hexStringToColor("#b85562")
         loginButton.setTitle("登录", forState: .Normal)
         loginButton.titleLabel?.font = UIFont.systemFontOfSize(15)
         loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        loginButton.addTarget(self, action: #selector(LoginView.loginClick), forControlEvents: .TouchUpInside)
+        loginButton.addTarget(self, action: #selector(self.buttonAction(_:)), forControlEvents: .TouchUpInside)
         self.addSubview(loginButton)
         
-        self.phoneTF = self.textField(CGRect(x: loginButton.frame.minX, y: loginButton.frame.minY - 100, width: loginButton.frame.width, height: loginButton.frame.height), title: "手机号:", holder: "输入您的手机号")
+        loginButton = UIButton.init(type: .Custom)
+        loginButton.frame = CGRect(x: 20, y: self.frame.midY + 50, width: self.frame.width - 40, height: 40)
+        loginButton.layer.cornerRadius = 20
+        loginButton.tag = 20
+        loginButton.layer.masksToBounds = true
+        loginButton.backgroundColor = UIColor.hexStringToColor("#DE7983")
+        loginButton.setTitle("注册", forState: .Normal)
+        loginButton.titleLabel?.font = UIFont.systemFontOfSize(15)
+        loginButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        loginButton.addTarget(self, action: #selector(self.buttonAction(_:)), forControlEvents: .TouchUpInside)
+        self.addSubview(loginButton)
+        
+        
+        
+        self.phoneTF = self.textField(CGRect(x: loginButton.frame.minX, y: self.frame.midY - 100, width: loginButton.frame.width, height: loginButton.frame.height), title: "手机号:", holder: "输入您的手机号")
         self.phoneTF.textColor = UIColor.whiteColor()
         if let userName = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.UserPhoneKey) as? String {
             self.phoneTF.text = userName
@@ -53,35 +68,19 @@ class LoginView: UIView,UITextFieldDelegate {
         self.passwordTF.textColor = UIColor.whiteColor()
         self.addSubview(self.passwordTF)
         
-        let logoLabel = UILabel.init(frame: CGRect(x: 0, y: self.phoneTF.frame.minY - upRateHeight(80), width: self.frame.width, height: 25))
-        logoLabel.text = "L o g o"
-        logoLabel.textAlignment = .Center
-        logoLabel.textColor = UIColor.whiteColor()
-        logoLabel.font = UIFont.systemFontOfSize(20)
-        self.addSubview(logoLabel)
+        let logoImageView = UIImageView.init(frame: CGRect.init(x: (self.frame.width - (self.frame.width * (1 / 3))) / 2, y: (self.phoneTF.frame.maxY - (self.phoneTF.frame.maxY * (1 / 2.5))) / 2, width: self.frame.width * (1 / 3), height: (self.phoneTF.frame.maxY * (1 / 2.5))))
+        logoImageView.image = UIImage.imageWithName("logo.png")
+        self.addSubview(logoImageView)
         
-        let logoSubLabel = UILabel.init(frame: CGRect(x: 0, y: logoLabel.frame.maxY, width: logoLabel.frame.width, height: 15))
-        logoSubLabel.textColor = UIColor.whiteColor()
-        logoSubLabel.text = "让 妈 妈 也 能 睡 个 好 觉"
-        logoSubLabel.font = UIFont.systemFontOfSize(12)
-        logoSubLabel.textAlignment = .Center
-        self.addSubview(logoSubLabel)
         
-        /*
-        let wechatButton = UserLoginButton(type: .Custom)
-        wechatButton.frame = CGRect(x: loginButton.frame.minX, y: loginButton.frame.maxY + 10, width: loginButton.frame.width * (1 / 3), height: 30)
-        wechatButton.setImageRect(CGSize(width: 18, height: 15), normaImage: "login_wechat.png", normalTitle: "微信号登录", fontSize: 11)
-        wechatButton.setCustomTitleColor(UIColor.whiteColor())
-        wechatButton.addTarget(self, action: #selector(LoginView.wechatLoginClick), forControlEvents: .TouchUpInside)
-        self.addSubview(wechatButton)
-        */
-        
-        let registerButton = UserLoginButton(type: .Custom)
-        registerButton.frame = CGRect(x: loginButton.frame.midX , y: loginButton.frame.maxY + 10, width: loginButton.frame.width / 2, height: 30)
-        registerButton.setImageRect(CGSize(width: 10, height: 5), normaImage: "login_register.png", normalTitle: "还没有账号？注册一个吧", fontSize: 11)
-        registerButton.setCustomTitleColor(UIColor.whiteColor())
-        registerButton.addTarget(self, action: #selector(LoginView.registerClick), forControlEvents: .TouchUpInside)
-        self.addSubview(registerButton)
+        let passwordButton = UIButton.init(type: .Custom)
+        passwordButton.frame = CGRect(x: loginButton.frame.minX + loginButton.frame.width * (2 / 3) , y: loginButton.frame.maxY + 10, width: loginButton.frame.width / 2, height: 30)
+        passwordButton.setTitle("忘记密码?", forState: .Normal)
+        passwordButton.titleLabel?.font = UIFont.systemFontOfSize(12)
+        passwordButton.tag = 30
+        passwordButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        passwordButton.addTarget(self, action: #selector(self.buttonAction(_:)), forControlEvents: .TouchUpInside)
+        self.addSubview(passwordButton)
         
     }
     
@@ -116,11 +115,22 @@ class LoginView: UIView,UITextFieldDelegate {
         return true
     }
     
-    func loginClick() -> Void {
+    func buttonAction(btn:UIButton) -> Void {
         self.phoneTF.resignFirstResponder()
         self.passwordTF.resignFirstResponder()
-        if let handle = self.loginHandler, let phone = self.phoneTF.text, let password = self.passwordTF.text{
-            handle(phone: phone, isPhone: phone.isTelNumber(), password: password)
+        switch btn.tag {
+        case 10:
+            if let handle = self.loginHandler, let phone = self.phoneTF.text, let password = self.passwordTF.text{
+                handle(phone: phone, isPhone: phone.isTelNumber(), password: password)
+            }
+        case 20:
+            if let handle = self.registerHandler, let phone = self.passwordTF.text {
+                handle(phone: phone)
+            }
+        case 30:
+            break
+        default:
+            break
         }
     }
     
@@ -130,11 +140,6 @@ class LoginView: UIView,UITextFieldDelegate {
         }
     }
     
-    func registerClick() -> Void {
-        if let handle = self.registerHandler, let phone = self.passwordTF.text {
-            handle(phone: phone)
-        }
-    }
 }
 
 class RegisterView: UIView,UITextFieldDelegate {
@@ -162,7 +167,7 @@ class RegisterView: UIView,UITextFieldDelegate {
     private func initializeSubviews(){
         
         let loginButton = UIButton.init(type: .Custom)
-        loginButton.frame = CGRect(x: 20, y: self.frame.height * (3 / 5), width: self.frame.width - 40, height: 40)
+        loginButton.frame = CGRect(x: 20, y: self.frame.height * (3.2 / 5), width: self.frame.width - 40, height: 40)
         loginButton.layer.cornerRadius = 20
         loginButton.layer.masksToBounds = true
         loginButton.backgroundColor = UIColor.hexStringToColor("#b85562")
@@ -237,19 +242,9 @@ class RegisterView: UIView,UITextFieldDelegate {
         self.confirmTF.textColor = UIColor.whiteColor()
         self.addSubview(self.confirmTF)
         
-        let logoLabel = UILabel.init(frame: CGRect(x: 0, y: self.phoneTF.frame.minY - upRateHeight(60), width: self.frame.width, height: 25))
-        logoLabel.text = "L o g o"
-        logoLabel.textAlignment = .Center
-        logoLabel.textColor = UIColor.whiteColor()
-        logoLabel.font = UIFont.systemFontOfSize(20)
-        self.addSubview(logoLabel)
-        
-        let logoSubLabel = UILabel.init(frame: CGRect(x: 0, y: logoLabel.frame.maxY, width: logoLabel.frame.width, height: 15))
-        logoSubLabel.textColor = UIColor.whiteColor()
-        logoSubLabel.text = "让 妈 妈 也 能 睡 个 好 觉"
-        logoSubLabel.font = UIFont.systemFontOfSize(12)
-        logoSubLabel.textAlignment = .Center
-        self.addSubview(logoSubLabel)
+        let logoImageView = UIImageView.init(frame: CGRect.init(x: (self.frame.width - (self.frame.width * (1 / 3))) / 2, y: (self.phoneTF.frame.maxY - (self.phoneTF.frame.maxY * (1 / 2.5))) / 2, width: self.frame.width * (1 / 3), height: (self.phoneTF.frame.maxY * (1 / 2.5))))
+        logoImageView.image = UIImage.imageWithName("logo.png")
+        self.addSubview(logoImageView)
         
         
         let registerButton = UserLoginButton(type: .Custom)

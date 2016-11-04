@@ -184,7 +184,6 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
                                         if weakSelf.devices.count == 0{
                                             weakSelf.navigationController?.popViewControllerAnimated(true)
                                         }
-                                        NSNotificationCenter.defaultCenter().postNotificationName(BabyZoneConfig.shared.DeleteDeviceNotificaiton, object: nil)
                                     })
                                 }else{
                                     HUD.showText("删除失败\(msg!)", onView: weakSelf.view)

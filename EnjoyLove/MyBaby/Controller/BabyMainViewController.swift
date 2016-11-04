@@ -12,10 +12,6 @@ import UIKit
 private let babyBackgroundImageViewTag = 1000
 private let babyPlayButtonTag = 2000
 private let babyMusicPlayButtonTag = 3000
-private let faceWidth:CGFloat = upRateWidth(55)
-private let faceHeight:CGFloat = upRateWidth(55)
-private let faceNumberWidth:CGFloat = upRateWidth(15)
-private let lineBeginX:CGFloat = upRateWidth(15)
 
 class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
 
@@ -29,6 +25,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
     private var temperatureLabel:UILabel!
     private var humidityLabel:UILabel!
     private var remindLabel:UILabel!
+    private var currentBaby:Int = 0
     
     private var testLabel:UILabel!
     let availableLanguages = Localize.availableLanguages()
@@ -43,9 +40,8 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
             self.tabBarController?.tabBar.hidden = false
             self.navigationController?.navigationBarHidden = false
             self.navigationBarItem(self, title: "我的宝宝", leftSel: nil, rightSel: #selector(BabyMainViewController.rightConfigClick), rightItemSize: CGSizeMake(20, 20), rightImage: "myOwnConfig.png")
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(addNewDevice), name: BabyZoneConfig.shared.AddDeviceNotification, object: nil)
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(deleteDevice), name: BabyZoneConfig.shared.DeleteDeviceNotificaiton, object: nil)
             self.view.frame = CGRect.init(x: 0, y: 0, width: ScreenWidth, height: ScreenHeight)
+            self.initialize()
         }
     }
     
@@ -55,7 +51,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         super.viewDidLoad()
 
         // Do any additional setnkznkup after loading the view.
-        self.initialize()
+        
     }
         
     
@@ -87,7 +83,11 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
             self.babyData.append(baby)
         }
         
-        self.babyScrollView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: ScreenWidth, height: ScreenHeight - navAndTabHeight))
+        let floorView = UIImageView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: ScreenWidth, height: 10))
+        floorView.image = UIImage.imageWithName("floorLayer.png")
+        self.view.addSubview(floorView)
+        
+        self.babyScrollView = UIScrollView.init(frame: CGRect.init(x: 0, y: floorView.frame.maxY, width: ScreenWidth, height: ScreenHeight - navAndTabHeight - 10))
         self.babyScrollView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
         self.babyScrollView.contentSize = CGSize(width: CGFloat(self.babyData.count) * self.babyScrollView.frame.width, height: self.babyScrollView.frame.height)
         self.babyScrollView.showsHorizontalScrollIndicator = false
@@ -135,7 +135,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 tempDescLabel.font = UIFont.boldSystemFontOfSize(10)
                 self.babyScrollView.addSubview(tempDescLabel)
                 
-                self.humidityLabel = UILabel.init(frame: CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + temperatureLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
+                self.humidityLabel = UILabel.init(frame: CGRect(x: temperatureLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
                 self.humidityLabel.text = self.babyData[i].babyHumidity
                 self.humidityLabel.textAlignment = .Center
                 self.humidityLabel.textColor = UIColor.hexStringToColor("#DD656F")
@@ -165,7 +165,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 
                 let musicButtonWidth:CGFloat = 50
                 let musicButton = UIButton.init(type: .Custom)
-                musicButton.frame = CGRect(x: self.babyScrollView.frame.width - musicButtonWidth - 15, y: 15, width: musicButtonWidth, height: musicButtonWidth)
+                musicButton.frame = CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - musicButtonWidth - 15), y: 15, width: musicButtonWidth, height: musicButtonWidth)
                 musicButton.tag = babyMusicPlayButtonTag + i
                 musicButton.setImage(UIImage.imageWithName("music_play.png"), forState: .Selected)
                 musicButton.setImage(UIImage.imageWithName("music_stop.png"), forState: .Normal)
@@ -183,6 +183,16 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         }
     }
     
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let page = scrollView.contentOffset.x / scrollView.frame.width
+        let progressInPage = scrollView.contentOffset.x - (page * scrollView.frame.width)
+        self.babyPageControl.progress = page + progressInPage
+    }
+    
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        self.currentBaby = Int(scrollView.contentOffset.x / scrollView.frame.width)
+    }
+    
     
     func remoteNotification() -> Void {
         let push = BabyPushViewController()
@@ -198,11 +208,16 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
     
     override func refreshContact() {
         super.refreshContact()
+        
     }
     
+    func reloadEquipments() -> Void {
+        self.initialize()
+    }
  
     func addNewDevice() -> Void {
         self.initialize()
+        
     }
     
     func deleteDevice() -> Void {
@@ -215,7 +230,8 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
     }
     
     func babyMusicClick(btn:UIButton) -> Void {
-        
+        let music = PlayMusicViewController()
+        self.navigationController?.pushViewController(music, animated: true)
     }
     
     /*

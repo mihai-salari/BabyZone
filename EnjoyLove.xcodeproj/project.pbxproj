@@ -136,12 +136,15 @@
 		27188E7E1D87843900797D41 /* add_one.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188E7D1D87843900797D41 /* add_one.png */; };
 		27188E801D8785F300797D41 /* babyRemindHead.png in Resources */ = {isa = PBXBuildFile; fileRef = 27188E7F1D8785F300797D41 /* babyRemindHead.png */; };
 		27188E841D88E2C200797D41 /* HMSegment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27188E831D88E2C200797D41 /* HMSegment.swift */; };
-		2718BE031D819F57002BE29D /* BabyDetailStatus.png in Resources */ = {isa = PBXBuildFile; fileRef = 2718BE011D819F57002BE29D /* BabyDetailStatus.png */; };
 		2718BE041D819F57002BE29D /* StatusContent.html in Resources */ = {isa = PBXBuildFile; fileRef = 2718BE021D819F57002BE29D /* StatusContent.html */; };
 		271F15771D94D56500CAAEF4 /* OtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F15761D94D56500CAAEF4 /* OtherViewController.swift */; };
 		271F157D1D950E3700CAAEF4 /* LanguageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F157C1D950E3700CAAEF4 /* LanguageViewController.swift */; };
 		271F157F1D95175800CAAEF4 /* AddDeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F157E1D95175800CAAEF4 /* AddDeviceViewController.swift */; };
 		271F15971D95336200CAAEF4 /* AddressBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F15961D95336200CAAEF4 /* AddressBookViewController.swift */; };
+		2725D8521DCCB93B00AA459A /* BabyZone.html in Resources */ = {isa = PBXBuildFile; fileRef = 2725D8511DCCB93B00AA459A /* BabyZone.html */; };
+		2725D8541DCCC8F700AA459A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2725D8531DCCC8F700AA459A /* logo.png */; };
+		2725D85B1DCCCAAB00AA459A /* floorLayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 2725D8591DCCCAAB00AA459A /* floorLayer.png */; };
+		2725D85C1DCCCAAB00AA459A /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 2725D85A1DCCCAAB00AA459A /* loading.png */; };
 		2731E26E1D70702900521318 /* babySleep.png in Resources */ = {isa = PBXBuildFile; fileRef = 2731E26D1D70702900521318 /* babySleep.png */; };
 		2731E2701D70849F00521318 /* babyTemperature.png in Resources */ = {isa = PBXBuildFile; fileRef = 2731E26F1D70849F00521318 /* babyTemperature.png */; };
 		2731E2731D70892100521318 /* down_arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2731E2711D70892100521318 /* down_arrow.png */; };
@@ -469,7 +472,6 @@
 		27F47C1B1D96CD9B00502AEE /* UIAlertController+HMAdd.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F47C181D96CD9B00502AEE /* UIAlertController+HMAdd.m */; };
 		27F47C1C1D96CD9B00502AEE /* HMSortString.m in Sources */ = {isa = PBXBuildFile; fileRef = 27F47C1A1D96CD9B00502AEE /* HMSortString.m */; };
 		27F666151D9BEBCC001F3BF6 /* BabyPushViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F666141D9BEBCC001F3BF6 /* BabyPushViewController.swift */; };
-		27F69D991D8CC92A0035ADD2 /* Agreement.html in Resources */ = {isa = PBXBuildFile; fileRef = 27F69D981D8CC92A0035ADD2 /* Agreement.html */; };
 		27F69D9B1D8CC9660035ADD2 /* LoginAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F69D9A1D8CC9660035ADD2 /* LoginAgreementViewController.swift */; };
 		27F6DBFB1D9ABB06001C63F5 /* BabyCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F6DBFA1D9ABB06001C63F5 /* BabyCheckViewController.swift */; };
 /* End PBXBuildFile section */
@@ -680,12 +682,15 @@
 		27188E7D1D87843900797D41 /* add_one.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_one.png; sourceTree = "<group>"; };
 		27188E7F1D8785F300797D41 /* babyRemindHead.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babyRemindHead.png; sourceTree = "<group>"; };
 		27188E831D88E2C200797D41 /* HMSegment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HMSegment.swift; sourceTree = "<group>"; };
-		2718BE011D819F57002BE29D /* BabyDetailStatus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BabyDetailStatus.png; sourceTree = "<group>"; };
 		2718BE021D819F57002BE29D /* StatusContent.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = StatusContent.html; sourceTree = "<group>"; };
 		271F15761D94D56500CAAEF4 /* OtherViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherViewController.swift; sourceTree = "<group>"; };
 		271F157C1D950E3700CAAEF4 /* LanguageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageViewController.swift; sourceTree = "<group>"; };
 		271F157E1D95175800CAAEF4 /* AddDeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDeviceViewController.swift; sourceTree = "<group>"; };
 		271F15961D95336200CAAEF4 /* AddressBookViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressBookViewController.swift; sourceTree = "<group>"; };
+		2725D8511DCCB93B00AA459A /* BabyZone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = BabyZone.html; path = "../../../../../360云盘1/iOS/BabyZone证书/BabyZone.html"; sourceTree = "<group>"; };
+		2725D8531DCCC8F700AA459A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		2725D8591DCCCAAB00AA459A /* floorLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = floorLayer.png; sourceTree = "<group>"; };
+		2725D85A1DCCCAAB00AA459A /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
 		2731E26D1D70702900521318 /* babySleep.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babySleep.png; sourceTree = "<group>"; };
 		2731E26F1D70849F00521318 /* babyTemperature.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babyTemperature.png; sourceTree = "<group>"; };
 		2731E2711D70892100521318 /* down_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_arrow.png; sourceTree = "<group>"; };
@@ -1154,7 +1159,6 @@
 		27F47C191D96CD9B00502AEE /* HMSortString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSortString.h; sourceTree = "<group>"; };
 		27F47C1A1D96CD9B00502AEE /* HMSortString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMSortString.m; sourceTree = "<group>"; };
 		27F666141D9BEBCC001F3BF6 /* BabyPushViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyPushViewController.swift; sourceTree = "<group>"; };
-		27F69D981D8CC92A0035ADD2 /* Agreement.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Agreement.html; sourceTree = "<group>"; };
 		27F69D9A1D8CC9660035ADD2 /* LoginAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginAgreementViewController.swift; sourceTree = "<group>"; };
 		27F6DBFA1D9ABB06001C63F5 /* BabyCheckViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyCheckViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1671,8 +1675,7 @@
 			isa = PBXGroup;
 			children = (
 				270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */,
-				27F69D981D8CC92A0035ADD2 /* Agreement.html */,
-				2718BE011D819F57002BE29D /* BabyDetailStatus.png */,
+				2725D8511DCCB93B00AA459A /* BabyZone.html */,
 				2718BE021D819F57002BE29D /* StatusContent.html */,
 			);
 			path = HTML5;
@@ -2552,6 +2555,8 @@
 		27F28D1C1D6FF4A5005E382D /* MyBaby */ = {
 			isa = PBXGroup;
 			children = (
+				2725D8591DCCCAAB00AA459A /* floorLayer.png */,
+				2725D85A1DCCCAAB00AA459A /* loading.png */,
 				27830D301D9B65050036E2BC /* babyPlay.png */,
 				27830C171D9A07660036E2BC /* music_pause.png */,
 				27830D381D9B68BA0036E2BC /* alertAtension.png */,
@@ -2706,6 +2711,7 @@
 		27F410631D8BA58400722051 /* LoginImage */ = {
 			isa = PBXGroup;
 			children = (
+				2725D8531DCCC8F700AA459A /* logo.png */,
 				27F410DB1D8C3F6100722051 /* down_triangle.png */,
 				27F410641D8BA58400722051 /* login_baby_normal.png */,
 				27F410651D8BA58400722051 /* login_baby_selected.png */,
@@ -2910,6 +2916,8 @@
 				27830D3B1D9B68D10036E2BC /* baby_cancel.png in Resources */,
 				27F28D391D6FF4ED005E382D /* tool_recover.png in Resources */,
 				27830D4B1D9B69E20036E2BC /* baby_voice_selected.png in Resources */,
+				2725D8541DCCC8F700AA459A /* logo.png in Resources */,
+				2725D85B1DCCCAAB00AA459A /* floorLayer.png in Resources */,
 				2731E2761D71218B00521318 /* rainDrop.png in Resources */,
 				277A34091DA8E00F0002E53F /* Common-Configuration.plist in Resources */,
 				27830D371D9B689D0036E2BC /* baby_enjoy.png in Resources */,
@@ -2949,7 +2957,6 @@
 				275C048F1D813BB300A52ABC /* button_triangle_up.png in Resources */,
 				275C04921D813EF400A52ABC /* babyStatus.png in Resources */,
 				27607CD61D842C5C0056FCFC /* gray_menu.png in Resources */,
-				27F69D991D8CC92A0035ADD2 /* Agreement.html in Resources */,
 				27830D3F1D9B68F60036E2BC /* baby_music_normal.png in Resources */,
 				27188DD81D86379B00797D41 /* selected_face_1.png in Resources */,
 				27188DD71D86379B00797D41 /* normal_face_5.png in Resources */,
@@ -2973,7 +2980,6 @@
 				27F4106E1D8BA58400722051 /* login_baby_normal.png in Resources */,
 				275C00A81D7D717200A52ABC /* add_device_down.png in Resources */,
 				271475EA1D7522F3003CFC5F /* preStatus.png in Resources */,
-				2718BE031D819F57002BE29D /* BabyDetailStatus.png in Resources */,
 				27830D331D9B685C0036E2BC /* music_stop.png in Resources */,
 				27020FD21DB21C3A00D3BDBE /* BabyZoneConfig.plist in Resources */,
 				27F28D271D6FF4A5005E382D /* myOwnEdit.png in Resources */,
@@ -3016,6 +3022,7 @@
 				27188E771D86AD2100797D41 /* ConfirmViewController.xib in Resources */,
 				27830C191D9A07660036E2BC /* music_pause.png in Resources */,
 				275C00861D7D6F4D00A52ABC /* recode_no.png in Resources */,
+				2725D85C1DCCCAAB00AA459A /* loading.png in Resources */,
 				27188E681D86AD2100797D41 /* CameraView.strings in Resources */,
 				275C00921D7D6F6E00A52ABC /* person_set_2.png in Resources */,
 				271476031D7563EC003CFC5F /* call.png in Resources */,
@@ -3048,6 +3055,7 @@
 				275C039B1D800E7F00A52ABC /* search_device.png in Resources */,
 				27D002D31D6D44D700B62A61 /* Main.storyboard in Resources */,
 				275C03381D7E668F00A52ABC /* grayDot.png in Resources */,
+				2725D8521DCCB93B00AA459A /* BabyZone.html in Resources */,
 				27830D491D9B69CF0036E2BC /* baby_music_selected.png in Resources */,
 				275C00A91D7D717200A52ABC /* add_device.png in Resources */,
 			);

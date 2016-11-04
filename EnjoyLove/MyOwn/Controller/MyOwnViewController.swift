@@ -250,32 +250,29 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         case 2:
             switch indexPath.row {
             case 0:
-                if UDManager.isLogin() {
-                    let devices = EquipmentsBL.findAll()
-                    if devices.count > 0 {
-                        for device in devices {
-                            let contact = Contact()
-                            contact.contactId = device.eqmDid
-                            contact.contactPassword = device.eqmPwd
-                            contact.contactName = device.eqmName
-                            if device.eqmDid.characters.first != "0" {
-                                contact.contactType = Int.init(CONTACT_TYPE_UNKNOWN)
-                            }else{
-                                contact.contactType = Int.init(CONTACT_TYPE_PHONE)
-                            }
-                            FListManager.sharedFList().insert(contact)
-                        }
-                    }
-                    if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
-                        if contacts.count > 0 {
-                            let devices = DeviceListViewController()
-                            self.navigationController?.pushViewController(devices, animated: true)
+                let devices = EquipmentsBL.findAll()
+                if devices.count > 0 {
+                    for device in devices {
+                        let contact = Contact()
+                        contact.contactId = device.eqmDid
+                        contact.contactPassword = device.eqmPwd
+                        contact.contactName = device.eqmName
+                        if device.eqmDid.characters.first != "0" {
+                            contact.contactType = Int.init(CONTACT_TYPE_UNKNOWN)
                         }else{
-                            let next = QRCodeNextController()
-                            self.navigationController?.pushViewController(next, animated: true)
+                            contact.contactType = Int.init(CONTACT_TYPE_PHONE)
                         }
+                        FListManager.sharedFList().insert(contact)
                     }
-                    
+                }
+                if let contacts = FListManager.sharedFList().getContacts() as? [Contact] {
+                    if contacts.count > 0 {
+                        let devices = DeviceListViewController()
+                        self.navigationController?.pushViewController(devices, animated: true)
+                    }else{
+                        let next = QRCodeNextController()
+                        self.navigationController?.pushViewController(next, animated: true)
+                    }
                 }else{
                     let addDevice = AddDeviceViewController()
                     self.navigationController?.pushViewController(addDevice, animated: true)

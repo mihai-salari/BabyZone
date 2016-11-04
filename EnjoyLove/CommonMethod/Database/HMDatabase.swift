@@ -1155,6 +1155,9 @@ class Equipments: NSObject,NSCoding {
     var isClickDefenceStateBtn:Bool!
     var isGettingOnLineState:Bool!
     
+    var temperature:String!
+    var humidity:String!
+    var remind:String!
     
     
     override init() {
@@ -1170,6 +1173,10 @@ class Equipments: NSObject,NSCoding {
         self.defenceState = 0
         self.isClickDefenceStateBtn = false
         self.isGettingOnLineState = false
+        
+        self.temperature = ""
+        self.humidity = ""
+        self.remind = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -1197,6 +1204,16 @@ class Equipments: NSObject,NSCoding {
             self.eqmLevel = obj
         }
         
+        if let obj = aDecoder.decodeObjectForKey("temperature") as? String {
+            self.temperature = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("humidity") as? String {
+            self.humidity = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("remind") as? String {
+            self.remind = obj
+        }
+        
         self.eqmStatus = aDecoder.decodeIntForKey("eqmStatus")
         self.eqmMessageCount = aDecoder.decodeIntForKey("eqmMessageCount")
         self.defenceState = aDecoder.decodeIntForKey("defenceState")
@@ -1217,6 +1234,10 @@ class Equipments: NSObject,NSCoding {
         aCoder.encodeInt(self.defenceState, forKey: "defenceState")
         aCoder.encodeBool(self.isClickDefenceStateBtn, forKey: "isClickDefenceStateBtn")
         aCoder.encodeBool(self.isGettingOnLineState, forKey: "isGettingOnLineState")
+        
+        aCoder.encodeObject(self.temperature, forKey: "temperature")
+        aCoder.encodeObject(self.humidity, forKey: "humidity")
+        aCoder.encodeObject(self.remind, forKey: "remind")
     }
     
 }

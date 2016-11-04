@@ -12,6 +12,7 @@ import UIKit
 let LoginPersonDetailNotification = "LoginPersonDetailNotification"
 let LoginBabyListNotification = "LoginBabyListNotification"
 
+
 class LoginViewController: BaseViewController {
 
     override func viewDidLoad() {

@@ -302,8 +302,8 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                 if let log = logout{
                     if log.errorCode == BabyZoneConfig.shared.passCode{
                         LoginBL.clear(BabyZoneConfig.shared.currentUserId.defaultString())
-                        
-                        if UDManager.isLogin(), let loginResult = UDManager.getLoginInfo() {
+                        BabyZoneConfig.shared.currentUserId.setDefaultObject("")
+                        if UDManager.isLogin() == true, let loginResult = UDManager.getLoginInfo() {
                             NetManager.sharedManager().logoutWithUserName(loginResult.contactId, sessionId: loginResult.sessionId, callBack: { (JSON) in
                                 if let logoutString = JSON as? String{
                                     let error_code = Int32(logoutString)!

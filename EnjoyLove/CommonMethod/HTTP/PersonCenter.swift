@@ -108,31 +108,22 @@ extension Login {
                         login.md5Password = userPwd.md5
                         LoginBL.insert(login)
                         
-                        if BabyZoneConfig.shared.currentUserId.defaultString() != login.userId{
-                            BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
-                            dispatch_queue_create("someDataRequetQeueu", nil).queue({ 
-                                PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
-                                    NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
+                        BabyZoneConfig.shared.currentUserId.setDefaultObject(login.userId)
+                        dispatch_queue_create("someDataRequetQeueu", nil).queue({
+                            PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
+                                NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
+                                Equipments.sendAsyncEqutementList({ (errorCode, msg) in
                                     BabyList.sendAsyncBabyList({ (errorCode, msg) in
                                         NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
-                                        Equipments.sendAsyncEqutementList({ (errorCode, msg) in
-                                            NSNotificationCenter.defaultCenter().postNotificationName(LoginEqutementListNotification, object: nil)
-                                            dispatch_get_main_queue().queue({ 
-                                                if let handle = completionHandler{
-                                                    handle(errorCode: errorCode, msg: msg, dataDict: data)
-                                                }
-                                            })
+                                        dispatch_get_main_queue().queue({
+                                            if let handle = completionHandler{
+                                                handle(errorCode: errorCode, msg: msg, dataDict: data)
+                                            }
                                         })
                                     })
                                 })
                             })
-                        }else{
-                            dispatch_get_main_queue().queue({
-                                if let handle = completionHandler{
-                                    handle(errorCode: errorCode, msg: msg, dataDict: data)
-                                }
-                            })
-                        }
+                        })
                     }
                 }else{
                     if let handle = completionHandler{

@@ -52,7 +52,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        P2PClient.sharedClient().delegate = self
+        P2PClient.sharedClient().delegate = nil
     }
     
     private func initialize() ->Void{

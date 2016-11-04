@@ -42,7 +42,6 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        P2PClient.sharedClient().delegate = nil
         P2PClient.sharedClient().delegate = self
     }
     
@@ -113,6 +112,7 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
         for device in devices {
             let contact = EquipmentsBL.contactFromEquipment(device)
             device.eqmStatus = Int32.init(contact.onLineState)
+            print("device state \(device.eqmStatus)")
             EquipmentsBL.modify(device)
         }
         

@@ -10,7 +10,6 @@
 import UIKit
 
 let LoginPersonDetailNotification = "LoginPersonDetailNotification"
-let LoginEqutementListNotification = "LoginEqutementListNotification"
 let LoginBabyListNotification = "LoginBabyListNotification"
 
 class LoginViewController: BaseViewController {
@@ -27,42 +26,41 @@ class LoginViewController: BaseViewController {
                     if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
                         HUD.hideHud(weakSelf.view)
                         if UDManager.isLogin() == false , let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String  {
-                            if token != "" {
-                                var countryCode = "86"
-                                let language = Localize.currentLanguage()
-                                if language.hasPrefix("zh") {
-                                    countryCode = "86"
-                                }else{
-                                    countryCode = "1"
-                                }
-                                let videoPhone = "+\(countryCode)-\(phone)"
-                                NetManager.sharedManager().loginWithUserName(videoPhone, password: password, token: token, callBack: { [weak self](result) in
-                                    if let weakSelf = self{
-                                        HUD.hideHud(weakSelf.view)
-                                        var contact = ""
-                                        dispatch_queue_create("loginQueue", nil).queue({
-                                            if let callback = result as? LoginResult{
-                                                var registNumer:NSNumber!
-                                                switch callback.error_code{
-                                                case NET_RET_LOGIN_SUCCESS:
-                                                    contact = callback.contactId
-                                                    weakSelf.loginSuccess(callback)
-                                                    registNumer = NSNumber.init(bool: true)
-                                                default:
-                                                    registNumer = NSNumber.init(bool: false)
-                                                    UDManager.setIsLogin(false)
-                                                }
-                                                
-                                                if let login = LoginBL.find() {
-                                                    login.contactId = contact
-                                                    login.isRegist = registNumer
-                                                    LoginBL.modify(login)
-                                                }
-                                            }
-                                        })
-                                    }
-                                    })
+                            var countryCode = "86"
+                            let language = Localize.currentLanguage()
+                            if language.hasPrefix("zh") {
+                                countryCode = "86"
+                            }else{
+                                countryCode = "1"
                             }
+                            let videoPhone = "+\(countryCode)-\(phone)"
+                            NetManager.sharedManager().loginWithUserName(videoPhone, password: password, token: token, callBack: { [weak self](result) in
+                                if let weakSelf = self{
+                                    HUD.hideHud(weakSelf.view)
+                                    var contact = ""
+                                    dispatch_queue_create("loginQueue", nil).queue({
+                                        if let callback = result as? LoginResult{
+                                            var registNumer:NSNumber!
+                                            switch callback.error_code{
+                                            case NET_RET_LOGIN_SUCCESS:
+                                                contact = callback.contactId
+                                                weakSelf.loginSuccess(callback)
+                                                registNumer = NSNumber.init(bool: true)
+                                            default:
+                                                registNumer = NSNumber.init(bool: false)
+                                                UDManager.setIsLogin(false)
+                                            }
+                                            
+                                            if let login = LoginBL.find() {
+                                                login.contactId = contact
+                                                login.isRegist = registNumer
+                                                LoginBL.modify(login)
+                                            }
+                                        }
+                                    })
+                                }
+                                })
+
                         }
                         if dataDict != nil {
                             dispatch_get_main_queue().queue({

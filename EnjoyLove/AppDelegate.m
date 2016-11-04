@@ -138,6 +138,7 @@
 /** 远程通知注册失败委托 */
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     NSLog(@"\n>>>[DeviceToken Error]:%@\n\n", error.description);
+    [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:[[BabyZoneConfig shared] pushTokenKey]];
 }
 
 #pragma mark - APP运行中接收到通知(推送)处理

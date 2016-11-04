@@ -23,7 +23,7 @@ class DiaryDetailView: UIView {
         self.addSubview(imageContainView)
         if model.imageArr != nil && model.imageArr.count > 0 {
             if model.imageArr.count == 1 {
-                imageContainView.layer.contents = UIImage.imageWithName("mamaHeader.png")?.CGImage
+                imageContainView.layer.contents = UIImage.imageWithName("defaultHeader.png")?.CGImage
                 imageContainView.layer.contents = model.imageArr[0].CGImage
             }else{
                 let imageWidth = imageContainView.frame.width * (1 / 3) - 2 * 5
@@ -33,7 +33,7 @@ class DiaryDetailView: UIView {
                     let rowIndex = i / pregDiaryTipsColumn
                     
                     let imageView = UIView.init(frame: CGRect.init(x: 5 + CGFloat(columnIndex) * (imageWidth + 5), y: 5 + CGFloat(rowIndex) * (imageHeight + 5), width: imageWidth, height: imageHeight))
-                    imageView.layer.contents = UIImage.imageWithName("mamaHeader.png")?.CGImage
+                    imageView.layer.contents = UIImage.imageWithName("defaultHeader.png")?.CGImage
                     imageView.layer.contents = model.imageArr[i].CGImage
                     imageContainView.addSubview(imageView)
                 }
@@ -46,7 +46,7 @@ class DiaryDetailView: UIView {
                 label.textAlignment = .Center
                 imageContainView.addSubview(label)
             }else{
-                imageContainView.layer.contents = UIImage.imageWithName("mamaHeader.png")?.CGImage
+                imageContainView.layer.contents = UIImage.imageWithName("defaultHeader.png")?.CGImage
             }
         }
         

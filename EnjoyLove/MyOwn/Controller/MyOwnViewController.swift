@@ -29,6 +29,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.automaticallyAdjustsScrollViewInsets = false
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginPersonDetailNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshHeader(_:)), name: BabyZoneConfig.shared.CollectionChangeNotification, object: nil)
         
         let personChange = personInformationChange()
         if personChange == true {
@@ -149,6 +150,23 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                     }
                 }
             })
+            cell.headClickHandler = { [weak self] (index)in
+                if let weakSelf = self {
+                    switch index {
+                    case 10:
+                        break
+                    case 20:
+                        break
+                    case 30:
+                        break
+                    case 40:
+                        let collection = CollectionViewController()
+                        weakSelf.navigationController?.pushViewController(collection, animated: true)
+                    default:
+                        break
+                    }
+                }
+            }
         }else{
             let model = self.sectionTitleData[indexPath.section - 1]
             let detailModel = model.rowData[indexPath.row]
@@ -358,6 +376,10 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     
     func loginAndRegistSuccessRefresh() {
         self.initialize()
+    }
+    
+    func refreshHeader(note:NSNotification) -> Void {
+        
     }
     
     /*

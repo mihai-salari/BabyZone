@@ -48,8 +48,8 @@ class EditHeaderView: UIView {
     init(frame: CGRect,image:String) {
         super.init(frame: frame)
         self.headerImageView = UIImageView.init(frame: CGRect(x: 10, y: 0, width: frame.width - 20, height: frame.height / 2))
-        if image == "" {
-            self.headerImageView.image = UIImage.imageWithName("mamaHeader.png")
+        if image == "" {//defaultHeader.png
+            self.headerImageView.image = UIImage.imageWithName("defaultHeader.png")
         }else{
             let imageUrl = foldType(BabyZoneConfig.shared.scopeType, fileName: image)
             self.headerImageView.setImageURL(imageUrl)

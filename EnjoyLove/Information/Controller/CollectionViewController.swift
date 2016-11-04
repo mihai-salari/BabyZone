@@ -46,7 +46,7 @@ class CollectionViewController: BaseViewController,UITableViewDelegate,UITableVi
         self.collectionTable.addPullToRefreshWithActionHandler {
             self.pageSize += 1
             self.pageIndex = self.pageSize / 30 == 0 ? 1 : self.pageSize / 30
-            ArticleList.sendAsyncArticleListOrCollectionList("\(self.pageSize)", pageIndex: "\(self.pageIndex)", newsType: "", year: "", month: "", languageSign: "", isCollection: true, completionHandler: { [weak self](errorCode, msg) in
+            CollectionList.sendAsyncCollectionList("\(self.pageSize)", pageIndex: "\(self.pageIndex)", completionHandler: { [weak self](errorCode, msg) in
                 if let weakSelf = self{
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode{
@@ -84,12 +84,9 @@ class CollectionViewController: BaseViewController,UITableViewDelegate,UITableVi
         if let resultCell = cell {
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
+            resultCell.accessoryType = .DisclosureIndicator
             let model = self.collectionData[indexPath.row]
-            if model.images.count > 0 , let imageUrl = NSURL.init(string: model.images[0]) {
-                resultCell.imageView?.setImageWithURL(imageUrl)
-            }
             resultCell.textLabel?.text = model.title
-            resultCell.detailTextLabel?.text = model.content
             return resultCell
         }
         

@@ -142,7 +142,7 @@ extension ArticleTypeList{
 }
 
 private let ArticleListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getBbsList"
-private let ArticleCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getCollectionBbsList"
+
 extension ArticleList{
     
     /*
@@ -154,8 +154,8 @@ extension ArticleList{
      languageSign		string		语言
 
      */
-    class func sendAsyncArticleListOrCollectionList(pageSize: String, pageIndex: String, newsType: String,year: String,month: String,languageSign: String, isCollection:Bool = false, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(isCollection == false ? ArticleListUrl : ArticleCollectionUrl, parameters: isCollection == false ?  ["newsType":newsType, "pageIndex":pageIndex, "pageSize":pageSize, "year":year, "month":month, "languageSign":languageSign] : ["pageSize":pageSize, "pageIndex":pageIndex], success: { (dataTask, responseObject) in
+    class func sendAsyncArticleList(pageSize: String, pageIndex: String, newsType: String,year: String,month: String,languageSign: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["newsType":newsType, "pageIndex":pageIndex, "pageSize":pageSize, "year":year, "month":month, "languageSign":languageSign] , success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
@@ -176,31 +176,8 @@ extension ArticleList{
                             info.browseCount = format(listDict["browseCount"])
                             info.createTime = format(listDict["createTime"])
                             info.totalPage = totalPage
-                            info.operateType = isCollection == false ?  "2" : "1"
                             ArticleListBL.insert(info)
                         }
-                    }
-                }
-                if let handle = completionHandler{
-                    handle(errorCode: errorCode, msg: msg)
-                }
-            }
-        }) { (dataTask, error) in
-            if let handle = completionHandler{
-                handle(errorCode: nil, msg: error?.localizedDescription)
-            }
-        }
-    }
-    
-    class func sendAsyncArticleCollection(idBbsNewsInfo: String,operateType: String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["idBbsNewsInfo":idBbsNewsInfo, "operateType":operateType], success: { (dataTask, responseObject) in
-            if let response = responseObject{
-                let errorCode = format(response["errorCode"])
-                let msg = format(response["msg"])
-                if errorCode == BabyZoneConfig.shared.passCode{
-                    if let articleList = ArticleListBL.find(idBbsNewsInfo) {
-                        articleList.operateType = operateType
-                        ArticleListBL.modify(articleList)
                     }
                 }
                 if let handle = completionHandler{
@@ -216,10 +193,83 @@ extension ArticleList{
 }
 
 private let updateBbsCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateBbsCollection"
-extension AppBrowseCount{
+private let ArticleCollectionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/getCollectionBbsList"
+extension CollectionList{
     
+    class func sendAsyncArticleCollection(idBbsNewsInfo:String, operateType:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(updateBbsCollectionUrl, parameters: ["idBbsNewsInfo":idBbsNewsInfo, "operateType":operateType] , success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+    
+    /*
+     pageIndex		int	是	当前页
+     pageSize		int	是	每页页数（最多30条）
+     newsType		int		资讯类型（1：怀孕 2：育儿）
+     year		int		年
+     month		int		月
+     languageSign		string		语言
+     
+     */
+    class func sendAsyncCollectionList(pageSize: String, pageIndex: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(ArticleCollectionUrl, parameters: ["pageIndex":pageIndex, "pageSize":pageSize] , success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                let totalPage = format(response["totalPages"])
+                if let data = response["data"] as? [String:NSObject]{
+                    if let list = data["list"] as? [[String:NSObject]]{
+                        for listDict in list {
+                            let info = CollectionList()
+                            info.idBbsNewsInfo = format(listDict["idBbsNewsInfo"])
+                            info.newsType = format(listDict["newsType"])
+                            info.babyAgeYear = format(listDict["babyAgeYear"])
+                            info.babyAgeMon = format(listDict["babyAgeMon"])
+                            info.title = format(listDict["title"])
+                            info.content = format(listDict["content"])
+                            info.imgList = format(listDict["imgList"])
+                            info.imgReplaceormat = format(listDict["imgReplaceormat"])
+                            info.videoUrl = format(listDict["videoUrl"])
+                            info.browseCount = format(listDict["browseCount"])
+                            info.createTime = format(listDict["createTime"])
+                            info.totalPage = totalPage
+                            CollectionListBL.insert(info)
+                        }
+                    }
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+}
+
+
+private let AppBrowseCountUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addAppBrowseCount"
+
+extension AppBrowseCount{
+    /*
+     modelType		int	是	模块类型 （1：我的宝宝（监控） 2：异常提醒开关  3：本周宝宝状态4：育婴记录 ）
+     count		long	是	浏览次数
+
+     */
     func sendAsyncupdateBbsCollection(modelType: String,count: String, completionHandler:((errorCode:String?, msg:String?)->())?){
-        HTTPEngine.sharedEngine().postAsyncWith(ArticleListUrl, parameters: ["modelType":modelType, "count":count], success: { (dataTask, responseObject) in
+        HTTPEngine.sharedEngine().postAsyncWith(AppBrowseCountUrl, parameters: ["modelType":modelType, "count":count], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])

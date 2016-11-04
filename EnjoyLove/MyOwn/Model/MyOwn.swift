@@ -13,7 +13,7 @@ class MyOwn: NSObject {
 }
 
 class MyOwnHeader: NSObject {
-    var header = "mamaHeader.png"
+    var header = "defaultHeader.png"
     var nickName = "KLKLIHDS"
     var desc = "待签名"
     var postNum = "0"

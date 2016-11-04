@@ -2550,6 +2550,247 @@ class ArticleList: NSObject {
     var minImageHeight:CGFloat!
     var totalImageHeight:CGFloat!
     
+    
+    override init() {
+        self.idBbsNewsInfo = ""
+        self.newsType = ""
+        self.babyAgeYear = ""
+        self.babyAgeMon = ""
+        self.title = ""
+        self.content = ""
+        self.imgList = ""
+        self.images = []
+        self.imgReplaceormat = ""
+        self.videoUrl = ""
+        self.videos = []
+        self.browseCount = ""
+        self.createTime = ""
+        self.createDate = ""
+        self.totalPage = ""
+        
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init()
+        
+        if let obj = aDecoder.decodeObjectForKey("idBbsNewsInfo") as? String {
+            self.idBbsNewsInfo = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("newsType") as? String {
+            self.newsType = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("babyAgeYear") as? String {
+            self.babyAgeYear = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("babyAgeMon") as? String {
+            self.babyAgeMon = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("title") as? String {
+            self.title = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("content") as? String {
+            self.content = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imgList") as? String {
+            self.imgList = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("images") as? [String] {
+            self.images = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("imgReplaceormat") as? String {
+            self.imgReplaceormat = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("videoUrl") as? String {
+            self.videoUrl = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("videos") as? [String] {
+            self.videos = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("browseCount") as? String {
+            self.browseCount = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
+            self.createTime = obj
+        }
+        if let obj = aDecoder.decodeObjectForKey("totalPage") as? String {
+            self.totalPage = obj
+        }
+        self.titleHeight = CGFloat.init(aDecoder.decodeFloatForKey("titleHeight"))
+        self.contentHeight = CGFloat.init(aDecoder.decodeFloatForKey("contentHeight"))
+        self.minImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("minImageHeight"))
+        self.totalImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("totalImageHeight"))
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.idBbsNewsInfo, forKey: "idBbsNewsInfo")
+        aCoder.encodeObject(self.newsType, forKey: "newsType")
+        aCoder.encodeObject(self.babyAgeYear, forKey: "babyAgeYear")
+        aCoder.encodeObject(self.babyAgeMon, forKey: "babyAgeMon")
+        aCoder.encodeObject(self.title, forKey: "title")
+        aCoder.encodeObject(self.content, forKey: "content")
+        aCoder.encodeObject(self.imgReplaceormat, forKey: "imgReplaceormat")
+        aCoder.encodeObject(self.videoUrl, forKey: "videoUrl")
+        aCoder.encodeObject(self.videos, forKey: "videos")
+        aCoder.encodeObject(self.browseCount, forKey: "browseCount")
+        aCoder.encodeObject(self.imgList, forKey: "imgList")
+        aCoder.encodeObject(self.images, forKey: "images")
+        aCoder.encodeObject(self.createTime, forKey: "createTime")
+        aCoder.encodeObject(self.totalPage, forKey: "totalPage")
+        aCoder.encodeFloat(Float.init(self.titleHeight), forKey: "titleHeight")
+        aCoder.encodeFloat(Float.init(self.contentHeight), forKey: "contentHeight")
+        aCoder.encodeFloat(Float.init(self.minImageHeight), forKey: "minImageHeight")
+        aCoder.encodeFloat(Float.init(self.totalImageHeight), forKey: "totalImageHeight")
+    }
+}
+
+private class ArticleListDAO: NSObject {
+    static var shared:ArticleListDAO{
+        struct DAO{
+            static var pred:dispatch_once_t = 0
+            static var dao:ArticleListDAO? = nil
+        }
+        
+        dispatch_once(&DAO.pred) {
+            DAO.dao = ArticleListDAO()
+        }
+        return DAO.dao!
+    }
+    
+    
+    func findAll(userId:String) -> [ArticleList] {
+        var listData = [ArticleList]()
+        if let theData = NSData.init(contentsOfFile: ArticleListArchiveFileName.filePath()) {
+            if theData.length > 0 {
+                let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
+                if let arrDict = unArchive.decodeObjectForKey(ArticleListArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [ArticleList] {
+                        listData.appendContentsOf(list)
+                    }
+                }
+            }
+        }
+        return listData
+    }
+    
+    func insert(detail:ArticleList, userId:String) -> Bool {
+        var array = self.findAll(userId)
+        for base in array {
+            if base.idBbsNewsInfo == detail.idBbsNewsInfo {
+                if let currentIndex = array.indexOf(base) {
+                    array.removeAtIndex(currentIndex)
+                }
+            }
+        }
+        
+        detail.contentHeight = detail.content.size(UIFont.systemFontOfSize(16)).height
+        detail.titleHeight = detail.title.size(UIFont.systemFontOfSize(14)).height
+        do {
+            if let imageData = detail.imgList.dataUsingEncoding(NSUTF8StringEncoding) {
+                if let dict = try NSJSONSerialization.JSONObjectWithData(imageData, options: NSJSONReadingOptions.MutableContainers) as? [String:String] {
+                    for img in dict.values {
+                        if let imgStr = img.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLFragmentAllowedCharacterSet()) {
+                            detail.images.append(imgStr)
+                        }
+                    }
+                }
+            }
+        } catch  {
+            
+        }
+        
+        if detail.images.count > 0 {
+            detail.minImageHeight = 80
+            detail.totalImageHeight = CGFloat.init(detail.images.count) * ScreenWidth
+        }
+        
+        let date = detail.createTime.componentsSeparatedByString(" ")
+        if let dateStr = date.first {
+            detail.createDate = dateStr
+        }
+        
+        array.append(detail)
+        var arrDict:[String:NSObject] = [:]
+        arrDict[userId] = array
+        let theData = NSMutableData.init()
+        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
+        archiver.encodeObject(arrDict, forKey: ArticleListArchiveKey)
+        archiver.finishEncoding()
+        return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
+        
+    }
+    
+    
+    func find(idBbsNewsInfo:String, userId:String) -> ArticleList? {
+        let array = self.findAll(userId)
+        for note in array {
+            if note.idBbsNewsInfo == idBbsNewsInfo {
+                return note
+            }
+        }
+        return nil
+    }
+    
+}
+
+class ArticleListBL: NSObject {
+    class func insert(detail:ArticleList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [ArticleList]{
+        ArticleListDAO.shared.insert(detail, userId: userId)
+        return ArticleListDAO.shared.findAll(userId)
+    }
+    
+    class func find(idBbsNewsInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->ArticleList?{
+        return ArticleListDAO.shared.find(idBbsNewsInfo, userId: userId)
+    }
+        
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ArticleList]{
+        return ArticleListDAO.shared.findAll(userId)
+    }
+}
+
+
+//MARK:____CollectionList____
+private let CollectionListArchiveKey = "CollectionListArchiveKey"
+private let CollectionListArchiveFileName = "CollectionListArchive.archive"
+class CollectionList: NSObject {
+    /*
+     
+     idBbsNewsInfo	int		咨讯id
+     newsType	int		资讯类型（1：怀孕 2：育儿）
+     babyAgeYear	int		年
+     babyAgeMon	int		月
+     title	string		标题
+     content	string		内容
+     imgList	string		图片
+     imgReplaceormat	string		内容图片占位格式 【图片X】 X=第几张，替换X,然后替换content里的位置作为图片显示
+     videoUrl	string		视频地址
+     browseCount	int		浏览量
+     createTime	string		创建时间（yyyy-MM-dd HH:mm:ss）
+     
+     operateType		int	是	操作类型  1：收藏  2：取消收藏
+     
+     */
+    
+    var idBbsNewsInfo:String!
+    var newsType:String!
+    var babyAgeYear:String!
+    var babyAgeMon:String!
+    var title:String!
+    var content:String!
+    var imgList:String!
+    var images:[String]!
+    var imgReplaceormat:String!
+    var videoUrl:String!
+    var videos:[String]!
+    var browseCount:String!
+    var createTime:String!
+    var createDate:String!
+    var totalPage:String!
+    var titleHeight:CGFloat!
+    var contentHeight:CGFloat!
+    var minImageHeight:CGFloat!
+    var totalImageHeight:CGFloat!
+    
     var operateType:String!
     
     
@@ -2653,27 +2894,27 @@ class ArticleList: NSObject {
     }
 }
 
-private class ArticleListDAO: NSObject {
-    static var shared:ArticleListDAO{
+private class CollectionListDAO: NSObject {
+    static var shared:CollectionListDAO{
         struct DAO{
             static var pred:dispatch_once_t = 0
-            static var dao:ArticleListDAO? = nil
+            static var dao:CollectionListDAO? = nil
         }
         
         dispatch_once(&DAO.pred) {
-            DAO.dao = ArticleListDAO()
+            DAO.dao = CollectionListDAO()
         }
         return DAO.dao!
     }
     
     
-    func findAll(userId:String) -> [ArticleList] {
-        var listData = [ArticleList]()
-        if let theData = NSData.init(contentsOfFile: ArticleListArchiveFileName.filePath()) {
+    func findAll(userId:String) -> [CollectionList] {
+        var listData = [CollectionList]()
+        if let theData = NSData.init(contentsOfFile: CollectionListArchiveFileName.filePath()) {
             if theData.length > 0 {
                 let unArchive = NSKeyedUnarchiver.init(forReadingWithData: theData)
-                if let arrDict = unArchive.decodeObjectForKey(ArticleListArchiveKey) as? [String:NSObject]{
-                    if let list = arrDict[userId] as? [ArticleList] {
+                if let arrDict = unArchive.decodeObjectForKey(CollectionListArchiveKey) as? [String:NSObject]{
+                    if let list = arrDict[userId] as? [CollectionList] {
                         listData.appendContentsOf(list)
                     }
                 }
@@ -2682,7 +2923,7 @@ private class ArticleListDAO: NSObject {
         return listData
     }
     
-    func insert(detail:ArticleList, userId:String) -> Bool {
+    func insert(detail:CollectionList, userId:String) -> Bool {
         var array = self.findAll(userId)
         for base in array {
             if base.idBbsNewsInfo == detail.idBbsNewsInfo {
@@ -2723,14 +2964,14 @@ private class ArticleListDAO: NSObject {
         arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(arrDict, forKey: ArticleListArchiveKey)
+        archiver.encodeObject(arrDict, forKey: CollectionListArchiveKey)
         archiver.finishEncoding()
-        return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
+        return theData.writeToFile(CollectionListArchiveFileName.filePath(), atomically: true)
         
     }
     
     
-    func find(idBbsNewsInfo:String, userId:String) -> ArticleList? {
+    func find(idBbsNewsInfo:String, userId:String) -> CollectionList? {
         let array = self.findAll(userId)
         for note in array {
             if note.idBbsNewsInfo == idBbsNewsInfo {
@@ -2740,7 +2981,7 @@ private class ArticleListDAO: NSObject {
         return nil
     }
     
-    func modify(detail:ArticleList, userId:String) -> Bool {
+    func modify(detail:CollectionList, userId:String) -> Bool {
         let array = self.findAll(userId)
         for base in array {
             if base.idBbsNewsInfo == detail.idBbsNewsInfo {
@@ -2753,32 +2994,31 @@ private class ArticleListDAO: NSObject {
         arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(arrDict, forKey: ArticleListArchiveKey)
+        archiver.encodeObject(arrDict, forKey: CollectionListArchiveKey)
         archiver.finishEncoding()
-        return theData.writeToFile(ArticleListArchiveFileName.filePath(), atomically: true)
+        return theData.writeToFile(CollectionListArchiveFileName.filePath(), atomically: true)
     }
     
 }
 
-class ArticleListBL: NSObject {
-    class func insert(detail:ArticleList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [ArticleList]{
-        ArticleListDAO.shared.insert(detail, userId: userId)
-        return ArticleListDAO.shared.findAll(userId)
+class CollectionListBL: NSObject {
+    class func insert(detail:CollectionList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) -> [CollectionList]{
+        CollectionListDAO.shared.insert(detail, userId: userId)
+        return CollectionListDAO.shared.findAll(userId)
     }
     
-    class func find(idBbsNewsInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->ArticleList?{
-        return ArticleListDAO.shared.find(idBbsNewsInfo, userId: userId)
+    class func find(idBbsNewsInfo:String, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->CollectionList?{
+        return CollectionListDAO.shared.find(idBbsNewsInfo, userId: userId)
     }
     
-    class func modify(detail:ArticleList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Bool{
-        return ArticleListDAO.shared.modify(detail, userId: userId)
+    class func modify(detail:CollectionList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Bool{
+        return CollectionListDAO.shared.modify(detail, userId: userId)
     }
     
-    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[ArticleList]{
-        return ArticleListDAO.shared.findAll(userId)
+    class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[CollectionList]{
+        return CollectionListDAO.shared.findAll(userId)
     }
 }
-
 
 class AppBrowseCount: NSObject {
     

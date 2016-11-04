@@ -25,10 +25,8 @@ class PregInfoViewController: BaseViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.hidden = false
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(self, title: self.infoType == "1" ? "孕育资讯" : "育儿资讯", leftSel:nil, rightSel: nil)
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        self.navigationBarItem(self, isImage: true, title: self.infoType == "1" ? "孕育资讯" : "育儿资讯", leftSel: #selector(self.exchangeBaby), leftImage: "babyExchange.png", leftItemSize: CGSize.init(width: 25, height: 20), rightSel: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginBabyListNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.networkChangeNotification(_:)), name: kReachabilityChangedNotification, object: nil)
     }
@@ -38,6 +36,11 @@ class PregInfoViewController: BaseViewController {
 
         // Do any additional setup after loading the view.
         self.initialize()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        self.tabBarController?.tabBar.hidden = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -149,34 +152,8 @@ class PregInfoViewController: BaseViewController {
                         weakSelf.pregView = nil
                     }
                     
-                    weakSelf.pregView = PregInfoView.init(frame: CGRectMake(0, 0, weakSelf.containView.frame.width, weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: {
-                        let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .ActionSheet)
-                        let babyList = BabyListBL.findAll()
-                        if babyList.count > 0{
-                            for itemModel in BabyListBL.findAll(){
-                                let action = UIAlertAction.init(title: itemModel.babyName, style: .Default, handler: { (action:UIAlertAction) in
-                                    if itemModel.idUserBabyInfo == weakSelf.currentBabyId{
-                                        return
-                                    }
-                                    weakSelf.reloadDataVia(itemModel.idUserBabyInfo)
-                                })
-                                if action.valueForKey("titleTextColor") == nil{
-                                    action.setValue(alertTextColor, forKey: "titleTextColor")
-                                }
-                                actionSheet.addAction(action)
-                            }
-                            
-                            let cancelAction = UIAlertAction.init(title: "取消", style: .Cancel, handler: { (action:UIAlertAction) in
-                                
-                            })
-                            if cancelAction.valueForKey("titleTextColor") == nil{
-                                cancelAction.setValue(UIColor.darkGrayColor(), forKey: "titleTextColor")
-                            }
-                            actionSheet.addAction(cancelAction)
-                            
-                            weakSelf.presentViewController(actionSheet, animated: true, completion: nil)
-                        }
-                        }, recordCompletionHandler: { [weak self] in
+                    
+                    weakSelf.pregView = PregInfoView.init(frame: CGRect.init(x: 0, y: 0, width: weakSelf.containView.frame.width, height: weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: nil, recordCompletionHandler: { [weak self] in
                             if let weakSelf = self{
                                 if let _ = LoginBL.find(){
                                     if babyId != "-1"{
@@ -200,9 +177,20 @@ class PregInfoViewController: BaseViewController {
                         let detailStatus = StatusDetailViewController()
                         detailStatus.detailModel = model
                         weakSelf.navigationController?.pushViewController(detailStatus, animated: true)
-                        }, moreMenuCompletionHandler: { (model) in
-                            let collectioin = CollectionViewController()
-                            weakSelf.navigationController?.pushViewController(collectioin, animated: true)
+                        }, moreMenuCompletionHandler: { (model, selected) in
+                            print("selected \(selected)")
+                            HUD.showHud(selected == true ? "正在收藏..." : "正在取消...", onView: weakSelf.view)
+                            CollectionList.sendAsyncArticleCollection(model.idBbsNewsInfo, operateType: selected == true ? "2" : "1", completionHandler: { (errorCode, msg) in
+                                HUD.hideHud(weakSelf.view)
+                                if let err = errorCode{
+                                    if err == BabyZoneConfig.shared.passCode{
+                                        NSNotificationCenter.defaultCenter().postNotificationName(BabyZoneConfig.shared.CollectionChangeNotification, object: nil)
+                                        HUD.showText("提交完成", onView: weakSelf.view)
+                                    }
+                                }
+                            })
+//                            let collectioin = CollectionViewController()
+//                            weakSelf.navigationController?.pushViewController(collectioin, animated: true)
                         }, shareCompletionHandler: { (model) in
                             
                         }, listCompletionHandler: { 
@@ -287,6 +275,35 @@ class PregInfoViewController: BaseViewController {
         self.initialize()
     }
 
+    func exchangeBaby() -> Void {
+        let actionSheet = UIAlertController.init(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let babyList = BabyListBL.findAll()
+        if babyList.count > 0{
+            for itemModel in BabyListBL.findAll(){
+                let action = UIAlertAction.init(title: itemModel.babyName, style: .Default, handler: { (action:UIAlertAction) in
+                    if itemModel.idUserBabyInfo == self.currentBabyId{
+                        return
+                    }
+                    self.reloadDataVia(itemModel.idUserBabyInfo)
+                })
+                if action.valueForKey("titleTextColor") == nil{
+                    action.setValue(alertTextColor, forKey: "titleTextColor")
+                }
+                actionSheet.addAction(action)
+            }
+            
+            let cancelAction = UIAlertAction.init(title: "取消", style: .Cancel, handler: { (action:UIAlertAction) in
+                
+            })
+            if cancelAction.valueForKey("titleTextColor") == nil{
+                cancelAction.setValue(UIColor.darkGrayColor(), forKey: "titleTextColor")
+            }
+            actionSheet.addAction(cancelAction)
+            
+            self.presentViewController(actionSheet, animated: true, completion: nil)
+        }
+    }
+    
     /*
     // MARK: - Navigation
 

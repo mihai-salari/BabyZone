@@ -200,11 +200,11 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
     private var pregTable:UITableView!
     private var pregInfoData:[PregInfoStatus]!
     private var selectHandler:((model:Article, indexPath:NSIndexPath)->())?
-    private var menuHandler:((model:Article)->())?
+    private var menuHandler:((model:Article, selected:Bool)->())?
     private var shareHandler:((model:Article)->())?
     private var listHandler:(()->())?
     
-    init(frame: CGRect, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article)->())?, shareCompletionHandler:((model:Article)->())?, listCompletionHandler:(()->())?) {
+    init(frame: CGRect, dataSource:[PregInfoStatus], dataCompletionHandler:((model:Article, indexPath:NSIndexPath)->())?, moreMenuCompletionHandler:((model:Article, selected:Bool)->())?, shareCompletionHandler:((model:Article)->())?, listCompletionHandler:(()->())?) {
         super.init(frame: frame)
         self.pregInfoData = dataSource
         self.pregTable = UITableView.init(frame: self.bounds, style: .Grouped)
@@ -240,10 +240,10 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
             resultCell.selectionStyle = .None
             let model = self.pregInfoData[indexPath.section]
             let subModel = model.pregInfoData[indexPath.row]
-            resultCell.refreshCell(subModel, menuCompletionHandler: { [weak self] in
+            resultCell.refreshCell(subModel, menuCompletionHandler: { [weak self] (selected)in
                 if let weakSelf = self{
                     if let handle = weakSelf.menuHandler{
-                        handle(model: subModel)
+                        handle(model: subModel, selected: selected)
                     }
                 }
                 }, shareCompletionHandler: { [weak self] in
@@ -331,7 +331,7 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
 
 class PregStatusCell: UITableViewCell {
     
-    private var moreMenuHandler:(()->())?
+    private var moreMenuHandler:((selected:Bool)->())?
     private var shareHandler:(()->())?
     
     override func awakeFromNib() {
@@ -345,7 +345,7 @@ class PregStatusCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
-    func refreshCell(model:Article, menuCompletionHandler:(()->())?, shareCompletionHandler:(()->())?) -> Void {
+    func refreshCell(model:Article, menuCompletionHandler:((selected:Bool)->())?, shareCompletionHandler:(()->())?) -> Void {
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
@@ -377,8 +377,8 @@ class PregStatusCell: UITableViewCell {
         
         var button = DiaryListButton(type: .Custom)
         button.frame = CGRectMake(0, self.contentView.frame.height - shareViewHeight, CGRectGetWidth(self.contentView.frame) * (3 / 5) * (1 / 2), shareViewHeight)
-        button.setImageRect(CGSizeMake(15, 10), normaImage: "gray_menu.png")
-        button.addCustomTarget(self, sel: #selector(PregStatusCell.cellMoreMenuClick))
+        button.setImageRect(CGSizeMake(15, 12), normaImage: "infoCollection.png")
+        button.addCustomTarget(self, sel: #selector(self.cellMoreMenuClick(_:)))
         self.contentView.addSubview(button)
         
         button = DiaryListButton(type: .Custom)
@@ -412,9 +412,10 @@ class PregStatusCell: UITableViewCell {
     }
     
     
-    func cellMoreMenuClick() -> Void {
+    func cellMoreMenuClick(btn:UIButton) -> Void {
+        btn.selected = !btn.selected
         if let handle = self.moreMenuHandler {
-            handle()
+            handle(selected: btn.selected)
         }
     }
     

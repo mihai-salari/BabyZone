@@ -47,7 +47,7 @@ class BabyZoneConfig: NSObject {
     var BabyBaseInfoKey:String!
     var DeleteDeviceNotificaiton:String!
     var AddDeviceNotification:String!
-    
+    var CollectionChangeNotification:String!
     
     
     
@@ -96,6 +96,7 @@ class BabyZoneConfig: NSObject {
                 self.BabyBaseInfoKey = config.get(.BabyBaseInfoKey)
                 self.DeleteDeviceNotificaiton = config.get(.DeleteDeviceNotificaiton)
                 self.AddDeviceNotification = config.get(.AddDeviceNotification)
+                self.CollectionChangeNotification = config.get(.CollectionChangeNotification)
             }
             
         }
@@ -163,6 +164,7 @@ extension Keys{
     static let BabyBaseInfoKey                  = Key<String>("BabyBaseInfoKey")
     static let AddDeviceNotification            = Key<String>("AddDeviceNotification")
     static let DeleteDeviceNotificaiton         = Key<String>("DeleteDeviceNotificaiton")
+    static let CollectionChangeNotification     = Key<String>("CollectionChangeNotification")
 }
 
 

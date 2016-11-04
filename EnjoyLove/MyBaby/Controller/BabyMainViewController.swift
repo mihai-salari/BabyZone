@@ -115,13 +115,13 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 self.babyScrollView.addSubview(babyImageView)
                 
                 let babyButton = BabyButton(type: .Custom)
-                babyButton.frame = CGRect.init(x: CGFloat.init(i) * (self.babyScrollView.frame.width - (self.babyScrollView.frame.width * (1 / 6))) / 2, y: (self.babyScrollView.frame.height - (self.babyScrollView.frame.width * (1 / 6))) / 2, width: (self.babyScrollView.frame.width * (1 / 6)), height: (self.babyScrollView.frame.width * (1 / 6)))
+                babyButton.frame = CGRect.init(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - (self.babyScrollView.frame.width * (1 / 6))) / 2, y: (self.babyScrollView.frame.height - (self.babyScrollView.frame.width * (1 / 6))) / 2, width: (self.babyScrollView.frame.width * (1 / 6)), height: (self.babyScrollView.frame.width * (1 / 6)))
                 babyButton.setImageSize(CGSize(width: self.babyScrollView.frame.width * (1 / 6),height: ScreenWidth * (1 / 6)), normaImage: "babyPlay.png", title: "观看视频", fontSize: 12)
                 babyButton.tag = babyPlayButtonTag + i
                 babyButton.addCustomTarget(self, sel: #selector(self.babyPlayClick(_:)))
                 self.babyScrollView.addSubview(babyButton)
                 
-                self.temperatureLabel = UILabel.init(frame: CGRect(x: 0, y: self.babyScrollView.frame.height - 60, width: self.babyScrollView.frame.width * (1 / 3), height: 15))
+                self.temperatureLabel = UILabel.init(frame: CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width), y: self.babyScrollView.frame.height - 60, width: self.babyScrollView.frame.width * (1 / 3), height: 15))
                 self.temperatureLabel.text = self.babyData[i].babyTemperature
                 self.temperatureLabel.textAlignment = .Center
                 self.temperatureLabel.textColor = UIColor.hexStringToColor("#DD656F")
@@ -135,7 +135,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 tempDescLabel.font = UIFont.boldSystemFontOfSize(10)
                 self.babyScrollView.addSubview(tempDescLabel)
                 
-                self.humidityLabel = UILabel.init(frame: CGRect(x: temperatureLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
+                self.humidityLabel = UILabel.init(frame: CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + temperatureLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
                 self.humidityLabel.text = self.babyData[i].babyHumidity
                 self.humidityLabel.textAlignment = .Center
                 self.humidityLabel.textColor = UIColor.hexStringToColor("#DD656F")

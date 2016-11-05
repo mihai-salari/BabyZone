@@ -18,25 +18,21 @@ private let headerHeight:CGFloat = upRateHeight(20)
 class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewDelegate {
 
     private var myOwnTable:UITableView!
-    private var section1Data:[MyOwnHeader]!
-    private var sectionTitleData:[MyOwnSectionTitle]!
+    private var myOwnData:[MyOwn]!
     private var rowHeight:CGFloat = 0
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationBarItem(self, title: "我的", leftSel: nil, rightSel: nil)
-        self.tabBarController?.tabBar.hidden = false
+        
         self.automaticallyAdjustsScrollViewInsets = false
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.loginAndRegistSuccessRefresh), name: LoginPersonDetailNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.refreshHeader(_:)), name: BabyZoneConfig.shared.CollectionChangeNotification, object: nil)
         
-        let personChange = personInformationChange()
-        if personChange == true {
-            if let table = self.myOwnTable {
-                table.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
-                setPersonInformationChange(false)
-            }
+        if  MyHeadGroup.update() == true, let table = self.myOwnTable {
+            table.reloadSections(NSIndexSet.init(index: 0), withRowAnimation: .None)
+            MyHeadGroup.updateInformation(false)
         }
         
     }
@@ -50,7 +46,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
+        self.tabBarController?.tabBar.hidden = false
     }
 
     override func didReceiveMemoryWarning() {
@@ -64,52 +60,64 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             subview.removeFromSuperview()
         }
         
-        if self.section1Data != nil{
-            self.section1Data = nil
+        if self.myOwnData != nil{
+            self.myOwnData.removeAll()
+            self.myOwnData = nil
         }
-        self.section1Data = []
-        
-        if self.sectionTitleData != nil{
-            self.sectionTitleData = nil
-        }
-        self.sectionTitleData = []
+        self.myOwnData = []
         
         
-        let headerModel = MyOwnHeader()
-        self.section1Data.append(headerModel)
+        var detailModel = MyOwnDetail()
+        var myOwnModel = MyOwn(title: "", myOwnData: [detailModel])
         
-        var rowData:[MyOwnNormalRowData] = []
-        var model = MyOwnNormalRowData(mainItem: "账号与安全", subItem: "号码绑定、修改密码等")
-        rowData.append(model)
+        self.myOwnData.append(myOwnModel)
         
-        model = MyOwnNormalRowData(mainItem: "语言", subItem: "各国语言设置")
-        rowData.append(model)
+        var detailData:[MyOwnDetail] = []
+        detailModel = MyOwnDetail()
+        detailModel.mainItem = "账号与安全"
+        detailModel.subItem = "号码绑定、修改密码等"
+        detailData.append(detailModel)
         
-        model = MyOwnNormalRowData(mainItem: "其他", subItem: "功能介绍、投诉建议、关于享爱")
-        rowData.append(model)
+        detailModel = MyOwnDetail()
+        detailModel.mainItem = "语言"
+        detailModel.subItem = "各国语言设置"
+        detailData.append(detailModel)
         
-        var sectionData = MyOwnSectionTitle(title: "账号设置", rowData: rowData)
-        self.sectionTitleData.append(sectionData)
+        detailModel = MyOwnDetail()
+        detailModel.mainItem = "其他"
+        detailModel.subItem = "功能介绍、投诉建议、关于享爱"
+        detailData.append(detailModel)
         
-        rowData = []
-        model = MyOwnNormalRowData(mainItem: "连接设备", subItem: "添加/连接设备")
-        rowData.append(model)
+        myOwnModel = MyOwn(title: "账号设置", myOwnData: detailData)
+        self.myOwnData.append(myOwnModel)
         
-        model = MyOwnNormalRowData(mainItem: "解除设备", subItem: "解除/删除设备")
-        rowData.append(model)
         
-        sectionData = MyOwnSectionTitle(title: "硬件设置", rowData: rowData)
-        self.sectionTitleData.append(sectionData)
+        detailData = []
+        detailModel = MyOwnDetail()
+        detailModel.mainItem = "连接设备"
+        detailModel.subItem = "添加/连接设备"
+        detailData.append(detailModel)
         
-        self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * upRateHeight(20)) * (1 / 10)
-        self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight + viewOriginY, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight - viewOriginY), style: .Grouped)
+        detailModel = MyOwnDetail()
+        detailModel.mainItem = "解除设备"
+        detailModel.subItem = "解除/删除设备"
+        detailData.append(detailModel)
+        
+        
+        myOwnModel = MyOwn(title: "硬件设置", myOwnData: detailData)
+        self.myOwnData.append(myOwnModel)
+        
+        
+        self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * 20) * (1 / 9)
+        self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight), style: .Grouped)
         self.myOwnTable.scrollEnabled = false
-        self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
         self.myOwnTable.delegate = self
         self.myOwnTable.dataSource = self
+        self.myOwnTable.tableFooterView = UIView.init()
         self.myOwnTable.separatorInset = UIEdgeInsetsZero
         self.myOwnTable.layoutMargins = UIEdgeInsetsZero
         self.myOwnTable.backgroundColor = UIColor.whiteColor()
+         self.myOwnTable.registerClass(MyOwnCell.self, forCellReuseIdentifier: myOwnCellId)
         self.view.addSubview(self.myOwnTable)
     }
     
@@ -118,39 +126,26 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
     //MARK:____Table view delegate and data source____
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return self.sectionTitleData.count + 1
+        return self.myOwnData.count
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        var numberRows = 0
-        if section == 0 {
-            numberRows = 1
-        }else{
-            let model = self.sectionTitleData[section - 1]
-            numberRows = model.rowData.count
-        }
-        return numberRows
+        return self.myOwnData[section].myOwnData.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(myOwnCellId, forIndexPath: indexPath) as! MyOwnCell
-        
-        cell.selectionStyle = .None
-        cell.separatorInset = UIEdgeInsetsZero
-        cell.layoutMargins = UIEdgeInsetsZero
-        if indexPath.section == 0 {
-            let model = section1Data[indexPath.row]
-            cell.refreshHeaderCell(model, completionHandler: { [weak self] in
-                if let weakSelf = self{
-                    if let person = PersonDetailBL.find(){
-                        let personInfoEdit = MyOwnEidtViewController()
-                        personInfoEdit.infoModel = model
-                        personInfoEdit.personDetailModel = person
-                        weakSelf.navigationController?.pushViewController(personInfoEdit, animated: true)
-                    }
-                }
-            })
-            cell.headClickHandler = { [weak self] (index)in
+        let cell = tableView.dequeueReusableCellWithIdentifier(myOwnCellId, forIndexPath: indexPath) as? MyOwnCell
+        if let resultCell = cell {
+            resultCell.selectionStyle = .None
+            resultCell.separatorInset = UIEdgeInsetsZero
+            resultCell.layoutMargins = UIEdgeInsetsZero
+            if indexPath.section == 0 {
+                resultCell.accessoryType = .None
+            }else{
+                resultCell.accessoryType = .DisclosureIndicator
+            }
+            resultCell.refreshCell(self.myOwnData[indexPath.section].myOwnData[indexPath.row], indexPath: indexPath)
+            resultCell.headClickHandler = { [weak self] (index, model)in
                 if let weakSelf = self {
                     switch index {
                     case 10:
@@ -162,19 +157,22 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                     case 40:
                         let collection = CollectionViewController()
                         weakSelf.navigationController?.pushViewController(collection, animated: true)
+                    case 50:
+                        if let person = PersonDetailBL.find(){
+                            let personInfoEdit = MyOwnEidtViewController()
+                            personInfoEdit.infoModel = model
+                            personInfoEdit.personDetailModel = person
+                            weakSelf.navigationController?.pushViewController(personInfoEdit, animated: true)
+                        }
+
                     default:
                         break
                     }
                 }
             }
-        }else{
-            let model = self.sectionTitleData[indexPath.section - 1]
-            let detailModel = model.rowData[indexPath.row]
-            cell.refreshNormalCell(detailModel)
-            cell.accessoryType = .DisclosureIndicator
         }
         
-        return cell
+        return cell!
     }
     
     
@@ -187,7 +185,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
             headerView = UIView.init(frame: CGRectMake(0, 0, tableView.frame.width, headerHeight))
             headerView?.backgroundColor = UIColor.hexStringToColor("#60555b")
             let headLabel = UILabel.init(frame: CGRect(x: 20, y: 0, width: tableView.frame.width - 40, height: headerView!.frame.height))
-            let model = self.sectionTitleData[section - 1]
+            let model = self.myOwnData[section]
             headLabel.text = model.title
             headLabel.textColor = UIColor.whiteColor()
             headLabel.font = UIFont.systemFontOfSize(upRateWidth(11))

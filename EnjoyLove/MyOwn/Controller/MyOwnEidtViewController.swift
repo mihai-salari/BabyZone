@@ -12,7 +12,7 @@ private let PersionInfoTableViewCellId = "PersionInfoTableViewCellId"
 
 class MyOwnEidtViewController: BaseViewController, UITableViewDelegate,UITableViewDataSource,PersonInfoEditDelegate {
     
-    var infoModel:MyOwnHeader!
+    var infoModel:MyOwnDetail!
     var personDetailModel:PersonDetail!
     private var personInfoTable:UITableView!
     private var personInfoData:[PersonEditInfo]!

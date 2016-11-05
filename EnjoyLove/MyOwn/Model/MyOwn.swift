@@ -8,8 +8,21 @@
 
 import UIKit
 
-class MyOwn: NSObject {
-    
+struct MyOwn {
+    var title:String!
+    var myOwnData:[MyOwnDetail]
+}
+
+struct MyOwnDetail {
+    var header = "defaultHeader.png"
+    var nickName = "KLKLIHDS"
+    var desc = "待签名"
+    var postNum = "0"
+    var careNum = "0"
+    var fansNum = "0"
+    var collectionNum = "0"
+    var mainItem = ""
+    var subItem = ""
 }
 
 class MyOwnHeader: NSObject {
@@ -20,20 +33,10 @@ class MyOwnHeader: NSObject {
     var careNum = "0"
     var fansNum = "0"
     var collectionNum = "0"
-}
-
-
-
-struct MyOwnNormalRowData {
     var mainItem = ""
     var subItem = ""
 }
 
-struct MyOwnSectionTitle {
-    var title = ""
-    var rowData:[MyOwnNormalRowData]!
-    
-}
 
 struct PersonEditInfo {
     var title = ""

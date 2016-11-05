@@ -266,7 +266,6 @@ extension PersonDetail {
                 let msg = format(response["msg"])
                 if errorCode == BabyZoneConfig.shared.passCode {
                     if let person = PersonDetailBL.find(){
-                        setPersonInformationChange(true)
                         person.nickName = nickName
                         person.sex = sex
                         person.headImg = headImg
@@ -279,6 +278,7 @@ extension PersonDetail {
                         person.cityCode = cityCode
                         person.userSign = userSign
                         PersonDetailBL.modify(person)
+                        MyHeadGroup.updateInformation(true)
                     }
                 }
                 if let handle = completionHandler{
@@ -983,4 +983,27 @@ extension Diary{
     }
 }
 
+
+private let addAdviceUrl = BabyZoneConfig.shared.baseUrl + "/api/user/addAdvice"
+
+class Advicement: NSObject {
+    class func sendAsyncAddAdvicement(content: String, email:String, completionHandler:((errorCode:String?, msg:String?)->())?){
+        HTTPEngine.sharedEngine().postAsyncWith(DeleteUserNoteUrl, parameters: ["content":content,"email":email], success: { (dataTask, responseObject) in
+            if let response = responseObject{
+                let errorCode = format(response["errorCode"])
+                let msg = format(response["msg"])
+                if errorCode == BabyZoneConfig.shared.passCode {
+                }
+                if let handle = completionHandler{
+                    handle(errorCode: errorCode, msg: msg)
+                    
+                }
+            }
+        }) { (dataTask, error) in
+            if let handle = completionHandler{
+                handle(errorCode: nil, msg: error?.localizedDescription)
+            }
+        }
+    }
+}
 

@@ -61,14 +61,6 @@ func foldType(scopeType:String, fileName:String) -> String {
     }
 }
 
-func setPersonInformationChange(change:Bool = true) -> Void {
-    NSUserDefaults.standardUserDefaults().setBool(change, forKey: BabyZoneConfig.shared.personInfoChange)
-}
-
-func personInformationChange() -> Bool {
-    return NSUserDefaults.standardUserDefaults().boolForKey(BabyZoneConfig.shared.personInfoChange)
-}
-
 
 
 let lineWH:CGFloat = 0.5

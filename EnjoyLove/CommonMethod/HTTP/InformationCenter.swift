@@ -201,6 +201,9 @@ extension CollectionList{
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])
                 let msg = format(response["msg"])
+                if let data = response["data"] as? [String:NSObject] {
+                    MyHeadGroup.updateBBSCollNum(format(data["bbsCollNum"]))
+                }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
                 }
@@ -268,7 +271,7 @@ extension AppBrowseCount{
      count		long	是	浏览次数
 
      */
-    func sendAsyncupdateBbsCollection(modelType: String,count: String, completionHandler:((errorCode:String?, msg:String?)->())?){
+    func sendAsyncAddAppBrowseCount(modelType: String,count: String, completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(AppBrowseCountUrl, parameters: ["modelType":modelType, "count":count], success: { (dataTask, responseObject) in
             if let response = responseObject{
                 let errorCode = format(response["errorCode"])

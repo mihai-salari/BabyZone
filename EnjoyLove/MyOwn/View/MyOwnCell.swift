@@ -12,27 +12,20 @@ private let editButtionWidth:CGFloat = 40
 private let leftPadding:CGFloat = 20
 private let leftMargin:CGFloat = 10
 private let topPadding:CGFloat = upRateWidth(8)
-private let textWidth:CGFloat = 200
+private let textWidth:CGFloat = 120
 private let mainItemWidth:CGFloat = upRateWidth(100)
 private let subItemWidth:CGFloat = upRateWidth(200)
 private let editButtonWidth:CGFloat = upRateWidth(35)
 
 class MyOwnCell: UITableViewCell {
 
-    var headClickHandler:((index:Int)->())?
-    
+    var headClickHandler:((index:Int, model:MyOwnDetail)->())?
     
     private var headerDescribeLabel:UILabel!
     private var headerButton:UIImageView!
     private var headerNickNameLabel:UILabel!
     private var headerDescLabel:UILabel!
-    private var headerPostLabel:UILabel!
-    private var headerCareLabel:UILabel!
-    private var headerFansLabel:UILabel!
-    private var headerCollectionLabel:UILabel!
-    
-    
-    private var editHandler:(()->())?
+    private var currentModel:MyOwnDetail!
     
     var myAccessoryView:UIImageView?{
         get{
@@ -54,13 +47,17 @@ class MyOwnCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func refreshHeaderCell(model:MyOwnHeader, completionHandler:(()->())?) -> Void {
+    func refreshCell(model:MyOwnDetail, indexPath:NSIndexPath) -> Void {
+        self.currentModel = model
         for subview in self.contentView.subviews {
             subview.removeFromSuperview()
         }
-        if let person = PersonDetailBL.find() {
-            for subview in self.contentView.subviews {
-                subview.removeFromSuperview()
+        switch indexPath.section {
+        case 0:
+            self.contentView.frame = CGRect.init(x: 0, y: 0, width: ScreenWidth - 2 * viewOriginX, height: (ScreenHeight - navAndTabHeight - 2 * 20) * (1 / 9) * 3)
+            var person:PersonDetail!
+            if let detail = PersonDetailBL.find() {
+                person = detail
             }
             self.headerButton = UIImageView.init(frame: CGRectMake(leftPadding, self.contentView.frame.height / 2 - self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5), self.contentView.frame.height * (1 / 2.5)))
             self.headerButton.layer.cornerRadius = self.contentView.frame.height * (1 / 2.5) / 2
@@ -71,7 +68,7 @@ class MyOwnCell: UITableViewCell {
                 if let imageUrl = NSURL.init(string: person.headImg) {
                     self.headerButton.image = UIImage.imageWithName("defaultHeader.png")
                     self.headerButton.setImageWithURL(imageUrl)
-                }                
+                }
             }
             
             self.contentView.addSubview(self.headerButton)
@@ -87,39 +84,57 @@ class MyOwnCell: UITableViewCell {
             self.headerDescLabel.textColor = UIColor.lightGrayColor()
             self.contentView.addSubview(self.headerDescLabel)
             
-            let editButton = HMButton.init(frame: CGRectMake(ScreenWidth - 2 * editButtonWidth, self.headerNickNameLabel.frame.maxY - editButtionWidth, editButtionWidth, editButtionWidth))
+            let editDescLabel = UILabel.init(frame: CGRect.init(x: self.contentView.frame.width - 2.5 * editButtonWidth, y: self.headerDescLabel.frame.minY, width: 2 * editButtonWidth, height: self.headerDescLabel.height))
+            editDescLabel.font = UIFont.systemFontOfSize(8)
+            editDescLabel.text = "编辑宝宝/个人信息"
+            editDescLabel.textAlignment = .Right
+            editDescLabel.textColor = UIColor.lightGrayColor()
+            self.contentView.addSubview(editDescLabel)
+            
+            
+            let editButton = HMButton.init(frame: CGRectMake(self.contentView.frame.width - 1.2 * editButtonWidth, self.headerNickNameLabel.frame.maxY - editButtionWidth, editButtionWidth, editButtionWidth))
+            editButton.tag = 50
             editButton.setImage(UIImage.imageWithName("myOwnEdit.png"), forState: .Normal)
-            editButton.addTarget(self, action: #selector(MyOwnCell.editDescription), forControlEvents: .TouchUpInside)
+            editButton.addTarget(self, action: #selector(self.headButtonClick(_:)), forControlEvents: .TouchUpInside)
             self.contentView.addSubview(editButton)
             
             
-            let postView = self.numberAndItem(CGRectMake(0, CGRectGetHeight(self.contentView.frame) / 2.5, CGRectGetWidth(self.contentView.frame) / 4, CGRectGetHeight(self.contentView.frame) / 2), num: model.postNum, item: "帖子", sel: #selector(self.headButtonClick(_:)), buttonTag: 10)
-            self.addSubview(postView.containView)
-            self.headerPostLabel = postView.numLabel
+            let postView = self.numberAndItem(CGRectMake(0, CGRectGetHeight(self.contentView.frame) / 2.5, CGRectGetWidth(self.contentView.frame) / 4, CGRectGetHeight(self.contentView.frame) / 3), num: MyHeadGroup.postNum(), item: "帖子", sel: #selector(self.headButtonClick(_:)), buttonTag: 10)
+            self.addSubview(postView)
             
-            let careView = self.numberAndItem(CGRectMake(CGRectGetMaxX(postView.containView.frame), CGRectGetMinY(postView.containView.frame), CGRectGetWidth(postView.containView.frame), CGRectGetHeight(postView.containView.frame)), num: model.careNum, item: "关注", sel: #selector(self.headButtonClick(_:)), buttonTag: 20)
-            self.contentView.addSubview(careView.containView)
-            self.headerCareLabel = careView.numLabel
+            let careView = self.numberAndItem(CGRectMake(CGRectGetMaxX(postView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: MyHeadGroup.careNum(), item: "关注", sel: #selector(self.headButtonClick(_:)), buttonTag: 20)
+            self.contentView.addSubview(careView)
             
-            let fansView = self.numberAndItem(CGRectMake(CGRectGetMaxX(careView.containView.frame), CGRectGetMinY(postView.containView.frame), CGRectGetWidth(postView.containView.frame), CGRectGetHeight(postView.containView.frame)), num: model.fansNum, item: "粉丝", sel: #selector(self.headButtonClick(_:)), buttonTag: 30)
-            self.contentView.addSubview(fansView.containView)
-            self.headerFansLabel = fansView.numLabel
+            let fansView = self.numberAndItem(CGRectMake(CGRectGetMaxX(careView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: MyHeadGroup.fansNum(), item: "粉丝", sel: #selector(self.headButtonClick(_:)), buttonTag: 30)
+            self.contentView.addSubview(fansView)
             
-            let collectionView = self.numberAndItem(CGRectMake(CGRectGetMaxX(fansView.containView.frame), CGRectGetMinY(postView.containView.frame), CGRectGetWidth(postView.containView.frame), CGRectGetHeight(postView.containView.frame)), num: model.collectionNum, item: "收藏", sel: #selector(self.headButtonClick(_:)), buttonTag: 40)
-            self.contentView.addSubview(collectionView.containView)
-            self.headerCollectionLabel = collectionView.numLabel
+            let collectionView = self.numberAndItem(CGRectMake(CGRectGetMaxX(fansView.frame), CGRectGetMinY(postView.frame), CGRectGetWidth(postView.frame), CGRectGetHeight(postView.frame)), num: MyHeadGroup.bbsCollNum(), item: "收藏", sel: #selector(self.headButtonClick(_:)), buttonTag: 40)
+            self.contentView.addSubview(collectionView)
             
             let tailSeparatorLine = UIView.init(frame: CGRectMake(0, CGRectGetHeight(self.contentView.frame) - 0.5, CGRectGetWidth(self.contentView.frame), 0.5))
             tailSeparatorLine.backgroundColor = UIColor.lightGrayColor()
             self.contentView.addSubview(tailSeparatorLine)
-            self.editHandler = completionHandler
+
+        default:
+            self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: ScreenWidth - 20, height: self.contentView.frame.height)
+            let mainItemLabel = UILabel.init(frame: CGRectMake(leftPadding, 0, mainItemWidth, CGRectGetHeight(self.contentView.frame) - 0.3))
+            mainItemLabel.text = model.mainItem
+            mainItemLabel.font = UIFont.boldSystemFontOfSize(14)
+            self.contentView.addSubview(mainItemLabel)
+            
+            let subItemLabel = UILabel.init(frame: CGRectMake(self.contentView.frame.width * (1 / 3), 0, self.contentView.frame.width * (2 / 3) - 30 , CGRectGetHeight(self.contentView.frame)))
+            subItemLabel.text = model.subItem
+            subItemLabel.font = UIFont.systemFontOfSize(10)
+            subItemLabel.textColor = UIColor.lightGrayColor()
+            subItemLabel.textAlignment = .Right
+            self.contentView.addSubview(subItemLabel)
         }
     }
     
-    private func numberAndItem(frame:CGRect, num:String = "1213", item:String = "帖子", sel:Selector, buttonTag:Int) -> (containView:UIView, numLabel:UILabel){
+    private func numberAndItem(frame:CGRect, num:String = "1213", item:String = "帖子", sel:Selector, buttonTag:Int) -> UIView{
         let containerView = UIView(frame: frame)
         
-        let numLabel = UILabel(frame: CGRect(x: 0, y: 2 * topPadding, width: CGRectGetWidth(containerView.frame), height: upRateWidth(13)))
+        let numLabel = UILabel(frame: CGRect(x: 0, y: 2 * topPadding, width: CGRectGetWidth(containerView.frame), height: frame.height / 2))
         numLabel.adjustsFontSizeToFitWidth = true
         numLabel.text = num
         numLabel.textAlignment = .Center
@@ -140,26 +155,9 @@ class MyOwnCell: UITableViewCell {
         button.addTarget(self, action: sel, forControlEvents: UIControlEvents.TouchUpInside)
         containerView.addSubview(button)
         
-        return (containerView, numLabel)
+        return containerView
     }
 
-    
-    func refreshNormalCell(model:MyOwnNormalRowData!) -> Void {
-        self.contentView.frame = CGRect(x: self.contentView.frame.minX, y: self.contentView.frame.minY, width: ScreenWidth - 20, height: self.contentView.frame.height)
-        if model != nil {
-            let mainItemLabel = UILabel.init(frame: CGRectMake(leftPadding, 0, mainItemWidth, CGRectGetHeight(self.contentView.frame) - 0.3))
-            mainItemLabel.text = model.mainItem
-            mainItemLabel.font = UIFont.boldSystemFontOfSize(14)
-            self.contentView.addSubview(mainItemLabel)
-            
-            let subItemLabel = UILabel.init(frame: CGRectMake(self.contentView.frame.width * (1 / 3), 0, self.contentView.frame.width * (2 / 3) - 30 , CGRectGetHeight(self.contentView.frame)))
-            subItemLabel.text = model.subItem
-            subItemLabel.font = UIFont.systemFontOfSize(10)
-            subItemLabel.textColor = UIColor.lightGrayColor()
-            subItemLabel.textAlignment = .Right
-            self.contentView.addSubview(subItemLabel)
-        }
-    }
     
     func refreshSubviewsForEdit(model:MyOwnHeader){
         self.headerButton.image = UIImage.imageWithName(model.header)
@@ -169,22 +167,9 @@ class MyOwnCell: UITableViewCell {
         
     }
     
-    func refreshSubviewsForRefresh(model:MyOwnHeader) -> Void {
-        self.headerPostLabel.text = model.postNum
-        self.headerCareLabel.text = model.careNum
-        self.headerFansLabel.text = model.fansNum
-        self.headerCollectionLabel.text = model.collectionNum
-    }
-    
     func headButtonClick(btn:UIButton) -> Void {
         if let handle = self.headClickHandler {
-            handle(index: btn.tag)
-        }
-    }
-    
-    func editDescription() -> Void {
-        if let handle = self.editHandler {
-            handle()
+            handle(index: btn.tag, model: self.currentModel)
         }
     }
     

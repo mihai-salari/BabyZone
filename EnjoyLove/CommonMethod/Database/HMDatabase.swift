@@ -2752,7 +2752,7 @@ class ArticleListBL: NSObject {
 //MARK:____CollectionList____
 private let CollectionListArchiveKey = "CollectionListArchiveKey"
 private let CollectionListArchiveFileName = "CollectionListArchive.archive"
-class CollectionList: NSObject {
+class CollectionList: NSObject,NSCoding {
     /*
      
      idBbsNewsInfo	int		咨讯id
@@ -2791,9 +2791,6 @@ class CollectionList: NSObject {
     var minImageHeight:CGFloat!
     var totalImageHeight:CGFloat!
     
-    var operateType:String!
-    
-    
     override init() {
         self.idBbsNewsInfo = ""
         self.newsType = ""
@@ -2810,8 +2807,6 @@ class CollectionList: NSObject {
         self.createTime = ""
         self.createDate = ""
         self.totalPage = ""
-        
-        self.operateType = ""
         
         
     }
@@ -2858,9 +2853,6 @@ class CollectionList: NSObject {
         if let obj = aDecoder.decodeObjectForKey("createTime") as? String {
             self.createTime = obj
         }
-        if let obj = aDecoder.decodeObjectForKey("operateType") as? String {
-            self.operateType = obj
-        }
         
         if let obj = aDecoder.decodeObjectForKey("totalPage") as? String {
             self.totalPage = obj
@@ -2869,6 +2861,7 @@ class CollectionList: NSObject {
         self.contentHeight = CGFloat.init(aDecoder.decodeFloatForKey("contentHeight"))
         self.minImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("minImageHeight"))
         self.totalImageHeight = CGFloat.init(aDecoder.decodeFloatForKey("totalImageHeight"))
+        
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -2885,7 +2878,6 @@ class CollectionList: NSObject {
         aCoder.encodeObject(self.imgList, forKey: "imgList")
         aCoder.encodeObject(self.images, forKey: "images")
         aCoder.encodeObject(self.createTime, forKey: "createTime")
-        aCoder.encodeObject(self.operateType, forKey: "operateType")
         aCoder.encodeObject(self.totalPage, forKey: "totalPage")
         aCoder.encodeFloat(Float.init(self.titleHeight), forKey: "titleHeight")
         aCoder.encodeFloat(Float.init(self.contentHeight), forKey: "contentHeight")
@@ -2981,24 +2973,6 @@ private class CollectionListDAO: NSObject {
         return nil
     }
     
-    func modify(detail:CollectionList, userId:String) -> Bool {
-        let array = self.findAll(userId)
-        for base in array {
-            if base.idBbsNewsInfo == detail.idBbsNewsInfo {
-                if base.operateType != detail.operateType {
-                    base.operateType = detail.operateType
-                }
-            }
-        }
-        var arrDict:[String:NSObject] = [:]
-        arrDict[userId] = array
-        let theData = NSMutableData.init()
-        let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(arrDict, forKey: CollectionListArchiveKey)
-        archiver.finishEncoding()
-        return theData.writeToFile(CollectionListArchiveFileName.filePath(), atomically: true)
-    }
-    
 }
 
 class CollectionListBL: NSObject {
@@ -3011,9 +2985,6 @@ class CollectionListBL: NSObject {
         return CollectionListDAO.shared.find(idBbsNewsInfo, userId: userId)
     }
     
-    class func modify(detail:CollectionList, userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->Bool{
-        return CollectionListDAO.shared.modify(detail, userId: userId)
-    }
     
     class func findAll(userId:String = BabyZoneConfig.shared.currentUserId.defaultString()) ->[CollectionList]{
         return CollectionListDAO.shared.findAll(userId)
@@ -3057,7 +3028,7 @@ class AppBrowseCount: NSObject {
         "modelTypeMonitor".setDefaultString("\(self.monitorCount += 1)")
         self.monitor += 1
         if self.monitor == 5 {
-            self.sendAsyncupdateBbsCollection("1", count: "modelTypeMonitor".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+            self.sendAsyncAddAppBrowseCount("1", count: "modelTypeMonitor".defaultString(), completionHandler: { [weak self](errorCode, msg) in
                 if let weakSelf = self{
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode{
@@ -3073,7 +3044,7 @@ class AppBrowseCount: NSObject {
         "modelTypeRemind".setDefaultString("\(self.remindCount += 1)")
         self.remind += 1
         if self.remind == 5 {
-            self.sendAsyncupdateBbsCollection("2", count: "modelTypeRemind".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+            self.sendAsyncAddAppBrowseCount("2", count: "modelTypeRemind".defaultString(), completionHandler: { [weak self](errorCode, msg) in
                 if let weakSelf = self{
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode{
@@ -3089,7 +3060,7 @@ class AppBrowseCount: NSObject {
         "modelTypeBabyStatus".setDefaultString("\(self.babyStatusCount += 1)")
         self.babyStatus += 1
         if self.babyStatus == 5 {
-            self.sendAsyncupdateBbsCollection("3", count: "modelTypeBabyStatus".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+            self.sendAsyncAddAppBrowseCount("3", count: "modelTypeBabyStatus".defaultString(), completionHandler: { [weak self](errorCode, msg) in
                 if let weakSelf = self{
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode{
@@ -3105,7 +3076,7 @@ class AppBrowseCount: NSObject {
         "modelTypeBabyRecord".setDefaultString("\(self.babyRecordCount += 1)")
         self.babyRecord += 1
         if self.babyRecord == 5 {
-            self.sendAsyncupdateBbsCollection("4", count: "modelTypeBabyRecord".defaultString(), completionHandler: { [weak self](errorCode, msg) in
+            self.sendAsyncAddAppBrowseCount("4", count: "modelTypeBabyRecord".defaultString(), completionHandler: { [weak self](errorCode, msg) in
                 if let weakSelf = self{
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode{
@@ -3117,6 +3088,73 @@ class AppBrowseCount: NSObject {
         }
     }
 }
+
+class MyHeadGroup: NSObject {
+    
+    class func updateInformation(state:Bool = false) ->Bool{
+        NSUserDefaults.standardUserDefaults().setBool(state, forKey: "InfomationChange")
+        return NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func update() ->Bool{
+        return NSUserDefaults.standardUserDefaults().boolForKey("InfomationChange")
+    }
+    
+    class func updatePostNum(num:String = "0") ->Bool {
+        self.updateInformation(true)
+        NSUserDefaults.standardUserDefaults().setObject(num, forKey: "PostNum")
+        return NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func postNum() ->String{
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey("PostNum") as? String {
+            return obj
+        }
+        return "0"
+    }
+    
+    class func updateCareNum(num:String = "0") ->Bool{
+        self.updateInformation(true)
+        NSUserDefaults.standardUserDefaults().setObject(num, forKey: "CareNum")
+        return NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func careNum() ->String{
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey("CareNum") as? String {
+            return obj
+        }
+        return "0"
+    }
+    
+    class func updateFansNum(num:String = "0") ->Bool{
+        self.updateInformation(true)
+        NSUserDefaults.standardUserDefaults().setObject(num, forKey: "FansNum")
+        return NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func fansNum() ->String{
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey("FansNum") as? String {
+            return obj
+        }
+        return "0"
+    }
+    
+    class func updateBBSCollNum(num:String = "0") ->Bool{
+        self.updateInformation(true)
+        NSUserDefaults.standardUserDefaults().setObject(num, forKey: "BBSCollNum")
+        return NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func bbsCollNum() ->String{
+        if let obj = NSUserDefaults.standardUserDefaults().objectForKey("BBSCollNum") as? String {
+            return obj
+        }
+        return "0"
+    }
+    
+}
+
+
 
 class CityCode: NSObject {
     var codeId = ""

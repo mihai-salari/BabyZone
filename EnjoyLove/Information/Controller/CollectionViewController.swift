@@ -70,6 +70,9 @@ class CollectionViewController: BaseViewController,UITableViewDelegate,UITableVi
         // Dispose of any resources that can be recreated.
     }
     
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return self.collectionData.count
+    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.collectionData.count

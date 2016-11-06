@@ -1139,6 +1139,10 @@ class Equipments: NSObject,NSCoding {
      eqmAccount	string	是	设备帐号
      eqmPwd	string	是	设备密码
      eqmLevel	int	是	设备级别（1：主设备 2：子帐号设备（无权修改设备信息））
+     userId	int	是	主设备用户id
+     nickName	string	是	主设备用户昵称
+     
+     
 
      */
     var idEqmInfo:String!
@@ -1148,6 +1152,10 @@ class Equipments: NSObject,NSCoding {
     var eqmAccount:String!
     var eqmPwd:String!
     var eqmLevel:String!
+    var eqmUserId:String!
+    var eqmNickName:String!
+    
+    var eqmOnOff:Bool!
     
     var eqmStatus:Int32!
     var eqmMessageCount:Int32!
@@ -1168,15 +1176,20 @@ class Equipments: NSObject,NSCoding {
         self.eqmAccount = ""
         self.eqmPwd = ""
         self.eqmLevel = ""
+        self.eqmUserId = ""
+        self.eqmNickName = ""
+        
+        self.eqmOnOff = true
         self.eqmStatus = 0
         self.eqmMessageCount = 0
         self.defenceState = 0
         self.isClickDefenceStateBtn = false
         self.isGettingOnLineState = false
         
-        self.temperature = ""
-        self.humidity = ""
-        self.remind = ""
+        
+        self.temperature = "0"
+        self.humidity = "0"
+        self.remind = "0"
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -1204,6 +1217,14 @@ class Equipments: NSObject,NSCoding {
             self.eqmLevel = obj
         }
         
+        if let obj = aDecoder.decodeObjectForKey("eqmUserId") as? String {
+            self.eqmUserId = obj
+        }
+        
+        if let obj = aDecoder.decodeObjectForKey("eqmNickName") as? String {
+            self.eqmNickName = obj
+        }
+        
         if let obj = aDecoder.decodeObjectForKey("temperature") as? String {
             self.temperature = obj
         }
@@ -1219,6 +1240,7 @@ class Equipments: NSObject,NSCoding {
         self.defenceState = aDecoder.decodeIntForKey("defenceState")
         self.isClickDefenceStateBtn = aDecoder.decodeBoolForKey("isClickDefenceStateBtn")
         self.isGettingOnLineState = aDecoder.decodeBoolForKey("isGettingOnLineState")
+        self.eqmOnOff = aDecoder.decodeBoolForKey("eqmOnOff")
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -1229,11 +1251,15 @@ class Equipments: NSObject,NSCoding {
         aCoder.encodeObject(self.eqmAccount, forKey: "eqmAccount")
         aCoder.encodeObject(self.eqmPwd, forKey: "eqmPwd")
         aCoder.encodeObject(self.eqmLevel, forKey: "eqmLevel")
+        aCoder.encodeObject(self.eqmUserId, forKey: "eqmUserId")
+        aCoder.encodeObject(self.eqmNickName, forKey: "eqmNickName")
+        
         aCoder.encodeInt(self.eqmStatus, forKey: "eqmStatus")
         aCoder.encodeInt(self.eqmMessageCount, forKey: "eqmMessageCount")
         aCoder.encodeInt(self.defenceState, forKey: "defenceState")
         aCoder.encodeBool(self.isClickDefenceStateBtn, forKey: "isClickDefenceStateBtn")
         aCoder.encodeBool(self.isGettingOnLineState, forKey: "isGettingOnLineState")
+        aCoder.encodeBool(self.eqmOnOff, forKey: "eqmOnOff")
         
         aCoder.encodeObject(self.temperature, forKey: "temperature")
         aCoder.encodeObject(self.humidity, forKey: "humidity")
@@ -1276,23 +1302,29 @@ private class EquipmentsDAO:NSObject{
             if base.idEqmInfo == detail.idEqmInfo {
                 if let currentIndex = array.indexOf(base) {
                     array.removeAtIndex(currentIndex)
+                    
                 }
             }
         }
-        let contact = Contact()
-        contact.contactId = detail.eqmDid
-        contact.contactName = detail.eqmName
-        contact.contactPassword = detail.eqmPwd
-        if detail.eqmDid.characters.first != "0" {
-            contact.contactType = Int.init(CONTACT_TYPE_UNKNOWN)
-        }else{
-            contact.contactType = Int.init(CONTACT_TYPE_PHONE)
-        }
-        FListManager.sharedFList().insert(contact)
-        P2PClient.sharedClient().getContactsStates([contact.contactId])
-        P2PClient.sharedClient().getDefenceState(contact.contactId, password: contact.contactPassword)
-        
         array.append(detail)
+        let cat = FListManager.sharedFList().find(detail.eqmDid)
+        if cat != nil {
+            P2PClient.sharedClient().getContactsStates([cat.contactId])
+            P2PClient.sharedClient().getDefenceState(cat.contactId, password: cat.contactPassword)
+        }else{
+            let contact = Contact()
+            contact.contactId = detail.eqmDid
+            contact.contactName = detail.eqmName
+            contact.contactPassword = detail.eqmPwd
+            if detail.eqmDid.characters.first != "0" {
+                contact.contactType = Int.init(CONTACT_TYPE_UNKNOWN)
+            }else{
+                contact.contactType = Int.init(CONTACT_TYPE_PHONE)
+            }
+            FListManager.sharedFList().insert(contact)
+            P2PClient.sharedClient().getContactsStates([contact.contactId])
+            P2PClient.sharedClient().getDefenceState(contact.contactId, password: contact.contactPassword)
+        }
         var arrDict:[String:NSObject] = [:]
         arrDict[userId] = array
         let theData = NSMutableData.init()
@@ -1347,6 +1379,17 @@ private class EquipmentsDAO:NSObject{
                     note.eqmLevel = detail.eqmLevel
                 }
                 
+                if note.eqmUserId != detail.eqmUserId {
+                    note.eqmUserId = detail.eqmUserId
+                }
+                
+                if note.eqmNickName != detail.eqmNickName {
+                    note.eqmNickName = detail.eqmNickName
+                }
+                
+                if note.eqmOnOff != detail.eqmOnOff {
+                    note.eqmOnOff = detail.eqmOnOff
+                }
                 
                 if note.eqmStatus != detail.eqmStatus {
                     note.eqmStatus = detail.eqmStatus

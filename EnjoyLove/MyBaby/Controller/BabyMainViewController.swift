@@ -16,7 +16,7 @@ private let babyMusicPlayButtonTag = 3000
 class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
 
             /// 宝宝数据
-    private var babyData:[Baby]!
+//    private var babyData:[Baby]!
     private var babyView:BabyView!
     private var devices:[Equipments]!
     
@@ -29,6 +29,8 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
     
     private var testLabel:UILabel!
     let availableLanguages = Localize.availableLanguages()
+    
+    private var animationButton:LoadingButton!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -51,9 +53,19 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         super.viewDidLoad()
 
         // Do any additional setnkznkup after loading the view.
+        self.animationButton = LoadingButton(type: .Custom)
+        self.animationButton.initialze(self.view.frame.width / 3, height: 10, images: [UIImage.init(named: "videoLoading_0.png")!,UIImage.init(named: "videoLoading_1.png")!,UIImage.init(named: "videoLoading_2.png")!,UIImage.init(named: "videoLoading_3.png")!])
+        self.animationButton.startAnimation(0.5)
+        self.animationButton.backgroundColor = UIColor.yellowColor()
+        self.performSelector(#selector(self.hide), withObject: nil, afterDelay: 3)
+        self.view.addSubview(animationButton)
+        
         
     }
-        
+    
+    func hide() -> Void {
+        self.animationButton.stopLoadingAnimation()
+    }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -70,17 +82,17 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         for subview in self.view.subviews {
             subview.removeFromSuperview()
         }
-        self.babyData = []
-        self.babyData.removeAll()
-        let devices = EquipmentsBL.findAll()
-        if devices.count > 0 {
-            for eqm in devices {
-                let baby = Baby(babyImage: Utils.getHeaderFilePathWithId(eqm.eqmDid), babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0", babyEquipment: eqm)
-                self.babyData.append(baby)
-            }
+        self.devices = []
+        self.devices.removeAll()
+        let eqms = EquipmentsBL.findAll()
+        if eqms.count > 0 {
+            self.devices.appendContentsOf(eqms)
         }else{
-            let baby = Baby(babyImage: "babySleep.png", babyRemindCount: "0", babyTemperature: "0", babyHumidity: "0", babyEquipment: nil)
-            self.babyData.append(baby)
+            let eqm = Equipments()
+            eqm.remind = "0"
+            eqm.temperature = "0"
+            eqm.humidity = "0"
+            self.devices.append(eqm)
         }
         
         let floorView = UIImageView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: ScreenWidth, height: 10))
@@ -89,7 +101,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         
         self.babyScrollView = UIScrollView.init(frame: CGRect.init(x: 0, y: floorView.frame.maxY, width: ScreenWidth, height: ScreenHeight - navAndTabHeight - 10))
         self.babyScrollView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        self.babyScrollView.contentSize = CGSize(width: CGFloat(self.babyData.count) * self.babyScrollView.frame.width, height: self.babyScrollView.frame.height)
+        self.babyScrollView.contentSize = CGSize(width: CGFloat(self.devices.count) * self.babyScrollView.frame.width, height: self.babyScrollView.frame.height)
         self.babyScrollView.showsHorizontalScrollIndicator = false
         self.babyScrollView.pagingEnabled = true
         self.babyScrollView.delegate = self
@@ -97,16 +109,16 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         self.view.addSubview(self.babyScrollView)
         
         
-        if self.babyData.count == 0 {
+        if self.devices.count == 0 {
             let label = UILabel.init(frame: CGRect.init(x: 0, y: (self.babyScrollView.frame.height - 15) / 2, width: self.babyScrollView.frame.width, height: 30))
             label.text = "请先添加设备"
             label.textColor = UIColor.hexStringToColor("#DD656F")
             label.textAlignment = .Center
             self.babyScrollView.addSubview(label)
         }else{
-            for i in 0 ..< self.babyData.count {
+            for i in 0 ..< self.devices.count {
                 let babyImageView  = UIImageView.init(frame: CGRect(x: CGFloat(i) * self.babyScrollView.frame.width, y: 0, width: self.babyScrollView.frame.width, height: self.babyScrollView.frame.height))
-                if let fileImage = UIImage.init(contentsOfFile: self.babyData[i].babyImage) {
+                if let fileImage = UIImage.init(contentsOfFile: Utils.getHeaderFilePathWithId(self.devices[i].eqmDid)) {
                     if let cgImg = fileImage.CGImage {
                         babyImageView.image = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right)
                     }
@@ -122,7 +134,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 self.babyScrollView.addSubview(babyButton)
                 
                 self.temperatureLabel = UILabel.init(frame: CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width), y: self.babyScrollView.frame.height - 60, width: self.babyScrollView.frame.width * (1 / 3), height: 15))
-                self.temperatureLabel.text = self.babyData[i].babyTemperature
+                self.temperatureLabel.text = self.devices[i].temperature
                 self.temperatureLabel.textAlignment = .Center
                 self.temperatureLabel.textColor = UIColor.hexStringToColor("#DD656F")
                 self.temperatureLabel.font = UIFont.boldSystemFontOfSize(10)
@@ -136,7 +148,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 self.babyScrollView.addSubview(tempDescLabel)
                 
                 self.humidityLabel = UILabel.init(frame: CGRect(x: temperatureLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
-                self.humidityLabel.text = self.babyData[i].babyHumidity
+                self.humidityLabel.text = self.devices[i].humidity
                 self.humidityLabel.textAlignment = .Center
                 self.humidityLabel.textColor = UIColor.hexStringToColor("#DD656F")
                 self.humidityLabel.font = UIFont.boldSystemFontOfSize(10)
@@ -150,7 +162,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 self.babyScrollView.addSubview(humidityDescLabel)
                 
                 self.remindLabel = UILabel.init(frame: CGRect(x: humidityLabel.frame.maxX, y: temperatureLabel.frame.minY, width: temperatureLabel.frame.width, height: temperatureLabel.frame.height))
-                self.remindLabel.text = self.babyData[i].babyRemindCount
+                self.remindLabel.text = self.devices[i].remind
                 self.remindLabel.textAlignment = .Center
                 self.remindLabel.textColor = UIColor.hexStringToColor("#DD656F")
                 self.remindLabel.font = UIFont.boldSystemFontOfSize(10)
@@ -167,15 +179,15 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 let musicButton = UIButton.init(type: .Custom)
                 musicButton.frame = CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - musicButtonWidth - 15), y: 15, width: musicButtonWidth, height: musicButtonWidth)
                 musicButton.tag = babyMusicPlayButtonTag + i
-                musicButton.setImage(UIImage.imageWithName("music_play.png"), forState: .Selected)
-                musicButton.setImage(UIImage.imageWithName("music_stop.png"), forState: .Normal)
+                musicButton.setImage(UIImage.imageWithName("music_play.png"), forState: .Normal)
+                musicButton.setImage(UIImage.imageWithName("music_stop.png"), forState: .Selected)
                 musicButton.addTarget(self, action: #selector(self.babyMusicClick(_:)), forControlEvents: .TouchUpInside)
                 self.babyScrollView.addSubview(musicButton)
             }
             
-            let pageControlWidth = CGFloat(self.babyData.count) * 13.5
+            let pageControlWidth = CGFloat(self.devices.count) * 13.5
             self.babyPageControl = FilledPageControl(frame: CGRect(x: (self.view.frame.width - pageControlWidth) / 2, y: self.babyScrollView.frame.maxY - 20, width: pageControlWidth, height: 10))
-            self.babyPageControl.pageCount = self.babyData.count
+            self.babyPageControl.pageCount = self.devices.count
             self.babyPageControl.indicatorPadding = 5
             self.babyPageControl.tintColor = UIColor.hexStringToColor("#DD656F")
             self.babyPageControl.borderColor = UIColor.hexStringToColor("#DD656F")
@@ -187,6 +199,7 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         let page = scrollView.contentOffset.x / scrollView.frame.width
         let progressInPage = scrollView.contentOffset.x - (page * scrollView.frame.width)
         self.babyPageControl.progress = page + progressInPage
+        
     }
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
@@ -226,7 +239,14 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
     
     
     func babyPlayClick(btn:UIButton) -> Void {
-        
+        let device = self.devices[btn.tag - babyPlayButtonTag]
+        if device.eqmOnOff == false {
+            HUD.showText("请到我的->设备设置->连接设备", onView: self.view)
+            return
+        }
+        let monitor = P2PMonitorController()
+        monitor.deviceContact = EquipmentsBL.contactFromEquipment(device)
+        self.navigationController?.pushViewController(monitor, animated: true)
     }
     
     func babyMusicClick(btn:UIButton) -> Void {

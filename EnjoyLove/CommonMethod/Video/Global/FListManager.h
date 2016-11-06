@@ -29,6 +29,7 @@
 -(void)insert:(Contact*)contact;
 -(void)delete:(Contact*)contact;
 -(void)update:(Contact*)contact;
+-(Contact *)find:(NSString *)contactId;
 
 -(NSInteger)getMessageCount:(NSString*)contactId;
 -(void)setMessageCountWithId:(NSString*)contactId count:(NSInteger)count;

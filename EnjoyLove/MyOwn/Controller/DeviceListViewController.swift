@@ -108,8 +108,8 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             resultCell.layoutMargins = UIEdgeInsetsZero
             resultCell.selectionStyle = .None
             let device = self.devices[indexPath.row]
-            resultCell.textLabel?.font = UIFont.systemFontOfSize(15)
-            resultCell.textLabel?.text = device.eqmName
+            resultCell.textLabel?.font = UIFont.systemFontOfSize(13)
+            resultCell.textLabel?.text =  device.eqmLevel == "1" ? device.eqmName + "  (本机)" : device.eqmName
             
             let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 60 - 10, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
             onSwitch.onLabel.text = "连接"
@@ -125,21 +125,17 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
             onSwitch.addTarget(self, action: #selector(self.onSwichtOnOff(_:)), forControlEvents: .ValueChanged)
             resultCell.contentView.addSubview(onSwitch)
             
-            let contact = EquipmentsBL.contactFromEquipment(device)
             if isDelete == true {
                 onSwitch.userInteractionEnabled = false
                 onSwitch.on = false
             }else{
-                onSwitch.on = contact.onLineState == 0 ? false : true
-            }
-            if contact.onLineState == Int(STATE_ONLINE) && contact.contactType == Int(CONTACT_TYPE_DOORBELL) {
-                self.willBindUserIDByContactWithContactId(contact.contactId, contactPassword: contact.contactPassword)
+                onSwitch.on = device.eqmOnOff
             }
         }
         return cell!
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 //        if let cell = tableView.cellForRowAtIndexPath(indexPath) {
 //            let contact = self.devices[indexPath.row]
 //            if let aView = cell.viewWithTag(deviceListSwitchTag + indexPath.row) as? HMSwitch{
@@ -151,7 +147,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
 //                }
 //            }
 //        }
-    }
+//    }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         if isDelete == true {
@@ -203,13 +199,14 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
      */
     
     override func refreshContact() {
-        if self.isDelete == false {
-            super.refreshContact()
-            self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
-            if let table = self.deviceListTable {
-                table.reloadData()
-            }
-        }
+        super.refreshContact()
+//        if self.isDelete == false {
+//
+//            self.devices = EquipmentsBL.findAll().count > 0 ? EquipmentsBL.findAll() : []
+//            if let table = self.deviceListTable {
+//                table.reloadData()
+//            }
+//        }
     }
     
     
@@ -321,30 +318,12 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     func onSwichtOnOff(on:HMSwitch) -> Void {
         let index = on.tag - deviceListSwitchTag
         let contact = self.devices[index]
-//        var eqmId = ""
         
-        
-        if on.on == true {
-//            HUD.showHud("正在修改...", onView: self.view)
-//            Equipments.sendAsyncAddEquitment(contact.contactName, eqmType: "1", eqmDid: contact.contactId, eqmAccount: contact.contactId, eqmPwd: contact.contactPassword, eqmStatus: contact.onLineState == 0 ? false : true) { [weak self](errorCode, msg) in
-//                if let weakSelf = self{
-//                    HUD.hideHud(weakSelf.view)
-//                    if let err = errorCode{
-//                        if err == BabyZoneConfig.shared.passCode{
-//                            
-//                        }else{
-//                            HUD.showText("修改失败\(msg!)", onView: weakSelf.view)
-//                            on.on = !on.on
-//                        }
-//                    }else{
-//                        HUD.showText("修改失败\(msg!)", onView: weakSelf.view)
-//                        on.on = !on.on
-//                    }
-//                }
-//            }
-        }else{
-            
+        if let currentDevice = EquipmentsBL.find(contact.idEqmInfo)  {
+            currentDevice.eqmOnOff = on.on
+            EquipmentsBL.modify(currentDevice)
         }
+        
     }
     
     private func willBindUserIDByContactWithContactId(contactId: String, contactPassword:String){

@@ -155,6 +155,9 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
                     case 30:
                         break
                     case 40:
+                        if MyHeadGroup.bbsCollNum() == "0" {
+                            return
+                        }
                         let collection = CollectionViewController()
                         weakSelf.navigationController?.pushViewController(collection, animated: true)
                     case 50:

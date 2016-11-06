@@ -111,8 +111,10 @@ class PregInfoViewController: BaseViewController {
                     var recoments:[Article] = []
                     var articleId = "-1"
                     var articleErrorTip = ""
+                    var contentHeight:CGFloat = 0
                     if let ifo = info{
                         articleId = ifo.idBbsNewsInfo
+                        contentHeight += (ifo.contentHeight + ifo.totalImageHeight + ifo.titleHeight + 10 + 45 + weakSelf.view.frame.height * (3 / 4))
                         recoments.append(ifo)
                     }else{
                         let recoment = Article()
@@ -125,7 +127,8 @@ class PregInfoViewController: BaseViewController {
                         recoment.imageHeight = 45
                         recoments.append(recoment)
                         articleId = "-1"
-                        articleErrorTip = "暂无咨询数据"
+                        articleErrorTip = "暂无推荐数据"
+                        contentHeight += (recoment.contentHeight + recoment.totalImageHeight + recoment.titleHeight + 10 + 80 + 45 + weakSelf.view.frame.height * (2 / 3))
                     }
                     let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: recoments, pregBabyId: "0", pregMoreImage: "pregMore.png")
                     weakSelf.pregInfoStatusData.append(pregInfoStatus)
@@ -134,9 +137,10 @@ class PregInfoViewController: BaseViewController {
                         weakSelf.containView.removeFromSuperview()
                         weakSelf.containView = nil
                     }
+                    
                     weakSelf.containView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: weakSelf.view.frame.width, height: weakSelf.view.frame.height - navAndTabHeight))
                     weakSelf.containView.showsVerticalScrollIndicator = false
-                    weakSelf.containView.contentSize = CGSize.init(width: weakSelf.view.frame.width, height: 2 * (weakSelf.view.frame.height * (2 / 3)))
+                    weakSelf.containView.contentSize = CGSize.init(width: weakSelf.view.frame.width, height: contentHeight)
                     weakSelf.view.addSubview(weakSelf.containView)
                     
                     
@@ -189,8 +193,6 @@ class PregInfoViewController: BaseViewController {
                                     }
                                 }
                             })
-//                            let collectioin = CollectionViewController()
-//                            weakSelf.navigationController?.pushViewController(collectioin, animated: true)
                         }, shareCompletionHandler: { (model) in
                             
                         }, listCompletionHandler: { 
@@ -200,8 +202,6 @@ class PregInfoViewController: BaseViewController {
                     })
                     
                    weakSelf.containView.addSubview(weakSelf.pregTableView)
-
-                    
                 })
             }
             })

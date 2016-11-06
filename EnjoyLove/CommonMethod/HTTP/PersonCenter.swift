@@ -497,6 +497,8 @@ extension Equipments {
                             eqm.eqmAccount = format(dataDict["eqmAccount"])
                             eqm.eqmPwd = format(dataDict["eqmPwd"])
                             eqm.eqmLevel = format(dataDict["eqmLevel"])
+                            eqm.eqmUserId = format(dataDict["userId"])
+                            eqm.eqmNickName = format(dataDict["nickName"])
                             EquipmentsBL.insert(eqm)
                             
                         }

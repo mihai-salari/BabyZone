@@ -210,9 +210,11 @@ class PregTableView: UIView,UITableViewDelegate,UITableViewDataSource {
         self.pregTable = UITableView.init(frame: self.bounds, style: .Grouped)
         self.pregTable.delegate = self
         self.pregTable.dataSource = self
+        self.pregTable.tableFooterView = UIView.init()
         self.pregTable.separatorInset = UIEdgeInsetsZero
         self.pregTable.layoutMargins = UIEdgeInsetsZero
         self.addSubview(self.pregTable)
+        
         
         self.selectHandler = dataCompletionHandler
         self.menuHandler = moreMenuCompletionHandler

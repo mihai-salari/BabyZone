@@ -1394,6 +1394,74 @@ class DeviceButton: UIButton {
     }
 }
 
+class LoadingButton: UIButton {
+    
+    private var loadingImageView:UIImageView!
+    private var descLabel:UILabel!
+    
+    deinit {
+        self.loadingImageView = nil
+        self.descLabel = nil
+    }
+    
+    func initialze(width:CGFloat, height:CGFloat, images:[UIImage]) -> Void {
+        self.hidden = true
+        self.frame = CGRect.init(x: (ScreenWidth - width) / 2, y: (ScreenHeight - width) / 2, width: width, height: width)
+        self.loadingImageView = UIImageView.init(frame: CGRect.init(x: (self.frame.width - self.frame.width * (2 / 3)) / 2, y: (self.frame.height - self.frame.height * (2 / 3)) / 2, width: self.frame.width * (2 / 3), height: self.frame.height * (2 / 3)))
+        self.loadingImageView.hidden = true
+        self.loadingImageView.animationImages = images
+        self.loadingImageView.userInteractionEnabled = true
+        self.addSubview(self.loadingImageView)
+        
+        self.descLabel = UILabel.init(frame: CGRect.init(x: 0, y: (self.frame.height - height) / 2, width: self.frame.width, height: height))
+        self.descLabel.adjustsFontSizeToFitWidth = true
+        self.descLabel.hidden = true
+        self.descLabel.font = UIFont.systemFontOfSize(13)
+        self.descLabel.textAlignment = .Center
+        self.descLabel.textColor = UIColor.hexStringToColor("#DB6672")
+        self.addSubview(self.descLabel)
+        
+    }
+    
+    func startAnimation(duration:NSTimeInterval) -> Void {
+        self.hidden = false
+        if let imageView = self.loadingImageView {
+            self.bringSubviewToFront(imageView)
+            imageView.hidden = false
+            imageView.animationDuration = duration
+            imageView.animationRepeatCount = 0
+            imageView.startAnimating()
+        }
+        if let label = self.descLabel {
+            label.hidden = true
+        }
+    }
+    
+    func startLoadingPrompt(prompt:String, sel:Selector) -> Void {
+        if let imageView = self.loadingImageView {
+            imageView.hidden = true
+        }
+        if let label = self.descLabel {
+            self.bringSubviewToFront(label)
+            label.hidden = false
+            label.text = prompt
+        }
+        self.addTarget(self, action: sel, forControlEvents: UIControlEvents.TouchUpInside)
+    }
+    
+    func stopLoadingAnimation() -> Void {
+        self.hidden = true
+        if let imageView = self.loadingImageView {
+            imageView.stopAnimating()
+            imageView.hidden = true
+        }
+        if let label = self.descLabel {
+            label.hidden = true
+        }
+    }
+    
+}
+
 //MARK:_____PAGECONTROL_____
 
 

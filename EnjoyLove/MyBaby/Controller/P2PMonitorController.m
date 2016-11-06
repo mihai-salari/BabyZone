@@ -80,6 +80,7 @@
 //YES表示图像渲染出来了
 @property (nonatomic, assign) BOOL isOkRenderVideoFrame;
 
+@property (nonatomic, strong) LoadingButton *loadingButton;
 
 @end
 
@@ -285,6 +286,10 @@
     self.musicButton.userInteractionEnabled = NO;
     self.voiceButton.userInteractionEnabled = NO;
     
+    
+    self.loadingButton = [LoadingButton buttonWithType:UIButtonTypeCustom];
+    [self.loadingButton initialze:CGRectGetWidth(self.view.frame) / 3 height:10 images:@[[UIImage imageWithName:@"videoLoading_0.png"], [UIImage imageWithName:@"videoLoading_1.png"], [UIImage imageWithName:@"videoLoading_2.png"], [UIImage imageWithName:@"videoLoading_3.png"]]];
+    [self.view addSubview:self.loadingButton];
     [self swipeGestures];
 }
 

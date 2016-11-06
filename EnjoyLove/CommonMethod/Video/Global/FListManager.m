@@ -240,6 +240,14 @@
     oldContact = contact;
 }
 
+-(Contact *)find:(NSString *)contactId{
+    Contact *contact = nil;
+    ContactDAO *contactDAO = [[ContactDAO alloc] init];
+    contact = [contactDAO isContact:contactId];
+    [contactDAO release];
+    return contact;
+}
+
 -(void)getDefenceStates{
     NSArray *array = [self getContacts];
     for(Contact *contact in array){

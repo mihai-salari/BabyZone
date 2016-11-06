@@ -1404,9 +1404,9 @@ class LoadingButton: UIButton {
         self.descLabel = nil
     }
     
-    func initialze(width:CGFloat, height:CGFloat, images:[UIImage]) -> Void {
+    func initialze(width:CGFloat, height:CGFloat, images:[UIImage], portrait:Bool = true) -> Void {
         self.hidden = true
-        self.frame = CGRect.init(x: (ScreenWidth - width) / 2, y: (ScreenHeight - width) / 2, width: width, height: width)
+        self.frame = CGRect.init(x: (portrait == true ? ScreenWidth : ScreenHeight - width) / 2, y: (portrait == true ? ScreenHeight : ScreenWidth - width) / 2, width: width, height: width)
         self.loadingImageView = UIImageView.init(frame: CGRect.init(x: (self.frame.width - self.frame.width * (2 / 3)) / 2, y: (self.frame.height - self.frame.height * (2 / 3)) / 2, width: self.frame.width * (2 / 3), height: self.frame.height * (2 / 3)))
         self.loadingImageView.hidden = true
         self.loadingImageView.animationImages = images
@@ -1437,7 +1437,7 @@ class LoadingButton: UIButton {
         }
     }
     
-    func startLoadingPrompt(prompt:String, sel:Selector) -> Void {
+    func startLoadingPrompt(prompt:String, tartget: AnyObject?, sel:Selector) -> Void {
         if let imageView = self.loadingImageView {
             imageView.hidden = true
         }
@@ -1446,7 +1446,7 @@ class LoadingButton: UIButton {
             label.hidden = false
             label.text = prompt
         }
-        self.addTarget(self, action: sel, forControlEvents: UIControlEvents.TouchUpInside)
+        self.addTarget(tartget, action: sel, forControlEvents: UIControlEvents.TouchUpInside)
     }
     
     func stopLoadingAnimation() -> Void {

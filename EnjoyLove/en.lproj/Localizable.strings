@@ -31,3 +31,19 @@
 "battery_low_vol" = "Battery Low Voltage Alarm";
 "somebody_visit" = "Somebody Visit";
 "open" = "open";//推送消息
+
+"id_unknown_error" = "Unknown Error";
+"id_overdate" = "Remote ID has expired";
+"id_disabled" = "Remote ID is disabled";
+"id_inactived" = "Remote ID is not activated";
+"id_offline" = "Offline";
+"id_busy" = "Busy";
+"id_powerdown" = "Target id offline";
+"id_connect_failed" = "Connect Failed";
+"id_hangup" = "Hangup";
+"id_timeout" = "Timeout";
+"id_internal_error" = "Internal Error";
+"id_no_accept" = "No one answer";
+"id_password_error" = "Device password error";
+"id_not_support" = "Not Support";
+

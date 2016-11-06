@@ -30,3 +30,18 @@
 "update_to_ser" = "参数上传服务器";
 "somebody_visit" = "有人来访";
 "open" = "打开";//推送消息
+
+"id_unknown_error" = "未知原因";
+"id_overdate" = "对方ID已过期";
+"id_disabled" = "对方ID被禁用";
+"id_inactived" = "对方ID未激活";
+"id_offline" = "设备离线";
+"id_busy" = "设备繁忙";
+"id_powerdown" = "对方关机";
+"id_connect_failed" = "连接失败";
+"id_hangup" = "挂断";
+"id_timeout" = "连接超时";
+"id_internal_error" = "内部错误";
+"id_no_accept" = "无人接听";
+"id_password_error" = "设备密码错误";
+"id_not_support" = "设备不支持";

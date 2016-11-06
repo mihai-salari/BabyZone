@@ -124,9 +124,11 @@
         //监控竖屏时，各控件初始化(先)
         [self initializeSubviews];
         
+        self.isIntoMonitorFromMonitor = YES;
         
         //rtsp监控界面弹出修改
         [self monitorP2PCall];
+
     }
     
 }
@@ -288,8 +290,9 @@
     
     
     self.loadingButton = [LoadingButton buttonWithType:UIButtonTypeCustom];
-    [self.loadingButton initialze:CGRectGetWidth(self.view.frame) / 3 height:10 images:@[[UIImage imageWithName:@"videoLoading_0.png"], [UIImage imageWithName:@"videoLoading_1.png"], [UIImage imageWithName:@"videoLoading_2.png"], [UIImage imageWithName:@"videoLoading_3.png"]]];
+    [self.loadingButton initialze:CGRectGetWidth(self.view.frame) / 3 height:10 images:@[[UIImage imageWithName:@"videoLoading_0.png"], [UIImage imageWithName:@"videoLoading_1.png"], [UIImage imageWithName:@"videoLoading_2.png"], [UIImage imageWithName:@"videoLoading_3.png"]] portrait: NO];
     [self.view addSubview:self.loadingButton];
+    
     [self swipeGestures];
 }
 
@@ -347,6 +350,7 @@
 
 //rtsp监控界面弹出修改
 -(void)monitorP2PCall{
+    [self.loadingButton startAnimation:1];
     [[P2PClient sharedClient] setP2pCallState:P2PCALL_STATUS_CALLING];
     BOOL isBCalled = [[P2PClient sharedClient] isBCalled];
     P2PCallType type = [[P2PClient sharedClient] p2pCallType];
@@ -389,6 +393,9 @@
             if (!self.isOkRenderVideoFrame) {
                 self.isOkRenderVideoFrame = YES;
                 _isOkFirstRenderVideoFrame = YES;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.loadingButton stopLoadingAnimation];
+                });
             }
             [self.remoteView render:m_pAVFrame];
             vReleaseVideoFrame();
@@ -408,9 +415,18 @@
         }
     }
     _isOkRenderVideoFrame = NO;
-    if (!self.isCancelClick) {
-        [self monitorP2PCall];
-    }
+    
+    
+    int errorFlag = [[note.userInfo objectForKey:@"errorFlag"] intValue];
+    [self.loadingButton startLoadingPrompt:[self getCallErrorStringWith:errorFlag] tartget:self sel:@selector(reloadMonitor)];
+    
+//    if (!self.isCancelClick) {
+//        [self monitorP2PCall];
+//    }
+}
+
+- (void)reloadMonitor{
+    [self monitorP2PCall];
 }
 
 -(void)onScreenShotted:(UIImage *)image{
@@ -619,13 +635,13 @@
                 [[PAIOUnit sharedUnit] setSpeckState:NO];
                 [[P2PClient sharedClient] p2pHungUp];
                 self.remoteView.isQuitMonitorInterface = YES;
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if (self.monitorRefreshHandler && self.isCancelClick && self.remoteView) {
-                        self.monitorRefreshHandler([self.remoteView glToUIImage]);
-                    }
-                    [self.navigationController popViewControllerAnimated:YES];
-                });
             }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (self.monitorRefreshHandler && self.isCancelClick && self.remoteView) {
+                    self.monitorRefreshHandler([self.remoteView glToUIImage]);
+                }
+                [self.navigationController popViewControllerAnimated:YES];
+            });
         }
             break;
         default:
@@ -666,7 +682,93 @@
     [[P2PClient sharedClient] getNpcSettingsWithId:callId password:callPassword];
 }
 
-
+-(NSString *)getCallErrorStringWith:(int)errorFlag{
+    switch(errorFlag)
+    {
+        case CALL_ERROR_NONE:
+        {
+            return NSLocalizedString(@"id_unknown_error", nil);
+            
+        }
+            break;
+        case CALL_ERROR_DESID_NOT_ENABLE:
+        {
+            return NSLocalizedString(@"id_disabled", nil);
+        }
+            break;
+        case CALL_ERROR_DESID_OVERDATE:
+        {
+            return NSLocalizedString(@"id_overdate", nil);
+        }
+            break;
+        case CALL_ERROR_DESID_NOT_ACTIVE:
+        {
+            return NSLocalizedString(@"id_inactived", nil);
+        }
+            break;
+        case CALL_ERROR_DESID_OFFLINE:
+        {
+            return NSLocalizedString(@"id_offline", nil);
+        }
+            break;
+        case CALL_ERROR_DESID_BUSY:
+        {
+            return NSLocalizedString(@"id_busy", nil);
+        }
+            break;
+        case CALL_ERROR_DESID_POWERDOWN:
+        {
+            return NSLocalizedString(@"id_powerdown", nil);
+        }
+            break;
+        case CALL_ERROR_NO_HELPER:
+        {
+            return NSLocalizedString(@"id_connect_failed", nil);
+        }
+            break;
+        case CALL_ERROR_HANGUP:
+        {
+            return NSLocalizedString(@"id_hangup", nil);
+            
+            break;
+        }
+        case CALL_ERROR_TIMEOUT:
+        {
+            return NSLocalizedString(@"id_timeout", nil);
+        }
+            break;
+        case CALL_ERROR_INTER_ERROR:
+        {
+            return NSLocalizedString(@"id_internal_error", nil);
+        }
+            break;
+        case CALL_ERROR_RING_TIMEOUT:
+        {
+            return NSLocalizedString(@"id_no_accept", nil);
+        }
+            break;
+        case CALL_ERROR_PW_WRONG:
+        {
+            return NSLocalizedString(@"id_password_error", nil);
+        }
+            break;
+        case CALL_ERROR_CONN_FAIL:
+        {
+            return NSLocalizedString(@"id_connect_failed", nil);
+        }
+            break;
+        case CALL_ERROR_NOT_SUPPORT:
+        {
+            return NSLocalizedString(@"id_not_support", nil);
+        }
+            break;
+            default:
+        {
+            return NSLocalizedString(@"id_unknown_error", nil);
+        }
+            break;
+    }
+}
 
 #pragma mark - 屏幕Autorotate
 

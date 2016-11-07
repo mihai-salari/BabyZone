@@ -275,42 +275,43 @@ enum
             NSLog(@"%i",index);
             index++;
             if (self.conectType == conectType_Intelligent){//startSetWifiLoop
-                if (index >= 21 && index <= 30)
+                if (index >= 1 && index <= 5)//(index >= 21 && index <= 30)
                 {
-                    if (index == 21)
+                    if (index == 1)//(index == 21)
                     {
                         elianStop(_context);
                     }
                 }
-                else if (index >= 51 && index <= 60)
+                else if (index >= 15 && index <= 20)//(index >= 51 && index <= 60)
                 {
-                    if (index == 51)
+                    if (index == 15)//(index == 51)
                     {
                         elianStop(_context);
                     }
                 }
-                else if (index >= 81)
+                else if (index >= 25)//(index >= 81)
                 {
-                    if (index == 81)
+                    if (index == 25)//(index == 81)
                     {
                         elianStop(_context);
                     }
                 }
                 else
                 {
-                    if (index==31 || index==61)
+                    if (index==6 || index==8 || index == 10 || index == 12)//(index==31 || index==61)
                     {
-                        elianStart(_context);
+                        int result = elianStart(_context);
+                        NSLog(@"result elian %d", result);
                     }
                 }
-                if(index>=90)
+                if(index>=30)//(index>=90)
                 {//90
                     break;
                 }
             }
             else
             {
-                if(index>=60)
+                if(index>=30)//(index>=60)
                 {//60
                     break;
                 }

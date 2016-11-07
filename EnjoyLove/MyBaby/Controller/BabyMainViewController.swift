@@ -100,8 +100,8 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         
         
         if eqms.count == 0 {
-            let label = UILabel.init(frame: CGRect.init(x: 0, y: (self.babyScrollView.frame.height - 15) / 2, width: self.babyScrollView.frame.width, height: 30))
-            label.text = "暂无设备，请到我的->设备设置->添加设备"
+            let label = UILabel.init(frame: CGRect.init(x: 0, y: (self.babyScrollView.frame.height - 15) / 2, width: self.babyScrollView.frame.width, height: 80))
+            label.text = "暂无设备，\n请到我的->设备设置->添加设备"
             label.numberOfLines = 0
             label.textColor = UIColor.hexStringToColor("#DD656F")
             label.textAlignment = .Center

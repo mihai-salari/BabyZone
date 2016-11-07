@@ -129,7 +129,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
                 onSwitch.userInteractionEnabled = false
                 onSwitch.on = false
             }else{
-                onSwitch.on = device.eqmOnOff
+                onSwitch.on = true
             }
         }
         return cell!

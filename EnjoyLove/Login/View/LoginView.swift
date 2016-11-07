@@ -68,7 +68,7 @@ class LoginView: UIView,UITextFieldDelegate {
         self.passwordTF.textColor = UIColor.whiteColor()
         self.addSubview(self.passwordTF)
         
-        let logoImageView = UIImageView.init(frame: CGRect.init(x: (self.frame.width - (self.frame.width * (1 / 3))) / 2, y: (self.phoneTF.frame.maxY - (self.phoneTF.frame.maxY * (1 / 2.5))) / 2, width: self.frame.width * (1 / 3), height: (self.phoneTF.frame.maxY * (1 / 2.5))))
+        let logoImageView = UIImageView.init(frame: CGRect.init(x: (self.frame.width - (self.frame.width * (1 / 3))) / 2, y: (self.phoneTF.frame.maxY - (self.phoneTF.frame.maxY * (1 / 2.5))) / 2, width: self.frame.width * (1 / 3), height: (self.frame.width * (1 / 3) * (1 / 1.7))))
         logoImageView.image = UIImage.imageWithName("logo.png")
         self.addSubview(logoImageView)
         

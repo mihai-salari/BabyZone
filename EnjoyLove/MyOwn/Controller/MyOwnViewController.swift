@@ -108,7 +108,7 @@ class MyOwnViewController: BaseViewController,UITableViewDataSource,UITableViewD
         self.myOwnData.append(myOwnModel)
         
         
-        self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * 20) * (1 / 9)
+        self.rowHeight = (ScreenHeight - navAndTabHeight - 2 * 20) * (1 / 9.3)
         self.myOwnTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight, ScreenWidth - 2 * viewOriginX, ScreenHeight - navAndTabHeight), style: .Grouped)
         self.myOwnTable.scrollEnabled = false
         self.myOwnTable.delegate = self

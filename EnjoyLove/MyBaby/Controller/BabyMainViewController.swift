@@ -123,12 +123,6 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 babyImageView.tag = babyBackgroundImageViewTag + i
                 self.babyScrollView.addSubview(babyImageView)
                 
-                let babyButton = BabyButton(type: .Custom)
-                babyButton.frame = CGRect.init(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - (self.babyScrollView.frame.width * (1 / 6))) / 2, y: (self.babyScrollView.frame.height - (self.babyScrollView.frame.width * (1 / 6))) / 2, width: (self.babyScrollView.frame.width * (1 / 6)), height: (self.babyScrollView.frame.width * (1 / 6)))
-                babyButton.setImageSize(CGSize(width: self.babyScrollView.frame.width * (1 / 6),height: ScreenWidth * (1 / 6)), normaImage: "babyPlay.png", title: "观看视频", fontSize: 12)
-                babyButton.tag = babyPlayButtonTag + i
-                babyButton.addCustomTarget(self, sel: #selector(self.babyPlayClick(_:)))
-                self.babyScrollView.addSubview(babyButton)
                 
                 self.temperatureLabel = UILabel.init(frame: CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width), y: self.babyScrollView.frame.height - 60, width: self.babyScrollView.frame.width * (1 / 3), height: 15))
                 self.temperatureLabel.text = self.devices[i].temperature
@@ -180,6 +174,13 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 musicButton.setImage(UIImage.imageWithName("music_stop.png"), forState: .Selected)
                 musicButton.addTarget(self, action: #selector(self.babyMusicClick(_:)), forControlEvents: .TouchUpInside)
                 self.babyScrollView.addSubview(musicButton)
+                
+                let babyButton = BabyButton(type: .Custom)
+                babyButton.frame = CGRect.init(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - (self.babyScrollView.frame.width * (1 / 6))) / 2, y: (self.babyScrollView.frame.height - (self.babyScrollView.frame.width * (1 / 6))) / 2, width: (self.babyScrollView.frame.width * (1 / 6)), height: (self.babyScrollView.frame.width * (1 / 6)))
+                babyButton.setImageSize(CGSize(width: self.babyScrollView.frame.width * (1 / 6),height: ScreenWidth * (1 / 6)), normaImage: "babyPlay.png", title: "观看视频", fontSize: 12)
+                babyButton.tag = babyPlayButtonTag + i
+                babyButton.addCustomTarget(self, sel: #selector(self.babyPlayClick(_:)))
+                self.babyScrollView.addSubview(babyButton)
             }
             
             let pageControlWidth = CGFloat(self.devices.count) * 13.5

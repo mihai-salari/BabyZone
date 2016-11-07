@@ -3603,7 +3603,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
+				PROVISIONING_PROFILE = "2dbd22cc-5100-4e17-81d3-1a0a568c7bc3";
 				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3618,8 +3618,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: SunEee Weilian Technology Development Co., Ltd.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: SunEee Weilian Technology Development Co., Ltd.";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: shenzhen youmeng Travel co.ltd";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: shenzhen youmeng Travel co.ltd";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = LREATFY7GE;
 				ENABLE_BITCODE = NO;
@@ -3643,7 +3643,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
+				PROVISIONING_PROFILE = "2dbd22cc-5100-4e17-81d3-1a0a568c7bc3";
 				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_VERSION = 2.3;

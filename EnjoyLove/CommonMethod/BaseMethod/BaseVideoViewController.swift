@@ -13,11 +13,18 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
     private var isInitPull:Bool = false
     var contactData:[Contact]!
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
                 
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        P2PClient.sharedClient().delegate = self
         var result = false
         if AppDelegate.sharedDefault().dwApContactID == 0 {
             if let loginResult = UDManager.getLoginInfo() {
@@ -38,11 +45,6 @@ class BaseVideoViewController: BaseViewController,P2PClientDelegate {
             }
             self.contactData.appendContentsOf(contacts)
         }
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        P2PClient.sharedClient().delegate = self
     }
     
     override func viewDidAppear(animated: Bool) {

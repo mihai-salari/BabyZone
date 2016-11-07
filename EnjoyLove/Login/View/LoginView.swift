@@ -124,8 +124,12 @@ class LoginView: UIView,UITextFieldDelegate {
                 handle(phone: phone, isPhone: phone.isTelNumber(), password: password)
             }
         case 20:
-            if let handle = self.registerHandler, let phone = self.passwordTF.text {
-                handle(phone: phone)
+            if let handle = self.registerHandler {
+                if let phone = self.phoneTF.text {
+                    handle(phone: phone)
+                }else{
+                    handle(phone: "")
+                }
             }
         case 30:
             break

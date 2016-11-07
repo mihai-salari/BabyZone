@@ -269,7 +269,9 @@ enum
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         int index = 0;
         while(self.isWaiting){
-            [HMHUD showHudTip:[NSString stringWithFormat:@"正在设置WiFi--%i(s)",(90 - index)] forView:self.view];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [HMHUD showHudTip:@"正在连接WiFi" forView:self.view];
+            });
             NSLog(@"%i",index);
             index++;
             if (self.conectType == conectType_Intelligent){//startSetWifiLoop

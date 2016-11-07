@@ -57,20 +57,33 @@ class LoginViewController: BaseViewController {
                                                 login.isRegist = registNumer
                                                 LoginBL.modify(login)
                                             }
+                                            
+                                            dispatch_queue_create("someDataRequetQeueu", nil).queue({
+                                                PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
+                                                    NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
+                                                    Equipments.sendAsyncEqutementList({ (errorCode, msg) in
+                                                        BabyList.sendAsyncBabyList({ (errorCode, msg) in
+                                                            NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
+                                                            dispatch_get_main_queue().queue({
+                                                                if dataDict != nil {
+                                                                    dispatch_get_main_queue().queue({
+                                                                        weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                                                                    })
+                                                                }else{
+                                                                    HUD.hideHud(weakSelf.view)
+                                                                    HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
+                                                                }
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
                                         }
                                     })
                                 }
                                 })
-
                         }
-                        if dataDict != nil {
-                            dispatch_get_main_queue().queue({
-                                weakSelf.dismissViewControllerAnimated(true, completion: nil)
-                            })
-                        }else{
-                            HUD.hideHud(weakSelf.view)
-                            HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
-                        }
+                        
                     }else{
                         HUD.hideHud(weakSelf.view)
                         HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)

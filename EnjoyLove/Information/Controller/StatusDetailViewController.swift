@@ -34,7 +34,7 @@ class StatusDetailViewController: BaseViewController {
         
         let titleLabel = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: self.detailScrollView.frame.width, height: 50))
         titleLabel.text = self.detailModel == nil ? "" : self.detailModel.title
-        titleLabel.font = UIFont.systemFontOfSize(20)
+        titleLabel.font = UIFont.systemFontOfSize(15)
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .Center
         titleLabel.textColor = UIColor.hexStringToColor("#DF5F76")
@@ -44,7 +44,6 @@ class StatusDetailViewController: BaseViewController {
         line.backgroundColor = UIColor.hexStringToColor("#DF5F76")
         self.detailScrollView.addSubview(line)
         
-        print("image count \(self.detailModel.images.count)")
         if let model = self.detailModel {
             for i in 0 ..< model.images.count {
                 let imageView = UIImageView.init(frame: CGRect.init(x: 15, y: 60 + CGFloat(i) * (model.imageHeight * (2 / 3) + 5), width: self.detailScrollView.frame.width - 2 * 15, height: model.imageHeight * (2 / 3)))

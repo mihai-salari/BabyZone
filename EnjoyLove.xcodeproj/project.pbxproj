@@ -141,7 +141,7 @@
 		271F157D1D950E3700CAAEF4 /* LanguageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F157C1D950E3700CAAEF4 /* LanguageViewController.swift */; };
 		271F157F1D95175800CAAEF4 /* AddDeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F157E1D95175800CAAEF4 /* AddDeviceViewController.swift */; };
 		271F15971D95336200CAAEF4 /* AddressBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F15961D95336200CAAEF4 /* AddressBookViewController.swift */; };
-		2725D8521DCCB93B00AA459A /* BabyZone.html in Resources */ = {isa = PBXBuildFile; fileRef = 2725D8511DCCB93B00AA459A /* BabyZone.html */; };
+		2725B3AD1DD011EE00ADB21C /* BabyZone.html in Resources */ = {isa = PBXBuildFile; fileRef = 2725B3AC1DD011EE00ADB21C /* BabyZone.html */; };
 		2725D8541DCCC8F700AA459A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2725D8531DCCC8F700AA459A /* logo.png */; };
 		2725D85B1DCCCAAB00AA459A /* floorLayer.png in Resources */ = {isa = PBXBuildFile; fileRef = 2725D8591DCCCAAB00AA459A /* floorLayer.png */; };
 		2725D85C1DCCCAAB00AA459A /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 2725D85A1DCCCAAB00AA459A /* loading.png */; };
@@ -696,7 +696,7 @@
 		271F157C1D950E3700CAAEF4 /* LanguageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageViewController.swift; sourceTree = "<group>"; };
 		271F157E1D95175800CAAEF4 /* AddDeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDeviceViewController.swift; sourceTree = "<group>"; };
 		271F15961D95336200CAAEF4 /* AddressBookViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressBookViewController.swift; sourceTree = "<group>"; };
-		2725D8511DCCB93B00AA459A /* BabyZone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = BabyZone.html; path = "../../../../../360云盘1/iOS/BabyZone证书/BabyZone.html"; sourceTree = "<group>"; };
+		2725B3AC1DD011EE00ADB21C /* BabyZone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = BabyZone.html; sourceTree = "<group>"; };
 		2725D8531DCCC8F700AA459A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		2725D8591DCCCAAB00AA459A /* floorLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = floorLayer.png; sourceTree = "<group>"; };
 		2725D85A1DCCCAAB00AA459A /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
@@ -1694,8 +1694,8 @@
 		2718BE001D819F57002BE29D /* HTML5 */ = {
 			isa = PBXGroup;
 			children = (
+				2725B3AC1DD011EE00ADB21C /* BabyZone.html */,
 				270BC5091D8F7FD400C3DCCE /* ProblemDetail.html */,
-				2725D8511DCCB93B00AA459A /* BabyZone.html */,
 				2718BE021D819F57002BE29D /* StatusContent.html */,
 			);
 			path = HTML5;
@@ -3049,6 +3049,7 @@
 				27188E7E1D87843900797D41 /* add_one.png in Resources */,
 				27F410721D8BA58400722051 /* login_male_normal.png in Resources */,
 				2725D8671DCEE96D00AA459A /* videoLoading.png in Resources */,
+				2725B3AD1DD011EE00ADB21C /* BabyZone.html in Resources */,
 				275C04901D813BB300A52ABC /* button_triangle_down.png in Resources */,
 				275EBFBA1D8D6FE50008E085 /* delete.png in Resources */,
 				275C009B1D7D704B00A52ABC /* myheader.png in Resources */,
@@ -3099,7 +3100,6 @@
 				275C039B1D800E7F00A52ABC /* search_device.png in Resources */,
 				27D002D31D6D44D700B62A61 /* Main.storyboard in Resources */,
 				275C03381D7E668F00A52ABC /* grayDot.png in Resources */,
-				2725D8521DCCB93B00AA459A /* BabyZone.html in Resources */,
 				27830D491D9B69CF0036E2BC /* baby_music_selected.png in Resources */,
 				275C00A91D7D717200A52ABC /* add_device.png in Resources */,
 			);
@@ -3603,7 +3603,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
+				PROVISIONING_PROFILE = "2dbd22cc-5100-4e17-81d3-1a0a568c7bc3";
 				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -3618,8 +3618,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: shenzhen youmeng Travel co.ltd";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: shenzhen youmeng Travel co.ltd";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = LREATFY7GE;
 				ENABLE_BITCODE = NO;
@@ -3643,7 +3643,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
+				PROVISIONING_PROFILE = "2dbd22cc-5100-4e17-81d3-1a0a568c7bc3";
 				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_VERSION = 2.3;

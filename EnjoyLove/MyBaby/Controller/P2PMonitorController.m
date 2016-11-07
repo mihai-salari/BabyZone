@@ -638,6 +638,7 @@
             }
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (self.monitorRefreshHandler && self.isCancelClick && self.remoteView) {
+                    [self.remoteView setCaptureFinishScreen:YES];
                     self.monitorRefreshHandler([self.remoteView glToUIImage]);
                 }
                 [self.navigationController popViewControllerAnimated:YES];

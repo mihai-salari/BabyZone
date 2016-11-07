@@ -53,18 +53,8 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         super.viewDidLoad()
 
         // Do any additional setnkznkup after loading the view.
-        self.animationButton = LoadingButton(type: .Custom)
-        self.animationButton.initialze(self.view.frame.width / 3, height: 10, images: [UIImage.init(named: "videoLoading_0.png")!,UIImage.init(named: "videoLoading_1.png")!,UIImage.init(named: "videoLoading_2.png")!,UIImage.init(named: "videoLoading_3.png")!])
-        self.animationButton.startAnimation(0.5)
-        self.animationButton.backgroundColor = UIColor.yellowColor()
-        self.performSelector(#selector(self.hide), withObject: nil, afterDelay: 3)
-        self.view.addSubview(animationButton)
         
         
-    }
-    
-    func hide() -> Void {
-        self.animationButton.stopLoadingAnimation()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -109,29 +99,30 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         self.view.addSubview(self.babyScrollView)
         
         
-        if self.devices.count == 0 {
-            let label = UILabel.init(frame: CGRect.init(x: 0, y: (self.babyScrollView.frame.height - 15) / 2, width: self.babyScrollView.frame.width, height: 30))
-            label.text = "请先添加设备"
+        if eqms.count == 0 {
+            let label = UILabel.init(frame: CGRect.init(x: 0, y: (self.babyScrollView.frame.height - 15) / 2, width: self.babyScrollView.frame.width, height: 80))
+            label.text = "暂无设备，\n请到我的->设备设置->添加设备"
+            label.numberOfLines = 0
             label.textColor = UIColor.hexStringToColor("#DD656F")
             label.textAlignment = .Center
             self.babyScrollView.addSubview(label)
         }else{
             for i in 0 ..< self.devices.count {
                 let babyImageView  = UIImageView.init(frame: CGRect(x: CGFloat(i) * self.babyScrollView.frame.width, y: 0, width: self.babyScrollView.frame.width, height: self.babyScrollView.frame.height))
+                babyImageView.userInteractionEnabled = true
                 if let fileImage = UIImage.init(contentsOfFile: Utils.getHeaderFilePathWithId(self.devices[i].eqmDid)) {
                     if let cgImg = fileImage.CGImage {
                         babyImageView.image = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right)
                     }
                 }
+                let backgroundImage = EquipmentsBL.getHeadVideoImage(self.devices[i].eqmDid)
+                if let cgImg = backgroundImage.CGImage {
+                    babyImageView.image = UIImage.init(CGImage: cgImg, scale: 1, orientation: UIImageOrientation.Right)
+                }
+                
                 babyImageView.tag = babyBackgroundImageViewTag + i
                 self.babyScrollView.addSubview(babyImageView)
                 
-                let babyButton = BabyButton(type: .Custom)
-                babyButton.frame = CGRect.init(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - (self.babyScrollView.frame.width * (1 / 6))) / 2, y: (self.babyScrollView.frame.height - (self.babyScrollView.frame.width * (1 / 6))) / 2, width: (self.babyScrollView.frame.width * (1 / 6)), height: (self.babyScrollView.frame.width * (1 / 6)))
-                babyButton.setImageSize(CGSize(width: self.babyScrollView.frame.width * (1 / 6),height: ScreenWidth * (1 / 6)), normaImage: "babyPlay.png", title: "观看视频", fontSize: 12)
-                babyButton.tag = babyPlayButtonTag + i
-                babyButton.addCustomTarget(self, sel: #selector(self.babyPlayClick(_:)))
-                self.babyScrollView.addSubview(babyButton)
                 
                 self.temperatureLabel = UILabel.init(frame: CGRect(x: (CGFloat.init(i) * self.babyScrollView.frame.width), y: self.babyScrollView.frame.height - 60, width: self.babyScrollView.frame.width * (1 / 3), height: 15))
                 self.temperatureLabel.text = self.devices[i].temperature
@@ -183,6 +174,13 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                 musicButton.setImage(UIImage.imageWithName("music_stop.png"), forState: .Selected)
                 musicButton.addTarget(self, action: #selector(self.babyMusicClick(_:)), forControlEvents: .TouchUpInside)
                 self.babyScrollView.addSubview(musicButton)
+                
+                let babyButton = BabyButton(type: .Custom)
+                babyButton.frame = CGRect.init(x: (CGFloat.init(i) * self.babyScrollView.frame.width) + (self.babyScrollView.frame.width - (self.babyScrollView.frame.width * (1 / 6))) / 2, y: (self.babyScrollView.frame.height - (self.babyScrollView.frame.width * (1 / 6))) / 2, width: (self.babyScrollView.frame.width * (1 / 6)), height: (self.babyScrollView.frame.width * (1 / 6)))
+                babyButton.setImageSize(CGSize(width: self.babyScrollView.frame.width * (1 / 6),height: ScreenWidth * (1 / 6)), normaImage: "babyPlay.png", title: "观看视频", fontSize: 12)
+                babyButton.tag = babyPlayButtonTag + i
+                babyButton.addCustomTarget(self, sel: #selector(self.babyPlayClick(_:)))
+                self.babyScrollView.addSubview(babyButton)
             }
             
             let pageControlWidth = CGFloat(self.devices.count) * 13.5
@@ -224,19 +222,6 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         
     }
     
-    func reloadEquipments() -> Void {
-        self.initialize()
-    }
- 
-    func addNewDevice() -> Void {
-        self.initialize()
-        
-    }
-    
-    func deleteDevice() -> Void {
-        self.initialize()
-    }
-    
     
     func babyPlayClick(btn:UIButton) -> Void {
         let device = self.devices[btn.tag - babyPlayButtonTag]
@@ -246,6 +231,9 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
         }
         let monitor = P2PMonitorController()
         monitor.deviceContact = EquipmentsBL.contactFromEquipment(device)
+        monitor.monitorRefreshHandler = { (image) in
+            EquipmentsBL.saveHeadVideoImage(image, eqmDid: device.eqmDid)
+        }
         self.navigationController?.pushViewController(monitor, animated: true)
     }
     

@@ -26,6 +26,7 @@ class LoginViewController: BaseViewController {
                 Login.sendAsyncLogin(phone, userPwd: password, completionHandler: { (errorCode, msg, dataDict) in
                     if errorCode != nil && errorCode == BabyZoneConfig.shared.passCode{
                         HUD.hideHud(weakSelf.view)
+                        
                         if UDManager.isLogin() == false , let token = NSUserDefaults.standardUserDefaults().objectForKey(BabyZoneConfig.shared.pushTokenKey) as? String  {
                             var countryCode = "86"
                             let language = Localize.currentLanguage()
@@ -57,20 +58,35 @@ class LoginViewController: BaseViewController {
                                                 login.isRegist = registNumer
                                                 LoginBL.modify(login)
                                             }
+//                                            Equipments.sendAsyncEqutementList(nil)
                                         }
                                     })
                                 }
                                 })
-
                         }
-                        if dataDict != nil {
-                            dispatch_get_main_queue().queue({
-                                weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                        
+                        dispatch_queue_create("someDataRequetQeueu", nil).queue({
+                            PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
+                                NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
+                                Equipments.sendAsyncEqutementList({ (errorCode, msg) in
+                                    BabyList.sendAsyncBabyList({ (errorCode, msg) in
+                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
+                                        dispatch_get_main_queue().queue({
+                                            if dataDict != nil {
+                                                dispatch_get_main_queue().queue({
+                                                    weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                                                })
+                                            }else{
+                                                HUD.hideHud(weakSelf.view)
+                                                HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
+                                            }
+                                        })
+                                    })
+                                })
                             })
-                        }else{
-                            HUD.hideHud(weakSelf.view)
-                            HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
-                        }
+                        })
+
+                        
                     }else{
                         HUD.hideHud(weakSelf.view)
                         HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
@@ -102,6 +118,7 @@ class LoginViewController: BaseViewController {
         
         UDManager.setIsLogin(true)
         UDManager.setLoginInfo(result)
+//        P2PClient.sharedClient().p2pConnectWithId(result.contactId, codeStr1: result.rCode1, codeStr2: result.rCode2)
         NetManager.sharedManager().getAccountInfo(result.contactId, sessionId: result.sessionId) { (JSON) in
             if let accounntResult = JSON as? AccountResult{
                 result.email = accounntResult.email
@@ -113,6 +130,7 @@ class LoginViewController: BaseViewController {
         if let p2p = P2PClient.sharedClient(){
             p2p.callId = result.contactId
         }
+        
     }
 
     /*

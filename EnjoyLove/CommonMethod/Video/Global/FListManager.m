@@ -227,7 +227,9 @@
     ContactDAO *contactDAO = [[ContactDAO alloc] init];
     [contactDAO delete:contact];
     [contactDAO release];
-    [self.map removeObjectForKey:contact.contactId];
+    if (contact.contactId) {
+        [self.map removeObjectForKey:contact.contactId];
+    }
 }
 
 -(void)update:(Contact *)contact{

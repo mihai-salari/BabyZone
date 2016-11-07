@@ -9,7 +9,7 @@
 import UIKit
 
 private let deviceListSwitchTag = 1000
-class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITableViewDataSource {
+class DeviceListViewController: BaseViewController,UITableViewDelegate,UITableViewDataSource {
 
     var isDelete:Bool = false
     private var deviceListTable:UITableView!
@@ -52,7 +52,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        P2PClient.sharedClient().delegate = nil
+//        P2PClient.sharedClient().delegate = nil
     }
     
     private func initialize() ->Void{
@@ -129,7 +129,7 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
                 onSwitch.userInteractionEnabled = false
                 onSwitch.on = false
             }else{
-                onSwitch.on = device.eqmOnOff
+                onSwitch.on = true
             }
         }
         return cell!
@@ -195,9 +195,6 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
         }
     }
     /*
-     
-     */
-    
     override func refreshContact() {
         super.refreshContact()
 //        if self.isDelete == false {
@@ -305,6 +302,8 @@ class DeviceListViewController: BaseVideoViewController,UITableViewDelegate,UITa
     override func P2PClientReject(info: [NSObject : AnyObject]!) {
         
     }
+ 
+ */
     
 
     //MARK:___事件处理___

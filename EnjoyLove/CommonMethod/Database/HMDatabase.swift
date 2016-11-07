@@ -1508,6 +1508,23 @@ class EquipmentsBL: NSObject {
         }
         return eqms
     }
+    
+    class func saveHeadVideoImage(image:UIImage, eqmDid:String) ->Void{
+        if let imageData = UIImagePNGRepresentation(image) {
+            NSUserDefaults.standardUserDefaults().setObject(imageData, forKey: eqmDid)
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
+    
+    class func getHeadVideoImage(eqmDid:String) ->UIImage{
+        if let imageData = NSUserDefaults.standardUserDefaults().objectForKey(eqmDid) as? NSData {
+            if let image = UIImage.init(data: imageData) {
+                return image
+            }
+        }
+        return UIImage.init()
+    }
+    
 }
 
 //MARK:____ChildAccount____

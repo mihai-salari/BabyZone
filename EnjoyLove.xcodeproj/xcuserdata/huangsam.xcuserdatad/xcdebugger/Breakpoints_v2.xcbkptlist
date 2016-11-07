@@ -41,13 +41,45 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EnjoyLove/Login/Controller/LoginViewController.swift"
-            timestampString = "500131967.151564"
+            filePath = "EnjoyLove/CommonMethod/Video/P2PCore/OpenGLView.m"
+            timestampString = "500180341.426656"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
-            landmarkName = "loginSuccess(result:)"
+            startingLineNumber = "578"
+            endingLineNumber = "578"
+            landmarkName = "-render:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+            timestampString = "500180379.108425"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "435"
+            endingLineNumber = "435"
+            landmarkName = "-onScreenShotted:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/Controller/P2PMonitorController.m"
+            timestampString = "500180382.708428"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "439"
+            endingLineNumber = "439"
+            landmarkName = "-onScreenShotted:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -3618,8 +3618,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = EnjoyLove/EnjoyLove.entitlements;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: SunEee Weilian Technology Development Co., Ltd.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: SunEee Weilian Technology Development Co., Ltd.";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = MA75X9QV5V;
 				ENABLE_BITCODE = NO;

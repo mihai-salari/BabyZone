@@ -349,7 +349,6 @@
 		27830D081D9A33610036E2BC /* UDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830CF11D9A33610036E2BC /* UDManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27830D0E1D9A35A50036E2BC /* libPwdEncrypt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27830D0C1D9A35A50036E2BC /* libPwdEncrypt.a */; };
 		27830D111D9A37050036E2BC /* NetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D101D9A37050036E2BC /* NetManager.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		27830D191D9A43E00036E2BC /* MPNotificationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D181D9A43E00036E2BC /* MPNotificationView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		27830D1D1D9A60CE0036E2BC /* OBGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27830D1C1D9A60CE0036E2BC /* OBGradientView.m */; };
 		27830D221D9A61E30036E2BC /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 27830D211D9A61E30036E2BC /* libicucore.tbd */; };
 		27830D241D9A61FC0036E2BC /* libbz2.1.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 27830D231D9A61FC0036E2BC /* libbz2.1.0.tbd */; };
@@ -416,7 +415,6 @@
 		27D0031A1D6D926A00B62A61 /* MyOwnViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D003191D6D926A00B62A61 /* MyOwnViewController.swift */; };
 		27D003211D6D92B600B62A61 /* Baby.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D003201D6D92B600B62A61 /* Baby.swift */; };
 		27D003231D6D92CD00B62A61 /* BabyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D003221D6D92CD00B62A61 /* BabyView.swift */; };
-		27D003301D6D93D000B62A61 /* ShoppingMallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D0032D1D6D93D000B62A61 /* ShoppingMallViewController.swift */; };
 		27D003321D6D95A400B62A61 /* MyOwn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D003311D6D95A400B62A61 /* MyOwn.swift */; };
 		27D0033B1D6E909F00B62A61 /* MyOwnCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D0033A1D6E909F00B62A61 /* MyOwnCell.swift */; };
 		27F28D241D6FF4A5005E382D /* mamaHeader.png in Resources */ = {isa = PBXBuildFile; fileRef = 27F28D1F1D6FF4A5005E382D /* mamaHeader.png */; };
@@ -1005,8 +1003,6 @@
 		27830D0D1D9A35A50036E2BC /* libPwdEncrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libPwdEncrypt.h; sourceTree = "<group>"; };
 		27830D0F1D9A37050036E2BC /* NetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetManager.h; sourceTree = "<group>"; };
 		27830D101D9A37050036E2BC /* NetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetManager.m; sourceTree = "<group>"; };
-		27830D171D9A43E00036E2BC /* MPNotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPNotificationView.h; sourceTree = "<group>"; };
-		27830D181D9A43E00036E2BC /* MPNotificationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPNotificationView.m; sourceTree = "<group>"; };
 		27830D1B1D9A60CE0036E2BC /* OBGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBGradientView.h; sourceTree = "<group>"; };
 		27830D1C1D9A60CE0036E2BC /* OBGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBGradientView.m; sourceTree = "<group>"; };
 		27830D1F1D9A61B80036E2BC /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
@@ -1090,7 +1086,6 @@
 		27D003191D6D926A00B62A61 /* MyOwnViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOwnViewController.swift; sourceTree = "<group>"; };
 		27D003201D6D92B600B62A61 /* Baby.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Baby.swift; sourceTree = "<group>"; };
 		27D003221D6D92CD00B62A61 /* BabyView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyView.swift; sourceTree = "<group>"; };
-		27D0032D1D6D93D000B62A61 /* ShoppingMallViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShoppingMallViewController.swift; sourceTree = "<group>"; };
 		27D003311D6D95A400B62A61 /* MyOwn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOwn.swift; sourceTree = "<group>"; };
 		27D0033A1D6E909F00B62A61 /* MyOwnCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyOwnCell.swift; sourceTree = "<group>"; };
 		27F28D1F1D6FF4A5005E382D /* mamaHeader.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mamaHeader.png; sourceTree = "<group>"; };
@@ -1938,7 +1933,6 @@
 				27830D2C1D9A6C790036E2BC /* wifi */,
 				27830D251D9A65390036E2BC /* Library */,
 				27830D1A1D9A60CE0036E2BC /* OBGradientView */,
-				27830D161D9A43E00036E2BC /* MPNotificationView */,
 				27830D0B1D9A35A50036E2BC /* libPwdEncrypt */,
 				27830CBF1D9A33610036E2BC /* Database */,
 				27830CA21D9A31AC0036E2BC /* md5 */,
@@ -2156,15 +2150,6 @@
 			path = libPwdEncrypt;
 			sourceTree = "<group>";
 		};
-		27830D161D9A43E00036E2BC /* MPNotificationView */ = {
-			isa = PBXGroup;
-			children = (
-				27830D171D9A43E00036E2BC /* MPNotificationView.h */,
-				27830D181D9A43E00036E2BC /* MPNotificationView.m */,
-			);
-			path = MPNotificationView;
-			sourceTree = "<group>";
-		};
 		27830D1A1D9A60CE0036E2BC /* OBGradientView */ = {
 			isa = PBXGroup;
 			children = (
@@ -2279,8 +2264,6 @@
 				27F4105B1D8B858500722051 /* Login */,
 				27D002FD1D6D8FAA00B62A61 /* MyBaby */,
 				27D002FB1D6D8FAA00B62A61 /* Information */,
-				27D002FC1D6D8FAA00B62A61 /* MaMaHelp */,
-				27D003011D6D8FAA00B62A61 /* ShoppingMall */,
 				27D003001D6D8FAA00B62A61 /* MyOwn */,
 				27D002C81D6D44D700B62A61 /* Supporting Files */,
 			);
@@ -2334,16 +2317,6 @@
 			path = Information;
 			sourceTree = "<group>";
 		};
-		27D002FC1D6D8FAA00B62A61 /* MaMaHelp */ = {
-			isa = PBXGroup;
-			children = (
-				27D003291D6D93A900B62A61 /* Controller */,
-				27D0032A1D6D93A900B62A61 /* Model */,
-				27D0032B1D6D93A900B62A61 /* View */,
-			);
-			path = MaMaHelp;
-			sourceTree = "<group>";
-		};
 		27D002FD1D6D8FAA00B62A61 /* MyBaby */ = {
 			isa = PBXGroup;
 			children = (
@@ -2362,16 +2335,6 @@
 				27D003131D6D918500B62A61 /* View */,
 			);
 			path = MyOwn;
-			sourceTree = "<group>";
-		};
-		27D003011D6D8FAA00B62A61 /* ShoppingMall */ = {
-			isa = PBXGroup;
-			children = (
-				27D0032C1D6D93D000B62A61 /* Controller */,
-				27D0032E1D6D93D000B62A61 /* Model */,
-				27D0032F1D6D93D000B62A61 /* View */,
-			);
-			path = ShoppingMall;
 			sourceTree = "<group>";
 		};
 		27D0030F1D6D918500B62A61 /* Controller */ = {
@@ -2488,49 +2451,6 @@
 				278871961DC328B9004D7A77 /* DiaryRecordView.swift */,
 				278871971DC328B9004D7A77 /* ImagePickerView.swift */,
 				278871991DC328B9004D7A77 /* ProblemView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		27D003291D6D93A900B62A61 /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		27D0032A1D6D93A900B62A61 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		27D0032B1D6D93A900B62A61 /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		27D0032C1D6D93D000B62A61 /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				27D0032D1D6D93D000B62A61 /* ShoppingMallViewController.swift */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		27D0032E1D6D93D000B62A61 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		27D0032F1D6D93D000B62A61 /* View */ = {
-			isa = PBXGroup;
-			children = (
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -3244,7 +3164,6 @@
 				27F47C161D96B2F400502AEE /* ZYPinYinSearch.m in Sources */,
 				27188E081D863A3500797D41 /* DXTapDetectingImageView.swift in Sources */,
 				2753E6D71D7B93D300FDB8D0 /* AFNetworkReachabilityManager.m in Sources */,
-				27D003301D6D93D000B62A61 /* ShoppingMallViewController.swift in Sources */,
 				27020F961DB085AE00D3BDBE /* QNCrc32.m in Sources */,
 				27830C891D9A27CA0036E2BC /* GCDAsyncUdpSocket.m in Sources */,
 				27830CBC1D9A31AC0036E2BC /* LoginResult.m in Sources */,
@@ -3340,7 +3259,6 @@
 				27F47C101D96B2F400502AEE /* HanyuPinyinOutputFormat.m in Sources */,
 				27188E0C1D863A3500797D41 /* DXPickerHelper.swift in Sources */,
 				27F47C141D96B2F400502AEE /* PinyinHelper.m in Sources */,
-				27830D191D9A43E00036E2BC /* MPNotificationView.m in Sources */,
 				271F157D1D950E3700CAAEF4 /* LanguageViewController.swift in Sources */,
 				2753E6DA1D7B93D300FDB8D0 /* AFURLResponseSerialization.m in Sources */,
 				27188DFF1D863A3500797D41 /* DXPhotoPickerController.swift in Sources */,
@@ -3643,7 +3561,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hm.babyzone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2dbd22cc-5100-4e17-81d3-1a0a568c7bc3";
+				PROVISIONING_PROFILE = "ccf83365-171b-469a-8f2c-483c15280237";
 				PROVISIONING_PROFILE_SPECIFIER = BabyZone;
 				SWIFT_OBJC_BRIDGING_HEADER = "EnjoyLove/EnjoyLove-Bridging-Header.h";
 				SWIFT_VERSION = 2.3;

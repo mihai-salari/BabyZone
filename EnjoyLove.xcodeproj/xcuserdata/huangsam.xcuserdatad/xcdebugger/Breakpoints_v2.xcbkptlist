@@ -106,12 +106,12 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
-                  timestampString = "500286084.871768"
+                  timestampString = "500296641.840315"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "320"
                   endingLineNumber = "320"
-                  offsetFromSymbolStart = "184">
+                  offsetFromSymbolStart = "152">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -121,12 +121,12 @@
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
-                  timestampString = "500286084.872969"
+                  timestampString = "500296641.842428"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "320"
                   endingLineNumber = "320"
-                  offsetFromSymbolStart = "252">
+                  offsetFromSymbolStart = "228">
                </Location>
             </Locations>
          </BreakpointContent>

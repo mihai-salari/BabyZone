@@ -22,7 +22,19 @@
 #define  UINT64        unsigned long long      //64bits
 
 
-
+//dwErrorCode
+enum
+{
+    GET_FILE_CMD_ERR_NONE,
+    GET_FILE_CMD_ERR_PW_INCRRECT,
+    GET_FILE_CMD_ERR_IP_FREEZE,     //密码被冻结
+    GET_FILE_CMD_ERR_NO_SUCH_FILE,  //没有这个文件
+    GET_FILE_CMD_ERR_NOT_ALLOWED,   //权限
+    GET_FILE_CMD_ERR_READ_FILE_FAIL,
+    GET_FILE_CMD_ERR_BUZY,
+    GET_FILE_CMD_ERR_MEMORY_LIMITED,
+    GET_FILE_CMD_ERR_TIMEOUT,
+};
 
 enum{
     DEV_TYPE_NULL,
@@ -119,6 +131,10 @@ enum
 	MESG_TYPE_UPG_CREATE_WHOLEFLASH_TO_FILE_RET,      // 38
 	MESG_TYPE_GET_SYS_VERSION,               // 39
 	MESG_TYPE_GET_SYS_VERSION_RET,          // 40
+    
+    LAN_TRANS_SET_INIT_PASSWD = 48,	// 48
+    LAN_TRANS_RET_INIT_PASSWD,  // 49
+    
 	MESG_TYPE_DRBL_ACK_GET = 58,
     MESG_TYPE_DRBL_ACK_RET,           // 59
 	MESG_TYPE_DRBLCALL,                  //60
@@ -136,19 +152,151 @@ enum
     MESG_TYPE_SET_DEFENCE_SWITCH_STATE,  //83   设置防区开关
     MESG_TYPE_RET_DEFENCE_SWITCH_STATE,  //84   设置返回值
     
+    MESG_TYPE_SET_MOTOR_PRESET_POS = 87, //预置位
+    MESG_TYPE_RET_MOTOR_PRESET_POS = 88,
+    
+    MESG_TYPE_GET_ALARM_TYPE_MOTOR_PRESET_POS,//89
+    MESG_TYPE_SET_ALARM_TYPE_MOTOR_PRESET_POS,//90
+    MESG_TYPE_RET_ALARM_TYPE_MOTOR_PRESET_POS,//91  预置位
+    
     MESG_TYPE_SET_GPIO_CTL = 95,
     MESG_TYPE_RET_GPIO_CTL, //值：96
+    
+    MESG_TYPE_WORKMODE_SETTING =149,
+    
+    MESG_TYPE_QRCODE_LEARN_CODE =216,
     
     MESG_TYPE_CUSTOM_CMD_NO_VERRIFY_SET = 127,
     MESG_TYPE_CUSTOM_CMD_NO_VERRIFY_RET,   //128
     
+    MESG_TYPE_GET_NVR_INFO = 131,
+    MESG_TYPE_RET_NVR_INFO,
+    
     MESG_TYPE_GET_DEVICE_LANGUAGE = 211,
     MESG_TYPE_SET_DEVICE_LANGUAGE,       //212
     MESG_TYPE_RET_DEVICE_LANGUAGE,       //213
+    
+    MESG_TYPE_GET_SCHEDULE_DEFENCE_INFO, //214 获取布撤防
+    MESG_TYPE_SET_SCHEDULE_DEFENCE_INFO, //215
+    
+    MESG_TYPE_MAIN_NEED_PASSPWD = 223,   //223 获取和修改433传感器名字 预置位转动好后截图
+    
+    MESG_TYPE_SETORGET_LENS_FOCUS_PARAMS = 224,   // 自动变焦  获取和设置变焦镜头马达当前位置的命令是一样滴  消息头命令
+    
+    MESG_TYPE_GET_FISHEYE = 228, //获取当前全景相机配置信息
+    MESG_TYPE_SET_FISHEYE,//229 设置当前全景相机配置信息
+    MESG_TYPE_RET_FISHEYE,//230 返回当前全景相机配置信息
+    
+    MESG_TYPE_RET_RECORD_STATE = 237, //设备当前的录像状态、有没有TF卡
 	
 	MESG_TYPE_DEVICE_NOT_SUPPORT_RET = 0XFF,
 
 };
+
+enum{
+    MESG_SUBTYPE_SETTING_WORKMODE_DEFAULT,//0
+    
+    MESG_SUBTYPE_SETTING_IPC_WORKMODE,  //1
+    MESG_SUBTYPE_SETTING_IPC_WORKMODE_RET,//2
+    
+    MESG_SUBTYPE_SETTING_SENSOR_WORKMODE,//3
+    MESG_SUBTYPE_SETTING_SENSOR_WORKMODE_RET,//4
+    
+    MESG_SUBTYPE_SETTING_SCHEDULE_WORKMODE,//5
+    MESG_SUBTYPE_SETTING_SCHEDULE_WORKMODE_RET,//6
+    
+    MESG_SUBTYPE_DELETE_SCHEDULE,//7
+    MESG_SUBTYPE_DELETE_SCHEDULE_RET,//8
+    
+    MESG_SUBTYPE_GET_CURRENTWORKMODE,//9
+    MESG_SUBTYPE_GET_CURRENTWORKMODE_RET,//10
+    
+    MESG_SUBTYPE_GET_SENSORWORKMODE,//11
+    MESG_SUBTYPE_GET_SENSORWORKMODE_RET,//12
+    
+    MESG_SUBTYPE_GET_WORKMODE_SCHEDULE, //13
+    MESG_SUBTYPE_GET_WORKMODE_SCHEDULE_RET,//14
+    
+    MESG_SUBTYPE_SETTING_ALL_SENSOR_SWITCH,//15
+    MESG_SUBTYPE_SETTING_ALL_SENSOR_SWITCH_RET,//16
+    
+    MESG_SUBTYPE_GET_ALL_SENSOR_SWITCH,//17
+    MESG_SUBTYPE_GET_ALL_SENSOR_SWITCH_RET,//18
+    
+    MESG_SUBTYPE_SET_LOW_VOL_TIMEINTERVAL,//19
+    MESG_SUBTYPE_SET_LOW_VOL_TIMEINTERVAL_RET,//20
+    
+    MESG_SUBTYPE_GET_LOW_VOL_TIMEINTERVAL,//21
+    MESG_SUBTYPE_GET_LOW_VOL_TIMEINTERVAL_RET,//22
+    
+    MESG_SUBTYPE_DELETE_ONE_CONTROLER,//23
+    MESG_SUBTYPE_DELETE_ONE_CONTROLER_RET,//24
+    
+    MESG_SUBTYPE_DELETE_ONE_SENSOR,//25
+    MESG_SUBTYPE_DELETE_ONE_SENSOR_RET,//26
+    
+    MESG_SUBTYPE_CHANGE_CONTROLER_NAME,//27
+    MESG_SUBTYPE_CHANGE_CONTROLER_NAME_RET,//28
+    
+    MESG_SUBTYPE_CHANGE_SENSOR_NAME,//29
+    MESG_SUBTYPE_CHANGE_SENSOR_NAME_RET,//30
+    
+    MESG_SUBTYPE_INTO_LEARN_STATE,//31
+    MESG_SUBTYPE_INTO_LEARN_STATE_RET,//32
+    
+    MESG_SUBTYPE_TURN_SENSOR,//33
+    MESG_SUBTYPE_TURN_SENSOR_RET,//34
+    
+    MESG_SUBTYPE_SHARE_TO_MEMBER,//35
+    MESG_SUBTYPE_SHARE_TO_MEMBER_RET,//36
+    MESG_SUBTYPE_GOT_SHARE_MESG,//37
+    
+    MESG_SUBTYPE_GOT_SHARE_MESG_RET,//38
+    MESG_SUBTYPE_DEV_RECV_MEMBER_FEEDBACK,//39
+    
+    MESG_SUBTYPE_ADMIN_DELETE_ONE_MEMBER,//40
+    MESG_SUBTYPE_ADMIN_DELETE_ONE_MEMBER_RET,//41
+    
+    MESG_SUBTYPE_DELETE_DEV,//42
+    MESG_SUBTYPE_DELETE_DEV_RET,//43
+    
+    MESG_SUBTYPE_SET_ONE_SPECIAL_ALARM=46, //46
+    MESG_SUBTYPE_SET_ONE_SPECIAL_ALARM_RET, //47
+    
+    MESG_SUBTYPE_GET_ALL_SPECIAL_ALARM, //48
+    MESG_SUBTYPE_GET_ALL_SPECIAL_ALARM_RET, //49
+    
+    MESG_SUBTYPE_DEAL_LAMP, //50
+    MESG_SUBTYPE_DEAL_LAMP_RET, //51
+    
+    MESG_SUBTYPE_KEEPCLIENT, //52
+    MESG_SUBTYPE_KEEPCLIENT_RET,  //53
+    
+    MESG_SUBTYPE_CONTROL_LED=60,//60  //2016-7-19 设置指示灯led
+    MESG_SUBTYPE_CONTROL_LED_RET=61, //61
+    
+    MESG_SUBTYPE_GET_LED_STATU,//62 //2016-7-19 获取指示灯led
+    MESG_SUBTYPE_GET_LED_STATU_RET,//63
+    
+    MESG_SUBTYPE_SET_SESOR_PRESET_POS = 64,
+    MESG_SUBTYPE_SET_SESOR_PRESET_POS_RET,//65
+    
+    MESG_SUBTYPE_MAX
+};
+
+enum{
+    MESG_SUBTYPE_GET_MONITOR_LOG,//0
+    MESG_SUBTYPE_GET_MONITOR_LOG_RET,//1
+    
+    MESG_SUBTYPE_GET_433_SENSOR_NAME,//2 获取433传感器名字
+    MESG_SUBTYPE_GET_433_SENSOR_NAME_RET,//3
+    
+    MESG_SUBTYPE_EDIT_433_SENSOR_NAME,//4 修改433传感器名字
+    MESG_SUBTYPE_EDIT_433_SENSOR_NAME_RET,//5
+    MESG_SUBTYPE_TURNTO_PRESETPOS_OK =17   //17
+    
+};
+
 enum
 {
     OS_ARM_LINUX,
@@ -241,7 +389,13 @@ typedef struct sP2PInitPrm
 
    void (* vFriendsStatusUpdate)(sFriendsType * pFriends );
 #ifdef UPDATE_FLAG_SUPPORT
-void (* vFlagUpdate)(DWORD *pdwFlags );
+    void (* vFlagUpdate)(DWORD *pdwFlags );
+    
+    //[远程获取文件结果回调]
+    //-dwDesID:    目标设备ID
+    //-pFilename:  文件名字（包含完整路径）
+    //-dwErrorCode: 返回的错误代码 见上述枚举
+    void (* vGetFileCmdACK)(DWORD dwDesID,	char *pFilename, DWORD dwErrorCode);
 #endif
    
 
@@ -280,7 +434,25 @@ KBOOL   fgP2PGetFriendsStatus(DWORD  *pFriendsTable, DWORD dwCount);
 
 
 ///////////////////////////////////////////////////////////////
+//--------------------------------------------
+//获取设备上的文件
+//-dwDesID: 目标设备ID
+//-dwPassword: 设备的验证密码
+//-pRemoteFilename:  目标文件名（包含完整路径）
+//-pLocalSaveFilename: 获取后文件存在本地的文件名（完整路径）
+//返回值:TRUE表示命令成功，异步处理。 FALSE表示命令失败，有可能是正在繁忙中
+BOOL      fgP2PGetRemoteFile(DWORD dwDesID, DWORD dwPassword, char *pRemoteFilename, char *pLocalSaveFilename);
 
+//--------------------------------------------
+//获取文件的进度
+//返回值－范围0～100 表示进度百分比
+DWORD     dwP2PGetFileProgress(void);
+
+//--------------------------------------------
+//取消获取文件
+void      vP2PCancelGetRemoteFile(void);
+
+///////////////////////////////////////////////////////////////
 
 
 
@@ -529,7 +701,7 @@ typedef struct GAVFrame
     int  linesize[3];
     int  width;
     int  height;
-    UINT64 pts;
+    uint64_t pts;
 }GAVFrame;
 
 
@@ -558,6 +730,210 @@ void        vSetSupperDrop(KBOOL fgDrop);
 #ifdef SUPPORT_REC_TO_FILE
 GBOOL    fgStartRecordToFile(char *pFileName);
 void    vStopRecord(void);
+#endif
+
+#ifdef __cplusplus
+
+
+class ShapeWarp
+{
+    
+public:
+    ShapeWarp();
+    ~ShapeWarp();
+    
+    const static int KEY_NONE = -1;
+    const static int KEY_DOWN = 0;
+    const static int KEY_UP = 1;
+    const static int KEY_MOVE = 2;
+    
+    
+    //animation
+    const static int ANI_NONE = 0;
+    const static int  ANI_ZOOM_AUTO_IN = 1;
+    const static int ANI_ZOOM_AUTO_OUT = 2;
+    const static int  ANI_FLING = 3;
+    const static int ROTE_SLOWLY = 4;
+    
+    // graph mode
+    const static int MANUL = 0; //manual
+    const static  int PANORAMA = 1; //panorama
+    const static int PLAN = 2; //plan
+    
+    
+    //GestrueMode
+    const static int GESTRUE_MODE_NONE = -1;
+    const static int GESTRUE_MODE_FINGER = 0;
+    const static int GESTRUE_MODE_SENSOR = 1;
+    
+    
+    //fisheye position
+    const static int FISHEYE_TOP = 0;
+    const static int FISHEYE_BOTTOM = 1;
+    const static int FISHEYE_WALL = 2;
+    
+    //fisheye type
+    const static int FISHEYE_360 = 0;
+    const static int FISHEYE_180 = 1;
+    
+    // shape type
+    const static int SHAPE_CIRCLE = 0;// 圆形
+    const static int SHAPE_180_HALF_SPHERE = 1;
+    const static int SHAPE_CYLIDER = 2;//圆柱
+    const static int SHAPE_BOWLE = 3;//碗状
+    const static int SHAPE_QUAD = 4;
+    
+    //Notify type
+    const static int MSG_TYPE_REACH_EDGE = 0;
+    
+    //Notify action
+    const static int MSG_ACTION_NONE = -1;
+    const static int MSG_ACTION_EDGE_TOP = 0;
+    const static int MSG_ACTION_EDGE_BOTTOM = 1;
+    const static int MSG_ACTION_EDGE_LEFT = 2;
+    const static int MSG_ACTION_EDGE_RIGHT = 3;
+    
+    
+    typedef void (*ShapeNotify)(int MsgType, int MsgAction);
+    
+    
+    //-------------------- method --------------------------//
+    
+    /*Description: set shape
+     *instalType --- shape type, sphere, cylinder , 180¡...
+     *iFishEyeType --- FISHEYE_180, FISHEYE_360
+     */
+    void setShape(int installType, int iFishEyeType);
+    
+    /*Description:init data
+     *Arguments:
+     * width --- texture width,
+     * height --- texture height,
+     * w_width --- windows width,
+     * w_height --- windows height,
+     * instalType --- shape type, sphere, cylinder , 180¡...
+     * *mac --- mac address
+     * deviceID ----- camara ID
+     * *cImEI --- IMEI NO.
+     * iUniformMatrix ---shader Matrix id
+     *	iFishEyeType --- FISHEYE_180, FISHEYE_360
+     */
+    void initData(int width, int height, int w_width, int w_height, int installType, const char *mac, long deviceID, const char* cIMEI, long iUniformMatrix, int iFishEyeType);
+    
+    /*
+     *release render data
+     */
+    void releaseData();
+    
+    /*
+     * must  call initData() firstly
+     */
+    void ChangeScreen(int width, int height, int isFullScreen);
+    
+    /*
+     *draw shapes
+     */
+    void drawself();
+    
+    /*
+     *Description:zoom out
+     *Arguments: x, y  Zoom out position on screen
+     */
+    void setZoomOut(int x, int y);
+    
+    
+    /*
+     *Description:zoom out without position
+     *
+     */
+    void setZoomOut();
+    
+    /*
+     *Description:zoom in
+     *Arguments: x, y  Zoom in position on screen
+     */
+    void setZoomIN(int x, int y);
+    
+    
+    /*
+     *Description:zoom in without position
+     *
+     */
+    void setZoomIN();
+    
+    /*
+     *Description:move a step when drag,
+     *Arguments: x, y   velocity of x and y derection on scrren
+     *
+     */
+    void setFling(float x, float y);
+    
+    /*
+     *Description: move a step when drag,
+     *Arguments: x, y   position in screen
+     *Arguments: dx, dy distance of moved
+     */
+    void setMoveStep(float x, float y, float dx, float dy);
+    
+    /*
+     *sing tap
+     */
+    void singalTap();
+    
+    /*
+     * Description: set a key status, eg. up move and down
+     * Arguments:
+     *  KEY_NONE
+     * 	KEY_DOWN
+     * 	KEY_UP
+     * 	KEY_MOVE
+     */
+    void setKeyStatus(int key);
+    
+    /*
+     *
+     */
+    void buildMaps(int w, int h);
+    
+    /*
+     *Description: set a sensor quarter
+     */
+    void setTrackerQuat(float x, float y, float z, float w);
+    
+    /*
+     *get gesture mode
+     */
+    int getGestureMode();
+    
+    /*
+     *Description: set a Gesture mode eg. sensor finger
+     *Arguments:
+     *GESTRUE_MODE_NONE
+     *GESTRUE_MODE_FINGER
+     *GESTRUE_MODE_SENSOR
+     */
+    void setGestureMode(int mode);
+    
+    /*
+     *Description: set fish eye position , must be used before initData method.
+     *FISHEYE_TOP default.
+     *Arguments:iPostion FISHEYE_TOP --- top, FISHEYE_BOTTOM --- bottom, FISHEYE_WALL --- wall;
+     *
+     */
+    void setFisheyePosition(int iPostion);
+    
+    /*
+     *Description: set a notify function , must be used after initData method.
+     *
+     */
+    void setNotifyFunction(ShapeNotify ShapeNotify);
+    
+    
+private:
+    
+    
+};
+
 #endif
 
 #endif //_P2PC_INTERFACE_H

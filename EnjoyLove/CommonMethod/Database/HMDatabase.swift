@@ -582,6 +582,31 @@ class PersonDetailBL: NSObject {
         return PersonDetailDAO.shared.findAll(userId)
     }
     
+    class func saveRemind(onOff:Bool = false) ->Void{
+        if onOff == false {
+            self.saveRemindMethod(false)
+        }
+        NSUserDefaults.standardUserDefaults().setBool(onOff, forKey: "ABONORMAL_REMIND")
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func remind() ->Bool{
+        let remind = NSUserDefaults.standardUserDefaults().boolForKey("ABONORMAL_REMIND")
+        
+        if remind == false {
+            self.saveRemindMethod(false)
+        }
+        return remind
+    }
+    
+    class func saveRemindMethod(onOff:Bool = false) ->Void{
+        NSUserDefaults.standardUserDefaults().setBool(onOff, forKey: "REMIND_METHOD")
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    class func remindMethod() ->Bool{
+        return NSUserDefaults.standardUserDefaults().boolForKey("REMIND_METHOD")
+    }
 }
 
 
@@ -1537,11 +1562,21 @@ class ChildAccount: NSObject {
     var childMobile:String!
     
     
+    var onOffStatus:Bool!
+    var onTitle:String!
+    var offTitle:String!
+    
+    
+    
     override init() {
         self.idUserChildInfo = ""
         self.idChild = ""
         self.childName = ""
         self.childMobile = ""
+        
+        self.onOffStatus = false
+        self.onTitle = ""
+        self.offTitle = ""
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -1630,7 +1665,7 @@ private class ChildAccountDAO: NSObject {
         arrDict[userId] = array
         let theData = NSMutableData.init()
         let archiver = NSKeyedArchiver.init(forWritingWithMutableData: theData)
-        archiver.encodeObject(array, forKey: ChildAccountArchiveKey)
+        archiver.encodeObject(arrDict, forKey: ChildAccountArchiveKey)
         archiver.finishEncoding()
         return theData.writeToFile(ChildAccountArchiveFileName.filePath(), atomically: true)
     }
@@ -1749,10 +1784,10 @@ class ChildEquipments: NSObject,NSCoding {
             self.idUserChildEqmInfo = obj
         }
         if let obj = aDecoder.decodeObjectForKey("eqmAccount") as? String {
-            self.eqmStatus = obj
+            self.eqmAccount = obj
         }
         if let obj = aDecoder.decodeObjectForKey("eqmPwd") as? String {
-            self.idUserChildEqmInfo = obj
+            self.eqmPwd = obj
         }
     }
     
@@ -1842,6 +1877,9 @@ private class ChildEquipmentsDAO: NSObject {
                 if note.idUserChildEqmInfo != detail.idUserChildEqmInfo {
                     note.idUserChildEqmInfo = detail.idUserChildEqmInfo
                 }
+                if note.eqmStatus != detail.eqmStatus {
+                    note.eqmStatus = detail.eqmStatus
+                }
             }
         }
         var arrDict:[String:NSObject] = [:]
@@ -1907,12 +1945,22 @@ class ChildEquipmentsPermission: NSObject,NSCoding {
     var voicePermission:String!
     var imagePermission:String!
     
+    var mainItem:String!
+    var eqmPermission:Bool!
+    var onTitle:String!
+    var offTitle:String!
+    
     
     override init() {
         self.idUserChildEqmPermission = ""
         self.idUserEqmInfo = ""
         self.voicePermission = ""
         self.imagePermission = ""
+        
+        self.mainItem = ""
+        self.eqmPermission = false
+        self.onTitle = ""
+        self.offTitle = ""
     }
     
     required init?(coder aDecoder: NSCoder) {

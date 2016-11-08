@@ -726,8 +726,7 @@ extension ChildAccount{
 //MARK:___4.21.	子帐号设备列表___
 private let ChildEquipmentsListUrl = BabyZoneConfig.shared.baseUrl + "/api/user/childAccountEqmList"
 private let ModifyChildEquipmentsStatusUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateChildAccountEqmStatus"
-private let ChildEquipmentsPermissonDetailUrl = BabyZoneConfig.shared.baseUrl + "/api/user/childAccountEqmPermissionDetails"
-private let ModifyChildEquipmentsPermissionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateChildAccountEqmPermission"
+
 extension ChildEquipments{
     /*
         idUserChildInfo		int	是	用户子帐号id
@@ -743,9 +742,12 @@ extension ChildEquipments{
                             for dataDict in dataList{
                                 let eqms = ChildEquipments()
                                 eqms.idEqmInfo = format(dataDict["idEqmInfo"])
+                                eqms.eqmDid = format(dataDict["eqmDid"])
                                 eqms.eqmName = format(dataDict["eqmName"])
                                 eqms.eqmStatus = format(dataDict["eqmStatus"])
                                 eqms.idUserChildEqmInfo = format(dataDict["idUserChildEqmInfo"])
+                                eqms.eqmAccount = format(dataDict["eqmAccount"])
+                                eqms.eqmPwd = format(dataDict["eqmPwd"])
                                 ChildEquipmentsBL.insert(eqms, idUserChildInfo: idUserChildInfo)
                             }
                         }
@@ -753,7 +755,6 @@ extension ChildEquipments{
                 }
                 if let handle = completionHandler{
                     handle(errorCode: errorCode, msg: msg)
-                    
                 }
             }
         }) { (dataTask, error) in
@@ -798,6 +799,13 @@ extension ChildEquipments{
         }
     }
     
+
+}
+
+private let ChildEquipmentsPermissonDetailUrl = BabyZoneConfig.shared.baseUrl + "/api/user/childAccountEqmPermissionDetails"
+private let ModifyChildEquipmentsPermissionUrl = BabyZoneConfig.shared.baseUrl + "/api/user/updateChildAccountEqmPermission"
+
+extension ChildEquipmentsPermission{
     class func sendAsyncChildEquipmentsPermissionDetail(idUserChildEqmInfo:String, completionHandler:((errorCode:String?, msg:String?)->())?){
         HTTPEngine.sharedEngine().postAsyncWith(ChildEquipmentsPermissonDetailUrl, parameters: ["idUserChildEqmInfo":idUserChildEqmInfo], success: { (dataTask, responseObject) in
             if let response = responseObject{

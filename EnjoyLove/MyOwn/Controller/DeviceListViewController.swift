@@ -46,13 +46,18 @@ class DeviceListViewController: BaseViewController,UITableViewDelegate,UITableVi
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        
+        self.tiggleTableView()
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
 //        P2PClient.sharedClient().delegate = nil
+    }
+    
+    private func tiggleTableView() ->Void{
+        if let table = self.deviceListTable {
+            table.triggerPullToRefresh()
+        }
     }
     
     private func initialize() ->Void{
@@ -66,16 +71,20 @@ class DeviceListViewController: BaseViewController,UITableViewDelegate,UITableVi
         self.deviceListTable.delegate = self
         self.deviceListTable.dataSource = self
         self.deviceListTable.tableFooterView = UIView.init()
-//        self.deviceListTable.addPullToRefreshWithActionHandler { 
-//            var contactIds:[String] = []
-//            for contact in self.devices{
-//                contactIds.append(contact.eqmDid)
-//                P2PClient.sharedClient().checkDeviceUpdateWithId(contact.eqmDid, password: contact.eqmPwd)
-//            }
-//            P2PClient.sharedClient().getContactsStates(contactIds)
-//            FListManager.sharedFList().getDefenceStates()
-//            NSNotificationCenter.defaultCenter().postNotificationName("refreshLocalDevices", object: nil)
-//        }
+        self.deviceListTable.addPullToRefreshWithActionHandler {
+            Equipments.sendAsyncEqutementList({ [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    if let table = weakSelf.deviceListTable{
+                        dispatch_get_main_queue().queue({
+                            weakSelf.devices.removeAll()
+                            weakSelf.devices.appendContentsOf(EquipmentsBL.findAll())
+                            table.reloadData()
+                            table.pullToRefreshView.stopAnimating()
+                        })
+                    }
+                }
+            })
+        }
         backgroudView.addSubview(self.deviceListTable)
         
         if isDelete == false {
@@ -98,7 +107,7 @@ class DeviceListViewController: BaseViewController,UITableViewDelegate,UITableVi
         let cellId = "deviceListTableViewCellId"
         var cell = tableView.dequeueReusableCellWithIdentifier(cellId)
         if cell == nil {
-            cell = UITableViewCell.init(style: .Default, reuseIdentifier: cellId)
+            cell = UITableViewCell.init(style: .Value1, reuseIdentifier: cellId)
         }
         if let resultCell = cell {
             for subview in resultCell.contentView.subviews {
@@ -109,26 +118,26 @@ class DeviceListViewController: BaseViewController,UITableViewDelegate,UITableVi
             resultCell.selectionStyle = .None
             let device = self.devices[indexPath.row]
             resultCell.textLabel?.font = UIFont.systemFontOfSize(13)
-            resultCell.textLabel?.text =  device.eqmLevel == "1" ? device.eqmName + "  (本机)" : device.eqmName
+            resultCell.textLabel?.text = device.eqmName + " (\(device.eqmNickName))"
             
-            let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 60 - 10, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
-            onSwitch.onLabel.text = "连接"
-            onSwitch.offLabel.text = "解除"
-            onSwitch.onLabel.textColor = UIColor.whiteColor()
-            onSwitch.offLabel.textColor = UIColor.whiteColor()
-            onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
-            onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
-            onSwitch.tag = deviceListSwitchTag + indexPath.row
-            onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
-            onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
-            onSwitch.inactiveColor = UIColor.lightGrayColor()
-            onSwitch.addTarget(self, action: #selector(self.onSwichtOnOff(_:)), forControlEvents: .ValueChanged)
-            resultCell.contentView.addSubview(onSwitch)
+            
             
             if isDelete == true {
-                onSwitch.userInteractionEnabled = false
-                onSwitch.on = false
+                resultCell.detailTextLabel?.text = "左滑删除"
             }else{
+                let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 60 - 10, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
+                onSwitch.onLabel.text = "连接"
+                onSwitch.offLabel.text = "解除"
+                onSwitch.onLabel.textColor = UIColor.whiteColor()
+                onSwitch.offLabel.textColor = UIColor.whiteColor()
+                onSwitch.onLabel.font = UIFont.systemFontOfSize(8)
+                onSwitch.offLabel.font = UIFont.systemFontOfSize(8)
+                onSwitch.tag = deviceListSwitchTag + indexPath.row
+                onSwitch.activeColor = UIColor.hexStringToColor("#d85a7b")
+                onSwitch.onTintColor = UIColor.hexStringToColor("#d85a7b")
+                onSwitch.inactiveColor = UIColor.lightGrayColor()
+                onSwitch.addTarget(self, action: #selector(self.onSwichtOnOff(_:)), forControlEvents: .ValueChanged)
+                resultCell.contentView.addSubview(onSwitch)
                 onSwitch.on = true
             }
         }

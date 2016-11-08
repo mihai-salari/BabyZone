@@ -22,11 +22,11 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     
     
     var changeResultHandler:((indexPath:NSIndexPath, result1:String?, result2: String?)->())?
+    
     private var videoPermission = "0"
     private var voicePermission = "0"
-    private var permissionData:[Permission]!
+    private var permissionData:[ChildEquipmentsPermission]!
     private var permissionTable:UITableView!
-    private var tableRowheight:CGFloat = 0
     private var editTextField:UITextField!
     
     override func viewWillAppear(animated: Bool) {
@@ -72,15 +72,9 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             backgroundView.addSubview(line)
             
         case 1:
-            self.permissionData = []
-            var model = Permission(mainItem: "观看权限", onTitle: "能看宝宝", offTitle: "不能看宝宝")
-            self.permissionData.append(model)
+            self.initializePermissonData()
             
-            model = Permission(mainItem: "声音权限", onTitle: "能听声音", offTitle: "不能听声音")
-            self.permissionData.append(model)
-            
-            self.tableRowheight = (ScreenHeight - navigationBarHeight) * (1 / 12)
-            self.permissionTable = UITableView.init(frame: CGRect(x: 0, y: navigationBarHeight, width: self.view.frame.width, height: ScreenHeight - navigationBarHeight), style: .Plain)
+            self.permissionTable = UITableView.init(frame: CGRect(x: viewOriginX, y: navigationBarHeight, width: self.view.frame.width - 2 * viewOriginX, height: ScreenHeight - navigationBarHeight), style: .Plain)
             self.permissionTable.backgroundColor = UIColor.whiteColor()
             self.permissionTable.separatorInset = UIEdgeInsetsZero
             self.permissionTable.layoutMargins = UIEdgeInsetsZero
@@ -88,6 +82,7 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             self.permissionTable.scrollEnabled = false
             self.permissionTable.delegate = self
             self.permissionTable.dataSource = self
+            self.permissionTable.rowHeight = 50
             self.permissionTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: PermissionCellId)
             self.view.addSubview(self.permissionTable)
         default:
@@ -102,18 +97,24 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(PermissionCellId)
         if let resultCell = cell {
+            
+            for subview in resultCell.contentView.subviews {
+                subview.removeFromSuperview()
+            }
+            
             resultCell.separatorInset = UIEdgeInsetsZero
             resultCell.layoutMargins = UIEdgeInsetsZero
-            resultCell.textLabel?.text = self.permissionData[indexPath.row].mainItem
+            resultCell.selectionStyle = .None
             
-            let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 15 - 80, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 80, height: resultCell.contentView.frame.height * (2 / 3)))
-            if self.isDetail == false {
-                onSwitch.on = false
-            }else{
-                onSwitch.on = self.childEquipment.eqmStatus == "0" ? false : true
-            }
-            onSwitch.onLabel.text = self.permissionData[indexPath.row].onTitle
-            onSwitch.offLabel.text = self.permissionData[indexPath.row].offTitle
+            let model = self.permissionData[indexPath.row]
+            
+            resultCell.textLabel?.text = model.mainItem
+            
+            let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 80, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (1 / 2)) / 2, width: 70, height: resultCell.contentView.frame.height * (1 / 2)))
+            
+            onSwitch.on = model.eqmPermission
+            onSwitch.onLabel.text = model.onTitle
+            onSwitch.offLabel.text = model.offTitle
             onSwitch.tag = ChildPermissionSwitchTag + indexPath.row
             onSwitch.onLabel.textColor = UIColor.whiteColor()
             onSwitch.offLabel.textColor = UIColor.whiteColor()
@@ -136,19 +137,45 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
     
     
     func swithchChange(onSwitch:HMSwitch) -> Void {
-        
+        let model = self.permissionData[onSwitch.tag - ChildPermissionSwitchTag]
         if onSwitch.tag == ChildPermissionSwitchTag {
-            if onSwitch.on == true {
-                self.videoPermission = "1"
-            }else{
-                self.videoPermission = "0"
-            }
+            
+            HUD.showHud("正在修改...", onView: self.view)
+            ChildEquipmentsPermission.sendAsyncModifyChildEquipmentsPermission(model.idUserChildEqmPermission, idUserChildEqmInfo: self.childEquipment.idUserChildEqmInfo, voicePermission: model.eqmPermission == true ? "1" : "2", imagePermission: onSwitch.on == true ? "1" : "2", completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    HUD.hideHud(weakSelf.view)
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            HUD.showText("修改成功", onView: weakSelf.view)
+                        }else{
+                            onSwitch.on = !onSwitch.on
+                            HUD.showText("修改失败:\(msg!)", onView: weakSelf.view)
+                        }
+                    }else{
+                        onSwitch.on = !onSwitch.on
+                        HUD.showText("网络错误:\(msg!)", onView: weakSelf.view)
+                    }
+                }
+            })
+            
         }else if onSwitch.tag == ChildPermissionSwitchTag + 1{
-            if onSwitch.on == true {
-                self.voicePermission = "1"
-            }else{
-                self.voicePermission = "0"
-            }
+            HUD.showHud("正在修改...", onView: self.view)
+            ChildEquipmentsPermission.sendAsyncModifyChildEquipmentsPermission(model.idUserChildEqmPermission, idUserChildEqmInfo: self.childEquipment.idUserChildEqmInfo, voicePermission: onSwitch.on == true ? "1" : "2", imagePermission: model.eqmPermission == true ? "1" : "2", completionHandler: { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    HUD.hideHud(weakSelf.view)
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            HUD.showText("修改成功", onView: weakSelf.view)
+                        }else{
+                            onSwitch.on = !onSwitch.on
+                            HUD.showText("修改失败:\(msg!)", onView: weakSelf.view)
+                        }
+                    }else{
+                        onSwitch.on = !onSwitch.on
+                        HUD.showText("网络错误:\(msg!)", onView: weakSelf.view)
+                    }
+                }
+                })
         }
     }
     
@@ -175,6 +202,58 @@ class ChildPermissionViewController: BaseViewController,UITableViewDelegate,UITa
             self.navigationController?.popViewControllerAnimated(true)
         }
         
+    }
+    
+    private func initializePermissonData() ->Void{
+        self.permissionData = []
+        var model = ChildEquipmentsPermission()
+        model.mainItem = "观看权限"
+        model.onTitle = "能看宝宝"
+        model.offTitle = "不能看宝宝"
+        self.permissionData.append(model)
+        
+        model = ChildEquipmentsPermission()
+        model.mainItem = "声音权限"
+        model.onTitle = "能听声音"
+        model.offTitle = "不能听声音"
+        self.permissionData.append(model)
+        
+        HUD.showHud("正在加载...", onView: self.view)
+        dispatch_queue_create("loadPermissionQueue", nil).queue { 
+            ChildEquipmentsPermission.sendAsyncChildEquipmentsPermissionDetail(self.childEquipment.idUserChildEqmInfo) { [weak self](errorCode, msg) in
+                if let weakSelf = self{
+                    dispatch_get_main_queue().queue({
+                        HUD.hideHud(weakSelf.view)
+                    })
+                    if let err = errorCode{
+                        if err == BabyZoneConfig.shared.passCode{
+                            weakSelf.permissionData.removeAll()
+                            if let permission = ChildEquipmentsPermissionBL.findAll(weakSelf.childEquipment.idUserChildEqmInfo).first{
+                                model = ChildEquipmentsPermission()
+                                model.idUserChildEqmPermission = permission.idUserChildEqmPermission
+                                model.mainItem = "观看权限"
+                                model.onTitle = "能看宝宝"
+                                model.offTitle = "不能看宝宝"
+                                model.eqmPermission = permission.imagePermission == "1" ? true : false
+                                weakSelf.permissionData.append(model)
+                                model = ChildEquipmentsPermission()
+                                model.idUserChildEqmPermission = permission.idUserChildEqmPermission
+                                model.mainItem = "声音权限"
+                                model.onTitle = "能听声音"
+                                model.offTitle = "不能听声音"
+                                model.eqmPermission = permission.voicePermission == "1" ? true : false
+                                weakSelf.permissionData.append(model)
+                                dispatch_get_main_queue().queue({
+                                    if let table = weakSelf.permissionTable{
+                                        table.reloadData()
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /*

@@ -50,10 +50,6 @@ class HandleChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         var accountData:[ChildAccount] = []
         if ChildAccountBL.findAll().count > 0 {
             accountData.appendContentsOf(ChildAccountBL.findAll())
-        }else{
-            let accountModel = ChildAccount()
-            accountModel.childName = "暂时没有绑定子账号"
-            accountData.append(accountModel)
         }
         var model = ChildAccountList(title: "子账号列表", account: accountData)
         self.accountList.append(model)
@@ -251,7 +247,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
             case 1:
                 resultCell.detailTextLabel?.text = nil
                 if EquipmentsBL.findAll().count > 0 {
-                    let onSwitch = HMSwitch.init(frame: CGRect(x: self.frame.width - 90, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
+                    let onSwitch = HMSwitch.init(frame: CGRect(x: self.frame.width - 75, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (1 / 2)) / 2, width: 50, height: resultCell.contentView.frame.height * (1 / 2)))
                     onSwitch.on = false
                     onSwitch.onLabel.text = "打开"
                     onSwitch.offLabel.text = "关闭"
@@ -312,6 +308,7 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
     
     
     func equipmentOnOff(onSwicth:HMSwitch) -> Void {
+        let status = onSwicth.on == true ? "1" : "2"
         if self.idUserChildInfo == "" {
             HUD.showText("请先添加子账号", onView: self)
             return
@@ -319,16 +316,18 @@ class AddChildAccountView: UIView,UITableViewDelegate,UITableViewDataSource {
         if self.addAccountData.count > 1 {
             let detail = self.addAccountData[1].detail[onSwicth.tag - AddChildAccoutSwitchTag]
             HUD.showHud("正在提交...", onView: self)
-            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(self.idUserChildInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: "\(detail.eqmStatus)", completionHandler: { [weak self](errorCode, msg, userChildEqmInfo) in
+            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(self.idUserChildInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: status, completionHandler: { [weak self](errorCode, msg, userChildEqmInfo) in
                 if let weakSelf = self{
                     HUD.hideHud(weakSelf)
                     if let err = errorCode{
                         if err == BabyZoneConfig.shared.passCode, let eqmInfo = userChildEqmInfo{
                             weakSelf.idUserChildEqmInfo = eqmInfo
                         }else{
+                            onSwicth.on = !onSwicth.on
                             HUD.showText("绑定失败", onView: weakSelf)
                         }
                     }else{
+                        onSwicth.on = !onSwicth.on
                         HUD.showText("绑定失败", onView: weakSelf)
                     }
                 }

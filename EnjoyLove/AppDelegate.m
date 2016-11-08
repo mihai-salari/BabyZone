@@ -70,7 +70,8 @@
 }
 
 - (void)baseSetting{
-        
+    
+    self.firstLaunch = YES;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIBarButtonItem appearance] setBackButtonTitlePositionAdjustment:UIOffsetMake(0, -60) forBarMetrics:UIBarMetricsDefault];
     UITabBarController *tabBarController = (UITabBarController *)self.window.rootViewController;
@@ -289,6 +290,7 @@ UIBackgroundTaskIdentifier backgroundTask;
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    self.firstLaunch = NO;
 }
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{

@@ -60,6 +60,13 @@ class AddChildAccountViewController: BaseViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let handle = self.addResultRefreshHandler{
+            handle()
+        }
+    }
+    
     func addConfirmClick() -> Void {
         if let add = self.addAccountView {
             add.fetchData({ [weak self] in

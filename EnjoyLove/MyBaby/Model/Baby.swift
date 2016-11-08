@@ -26,7 +26,12 @@ struct Baby {
 
 struct BabySetting {
     var title = ""
-    var setting:[SettingDetail]!
+    var setting:[ChildAccount]!
+    
+    init(title:String, data:[ChildAccount]) {
+        self.title = title
+        self.setting = data
+    }
 }
 
 

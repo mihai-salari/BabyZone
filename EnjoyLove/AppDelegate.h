@@ -33,6 +33,8 @@
 
 @property (nonatomic, assign, readonly) BOOL isUserLogin;
 
+@property (nonatomic, assign) BOOL firstLaunch;
+
 #pragma mark - 监控视频
 @property (strong, nonatomic) Contact *contact;//重新调整监控画面
 @property (nonatomic) NetworkStatus networkStatus;

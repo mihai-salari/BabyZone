@@ -83,5 +83,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/MyBaby/View/ChildAccountView.swift"
+            timestampString = "500273581.8989"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
+            landmarkName = "equipmentOnOff(onSwicth:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EnjoyLove.AddChildAccountView.(equipmentOnOff (EnjoyLove.HMSwitch) -&gt; ()).(closure #1)"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
+                  timestampString = "500285951.984333"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "320"
+                  endingLineNumber = "320"
+                  offsetFromSymbolStart = "184">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EnjoyLove.AddChildAccountView.(equipmentOnOff (EnjoyLove.HMSwitch) -&gt; ()).(closure #1)"
+                  moduleName = "EnjoyLove"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
+                  timestampString = "500285951.985622"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "320"
+                  endingLineNumber = "320"
+                  offsetFromSymbolStart = "252">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

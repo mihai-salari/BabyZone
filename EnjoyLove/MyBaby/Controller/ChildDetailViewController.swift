@@ -11,17 +11,16 @@ import UIKit
 class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITableViewDataSource {
     
     private var childList:[AccountInfo]!
-    var childAccount:SettingDetail!
+    var childAccount:ChildAccount!
     var reloadHandler:((isDelete:Bool)->())?
     
     
     private var childTable:UITableView!
-    private var tableRowHeight:CGFloat = 0
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.automaticallyAdjustsScrollViewInsets = false
-        self.navigationBarItem(self, title: self.childAccount.mainItem, leftSel: nil, rightSel: nil)
+        self.navigationBarItem(self, title: self.childAccount.childName, leftSel: nil, rightSel: nil)
     }
     
     override func viewDidLoad() {
@@ -42,7 +41,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     private func initialize(){
         
         HUD.showHud("正在加载...", onView: self.view)
-        ChildEquipments.sendAsyncChildEquipmentsList(self.childAccount.itemId) { [weak self](errorCode, msg) in
+        ChildEquipments.sendAsyncChildEquipmentsList(self.childAccount.idUserChildInfo) { [weak self](errorCode, msg) in
             if let weakSelf = self{
                 HUD.hideHud(weakSelf.view)
                 if let err = errorCode {
@@ -66,13 +65,12 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
         
         self.initializeData()
 
-        self.tableRowHeight = (ScreenHeight - navigationBarHeight - 60) * (1 / 12) > 44 ? (ScreenHeight - navigationBarHeight - 60) * (1 / 12) : 44
-        self.childTable = UITableView.init(frame: CGRectMake(0, navigationBarHeight, ScreenWidth, ScreenHeight - navigationBarHeight), style: .Plain)
+        self.childTable = UITableView.init(frame: CGRectMake(viewOriginX, navigationBarHeight, ScreenWidth - 2 * viewOriginX, ScreenHeight - navigationBarHeight), style: .Plain)
         self.childTable.backgroundColor = UIColor.whiteColor()
         self.childTable.tableFooterView = UIView.init()
         self.childTable.dataSource = self
         self.childTable.delegate = self
-        self.childTable.rowHeight = self.tableRowHeight
+        self.childTable.rowHeight = 44
         self.childTable.separatorInset = UIEdgeInsetsZero
         self.childTable.layoutMargins = UIEdgeInsetsZero
         self.view.addSubview(self.childTable)
@@ -86,14 +84,15 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
         }
         self.childList = []
         var modelData:[ChildEquipments] = []
+        modelData.removeAll()
         var subModel = ChildEquipments()
-        subModel.eqmName = self.childAccount.mainItem
+        subModel.eqmName = self.childAccount.childName
         subModel.eqmSubItem = "更名"
         subModel.eqmStatus = "-1"
         modelData.append(subModel)
         
         subModel = ChildEquipments()
-        subModel.eqmName = self.childAccount.subItem
+        subModel.eqmName = self.childAccount.childMobile
         subModel.eqmSubItem = "手机号"
         subModel.eqmStatus = "-1"
         modelData.append(subModel)
@@ -102,16 +101,10 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
         self.childList.append(mainModel)
         
         modelData = []
-        let childEqms = ChildEquipmentsBL.findAll(self.childAccount.itemId)
+        modelData.removeAll()
+        let childEqms = ChildEquipmentsBL.findAll(self.childAccount.idUserChildInfo)
         if childEqms.count > 0 {
-            for childEqm in childEqms {
-                subModel = ChildEquipments()
-                subModel.eqmName = childEqm.eqmName
-                subModel.eqmSubItem = ""
-                subModel.eqmStatus = childEqm.eqmStatus
-                subModel.idUserChildEqmInfo = childEqm.idUserChildEqmInfo
-                modelData.append(subModel)
-            }
+            modelData.appendContentsOf(childEqms)
             mainModel = AccountInfo(title: "设备权限", detail: modelData)
             self.childList.append(mainModel)
         }
@@ -153,8 +146,8 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
             }else if indexPath.section == 1{
                 if model.eqmStatus != "-1" {
                     resultCell.accessoryType = .DisclosureIndicator
-                    let onSwitch = HMSwitch.init(frame: CGRect(x: resultCell.contentView.frame.width - 55, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (2 / 3)) / 2, width: 60, height: resultCell.contentView.frame.height * (2 / 3)))
-                    onSwitch.on = model.eqmStatus == "0" ? false : true
+                    let onSwitch = HMSwitch.init(frame: CGRect(x: tableView.frame.width - 75, y: (resultCell.contentView.frame.height - resultCell.contentView.frame.height * (1 / 2)) / 2, width: 50, height: resultCell.contentView.frame.height * (1 / 2)))
+                    onSwitch.on = model.eqmStatus == "1" ? true : false
                     onSwitch.onLabel.text = "打开"
                     onSwitch.offLabel.text = "关闭"
                     onSwitch.onLabel.textColor = UIColor.whiteColor()
@@ -179,7 +172,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         switch section {
         case self.childList.count - 1:
-            return self.tableRowHeight
+            return 44
         default:
             return 30
         }
@@ -189,7 +182,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch section {
         case self.childList.count - 1:
-            let headButton = UIButton.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: tableRowHeight))
+            let headButton = UIButton.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
             headButton.backgroundColor = UIColor.hexStringToColor("#f9f4f7")
             headButton.setTitle(self.childList[section].title, forState: .Normal)
             headButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
@@ -218,7 +211,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
                             HUD.showHud("正在提交", onView: weakSelf.view)
                             dispatch_queue_create("changeResultQueue", nil).queue({
                                 if let result = result1{
-                                    ChildAccount.sendAsyncModifyChildAccount(weakSelf.childAccount.itemId, childName: result, completionHandler: { [weak self](errorCode, msg) in
+                                    ChildAccount.sendAsyncModifyChildAccount(weakSelf.childAccount.idUserChildInfo, childName: result, completionHandler: { [weak self](errorCode, msg) in
                                         dispatch_get_main_queue().queue({ 
                                             HUD.hideHud(weakSelf.view)
                                         })
@@ -264,7 +257,7 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     
     func deleteAccountClick() -> Void {
         HUD.showHud("正在提交...", onView: self.view)
-        ChildAccount.sendAsyncDeleteChildAccount(self.childAccount.itemId) { [weak self](errorCode, msg) in
+        ChildAccount.sendAsyncDeleteChildAccount(self.childAccount.idUserChildInfo) { [weak self](errorCode, msg) in
             if let weakSelf = self{
                 HUD.hideHud(weakSelf.view)
                 if let err = errorCode{
@@ -284,9 +277,10 @@ class ChildDetailViewController: BaseViewController ,UITableViewDelegate,UITable
     }
     
     func equipmentOnOff(onSwicth:HMSwitch) -> Void {
+        let status = onSwicth.on == true ? "1" : "2"
         if self.childList.count > 1 {
             let detail = self.childList[1].detail[onSwicth.tag]
-            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(detail.idUserChildEqmInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: detail.eqmStatus, completionHandler: { [weak self](errorCode, msg, idUserChildEqmInfo) in
+            ChildEquipments.sendAsyncModifyChildEquipmentsStatus(self.childAccount.idUserChildInfo, idEqmInfo: detail.idEqmInfo, eqmStatus: status, completionHandler: { [weak self](errorCode, msg, idUserChildEqmInfo) in
                 if let weakSelf = self{
                     HUD.hideHud(weakSelf.view)
                     if let err = errorCode{

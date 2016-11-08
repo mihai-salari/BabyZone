@@ -1153,8 +1153,8 @@ class BabyBaseInfoBL: NSObject {
 }
 
 //MARK:____Equipments____
-private let EquipmentsArchiveKey = "EquipmentsArchive"
-private let EquipmentsArchiveFileName = "EquipmentsArchive.archive"
+private let EquipmentsArchiveKey = "EquipmentsArchiveKey"
+private let EquipmentsArchiveFileName = "EquipmentsArchiveFileName.archive"
 class Equipments: NSObject,NSCoding {
     /*
      idEqmInfo	int	是	设备id

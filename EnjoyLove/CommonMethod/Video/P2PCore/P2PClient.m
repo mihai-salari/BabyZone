@@ -25,7 +25,6 @@
 #import "UDManager.h"
 #import "LoginResult.h"
 #import "AppDelegate.h"
-#import "MPNotificationView.h"
 #import "CameraManager.h"
 #import "UDPManager.h"
 
@@ -348,7 +347,6 @@ void vFlagUpdate(DWORD *pdwFlag)
                             [[UIApplication sharedApplication] scheduleLocalNotification:alarmNotify];
                         }
                         
-                        [MPNotificationView notifyWithText:NSLocalizedString(@"system_message", nil)  andDetail:title];
                     }
                     [recoDAO release];
                 }else{//获取数据失败

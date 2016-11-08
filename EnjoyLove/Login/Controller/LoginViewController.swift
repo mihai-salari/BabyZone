@@ -68,19 +68,17 @@ class LoginViewController: BaseViewController {
                         dispatch_queue_create("someDataRequetQeueu", nil).queue({
                             PersonDetail.sendAsyncPersonDetail({ (errorCode, msg) in
                                 NSNotificationCenter.defaultCenter().postNotificationName(LoginPersonDetailNotification, object: nil)
-                                Equipments.sendAsyncEqutementList({ (errorCode, msg) in
-                                    BabyList.sendAsyncBabyList({ (errorCode, msg) in
-                                        NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
-                                        dispatch_get_main_queue().queue({
-                                            if dataDict != nil {
-                                                dispatch_get_main_queue().queue({
-                                                    weakSelf.dismissViewControllerAnimated(true, completion: nil)
-                                                })
-                                            }else{
-                                                HUD.hideHud(weakSelf.view)
-                                                HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
-                                            }
-                                        })
+                                BabyList.sendAsyncBabyList({ (errorCode, msg) in
+                                    NSNotificationCenter.defaultCenter().postNotificationName(LoginBabyListNotification, object: nil)
+                                    dispatch_get_main_queue().queue({
+                                        if dataDict != nil {
+                                            dispatch_get_main_queue().queue({
+                                                weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                                            })
+                                        }else{
+                                            HUD.hideHud(weakSelf.view)
+                                            HUD.showText("登录失败:\(msg!)", onView: weakSelf.view)
+                                        }
                                     })
                                 })
                             })

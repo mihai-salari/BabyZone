@@ -114,7 +114,7 @@ class PregInfoViewController: BaseViewController {
                     var contentHeight:CGFloat = 0
                     if let ifo = info{
                         articleId = ifo.idBbsNewsInfo
-                        contentHeight += (ifo.contentHeight + ifo.totalImageHeight + ifo.titleHeight + 10 + 45 + weakSelf.view.frame.height * (3 / 4))
+                        contentHeight += (ifo.contentHeight + ifo.totalImageHeight + ifo.titleHeight + 10 + 45 + pregViewHeight)
                         recoments.append(ifo)
                     }else{
                         let recoment = Article()
@@ -128,7 +128,7 @@ class PregInfoViewController: BaseViewController {
                         recoments.append(recoment)
                         articleId = "-1"
                         articleErrorTip = "暂无推荐数据"
-                        contentHeight += (recoment.contentHeight + recoment.totalImageHeight + recoment.titleHeight + 10 + 80 + 45 + weakSelf.view.frame.height * (2 / 3))
+                        contentHeight += (recoment.contentHeight + recoment.totalImageHeight + recoment.titleHeight + 10 + 80 + 45 + pregViewHeight)
                     }
                     let pregInfoStatus = PregInfoStatus(pregStatusImage: "preStatus.png", pregStatusDesc: weakSelf.infoType == "1" ? "本周孕育状态" : "本周宝宝状态", pregInfoData: recoments, pregBabyId: "0", pregMoreImage: "pregMore.png")
                     weakSelf.pregInfoStatusData.append(pregInfoStatus)
@@ -137,6 +137,8 @@ class PregInfoViewController: BaseViewController {
                         weakSelf.containView.removeFromSuperview()
                         weakSelf.containView = nil
                     }
+                    
+                    contentHeight = contentHeight < 480 - navigationBarHeight ? 500 - navigationBarHeight : contentHeight
                     
                     weakSelf.containView = UIScrollView.init(frame: CGRect.init(x: 0, y: navigationBarHeight, width: weakSelf.view.frame.width, height: weakSelf.view.frame.height - navAndTabHeight))
                     weakSelf.containView.showsVerticalScrollIndicator = false
@@ -156,8 +158,7 @@ class PregInfoViewController: BaseViewController {
                         weakSelf.pregView = nil
                     }
                     
-                    
-                    weakSelf.pregView = PregInfoView.init(frame: CGRect.init(x: 0, y: 0, width: weakSelf.containView.frame.width, height: weakSelf.view.frame.height * (2 / 3)), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: nil, recordCompletionHandler: { [weak self] in
+                    weakSelf.pregView = PregInfoView.init(frame: CGRect.init(x: 0, y: 0, width: weakSelf.containView.frame.width, height: pregViewHeight), babyModel: weakSelf.pregBabyData[0], switchCompletionHandler: nil, recordCompletionHandler: { [weak self] in
                             if let weakSelf = self{
                                 if let _ = LoginBL.find(){
                                     if babyId != "-1"{

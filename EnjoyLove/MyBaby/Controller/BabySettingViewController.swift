@@ -166,6 +166,9 @@ class BabySettingViewController: BaseViewController,UITableViewDelegate,UITableV
             for subview in resultCell.contentView.subviews {
                 subview.removeFromSuperview()
             }
+            
+            resultCell.contentView.frame = CGRect.init(x: resultCell.contentView.frame.minX, y: resultCell.contentView.frame.minY, width: tableView.frame.width, height: 50)
+            
             let model = self.settingData[indexPath.section].setting[indexPath.row]
             resultCell.textLabel?.text = model.childName
             resultCell.textLabel?.font = UIFont.systemFontOfSize(14)
@@ -198,7 +201,7 @@ class BabySettingViewController: BaseViewController,UITableViewDelegate,UITableV
 
             case 1:
                 resultCell.accessoryType = .DisclosureIndicator
-                resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(12)
+                resultCell.detailTextLabel?.font = UIFont.systemFontOfSize(14)
                 resultCell.detailTextLabel?.text =  model.childMobile
             default:
                 break

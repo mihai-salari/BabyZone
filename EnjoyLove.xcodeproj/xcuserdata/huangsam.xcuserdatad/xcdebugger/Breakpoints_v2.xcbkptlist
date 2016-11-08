@@ -105,13 +105,13 @@
                   symbolName = "EnjoyLove.AddChildAccountView.(equipmentOnOff (EnjoyLove.HMSwitch) -&gt; ()).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
-                  timestampString = "500296641.840315"
+                  urlString = "file:///Users/huangsam/Git/EnjoyLove/EnjoyLove/MyBaby/View/ChildAccountView.swift"
+                  timestampString = "500308773.056692"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "320"
                   endingLineNumber = "320"
-                  offsetFromSymbolStart = "152">
+                  offsetFromSymbolStart = "230">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -120,15 +120,31 @@
                   symbolName = "EnjoyLove.AddChildAccountView.(equipmentOnOff (EnjoyLove.HMSwitch) -&gt; ()).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
-                  timestampString = "500296641.842428"
+                  urlString = "file:///Users/huangsam/Git/EnjoyLove/EnjoyLove/MyBaby/View/ChildAccountView.swift"
+                  timestampString = "500308773.060336"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "320"
                   endingLineNumber = "320"
-                  offsetFromSymbolStart = "228">
+                  offsetFromSymbolStart = "299">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EnjoyLove/CommonMethod/HTTP/PersonCenter.swift"
+            timestampString = "500308565.656504"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "950"
+            endingLineNumber = "950"
+            landmarkName = "sendAsyncAddUserNote(moodStatus:noteLabel:content:imgUrls:completionHandler:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

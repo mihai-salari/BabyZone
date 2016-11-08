@@ -8,14 +8,7 @@
 
 import UIKit
 
-private let pregDaysLabelHeight:CGFloat = upRateHeight(25)
-private let pregInfoCircleWidth:CGFloat = upRateHeight(120)
-private let pregRecordViewHeight:CGFloat = upRateWidth(35)
-private let pregBabyImageViewWidth:CGFloat = upRateWidth(70)
-private let pregBabyImageViewHeight = upRateWidth(60)
-private let pregMoreViewWidth:CGFloat = upRateWidth(20)
-private let pregMoreViewHeight:CGFloat = upRateWidth(20)
-private let pregFaceViewWidth:CGFloat = upRateWidth(30)
+let pregViewHeight = ScreenWidth * (1 / 2) + 40 + 15 + 30 + 10 + 40 + 15
 
 
 class PregInfoView: UIView {
@@ -61,7 +54,7 @@ class PregInfoView: UIView {
         babyButton.addTarget(self, action: #selector(self.switchBabyClick), forControlEvents: .TouchUpInside)
         self.cirleView.addSubview(babyButton)
         
-        self.weightLabel = UILabel.init(frame: CGRectMake(0, CGRectGetHeight(self.frame) * (3 / 4.3), CGRectGetWidth(self.frame) / 3, 15))
+        self.weightLabel = UILabel.init(frame: CGRectMake(0, self.cirleView.frame.maxY + 15, CGRectGetWidth(self.frame) / 3, 15))
         self.weightLabel.textColor = UIColor.whiteColor()
         self.weightLabel.text = "\(babyModel.minWeight)~\(babyModel.maxWeight)"
         self.weightLabel.textAlignment = .Center
@@ -113,11 +106,11 @@ class PregInfoView: UIView {
         
 
         
-        let diaryRecordButton = DiaryRecordButton.init(frame: CGRectMake(10, CGRectGetMaxY(kgLabel.frame) + upRateWidth(10), CGRectGetWidth(self.frame) - 20, pregRecordViewHeight))
+        let diaryRecordButton = DiaryRecordButton.init(frame: CGRectMake(10, CGRectGetMaxY(kgLabel.frame) + 10, CGRectGetWidth(self.frame) - 20, 40))
         diaryRecordButton.setImageRect(CGRectMake(0, 0, 10, 16), image: "arrow_right.png", title: "记录下宝宝的成长瞬间!", fontSize: upRateWidth(16))
         diaryRecordButton.backgroundColor = UIColor.hexStringToColor("#e37580")
         diaryRecordButton.setCustomTitleColor(UIColor.whiteColor())
-        diaryRecordButton.layer.cornerRadius = pregRecordViewHeight / 2
+        diaryRecordButton.layer.cornerRadius = 40 / 2
         diaryRecordButton.layer.masksToBounds = true
         diaryRecordButton.addCustomTarget(self, sel: #selector(self.recordDiaryClick))
         self.addSubview(diaryRecordButton)

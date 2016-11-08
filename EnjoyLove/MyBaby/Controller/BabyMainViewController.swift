@@ -115,8 +115,8 @@ class BabyMainViewController: BaseVideoViewController ,UIScrollViewDelegate{
                         weakSelf.devices = []
                         weakSelf.devices.removeAll()
                         let eqms = EquipmentsBL.findAll()
+                        weakSelf.devices.appendContentsOf(eqms)
                         if eqms.count > 0 {
-                            weakSelf.devices.appendContentsOf(eqms)
                             weakSelf.babyScrollView.contentSize = CGSize.init(width: weakSelf.babyScrollView.frame.width * CGFloat.init(eqms.count), height: weakSelf.babyScrollView.frame.height)
                             for i in 0 ..< weakSelf.devices.count {
                                 let babyImageView  = UIImageView.init(frame: CGRect(x: CGFloat(i) * weakSelf.babyScrollView.frame.width, y: 0, width: weakSelf.babyScrollView.frame.width, height: weakSelf.babyScrollView.frame.height))

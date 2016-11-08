@@ -101,7 +101,6 @@ class HTTPEngine: NSObject {
                 }
         })
 
-        return nil
     }
     
     func postAsyncVideoWith(url:String, parameters:[String:NSObject]?, success:((dataTask:NSURLSessionDataTask, responseObject:NSDictionary?)->())?, failer:((dataTask:NSURLSessionDataTask?, error:NSError?)->())?) -> NSURLSessionDataTask? {

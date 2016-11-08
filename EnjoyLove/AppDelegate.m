@@ -31,7 +31,6 @@
 #import "UncaughtExceptionHandler.h"
 #import "Alarm.h"
 #import "AlarmDAO.h"
-#import "MPNotificationView.h"
 #import "UDPManager.h"
 #import "PAIOUnit.h"//rtsp监控界面弹出修改
 #import "MD5Manager.h"

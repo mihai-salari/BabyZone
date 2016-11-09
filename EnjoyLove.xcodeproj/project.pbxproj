@@ -481,6 +481,9 @@
 		27F666151D9BEBCC001F3BF6 /* BabyPushViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F666141D9BEBCC001F3BF6 /* BabyPushViewController.swift */; };
 		27F69D9B1D8CC9660035ADD2 /* LoginAgreementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F69D9A1D8CC9660035ADD2 /* LoginAgreementViewController.swift */; };
 		27F6DBFB1D9ABB06001C63F5 /* BabyCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27F6DBFA1D9ABB06001C63F5 /* BabyCheckViewController.swift */; };
+		27FEC97F1DD2A6DB001F3184 /* BabyToolViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEC97A1DD2A6DB001F3184 /* BabyToolViewController.swift */; };
+		27FEC9801DD2A6DB001F3184 /* BabyTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEC97C1DD2A6DB001F3184 /* BabyTool.swift */; };
+		27FEC9811DD2A6DB001F3184 /* BabyToolView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27FEC97E1DD2A6DB001F3184 /* BabyToolView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1174,6 +1177,9 @@
 		27F666141D9BEBCC001F3BF6 /* BabyPushViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyPushViewController.swift; sourceTree = "<group>"; };
 		27F69D9A1D8CC9660035ADD2 /* LoginAgreementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginAgreementViewController.swift; sourceTree = "<group>"; };
 		27F6DBFA1D9ABB06001C63F5 /* BabyCheckViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyCheckViewController.swift; sourceTree = "<group>"; };
+		27FEC97A1DD2A6DB001F3184 /* BabyToolViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyToolViewController.swift; sourceTree = "<group>"; };
+		27FEC97C1DD2A6DB001F3184 /* BabyTool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyTool.swift; sourceTree = "<group>"; };
+		27FEC97E1DD2A6DB001F3184 /* BabyToolView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BabyToolView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2264,6 +2270,7 @@
 				27F4105B1D8B858500722051 /* Login */,
 				27D002FD1D6D8FAA00B62A61 /* MyBaby */,
 				27D002FB1D6D8FAA00B62A61 /* Information */,
+				27FEC9781DD2A6DB001F3184 /* BabyTool */,
 				27D003001D6D8FAA00B62A61 /* MyOwn */,
 				27D002C81D6D44D700B62A61 /* Supporting Files */,
 			);
@@ -2746,6 +2753,40 @@
 				27F47C0D1D96B2F400502AEE /* ZYPinYinSearch.m */,
 			);
 			path = PinYinSearchLib;
+			sourceTree = "<group>";
+		};
+		27FEC9781DD2A6DB001F3184 /* BabyTool */ = {
+			isa = PBXGroup;
+			children = (
+				27FEC9791DD2A6DB001F3184 /* Controller */,
+				27FEC97B1DD2A6DB001F3184 /* Model */,
+				27FEC97D1DD2A6DB001F3184 /* View */,
+			);
+			path = BabyTool;
+			sourceTree = "<group>";
+		};
+		27FEC9791DD2A6DB001F3184 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				27FEC97A1DD2A6DB001F3184 /* BabyToolViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		27FEC97B1DD2A6DB001F3184 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				27FEC97C1DD2A6DB001F3184 /* BabyTool.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		27FEC97D1DD2A6DB001F3184 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				27FEC97E1DD2A6DB001F3184 /* BabyToolView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3296,6 +3337,7 @@
 				278400FA1D912D4800A46437 /* SecurityViewController.swift in Sources */,
 				275C04821D8105B000A52ABC /* MJRefreshConst.m in Sources */,
 				271475AC1D7428EC003CFC5F /* HMethod.swift in Sources */,
+				27FEC9801DD2A6DB001F3184 /* BabyTool.swift in Sources */,
 				27830D061D9A33610036E2BC /* RecommendInfo.m in Sources */,
 				27020F901DB085AE00D3BDBE /* QNGetAddrInfo.m in Sources */,
 				27020FA11DB085AE00D3BDBE /* QNConfiguration.m in Sources */,
@@ -3318,8 +3360,10 @@
 				27830CB81D9A31AC0036E2BC /* CheckAlarmMessageResult.m in Sources */,
 				27F6DBFB1D9ABB06001C63F5 /* BabyCheckViewController.swift in Sources */,
 				27830BF81D98CC550036E2BC /* DeviceView.swift in Sources */,
+				27FEC97F1DD2A6DB001F3184 /* BabyToolViewController.swift in Sources */,
 				27188E781D86AD2100797D41 /* PhotoLibraryViewController.swift in Sources */,
 				271F15971D95336200CAAEF4 /* AddressBookViewController.swift in Sources */,
+				27FEC9811DD2A6DB001F3184 /* BabyToolView.swift in Sources */,
 				270210121DB5ED3100D3BDBE /* LocationViewController.swift in Sources */,
 				27C662691DA130BC00625C9E /* QRCodeNextController.mm in Sources */,
 				27D002CA1D6D44D700B62A61 /* main.m in Sources */,

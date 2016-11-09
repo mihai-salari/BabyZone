@@ -82,14 +82,19 @@
     UITabBarItem *item0 = tabBarController.tabBar.items[0];
     UITabBarItem *item1 = tabBarController.tabBar.items[1];
     UITabBarItem *item2 = tabBarController.tabBar.items[2];
+    UITabBarItem *item3 = tabBarController.tabBar.items[3];
+    
     item0.selectedImage = [[UIImage imageNamed:@"tabbar_baby"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     item0.image = [UIImage imageNamed:@"tabbar_baby"];
     
     item1.selectedImage = [[UIImage imageNamed:@"ipcamera_off"]  imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     item1.image = [UIImage imageNamed:@"ipcamera_off"];
     
-    item2.selectedImage = [[UIImage imageNamed:@"user_off"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    item2.image = [UIImage imageNamed:@"user_off"];
+    item2.selectedImage = [[UIImage imageNamed:@"baby_tool"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    item2.image = [UIImage imageNamed:@"baby_tool"];
+    
+    item3.selectedImage = [[UIImage imageNamed:@"user_off"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    item3.image = [UIImage imageNamed:@"user_off"];
     
     [[UITabBarItem appearance] setTitleTextAttributes:                                                         @{NSForegroundColorAttributeName:[UIColor colorFromRGB:255 g:255 b:255]} forState:UIControlStateSelected];
     

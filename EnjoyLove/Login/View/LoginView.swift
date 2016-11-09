@@ -612,8 +612,7 @@ class LoginBaseInfoView: UIView ,UICollectionViewDataSource, UICollectionViewDel
 class ThirdHeaderView: UICollectionReusableView {
     var title:String = ""{
         didSet{
-            if let view = self.viewWithTag(2) {
-                let label = view as! UILabel
+            if let label = self.viewWithTag(2) as? UILabel{
                 label.text = title
             }
         }

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pn5-7j-hNA">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="pn5-7j-hNA">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -53,7 +56,7 @@
                         <viewControllerLayoutGuide type="top" id="I6s-22-TwL"/>
                         <viewControllerLayoutGuide type="bottom" id="KHL-0c-QVO"/>
                     </layoutGuides>
-                    <view key="view" tag="2" contentMode="scaleToFill" id="4TT-cA-LOL">
+                    <view key="view" tag="3" contentMode="scaleToFill" id="4TT-cA-LOL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -64,15 +67,15 @@
             </objects>
             <point key="canvasLocation" x="1884" y="406"/>
         </scene>
-        <!--View Controller-->
+        <!--Baby Tool View Controller-->
         <scene sceneID="Ja2-WI-EKu">
             <objects>
-                <viewController id="5Sc-NB-KAt" sceneMemberID="viewController">
+                <viewController id="5Sc-NB-KAt" customClass="BabyToolViewController" customModule="EnjoyLove" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Pxi-qt-uS4"/>
                         <viewControllerLayoutGuide type="bottom" id="f2h-7x-Sgh"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="quo-Wl-bcx">
+                    <view key="view" tag="2" contentMode="scaleToFill" id="quo-Wl-bcx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -115,7 +118,8 @@
                     <connections>
                         <segue destination="bz5-p4-xZI" kind="relationship" relationship="viewControllers" id="Cij-rS-5o0"/>
                         <segue destination="xo1-tk-cxt" kind="relationship" relationship="viewControllers" id="jws-5B-wuK"/>
-                        <segue destination="dgS-pq-zE6" kind="relationship" relationship="viewControllers" id="TG2-he-s60"/>
+                        <segue destination="dVp-Xv-ADB" kind="relationship" relationship="viewControllers" id="MIS-7t-nm2"/>
+                        <segue destination="dgS-pq-zE6" kind="relationship" relationship="viewControllers" id="c1N-Sg-cjM"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YGO-2K-Aiu" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -179,11 +183,11 @@
             </objects>
             <point key="canvasLocation" x="1052" y="429"/>
         </scene>
-        <!--Item-->
+        <!--育婴工具-->
         <scene sceneID="cCe-Up-SL5">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dVp-Xv-ADB" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="gq6-MA-Ivw"/>
+                    <tabBarItem key="tabBarItem" title="育婴工具" id="gq6-MA-Ivw"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="AjA-ID-DSz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

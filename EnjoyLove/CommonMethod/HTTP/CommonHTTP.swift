@@ -66,7 +66,7 @@ class QiNiu: NSObject {
     private class func dateTimeString()->String{
         let formatter = NSDateFormatter.init()
         formatter.dateFormat = "yyyy-MM-dd+HH:mm:ss"
-        return formatter.stringFromDate(NSDate.init())
+        return BabyZoneConfig.shared.currentUserId.defaultString() + formatter.stringFromDate(NSDate.init())
     }
     //单图片上传
     class func uploadImage(scope:String = "", image:UIImage, progressHandler:QNUpProgressHandler?, successHandler:((url:String,fileName:String)->())?, failureHandler:((error:String)->())?){

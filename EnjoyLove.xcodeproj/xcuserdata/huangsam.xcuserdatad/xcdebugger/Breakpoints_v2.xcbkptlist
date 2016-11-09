@@ -105,13 +105,13 @@
                   symbolName = "EnjoyLove.AddChildAccountView.(equipmentOnOff (EnjoyLove.HMSwitch) -&gt; ()).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/Git/EnjoyLove/EnjoyLove/MyBaby/View/ChildAccountView.swift"
-                  timestampString = "500308773.056692"
+                  urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
+                  timestampString = "500366063.975491"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "320"
                   endingLineNumber = "320"
-                  offsetFromSymbolStart = "230">
+                  offsetFromSymbolStart = "184">
                </Location>
                <Location
                   shouldBeEnabled = "Yes"
@@ -120,13 +120,13 @@
                   symbolName = "EnjoyLove.AddChildAccountView.(equipmentOnOff (EnjoyLove.HMSwitch) -&gt; ()).(closure #1)"
                   moduleName = "EnjoyLove"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/huangsam/Git/EnjoyLove/EnjoyLove/MyBaby/View/ChildAccountView.swift"
-                  timestampString = "500308773.060336"
+                  urlString = "file:///Users/huangsam/GITHUB/BabyZone/EnjoyLove/MyBaby/View/ChildAccountView.swift"
+                  timestampString = "500366063.978221"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "320"
                   endingLineNumber = "320"
-                  offsetFromSymbolStart = "299">
+                  offsetFromSymbolStart = "252">
                </Location>
             </Locations>
          </BreakpointContent>

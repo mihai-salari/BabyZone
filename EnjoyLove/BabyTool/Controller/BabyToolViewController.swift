@@ -10,15 +10,21 @@ import UIKit
 
 class BabyToolViewController: BaseViewController {
 
+    private var babyToolView:BabyToolView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.babyToolView = BabyToolView.init(frame: CGRect.init(x: viewOriginX, y: navigationBarHeight, width: ScreenWidth - 2 * viewOriginX, height: ScreenHeight - navAndTabHeight))
+        self.view.addSubview(self.babyToolView)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationBarItem(self, title: "育婴工具", leftSel: nil, rightSel: nil)
+        self.automaticallyAdjustsScrollViewInsets = false
     }
 
     override func didReceiveMemoryWarning() {
